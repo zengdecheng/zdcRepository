@@ -1,0 +1,332 @@
+﻿body
+{
+	font-family:宋体, Arial;
+	font-size: 12px;
+	color:#2C2C2C;
+	margin:0px;
+	padding:0px;
+	background:url(../images/login_bd_bg.jpg) repeat-x left 75px;
+} 
+a
+{
+	color:#666666;
+	text-decoration:none;
+}
+a:hover
+{
+	text-decoration:underline;
+}
+.underline
+{
+    text-decoration:underline
+}
+form
+{
+    border:0px
+}
+img
+{
+    border:0px;
+}
+input
+{
+    outline:none;
+}
+textarea
+{
+	padding-left:5px;
+	padding-top:5px;
+	padding-right:5px;
+	outline:none;
+	resize:none;
+}
+div, body, table, tr, td, h1, h2, h3, h4, h5, h6, p, ul, li, dl, dt, dd, img, form, input, select
+{
+	margin: 0;
+	padding: 0;
+}
+h1, h2, h3, h4, h5, h6
+{
+	font-size: 12px;
+	color:#666666;
+	font-weight: normal;
+}
+ul,li
+{
+	list-style: none;
+}
+em, i,del
+{
+	font-style: normal;
+	text-decoration:none;
+}
+s
+{
+    text-decoration:none
+}
+textarea
+{
+	font-size:12px
+}
+table
+{
+    table-layout:fixed;
+}
+.clear
+{
+    clear:both
+}
+.header-bg
+{
+    background:url(../images/login_header_bg.jpg) repeat-x;
+    height:74px;
+    overflow:hidden;
+}
+#Header
+{
+    width:980px;
+    margin:0px auto;
+}
+#Header .logo
+{
+    float:left;
+    margin:11px 0 0 0;
+}
+#Header .tip
+{
+    float:left;
+    display:inline;
+    margin:20px 0 0 256px;
+    width:348px;
+    height:25px;
+}
+#Header .link_msg
+{
+    float:right;
+    color:#D3F1FC;
+    margin:49px 0 0 0;
+}
+#Header .link_msg a
+{
+    color:#D3F1FC;
+}
+#Main
+{
+    width:1000px;
+    margin:0px auto;
+}
+.login_box
+{
+    float:left;
+    border:solid 1px #AAAAAA;
+    width:219px;
+    background:#D8E5F5 url(../images/login_box_bg.jpg) repeat-x;
+    overflow:hidden;
+    height:551px;
+    position:relative;
+    z-index:1;
+    top:-74px;
+}
+.login_box .logo
+{
+    float:left;
+    display:inline;
+    margin:17px 0 0 52px;
+}
+.login_box ul
+{
+    float:left;
+    width:200px;
+    padding:0 0 0 18px;
+}
+.login_box ul li
+{
+    float:left;
+    width:187px;
+    margin:24px 0 0 0;
+    line-height:20px;
+}
+.login_box ul li .input_txt
+{
+    border:solid 1px #96AEC8;
+    background:#fff;
+    width:152px;
+    height:28px;
+    line-height:28px;
+    padding:0 0 0 30px;
+    font-size:14px;
+    color:#8C8C8C;
+    overflow:hidden;
+}
+.login_box ul li .user
+{
+    background:#fff url(../images/login_user_bg.jpg) no-repeat 15px center;
+}
+.login_box ul li .password
+{
+    background:#fff url(../images/login_password_bg.jpg) no-repeat 15px center;
+}
+.login_box ul li span
+{
+    float:left;
+}
+.login_box ul li span .rd
+{
+    float:left;
+    margin:3px 0 0 0;
+    *margin:-1px 0 0 0;
+}
+.login_box ul li span label
+{
+    float:left;
+    padding:0 0 0 5px;
+}
+.login_box ul li a.get_pwd
+{
+    float:right;
+    color:#0041B2;
+    display:inline;
+    margin-right:15px;
+}
+.login_box ul li.split
+{
+    height:0px;
+    border-top:solid 1px #A4BCD6;
+    border-bottom:solid 1px #fff;
+    overflow:hidden
+}
+.right
+{
+    float:left;
+    display:inline;
+    margin:19px 0 0 20px;
+    width:739px;
+}
+.right .scroll_container
+{
+    width:100%;
+    overflow:hidden;
+    float:left;
+    position:relative;
+    z-index:1;
+}
+.right .scroll_list
+{
+    width:80000px;
+    position:relative;
+    z-index:1
+}
+.right .scroll_list li
+{
+    float:left;
+    width:737px;
+    border:solid 1px #BDBDBB;
+    height:298px;
+    overflow:hidden
+}
+.right .scroll_small
+{
+    float:left;
+    width:100%;
+    margin:21px 0 0 0;
+}
+.right .scroll_small dl
+{
+    float:left;
+    width:175px;
+    display:inline;
+    margin-right:13px;
+    overflow:hidden
+}
+.right .scroll_small dl dd
+{
+    border:solid 1px #ABABAB;
+    position:relative;
+    z-index:1;
+    cursor:pointer;
+}
+.right .scroll_small dl dd .mask
+{
+    position:absolute;
+    z-index:1;
+    top:0px;
+    left:0px;
+    width:173px;
+    height:87px;
+    background:#333;
+    FILTER: alpha(opacity =80); 
+    opacity: 0.8;  
+}
+.right .scroll_small dl.act .mask
+{
+    display:none;
+} 
+.right .scroll_small dl dd img
+{
+    display:block;
+    cursor:pointer;
+}
+.right .scroll_small dl dt
+{
+    line-height:30px;
+    color:#5C5C5C;
+    padding:0 0 0 5px;
+} 
+#Footer
+{
+    width:100%;
+    float:left;
+    _float:none;
+    margin:10px 0 0 0;
+    background:url(../images/bg01.jpg) repeat-x;
+    height:55px;
+    line-height:55px;
+    overflow:hidden;
+    zoom:1
+}
+#Footer .footer
+{
+    width:800px;
+    margin:0px auto;
+    background:url(../images/bg01.jpg) repeat-x;
+}
+#Footer .footer .l
+{
+    float:left;
+}
+#Footer .footer .r
+{
+    float:right;
+}
+
+
+.new_form3{margin:20px 0 0 0;}
+.new_form4 span{font-size:30px;
+           float:left;
+}
+.new_form4 span label{color:#F00;
+}
+
+.factory_right{width:739px;
+               height:460px;
+			   background:url(../images/factory.gif) no-repeat;
+			   float:left;
+               margin:19px 0 0 20px;
+}
+.factory_tip{margin:200px 0 0 330px;
+}
+.factory_tip span{font-size:25px;
+                  color:#306598;
+				  font-family:黑体;
+}
+.factory_tip label{font-size:30px;
+                   color:#e32727;
+				  font-family:黑体;
+}
+
+
+
+
+
+
+
