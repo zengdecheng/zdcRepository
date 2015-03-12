@@ -99,7 +99,7 @@
 					<groupId>javassist</groupId>
 				</exclusion>
 			</exclusions>
-		</dependency>
+		</dependency>-->
 
 		<dependency>
 			<groupId>org.apache.struts</groupId>
@@ -119,7 +119,7 @@
 			<version>${struts2.version}</version>
 		</dependency>
 
-		<dependency>
+<!--		<dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis</artifactId>
 			<version>${mybatis.version}</version>
