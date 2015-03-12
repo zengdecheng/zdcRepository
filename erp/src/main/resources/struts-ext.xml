@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="GBK"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "file:///D:/workgen/struts-2.0.dtd">
+
+<struts>
+  <package name="ext" extends="basePackage">
+    <action name="ext" class="com.xbd.oa.action.ExternalAction">
+    </action>
+  </package>
+
+</struts>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="oawf1" name="模拟报价流程" isExecutable="true">
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <userTask id="a_create_mr_1" name="提交" activiti:candidateGroups="mr">
+      <documentation>报价通知单、报价控制表</documentation>
+    </userTask>
+    <userTask id="a_auditingDistribute_ppc_2" name="审核分配" activiti:candidateGroups="ppc">
+      <documentation>报价通知单、报价控制表</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="a_quoted_pur_3" name="版料寻样报价" activiti:candidateGroups="pur">
+      <documentation>报价通知单、报价控制表</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="a_confirm_mr_4" name="审核信息" activiti:candidateGroups="mr">
+      <documentation>报价控制表</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="a_confirm_ppc_5" name="确认审核信息" activiti:candidateGroups="ppc">
+      <documentation>报价控制表</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="a_simPrice_cp_6" name="模拟报价" activiti:candidateGroups="cp">
+      <documentation>报价通知单、报价控制表、模拟报价单</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="a_confirm_ppc_7" name="审核信息" activiti:candidateGroups="ppc">
+      <documentation>模拟报价单</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="a_confirm_mr_8" name="客户确认" activiti:candidateGroups="mr">
+      <documentation>报价通知单、报价控制表、模拟报价单</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+        <activiti:taskListener event="complete" class="com.xbd.oa.workflow.OaLastStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="a_create_mr_1"></sequenceFlow>
+    <sequenceFlow id="flow2" sourceRef="a_create_mr_1" targetRef="a_auditingDistribute_ppc_2"></sequenceFlow>
+    <sequenceFlow id="flow3" sourceRef="a_auditingDistribute_ppc_2" targetRef="a_quoted_pur_3"></sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="a_quoted_pur_3" targetRef="a_confirm_mr_4"></sequenceFlow>
+    <sequenceFlow id="flow5" sourceRef="a_confirm_mr_4" targetRef="a_confirm_ppc_5"></sequenceFlow>
+    <sequenceFlow id="flow6" sourceRef="a_confirm_ppc_5" targetRef="a_simPrice_cp_6"></sequenceFlow>
+    <sequenceFlow id="flow7" sourceRef="a_simPrice_cp_6" targetRef="a_confirm_ppc_7"></sequenceFlow>
+    <sequenceFlow id="flow8" sourceRef="a_confirm_ppc_7" targetRef="a_confirm_mr_8"></sequenceFlow>
+    <sequenceFlow id="flow9" sourceRef="a_confirm_mr_8" targetRef="endevent1"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_oawf1">
+    <bpmndi:BPMNPlane bpmnElement="oawf1" id="BPMNPlane_oawf1">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="180.0" y="10.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="a_create_mr_1" id="BPMNShape_a_create_mr_1">
+        <omgdc:Bounds height="55.0" width="105.0" x="145.0" y="90.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="a_auditingDistribute_ppc_2" id="BPMNShape_a_auditingDistribute_ppc_2">
+        <omgdc:Bounds height="55.0" width="105.0" x="145.0" y="180.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="a_quoted_pur_3" id="BPMNShape_a_quoted_pur_3">
+        <omgdc:Bounds height="55.0" width="105.0" x="145.0" y="270.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="a_confirm_mr_4" id="BPMNShape_a_confirm_mr_4">
+        <omgdc:Bounds height="55.0" width="105.0" x="145.0" y="360.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="a_confirm_ppc_5" id="BPMNShape_a_confirm_ppc_5">
+        <omgdc:Bounds height="55.0" width="105.0" x="145.0" y="450.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="a_simPrice_cp_6" id="BPMNShape_a_simPrice_cp_6">
+        <omgdc:Bounds height="55.0" width="105.0" x="145.0" y="540.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="a_confirm_ppc_7" id="BPMNShape_a_confirm_ppc_7">
+        <omgdc:Bounds height="55.0" width="105.0" x="145.0" y="640.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="a_confirm_mr_8" id="BPMNShape_a_confirm_mr_8">
+        <omgdc:Bounds height="55.0" width="105.0" x="145.0" y="730.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="180.0" y="830.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="197.0" y="45.0"></omgdi:waypoint>
+        <omgdi:waypoint x="197.0" y="90.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="197.0" y="145.0"></omgdi:waypoint>
+        <omgdi:waypoint x="197.0" y="180.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="197.0" y="235.0"></omgdi:waypoint>
+        <omgdi:waypoint x="197.0" y="270.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="197.0" y="325.0"></omgdi:waypoint>
+        <omgdi:waypoint x="197.0" y="360.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="197.0" y="415.0"></omgdi:waypoint>
+        <omgdi:waypoint x="197.0" y="450.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="197.0" y="505.0"></omgdi:waypoint>
+        <omgdi:waypoint x="197.0" y="540.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="197.0" y="595.0"></omgdi:waypoint>
+        <omgdi:waypoint x="197.0" y="640.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="197.0" y="695.0"></omgdi:waypoint>
+        <omgdi:waypoint x="197.0" y="730.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="197.0" y="785.0"></omgdi:waypoint>
+        <omgdi:waypoint x="197.0" y="830.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

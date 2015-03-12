@@ -1,0 +1,66 @@
+#divHeaderID{
+    margin-right: auto;
+    margin-left: auto;
+}
+
+table{
+    border-top-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 0px;
+    border-left-width: 0px;
+    -webkit-border-horizontal-spacing: 0px;
+    -webkit-border-vertical-spacing: 0px;
+    font-size: 12px;
+    width:780px;
+}
+a{
+    color: #0000ff;
+    text-decoration:none;
+}
+a:hover{
+    text-decoration: underline ;
+}
+table tr th:last-child{
+    width: 80px
+}
+table tr th,table tr td{
+    text-align: center;
+    height: 40px;
+    border-bottom: 1px solid #B1CEED;
+}
+table tr th{
+    background: #DEF0FB;
+    font-weight: normal;
+}
+
+.color{
+    color: red;
+}
+.color1{
+    color: #ccc;
+}
+tr:hover > td{
+    background-color: #0599f5;
+    color: #ffffff
+}
+tr:hover > td > a{
+    color: #ffffff;
+}
+.jiaji{
+    color: red;
+    font-size: 11px;
+}
+.red{
+    color: red;
+}
+.green{
+    color: green;
+}
+.z_order_bg, .z_order_bg1{
+    background: url("../../images/z_0419.gif") center no-repeat;
+    color: #ffffff;
+    width: 130px
+}
+.z_order_bg1{
+    background: url("../../images/z_0418.jpg") center no-repeat;
+}

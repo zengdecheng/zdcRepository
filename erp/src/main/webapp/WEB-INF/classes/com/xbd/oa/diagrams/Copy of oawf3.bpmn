@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="oawf3" name="大货生产流程" isExecutable="true">
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <userTask id="c_create_dahuo_1" name="新建大货生产订单" activiti:candidateGroups="mr">
+      <documentation>大货通知单、大货质量控制表、大货布确认表、大货辅料确认表</documentation>
+    </userTask>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <userTask id="c_fi_confirm_2" name="确认客户首付款" activiti:candidateGroups="fi">
+      <documentation>收款凭证（拍照/截图）、大货通知单</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="c_ppc_assign_3" name="PPC分配工厂生产" activiti:candidateGroups="ppc">
+      <documentation>大货通知单、大货质量控制表、大货布确认表、大货辅料确认表、物料搭配卡、工厂加工单、加工合同后复合面料登记表、大货质量控制表、大货交期控制表、付款申请表</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="c_fi_pay_4" name="付工厂订金" activiti:candidateGroups="fi">
+      <documentation>付款申请表、付款凭证（拍照/截图）、大货交期控制表</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="c_ppc_factoryMsg_5" name="获得工厂购料信息" activiti:candidateGroups="ppc">
+      <documentation>大货交期控制表</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="c_qc_cutting_6" name="裁剪(提交裁剪数)" activiti:candidateGroups="qc">
+      <documentation>大货质量控制表、大货交期控制表</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="c_ppc_confirm_7" name="PPC获取记录信息" activiti:candidateGroups="ppc">
+      <documentation>大货质量控制表、大货交期控制表</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="c_qc_printing_8" name="投产(印/绣花/洗水等特殊工艺)首件样板" activiti:candidateGroups="qc">
+      <documentation>大货质量控制表、大货交期控制表</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="c_ppc_confirm_9" name="PPC跟进记录信息(首件大货)" activiti:candidateGroups="ppc">
+      <documentation>大货质量控制表、大货交期控制表</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="c_qa_firstproduct_10" name="产前样/首件大货批板" activiti:candidateGroups="qa">
+      <documentation>大货质量控制表、大货交期控制表</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="c_ppc_confirm_11" name="装箱单/货运单" activiti:candidateGroups="ppc">
+      <documentation>大货质量控制表、大货交期控制表、装箱单</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="c_qa_confirm_12" name="尾查报告" activiti:candidateGroups="qa">
+      <documentation>大货质量控制表、大货交期控制表</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="c_ppc_callSend_13" name="出货通知单" activiti:candidateGroups="ppc">
+      <documentation>收款凭证（拍照/截图）、出货通知单</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="c_mr_callCustomer_14" name="告知客户生产完毕并索要60%货款" activiti:candidateGroups="mr">
+      <documentation>大货质量控制表、大货交期控制表</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="c_fi_confirmMoney_15" name="确认货款是否到账" activiti:candidateGroups="fi">
+      <documentation>收款凭证（拍照/截图）</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="c_ppc_sendGoods_16" name="工厂发货" activiti:candidateGroups="ppc">
+      <documentation>出货通知单、装箱单、物流单</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="c_mr_confirmsend_17" name="确认发货并负责签收数量" activiti:candidateGroups="mr">
+      <documentation>装箱单、物流单</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+        <activiti:taskListener event="complete" class="com.xbd.oa.workflow.OaLastStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="c_create_dahuo_1"></sequenceFlow>
+    <sequenceFlow id="flow2" sourceRef="c_create_dahuo_1" targetRef="c_fi_confirm_2"></sequenceFlow>
+    <sequenceFlow id="flow3" sourceRef="c_fi_confirm_2" targetRef="c_ppc_assign_3"></sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="c_ppc_assign_3" targetRef="c_fi_pay_4"></sequenceFlow>
+    <sequenceFlow id="flow5" sourceRef="c_fi_pay_4" targetRef="c_ppc_factoryMsg_5"></sequenceFlow>
+    <sequenceFlow id="flow6" sourceRef="c_ppc_factoryMsg_5" targetRef="c_qc_cutting_6"></sequenceFlow>
+    <sequenceFlow id="flow7" sourceRef="c_qc_cutting_6" targetRef="c_ppc_confirm_7"></sequenceFlow>
+    <sequenceFlow id="flow8" sourceRef="c_ppc_confirm_7" targetRef="c_qc_printing_8"></sequenceFlow>
+    <sequenceFlow id="flow9" sourceRef="c_qc_printing_8" targetRef="c_ppc_confirm_9"></sequenceFlow>
+    <sequenceFlow id="flow10" sourceRef="c_ppc_confirm_9" targetRef="c_qa_firstproduct_10"></sequenceFlow>
+    <sequenceFlow id="flow11" sourceRef="c_qa_firstproduct_10" targetRef="c_ppc_confirm_11"></sequenceFlow>
+    <sequenceFlow id="flow12" sourceRef="c_ppc_confirm_11" targetRef="c_qa_confirm_12"></sequenceFlow>
+    <sequenceFlow id="flow13" sourceRef="c_qa_confirm_12" targetRef="c_ppc_callSend_13"></sequenceFlow>
+    <sequenceFlow id="flow14" sourceRef="c_ppc_callSend_13" targetRef="c_mr_callCustomer_14"></sequenceFlow>
+    <sequenceFlow id="flow15" sourceRef="c_mr_callCustomer_14" targetRef="c_fi_confirmMoney_15"></sequenceFlow>
+    <sequenceFlow id="flow16" sourceRef="c_fi_confirmMoney_15" targetRef="c_ppc_sendGoods_16"></sequenceFlow>
+    <sequenceFlow id="flow17" sourceRef="c_ppc_sendGoods_16" targetRef="c_mr_confirmsend_17"></sequenceFlow>
+    <sequenceFlow id="flow18" sourceRef="c_mr_confirmsend_17" targetRef="endevent1"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_oawf3">
+    <bpmndi:BPMNPlane bpmnElement="oawf3" id="BPMNPlane_oawf3">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="40.0" y="30.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="c_create_dahuo_1" id="BPMNShape_c_create_dahuo_1">
+        <omgdc:Bounds height="55.0" width="105.0" x="191.0" y="20.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="690.0" y="30.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="c_fi_confirm_2" id="BPMNShape_c_fi_confirm_2">
+        <omgdc:Bounds height="55.0" width="105.0" x="191.0" y="110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="c_ppc_assign_3" id="BPMNShape_c_ppc_assign_3">
+        <omgdc:Bounds height="55.0" width="105.0" x="191.0" y="200.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="c_fi_pay_4" id="BPMNShape_c_fi_pay_4">
+        <omgdc:Bounds height="55.0" width="105.0" x="191.0" y="296.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="c_ppc_factoryMsg_5" id="BPMNShape_c_ppc_factoryMsg_5">
+        <omgdc:Bounds height="55.0" width="105.0" x="191.0" y="390.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="c_qc_cutting_6" id="BPMNShape_c_qc_cutting_6">
+        <omgdc:Bounds height="55.0" width="105.0" x="191.0" y="480.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="c_ppc_confirm_7" id="BPMNShape_c_ppc_confirm_7">
+        <omgdc:Bounds height="55.0" width="105.0" x="191.0" y="570.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="c_qc_printing_8" id="BPMNShape_c_qc_printing_8">
+        <omgdc:Bounds height="55.0" width="105.0" x="191.0" y="660.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="c_ppc_confirm_9" id="BPMNShape_c_ppc_confirm_9">
+        <omgdc:Bounds height="55.0" width="105.0" x="191.0" y="750.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="c_qa_firstproduct_10" id="BPMNShape_c_qa_firstproduct_10">
+        <omgdc:Bounds height="55.0" width="105.0" x="456.0" y="750.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="c_ppc_confirm_11" id="BPMNShape_c_ppc_confirm_11">
+        <omgdc:Bounds height="55.0" width="105.0" x="456.0" y="660.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="c_qa_confirm_12" id="BPMNShape_c_qa_confirm_12">
+        <omgdc:Bounds height="55.0" width="105.0" x="456.0" y="570.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="c_ppc_callSend_13" id="BPMNShape_c_ppc_callSend_13">
+        <omgdc:Bounds height="55.0" width="105.0" x="456.0" y="480.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="c_mr_callCustomer_14" id="BPMNShape_c_mr_callCustomer_14">
+        <omgdc:Bounds height="55.0" width="105.0" x="456.0" y="390.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="c_fi_confirmMoney_15" id="BPMNShape_c_fi_confirmMoney_15">
+        <omgdc:Bounds height="55.0" width="105.0" x="456.0" y="296.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="c_ppc_sendGoods_16" id="BPMNShape_c_ppc_sendGoods_16">
+        <omgdc:Bounds height="55.0" width="105.0" x="456.0" y="200.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="c_mr_confirmsend_17" id="BPMNShape_c_mr_confirmsend_17">
+        <omgdc:Bounds height="55.0" width="105.0" x="456.0" y="110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="75.0" y="47.0"></omgdi:waypoint>
+        <omgdi:waypoint x="191.0" y="47.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="243.0" y="75.0"></omgdi:waypoint>
+        <omgdi:waypoint x="243.0" y="110.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="243.0" y="165.0"></omgdi:waypoint>
+        <omgdi:waypoint x="243.0" y="200.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="243.0" y="255.0"></omgdi:waypoint>
+        <omgdi:waypoint x="243.0" y="296.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="243.0" y="351.0"></omgdi:waypoint>
+        <omgdi:waypoint x="243.0" y="390.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="243.0" y="445.0"></omgdi:waypoint>
+        <omgdi:waypoint x="243.0" y="480.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="243.0" y="535.0"></omgdi:waypoint>
+        <omgdi:waypoint x="243.0" y="570.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="243.0" y="625.0"></omgdi:waypoint>
+        <omgdi:waypoint x="243.0" y="660.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="243.0" y="715.0"></omgdi:waypoint>
+        <omgdi:waypoint x="243.0" y="750.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+        <omgdi:waypoint x="296.0" y="777.0"></omgdi:waypoint>
+        <omgdi:waypoint x="456.0" y="777.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+        <omgdi:waypoint x="508.0" y="750.0"></omgdi:waypoint>
+        <omgdi:waypoint x="508.0" y="715.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+        <omgdi:waypoint x="508.0" y="660.0"></omgdi:waypoint>
+        <omgdi:waypoint x="508.0" y="625.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
+        <omgdi:waypoint x="508.0" y="570.0"></omgdi:waypoint>
+        <omgdi:waypoint x="508.0" y="535.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
+        <omgdi:waypoint x="508.0" y="480.0"></omgdi:waypoint>
+        <omgdi:waypoint x="508.0" y="445.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
+        <omgdi:waypoint x="508.0" y="390.0"></omgdi:waypoint>
+        <omgdi:waypoint x="508.0" y="351.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
+        <omgdi:waypoint x="508.0" y="296.0"></omgdi:waypoint>
+        <omgdi:waypoint x="508.0" y="255.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
+        <omgdi:waypoint x="508.0" y="200.0"></omgdi:waypoint>
+        <omgdi:waypoint x="508.0" y="165.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow18" id="BPMNEdge_flow18">
+        <omgdi:waypoint x="561.0" y="137.0"></omgdi:waypoint>
+        <omgdi:waypoint x="707.0" y="137.0"></omgdi:waypoint>
+        <omgdi:waypoint x="707.0" y="65.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
