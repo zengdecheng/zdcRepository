@@ -9,11 +9,11 @@
 
         <!-- Database connection settings -->
         <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="connection.url">jdbc:mysql://localhost:3306/erp?characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull</property>
-<!--         <property name="connection.url">jdbc:mysql://192.168.1.200:3306/erp?characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull</property> -->
+       <!--  <property name="connection.url">jdbc:mysql://localhost:3306/erp?characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull</property> -->
+        <property name="connection.url">jdbc:mysql://192.168.1.200:3306/erp?characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull</property>
         <property name="connection.username">root</property>
-        <property name="connection.password"></property>
-        <!-- <property name="connection.password">targtime</property> -->
+       <!--  <property name="connection.password"></property> -->
+        <property name="connection.password">targtime</property>
 
         <!-- JDBC connection pool (use the built-in) -->
         <property name="connection.pool_size">20</property>
@@ -60,6 +60,7 @@
         <mapping class="com.xbd.oa.vo.OaTpe"/>
         <mapping class="com.xbd.oa.vo.OaQiTaoDetail"/>
         <mapping class="com.xbd.oa.vo.OaLogistics"/>
+        <mapping class="com.xbd.oa.vo.OaCategory"/>
     </session-factory>
 
 </hibernate-configuration>
