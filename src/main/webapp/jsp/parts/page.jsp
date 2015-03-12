@@ -92,7 +92,7 @@
 			pageNo=1;
 		}
 		if(!!reload) pageNo=1;
-		qForm.method ="post";
+		//qForm.method ="post";
 		qForm.action = qForm.action+"?fsp.pageNo="+pageNo+"&fsp.pageSize="+$("#pagerDefine").val();
 		qForm.submit();
 	}
