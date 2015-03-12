@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="GBK"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "file:///D:/workgen/struts-2.0.dtd">
+
+<struts>
+	<package name="bx" extends="basePackage">
+		<action name="bx" class="com.xbd.oa.action.BxAction">
+			<result name="logout" type="redirect">/admin</result>
+			<result name="modify_pwd">/jsp/bx/modify_pwd.jsp</result>
+			<result name="staff_add">/jsp/bx/test.jsp</result>
+			<result name="add_baojia">/jsp/bx/add_baojia.jsp</result>
+			<result name="add_daban">/jsp/bx/add_daban.jsp</result>
+			<result name="add_dahuo">/jsp/bx/add_dahuo.jsp</result>
+			<result name="add_shouhou">/jsp/bx/add_shouhou.jsp</result>
+			<result name="todo">/jsp/bx/todo.jsp</result>
+			<result name="order_list">/jsp/bx/order_list.jsp</result>
+			<result name="order_his">/jsp/bx/order_his.jsp</result>
+			<result name="addOrder_list" type="redirect">/bx/order_list</result>
+			<result name="admin">admin.jsp</result>
+			<result name="getSysOrg">/jsp/bx/getSysOrg.jsp</result>
+			<result name="processOrder">/jsp/bx/processOrder.jsp</result>
+			<result name="confirmOrder" type="redirect">/bx/todo</result>
+			<result name="addOrderBaojia" type="redirect">/bx/add_baojia</result>
+			<result name="addOrderDaban" type="redirect">/bx/add_daban</result>
+			<result name="addOrderDahuo" type="redirect">/bx/add_dahuo</result>
+			<result name="addOrderShouhou" type="redirect">/bx/add_shouhou</result>
+			<result name="timebaseConfig">/jsp/bx/timebaseConfig.jsp</result>
+			<result name="timebaseConfig1">/jsp/bx/timebaseConfig1.jsp</result>
+			<result name="timebaseConfig2">/jsp/bx/timebaseConfig2.jsp</result>
+			<result name="saveTimebaseConfig" type="redirect">/bx/timebaseConfig</result>
+			<result name="viewOrderDetail">/jsp/bx/viewOrderDetail.jsp</result>
+			<result name="viewOrderDetailOnPhone">/jsp/bx/viewOrderDetailOnPhone.jsp</result>
+			<result name="clothClass_list">/jsp/bx/clothClass_list.jsp</result>
+			<result name="addClothClass">/jsp/bx/addClothClass.jsp</result>
+			<result name="saveClothClass" type="redirect">/bx/clothClass_list</result>
+			<result name="editOrder">/jsp/bx/editOrder.jsp</result>
+			<result name="putOrderNumOnPhone">/jsp/bx/putOrderNumOnPhone.jsp</result>
+			<result name="noOrderNum">/jsp/bx/noOrderNum.jsp</result>
+			<result name="DHTC">/jsp/bx/DHTC.jsp</result>
+			<result name="timelyRateCount">/jsp/bx/timelyRateCount.jsp</result>
+			<result name="daBanTimelyRateCount">/jsp/bx/daBanTimelyRateCount.jsp</result>
+			<result name="orderList">/jsp/bx/order/orderList.jsp</result>
+			<result name="orderDetail">/jsp/bx/order/orderDetail.jsp</result>
+			<result name="processDaban">/jsp/bx/order/processDabanOrder.jsp</result>
+			<result name="processDahuo">/jsp/bx/order/processDahuoOrder.jsp</result>
+			<result name="orderRelationList">/jsp/tabpage/orderRelationList.jsp</result>
+			<result name="toTerminateOrder">/jsp/bx/order/terminateOrder.jsp</result>
+			<result name="orderProgressReport">/jsp/bx/order/orderProgressReport.jsp</result>
+		</action>
+	</package>
+</struts>
