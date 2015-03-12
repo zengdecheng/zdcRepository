@@ -22,5 +22,9 @@
 		<pattern>/bx*</pattern>
 		<pattern>/jsp/bx/*</pattern>
 	</decorator>
+	<decorator name="category" page="bx.jsp">
+		<pattern>/category*</pattern>
+		<pattern>/jsp/category/*</pattern>
+	</decorator>
 	<decorator name="panel" page="panel.jsp" />
 </decorators>
