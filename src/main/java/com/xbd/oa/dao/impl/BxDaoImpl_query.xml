@@ -1138,4 +1138,9 @@ ote.oa_timebase = ot.id ${case}1">
 			<param fspname="orderId" sqlname="oa_order"></param>
 		</parser>	
 	</function>
+	<!-- 品类模块 -->
+	<!-- 查询品类列表 -->
+	<function name="list_category_by_sql" type="sql" sql="SELECT oa_category.`name`,id,explain_txt,oa_category.`code`,oa_category.`status`,oa_category.dahuo_cyc,oa_category.daban_cyc
+			FROM oa_category">
+	</function>
 </query>
