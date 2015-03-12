@@ -83,7 +83,7 @@
 			<version>${hibernate.version}</version>
 		</dependency> -->
 
-	<!-- 	<dependency>
+	 	<dependency>
 			<groupId>com.alibaba.druid</groupId>
 			<artifactId>druid-wrapper</artifactId>
 			<version>${druid.version}</version>
@@ -99,7 +99,7 @@
 					<groupId>javassist</groupId>
 				</exclusion>
 			</exclusions>
-		</dependency>-->
+		</dependency>
 
 		<dependency>
 			<groupId>org.apache.struts</groupId>
