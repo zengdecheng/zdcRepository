@@ -84,7 +84,8 @@
                     </div>
                     <ul class="fab_menu">
                         <li class="fab_border"><a href="/bx/timebaseConfig">设置基准时间</a></li>
-                        <li class="fab_border"><a href="/bx/clothClass_list">品类管理</a></li>
+                        <li class="fab_border"><a href="/category/categoryList">一级品类管理</a></li>
+                        <li class="fab_border"><a href="/bx/clothClass_list">二级品类管理</a></li>
                         <li class="fab_border"><a href="/bx/getSysOrg">员工管理</a></li>
                         <li class="fab_border"><a href="/jsp/bx/DHTC3.jsp">时间控制表导出</a></li>
                     </ul>
