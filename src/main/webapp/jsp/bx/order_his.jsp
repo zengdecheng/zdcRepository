@@ -54,7 +54,7 @@
 						<tr>
 							<td><label class="">分公司：</label></td>
 							<td>
-								<s:select theme="simple" list="{'杭州','广州'}" cssClass="z_inp2" cssStyle="width: 170px;" value="{'${fsp.map.city}'}" name="fsp.map.city" headerKey="" headerValue="请选择"></s:select>
+								<s:select theme="simple" list="{'杭州','广州'}" cssClass="z_inp2" cssStyle="width: 170px;" value="%{fsp.map.city}" name="fsp.map.city" headerKey="" headerValue="请选择"></s:select>
 							</td>
 							<td width="60" height="40"><label class="">合同号：</label></td>
 							<td width="130">
@@ -72,25 +72,25 @@
 						<tr>
 							<td><label class="">TPE：</label></td>
 							<td>
-								<s:select theme="simple" list="@com.xbd.oa.utils.XbdBuffer@getStaffsByGroupName('qc')" listKey="map.login_name" listValue="map.login_name" headerKey="" headerValue="请选择" cssClass="z_inp2" cssStyle="width: 170px;" name="fsp.map.tpe_name" value="{'${fsp.map.tpe_name}'}"></s:select>
+								<s:select theme="simple" list="@com.xbd.oa.utils.XbdBuffer@getStaffsByGroupName('qc')" listKey="map.login_name" listValue="map.login_name" headerKey="" headerValue="请选择" cssClass="z_inp2" cssStyle="width: 170px;" name="fsp.map.tpe_name" value="%{fsp.map.tpe_name}"></s:select>
 							</td>
 							<td><label class="">技术：</label></td>
 							<td>
-								<s:select theme="simple" list="@com.xbd.oa.utils.XbdBuffer@getStaffsByGroupName('it')" listKey="map.login_name" listValue="map.login_name" headerKey="" headerValue="请选择" cssClass="z_inp2" cssStyle="width: 170px;" name="fsp.map.del_operator" value="{'${fsp.map.del_operator}'}"></s:select>
+								<s:select theme="simple" list="@com.xbd.oa.utils.XbdBuffer@getStaffsByGroupName('it')" listKey="map.login_name" listValue="map.login_name" headerKey="" headerValue="请选择" cssClass="z_inp2" cssStyle="width: 170px;" name="fsp.map.del_operator" value="%{fsp.map.del_operator}"></s:select>
 							</td>
 							<td height="40"><label class="">核价：</label></td>
 							<td>
-								<s:select theme="simple" list="@com.xbd.oa.utils.XbdBuffer@getStaffsByGroupName('cp')" listKey="map.login_name" listValue="map.login_name" headerKey="" headerValue="请选择" cssClass="z_inp2" cssStyle="width: 170px;" name="fsp.map.cqdel_operator" value="{'${fsp.map.cqdel_operator}'}"></s:select>
+								<s:select theme="simple" list="@com.xbd.oa.utils.XbdBuffer@getStaffsByGroupName('cp')" listKey="map.login_name" listValue="map.login_name" headerKey="" headerValue="请选择" cssClass="z_inp2" cssStyle="width: 170px;" name="fsp.map.cqdel_operator" value="%{fsp.map.cqdel_operator}"></s:select>
 							</td>
 							<td><label class="">CQC：</label></td>
 							<td>
-								<s:select theme="simple" list="@com.xbd.oa.utils.XbdBuffer@getStaffsByGroupName('cqc')" listKey="map.login_name" listValue="map.login_name" headerKey="" headerValue="请选择" cssClass="z_inp2" cssStyle="width: 170px;" name="fsp.map.cqcdel_operator" value="{'${fsp.map.cqcdel_operator}'}"></s:select>
+								<s:select theme="simple" list="@com.xbd.oa.utils.XbdBuffer@getStaffsByGroupName('cqc')" listKey="map.login_name" listValue="map.login_name" headerKey="" headerValue="请选择" cssClass="z_inp2" cssStyle="width: 170px;" name="fsp.map.cqcdel_operator" value="%{fsp.map.cqcdel_operator}"></s:select>
 							</td>
 						</tr>
 						<tr>
 							<td><label class="">QA：</label></td>
 							<td>
-								<s:select theme="simple" list="@com.xbd.oa.utils.XbdBuffer@getStaffsByGroupName('qa')" listKey="map.login_name" listValue="map.login_name" headerKey="" headerValue="请选择" cssClass="z_inp2" cssStyle="width: 170px;" name="fsp.map.qadel_operator" value="{'${fsp.map.qadel_operator}'}"></s:select>
+								<s:select theme="simple" list="@com.xbd.oa.utils.XbdBuffer@getStaffsByGroupName('qa')" listKey="map.login_name" listValue="map.login_name" headerKey="" headerValue="请选择" cssClass="z_inp2" cssStyle="width: 170px;" name="fsp.map.qadel_operator" value="%{fsp.map.qadel_operator}"></s:select>
 							</td>
 
 							<td><label class="">工厂：</label></td>

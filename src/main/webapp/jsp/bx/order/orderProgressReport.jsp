@@ -13,7 +13,7 @@
 		<table cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td height="40"><label class="">订单类型：</label></td>
-				<td><s:select id="typeSelect" theme="simple" list="#{'3':'大货生产','2':'样衣打版','1':'模拟报价'}" cssClass="z_inp2" cssStyle="width: 170px;margin-right:19px" value="${fsp.map.type}" name="fsp.map.type"></s:select></td>
+				<td><s:select id="typeSelect" theme="simple" list="#{'3':'大货生产','2':'样衣打版','1':'模拟报价'}" cssClass="z_inp2" cssStyle="width: 170px;margin-right:19px" value="%{fsp.map.type}" name="fsp.map.type"></s:select></td>
 				<td><label class="">客户：</label></td>
 				<td><input type="text" name="fsp.map.cus_name" value="${fsp.map.cus_name}" class="z_inp2" style="width:167px;margin-right:19px" maxlength='20' /></td>
 				<td height="40"><label class="">款号：</label></td>
