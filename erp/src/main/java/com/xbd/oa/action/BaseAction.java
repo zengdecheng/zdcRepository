@@ -13,10 +13,10 @@ public class BaseAction extends Action {
 	private static final long serialVersionUID = 1L;
 
 	@EJB(name = "com.xbd.oa.business.impl.BxManagerImpl")
-	private BaseManager manager;
+	public BaseManager manager;
 	
-	private List<LazyDynaMap> beans;
-	private LazyDynaMap bean;
+	public List<LazyDynaMap> beans;
+	public LazyDynaMap bean;
 	
 	public Manager getBiz() {
 		return manager;
