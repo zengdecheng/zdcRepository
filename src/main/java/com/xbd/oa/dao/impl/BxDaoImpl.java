@@ -257,6 +257,11 @@ public class BxDaoImpl extends DaoHibernate implements BaseDao {
 	 */
 	public static final String GET_SEND_WECHAT_CUS_BY_SQL_STRING = "get_send_wechat_cus_by_sql_string";
 	
+	/**
+	 * 查询品类列表
+	 */
+	public static final String LIST_CATEGORY_BY_SQL="list_category_by_sql";
+	
 	public static void sessionFlush() {
 		DaoHibernate.getSession().clear();
 		DaoHibernate.getSession().evict(OaClothesSizeDetail.class);
