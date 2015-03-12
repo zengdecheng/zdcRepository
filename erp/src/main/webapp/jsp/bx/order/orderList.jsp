@@ -25,24 +25,24 @@
 				<td width="65" height="40"><label class="">订单号：</label></td>
 				<td width="185"><input type="text" class="z_inp2" name="fsp.map.sell_order_code" style="width:167px;" value="${fsp.map.sell_order_code}" maxlength='20' /></td>
 				<td width="65"><label class="">男/女款：</label></td>
-				<td width="185"><s:select cssClass="z_inp2" list="{'男','女','儿童'}" theme="simple" headerKey="" name="fsp.map.style_type" value="{'${fsp.map.style_type}' }" cssStyle="width: 170px" headerValue="请选择"></s:select></td>
+				<td width="185"><s:select cssClass="z_inp2" list="{'男','女','儿童'}" theme="simple" headerKey="" name="fsp.map.style_type" value="%{fsp.map.style_type}" cssStyle="width: 170px" headerValue="请选择"></s:select></td>
 				<td width="65"><label class="">特殊工艺：</label></td>
 				<td width="185">
-				<s:select theme="simple" list="{'印花','绣花','订珠','缩折/打条','打揽','洗水','其他'}" name="fsp.map.style_craft" value="{'${fsp.map.style_craft}'}" headerKey="" headerValue="请选择" cssStyle="width:167px;" cssClass="z_inp2"></s:select>
+				<s:select theme="simple" list="{'印花','绣花','订珠','缩折/打条','打揽','洗水','其他'}" name="fsp.map.style_craft" value="%{fsp.map.style_craft}" headerKey="" headerValue="请选择" cssStyle="width:167px;" cssClass="z_inp2"></s:select>
 				</td>
 				<td height="40"><label class="">订单类型：</label></td>
-				<td><s:select id="typeSelect" theme="simple" list="#{'':'全部','1':'模拟报价','2':'样衣打版','3':'大货生产'}" cssClass="z_inp2" cssStyle="width: 170px;" value="${fsp.map.type}" name="fsp.map.type"></s:select></td>
+				<td><s:select id="typeSelect" theme="simple" list="#{'':'全部','1':'模拟报价','2':'样衣打版','3':'大货生产'}" cssClass="z_inp2" cssStyle="width: 170px;" value="%{fsp.map.type}" name="fsp.map.type"></s:select></td>
 			</tr>
 			<tr>
 				<td height="40"><label class="">款号：</label></td>
 				<td><input type="text" class="z_inp2" name="fsp.map.style_code" style="width:167px;" value="${fsp.map.style_code}" maxlength='20' /></td>
 				<td><label class="">一级分类：</label></td>
-				<td><s:select  theme="simple" list="#{'针织裤子':'针织裤子','梳织裤子':'梳织裤子','针织上衣':'针织上衣','梳织上衣':'梳织上衣','连衣裙':'连衣裙','半身裙':'半身裙','羽绒':'羽绒','棉衣':'棉衣','夹克/外套':'夹克/外套','牛仔':'牛仔'}" headerKey="" name="fsp.map.style_class" value="{'${fsp.map.style_class}'}" cssStyle="width: 167px" cssClass="z_inp2" headerValue="请选择"></s:select></td>
+				<td><s:select  theme="simple" list="#{'针织裤子':'针织裤子','梳织裤子':'梳织裤子','针织上衣':'针织上衣','梳织上衣':'梳织上衣','连衣裙':'连衣裙','半身裙':'半身裙','羽绒':'羽绒','棉衣':'棉衣','夹克/外套':'夹克/外套','牛仔':'牛仔'}" headerKey="" name="fsp.map.style_class" value="%{fsp.map.style_class}" cssStyle="width: 167px" cssClass="z_inp2" headerValue="请选择"></s:select></td>
 				<td><label class="">客户：</label></td>
 				<td><input type="text" name="fsp.map.cus_name" value="${fsp.map.cus_name}" class="z_inp2" style="width:167px;" maxlength='20' /></td>
 				<td><label class="">分公司：</label></td>
 				<td>
-					<s:select theme="simple" list="{'杭州','广州'}" cssClass="z_inp2" cssStyle="width: 170px;" value="{'${fsp.map.city}'}" name="fsp.map.city" headerKey="" headerValue="请选择"></s:select>
+					<s:select theme="simple" list="{'杭州','广州'}" cssClass="z_inp2" cssStyle="width: 170px;" value="%{fsp.map.city}" name="fsp.map.city" headerKey="" headerValue="请选择"></s:select>
 				</td>
 			</tr>
 			<tr>
@@ -51,7 +51,7 @@
 				<td><label class="">MR跟单：</label></td>
 				<td><select id="crm_staff_mr" class="z_inp2" style="width: 170px;" name="fsp.map.mr_name" value="${fsp.map.mr_name}"></select></td>
 				<td><label class="">TPE：</label></td>
-				<td><s:select theme="simple" list="@com.xbd.oa.utils.XbdBuffer@getStaffsByGroupName('qc')" listKey="map.login_name" listValue="map.login_name" headerKey="" headerValue="请选择" cssClass="z_inp2" cssStyle="width: 170px;" name="fsp.map.tpe_name" value="{'${fsp.map.tpe_name}'}"></s:select></td>
+				<td><s:select theme="simple" list="@com.xbd.oa.utils.XbdBuffer@getStaffsByGroupName('qc')" listKey="map.login_name" listValue="map.login_name" headerKey="" headerValue="请选择" cssClass="z_inp2" cssStyle="width: 170px;" name="fsp.map.tpe_name" value="%{fsp.map.tpe_name}"></s:select></td>
 				<td><label class="">当前节点：</label></td>
 				<td><select name="fsp.map.wf_step" id="nodeSelect" class="z_inp2" style="width:170px;">
 						<option value="">请选择</option>
@@ -61,12 +61,12 @@
 				<td height="40"><label class="">创建日期：</label></td>
 				<td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.start_time1" value="${fsp.map.start_time1}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.start_time2" value="${fsp.map.start_time2}" onFocus="WdatePicker({readOnly:true})" /></td>
 				<td><label class="">紧急订单：</label></td>
-				<td><s:select cssClass="z_inp2" list="#{'':'全部','0':'加急','1':'普通'}" theme="simple" name="fsp.map.is_urgent" value="${fsp.map.is_urgent}" cssStyle="width: 170px"></s:select></td>
+				<td><s:select cssClass="z_inp2" list="#{'':'全部','0':'加急','1':'普通'}" theme="simple" name="fsp.map.is_urgent" value="%{fsp.map.is_urgent}" cssStyle="width: 170px"></s:select></td>
 
 				<td><label class="">订单颜色：</label></td>
 				<td>
 					<input type="hidden" id="orderColorHid" value="${orderColor}" />
-					<s:select cssClass="z_inp2" list="#{'':'全部','0-33':'绿色','33-66':'橙色','66-100':'红色','100-99999999':'黑色'}" id="orderColor" theme="simple" name="orderColor" value="${orderColor}" cssStyle="width: 170px"></s:select></td>
+					<s:select cssClass="z_inp2" list="#{'':'全部','0-33':'绿色','33-66':'橙色','66-100':'红色','100-99999999':'黑色'}" id="orderColor" theme="simple" name="orderColor" value="%{orderColor}" cssStyle="width: 170px"></s:select></td>
 
 				<td><label class="">工厂：</label></td>
 				<td><input type="text" name="fsp.map.sewing_factory" value="${fsp.map.sewing_factory}" class="z_inp2" style="width:167px;" maxlength='20' /></td>
