@@ -13,7 +13,7 @@
   	<div>
   		<span>品类信息</span>
   	</div>
-  	<form action="">
+  	<form action="/category/add" method="post">
   	<div>
   		<table>
   			<tr>
@@ -64,10 +64,17 @@
   			</tr>
   		</table>
   		<div>
-  			<input type="submit" name="保存">
-  			<input type="button" name="取消">
+  			<input type="submit" value="保存">
+  			<input type="button" value="取消">
   		</div>
   	</div>
   	</form>
+  	<script type="text/javascript">
+  		$(function(){
+  			require("/category/page4add.js",function(fn){
+  				fn.init();
+  			});
+  		});
+  	</script>
 </body>
 </html>
