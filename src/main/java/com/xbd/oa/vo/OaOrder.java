@@ -24,7 +24,7 @@ public class OaOrder implements Serializable {
 
 	@Column(name = "cus_code")
 	private String cusCode;
-	
+
 	@Column(name = "sample_size")
 	private String sampleSize;
 
@@ -56,10 +56,10 @@ public class OaOrder implements Serializable {
 
 	@Column(name = "sell_memo")
 	private String sellMemo;
-	
+
 	@Column(name = "contract_special_memo")
 	private String contractSpecialMemo;
-	
+
 	@Column(name = "memo")
 	private String memo;
 
@@ -137,13 +137,13 @@ public class OaOrder implements Serializable {
 
 	@Column(name = "time_rate")
 	private Float timeRate;
-	
+
 	@Column(name = "contract_amount")
 	private Float contractAmount;
 
 	@Column(name = "confirm_staff")
 	private String confirmStaff;
-	
+
 	@Column(name = "tpe_name")
 	private String tpeName;
 
@@ -167,25 +167,25 @@ public class OaOrder implements Serializable {
 
 	@Column(name = "wf_step_name")
 	private String wfStepName;
-	
+
 	@Column(name = "want_dh_cnt")
 	private Integer wantDhcnt;
-	
+
 	@Column(name = "related_order_code")
 	private String relatedOrderCode;
-	
+
 	@Column(name = "related_order_type")
 	private String relatedOrderType;
-	
+
 	@Column(name = "related_order_id")
 	private Integer relatedOrderId;
-	
+
 	@Column(name = "terminate_user")
 	private String terminateUser;
-	
+
 	@Column(name = "terminate_memo")
 	private String terminateMemo;
-	
+
 	@Column(name = "terminate_time")
 	private java.sql.Timestamp terminateTime;
 
@@ -197,13 +197,25 @@ public class OaOrder implements Serializable {
 
 	@Column(name = "is_preproduct")
 	private String isPreproduct;
-	
+
 	@Column(name = "pre_version_date")
 	private Timestamp preVersionDate;
 
-	@Column(name="preproduct_days")
+	@Column(name = "preproduct_days")
 	private Integer PreproductDays;
-	
+
+	@Column(name = "sell_ready_time")
+	private Float sellReadyTime;
+
+	@Column(name = "standard_time")
+	private Float standardTime;
+
+	@Column(name = "craft_time")
+	private Float craftTime;
+
+	@Column(name = "feeding_time")
+	private Float feedingTime;
+
 	public String getRelatedOrderCode() {
 		return relatedOrderCode;
 	}
@@ -331,11 +343,11 @@ public class OaOrder implements Serializable {
 	public void setSellMemo(String sellMemo) {
 		this.sellMemo = sellMemo;
 	}
-	
+
 	public String getMemo() {
 		return memo;
 	}
-	
+
 	public void setMemo(String memo) {
 		this.memo = memo;
 	}
@@ -539,7 +551,7 @@ public class OaOrder implements Serializable {
 	public void setTimeRate(Float timeRate) {
 		this.timeRate = timeRate;
 	}
-	
+
 	public Float getContractAmount() {
 		return contractAmount;
 	}
@@ -611,7 +623,7 @@ public class OaOrder implements Serializable {
 	public void setWfStepName(String wfStepName) {
 		this.wfStepName = wfStepName;
 	}
-	
+
 	public String getSampleSize() {
 		return sampleSize;
 	}
@@ -635,7 +647,7 @@ public class OaOrder implements Serializable {
 	public void setWantDhcnt(Integer wantDhcnt) {
 		this.wantDhcnt = wantDhcnt;
 	}
-	
+
 	public String getContractSpecialMemo() {
 		return contractSpecialMemo;
 	}
@@ -706,6 +718,38 @@ public class OaOrder implements Serializable {
 
 	public void setPreproductDays(Integer preproductDays) {
 		PreproductDays = preproductDays;
+	}
+
+	public Float getSellReadyTime() {
+		return sellReadyTime;
+	}
+
+	public void setSellReadyTime(Float sellReadyTime) {
+		this.sellReadyTime = sellReadyTime;
+	}
+
+	public Float getStandardTime() {
+		return standardTime;
+	}
+
+	public void setStandardTime(Float standardTime) {
+		this.standardTime = standardTime;
+	}
+
+	public Float getCraftTime() {
+		return craftTime;
+	}
+
+	public void setCraftTime(Float craftTime) {
+		this.craftTime = craftTime;
+	}
+
+	public Float getFeedingTime() {
+		return feedingTime;
+	}
+
+	public void setFeedingTime(Float feedingTime) {
+		this.feedingTime = feedingTime;
 	}
 
 	public int hashCode() {
