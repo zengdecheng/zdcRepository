@@ -162,11 +162,11 @@
 			<th width="80">QA完成日期</th>
 			<th width="80">实际生产周期</th>
 			<th width="80">订单完成日期</th>
-			<%--<th class="z_title_sty6" style="text-align: left;">操作</th>--%>
+			<th width="60">操作</th>
 		</tr>
 		<s:if test="superList.size()==0">
 			<tr>
-				<td colspan="11" style="text-align: center;">当前没有任何数据！</td>
+				<td colspan="18" style="text-align: center;">当前没有任何数据！</td>
 			</tr>
 		</s:if>
 		<s:iterator value="superList" status="status">
@@ -204,8 +204,7 @@
 				<%--<td class="z_title_sty1"><s:property--%>
 						<%--value="%{@com.xbd.oa.utils.WebUtil@getOrderTypeStr(map.type)}" /></td>--%>
 				<%--<td class="z_title_sty5">${map.operator}</td>--%>
-				<%--<td class="z_title_sty5"><a--%>
-					<%--href="/bx/viewOrderDetail?oaOrder.id=${map.id}">进度</a></td>--%>
+				<td class="z_title_sty5"><a href="/bx/viewOrderDetail?oaOrder.id=${map.id}">进度</a></td>
 			</tr>
 		</s:iterator>
 	</table>
