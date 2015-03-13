@@ -27,9 +27,7 @@ public class BizUtil {
 	private static BaseManager bxMgr;
 
 	/**
-	 * 启动工作流,开始节点和第一个用户任务是连起来做完的 .
-	 * 创建订单算一个usertask节点，在工作开始后自动完成，并新增订单子节点及更新订单主表。在
-	 * 设计该节点的时候，不扩展activiti:taskListener ，持续时间 step_duration 设置 为零。
+	 * 启动工作流,开始节点和第一个用户任务是连起来做完的 . 创建订单算一个usertask节点，在工作开始后自动完成，并新增订单子节点及更新订单主表。在 设计该节点的时候，不扩展activiti:taskListener ，持续时间 step_duration 设置 为零。
 	 * 
 	 * @param type
 	 *            订单类型
@@ -38,25 +36,20 @@ public class BizUtil {
 	 * @param oaOrder
 	 *            订单vo,此为已经保存过的订单。
 	 */
-	public static void startOrderWf(String processInstanceByKey,
-			String curUser, OaOrder oaOrder) {
+	public static void startOrderWf(String processInstanceByKey, String curUser, OaOrder oaOrder) {
 
 		String processInstanceId = WorkFlowUtil.startWf(processInstanceByKey);
-		WorkFlowUtil.getPe().getRuntimeService()
-				.setVariable(processInstanceId, "oa_order", oaOrder.getId());
+		WorkFlowUtil.getPe().getRuntimeService().setVariable(processInstanceId, "oa_order", oaOrder.getId());
 
 		// 开始节点和第一步是连起来做的，每个流程的第一个节点不扩展createHandle
-		Task task = WorkFlowUtil
-				.getOnlyCurTaskByProcessInstanceId(processInstanceId);
+		Task task = WorkFlowUtil.getOnlyCurTaskByProcessInstanceId(processInstanceId);
 		task.setAssignee(curUser);
 		firstEditBizOrderAndDetail(processInstanceId, curUser, oaOrder, task);
 		WorkFlowUtil.completeTask(task.getId());
 		/*
 		 * //2.修改订单主表 //oaOrder.set
 		 * 
-		 * //3.存入第一步的订单细节表 OaOrderDetail oaOrderDetail = new OaOrderDetail();
-		 * oaOrderDetail.setOaOrder(oaOrder.getId());
-		 * oaOrderDetail.setOperator(owner); oaOrderDetail.setProcId(processId);
+		 * //3.存入第一步的订单细节表 OaOrderDetail oaOrderDetail = new OaOrderDetail(); oaOrderDetail.setOaOrder(oaOrder.getId()); oaOrderDetail.setOperator(owner); oaOrderDetail.setProcId(processId);
 		 * //oaOrderDetail.set
 		 * 
 		 * //4.使工作流工作流走到下一个节点 WorkFlowUtil.completeTask(task.getId());
@@ -69,14 +62,10 @@ public class BizUtil {
 	 * @param oaOrderDetailId
 	 * @param assigner
 	 */
-	public static void assignOther(Integer oaOrderDetailId, String assigner,
-			String groupName) {
-		OaOrderDetail oaOrderDetail = (OaOrderDetail) getBxMgr().getObject(
-				OaOrderDetail.class, oaOrderDetailId);
-		OaOrder oaOrder = (OaOrder) getBxMgr().getObject(OaOrder.class,
-				oaOrderDetail.getOaOrder());
-		WorkFlowUtil.getPe().getTaskService()
-				.setAssignee(oaOrderDetail.getTaskId(), assigner);
+	public static void assignOther(Integer oaOrderDetailId, String assigner, String groupName) {
+		OaOrderDetail oaOrderDetail = (OaOrderDetail) getBxMgr().getObject(OaOrderDetail.class, oaOrderDetailId);
+		OaOrder oaOrder = (OaOrder) getBxMgr().getObject(OaOrder.class, oaOrderDetail.getOaOrder());
+		WorkFlowUtil.getPe().getTaskService().setAssignee(oaOrderDetail.getTaskId(), assigner);
 		oaOrderDetail.setOperator(assigner);
 		oaOrder.setOperator(assigner);
 		getBxMgr().saveObject(oaOrderDetail);
@@ -93,11 +82,7 @@ public class BizUtil {
 	 */
 	public static void nextStep(OaOrderDetail oaOrderDetail) {
 		// 1向流程传入OaOrderDetailId作为流程变量
-		WorkFlowUtil
-				.getPe()
-				.getRuntimeService()
-				.setVariable(oaOrderDetail.getProcId(), "oa_order_detail",
-						oaOrderDetail.getId());
+		WorkFlowUtil.getPe().getRuntimeService().setVariable(oaOrderDetail.getProcId(), "oa_order_detail", oaOrderDetail.getId());
 		// 2完成此流程
 		WorkFlowUtil.completeTask(oaOrderDetail.getTaskId());
 	}
@@ -111,11 +96,7 @@ public class BizUtil {
 	 */
 	public static void backStep(OaOrderDetail oaOrderDetail) {
 		// 1向流程传入OaOrderDetailId作为流程变量
-		WorkFlowUtil
-				.getPe()
-				.getRuntimeService()
-				.setVariable(oaOrderDetail.getProcId(), "oa_order_detail",
-						oaOrderDetail.getId());
+		WorkFlowUtil.getPe().getRuntimeService().setVariable(oaOrderDetail.getProcId(), "oa_order_detail", oaOrderDetail.getId());
 		// 2完成此流程
 		WorkFlowUtil.turnTransitionBack(oaOrderDetail.getTaskId(), null);
 	}
@@ -125,23 +106,14 @@ public class BizUtil {
 	 * 
 	 * @param oaOrderDetail
 	 */
-	public static void nextStepWithCase(OaOrderDetail oaOrderDetail,
-			Map<String, String> params) {
+	public static void nextStepWithCase(OaOrderDetail oaOrderDetail, Map<String, String> params) {
 		// 1向流程传入OaOrderDetailId作为流程变量
-		WorkFlowUtil
-				.getPe()
-				.getRuntimeService()
-				.setVariable(oaOrderDetail.getProcId(), "oa_order_detail",
-						oaOrderDetail.getId());
+		WorkFlowUtil.getPe().getRuntimeService().setVariable(oaOrderDetail.getProcId(), "oa_order_detail", oaOrderDetail.getId());
 		// 2传入条件变量
 		// params
 		for (Iterator iterator = params.keySet().iterator(); iterator.hasNext();) {
 			String key = (String) iterator.next();
-			WorkFlowUtil
-					.getPe()
-					.getRuntimeService()
-					.setVariable(oaOrderDetail.getProcId(), key,
-							params.get(key));
+			WorkFlowUtil.getPe().getRuntimeService().setVariable(oaOrderDetail.getProcId(), key, params.get(key));
 		}
 		// 3完成此流程
 		WorkFlowUtil.completeTask(oaOrderDetail.getTaskId());
@@ -152,19 +124,16 @@ public class BizUtil {
 	 * 
 	 * @param group
 	 */
-	public static String getAssigneeByGroup(String groupName,
-			String processInstanceId, Integer oaOrderInt) {
+	public static String getAssigneeByGroup(String groupName, String processInstanceId, Integer oaOrderInt) {
 		String adminName = "";
 		// 看此流程是否以前被组内某个成员做过，做了的话就直接分配给组员，不需要组长再分配。
-		OaOrder oaOrder = (OaOrder) getBxMgr().getObject(OaOrder.class,
-				oaOrderInt);
+		OaOrder oaOrder = (OaOrder) getBxMgr().getObject(OaOrder.class, oaOrderInt);
 		if (oaOrder != null) {
 			String hisOpt = oaOrder.getHisOpt();
 			String[] ss = hisOpt.split(";");
 			for (String groupAndStaff : ss) {
 				if (groupAndStaff.startsWith(groupName)) {
-					adminName = groupAndStaff.substring(groupAndStaff
-							.indexOf(":") + 1);
+					adminName = groupAndStaff.substring(groupAndStaff.indexOf(":") + 1);
 					break;
 				}
 			}
@@ -184,10 +153,8 @@ public class BizUtil {
 	 * @param oaOrder
 	 * @param task
 	 */
-	private static void firstEditBizOrderAndDetail(String processInstanceId,
-			String curUser, OaOrder oaOrder, Task task) {
-		Timestamp curTime = getOperatingTime(new Timestamp(
-				System.currentTimeMillis()));// 当前时间
+	private static void firstEditBizOrderAndDetail(String processInstanceId, String curUser, OaOrder oaOrder, Task task) {
+		Timestamp curTime = getOperatingTime(new Timestamp(System.currentTimeMillis()));// 当前时间
 
 		// 1.加入新的流程详细节点
 		OaOrderDetail newOaOrderDetail = new OaOrderDetail();
@@ -200,17 +167,13 @@ public class BizUtil {
 		// update by 张华 2014-12-24
 		String temp = oaOrder.getCusCode() + "-" + oaOrder.getStyleCode();
 		if (StringUtils.isNotEmpty(oaOrder.getFileUrl())) {
-			String dinFilePath = PathUtil.url2Path(oaOrder.getFileUrl()
-					.replaceAll("new", temp));
-			FileUtils.copyFile(PathUtil.url2Path(oaOrder.getFileUrl()),
-					dinFilePath);
+			String dinFilePath = PathUtil.url2Path(oaOrder.getFileUrl().replaceAll("new", temp));
+			FileUtils.copyFile(PathUtil.url2Path(oaOrder.getFileUrl()), dinFilePath);
 			newOaOrderDetail.setAttachment(PathUtil.path2Url(dinFilePath));
 		}
 		if (StringUtils.isNotEmpty(oaOrder.getPicUrl())) {
-			String dinPicPath = PathUtil.url2Path(oaOrder.getPicUrl()
-					.replaceAll("new", temp));
-			FileUtils.copyFile(PathUtil.url2Path(oaOrder.getPicUrl()),
-					dinPicPath);
+			String dinPicPath = PathUtil.url2Path(oaOrder.getPicUrl().replaceAll("new", temp));
+			FileUtils.copyFile(PathUtil.url2Path(oaOrder.getPicUrl()), dinPicPath);
 			newOaOrderDetail.setPic(PathUtil.path2Url(dinPicPath));
 		}
 		newOaOrderDetail.setContent(oaOrder.getSellMemo()); // 设置销售备注到detail中
@@ -225,11 +188,7 @@ public class BizUtil {
 		newOaOrderDetail.setSmsTimeout(ConstantUtil.NOTIFYSTAFF_STATE_TIMEOUT);
 		getBxMgr().saveObject(newOaOrderDetail); // 保存本节点信息
 
-		WorkFlowUtil
-				.getPe()
-				.getRuntimeService()
-				.setVariable(processInstanceId, "oa_order_detail",
-						newOaOrderDetail.getId());
+		WorkFlowUtil.getPe().getRuntimeService().setVariable(processInstanceId, "oa_order_detail", newOaOrderDetail.getId());
 		// 2因为直接跳转到第二节点所以此时不更新主表里面工作流的信息
 		oaOrder.setBeginTime(curTime);
 		oaOrder.setOaOrderDetail(newOaOrderDetail.getId());
@@ -247,24 +206,32 @@ public class BizUtil {
 	 * @param assignment
 	 *            指派人
 	 */
-	public static void editBizOrderAndDetail(Integer id,
-			DelegateTask delegateTask, String assignment, String groupName,
-			String description) {
+	public static void editBizOrderAndDetail(Integer id, DelegateTask delegateTask, String assignment, String groupName, String description) {
 		// TODO Auto-generated method stub
 		// 1.上一个节点的完成时间
-		Timestamp curTime = getOperatingTime(new Timestamp(
-				System.currentTimeMillis()));// 当前时间
-		OaOrderDetail lastOaOrderDetail = (OaOrderDetail) getBxMgr().getObject(
-				OaOrderDetail.class, id);// 上一个流程节点的订单详细vo
-		OaOrder oaOrder = (OaOrder) getBxMgr().getObject(OaOrder.class,
-				lastOaOrderDetail.getOaOrder());// 主流程，订单vo
+		Timestamp curTime = getOperatingTime(new Timestamp(System.currentTimeMillis()));// 当前时间
+		OaOrderDetail lastOaOrderDetail = (OaOrderDetail) getBxMgr().getObject(OaOrderDetail.class, id);// 上一个流程节点的订单详细vo
+		OaOrder oaOrder = (OaOrder) getBxMgr().getObject(OaOrder.class, lastOaOrderDetail.getOaOrder());// 主流程，订单vo
 		lastOaOrderDetail.setWfRealFinish(curTime);
-		
+
 		// update by 张华 2014-12-29
 		if (lastOaOrderDetail.getWorkTime() == null) {
 			lastOaOrderDetail.setWorkTime(curTime);
 		}
-		
+
+		// update by 张华 2015-03-11
+		// 判断如果此流程流转属于退回上一步，那么设置此节点back_flag字段为1
+		try {
+			int stepIndex1 = Integer.parseInt(lastOaOrderDetail.getWfStep().substring(lastOaOrderDetail.getWfStep().lastIndexOf("_") + 1, lastOaOrderDetail.getWfStep().length()));
+			int stepIndex2 = Integer.parseInt(delegateTask.getTaskDefinitionKey().substring(delegateTask.getTaskDefinitionKey().lastIndexOf("_") + 1, delegateTask.getTaskDefinitionKey().length()));
+			if (stepIndex1 > stepIndex2) {
+				lastOaOrderDetail.setBackFlag("1");
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+
 		getBxMgr().saveObject(lastOaOrderDetail); // 保存上个节点信息
 
 		// 2.1 计算三个时间 计划完成时间 ,总剩余时间,实际完成偏差值
@@ -273,19 +240,15 @@ public class BizUtil {
 		String ss[] = delegateTask.getProcessDefinitionId().split(":");// 取数组的第一个元素就是key
 																		// ，如oawf1:4:304
 
-		LazyDynaMap oaTimebaseLazyDynaMap = XbdBuffer.getOaTimebaseEntry(ss[0],
-				delegateTask.getTaskDefinitionKey(), oaOrder.getClothClass()); // 本节点设定时长
-		double durationD = ((Long) oaTimebaseLazyDynaMap.get("step_duration"))
-				* oaOrder.getTimeRate();
+		LazyDynaMap oaTimebaseLazyDynaMap = XbdBuffer.getOaTimebaseEntry(ss[0], delegateTask.getTaskDefinitionKey(), oaOrder.getClothClass()); // 本节点设定时长
+		double durationD = ((Long) oaTimebaseLazyDynaMap.get("step_duration")) * oaOrder.getTimeRate();
 		Long duration = Math.round(durationD);
-		double calculateDurationD = ((Long) oaTimebaseLazyDynaMap
-				.get("calculate_duration")) * oaOrder.getTimeRate();
+		double calculateDurationD = ((Long) oaTimebaseLazyDynaMap.get("calculate_duration")) * oaOrder.getTimeRate();
 		Long calculateDuration = Math.round(calculateDurationD);
 		// (2)本节点计划开始时间 。 = 订单开始时间+ 累计计划持续时间
 		// Timestamp planStart = new Timestamp(oaOrder.getBeginTime().getTime()
 		// + calculateDuration);
-		Timestamp planStart = culPlanDate(oaOrder.getBeginTime(),
-				calculateDuration); // 本节点计划开始时间 。 = 订单开始时间+ 累计计划持续时间
+		Timestamp planStart = culPlanDate(oaOrder.getBeginTime(), calculateDuration); // 本节点计划开始时间 。 = 订单开始时间+ 累计计划持续时间
 
 		// 2.加入新的流程详细节点
 		OaOrderDetail newOaOrderDetail = new OaOrderDetail();
@@ -304,11 +267,9 @@ public class BizUtil {
 		newOaOrderDetail.setSmsRemind(ConstantUtil.NOTIFYSTAFF_STATE_REMIND_NO);
 		// 若流程计划所需时间duration为0时，不设置超时提醒
 		if (duration > 0) {
-			newOaOrderDetail
-					.setSmsTimeout(ConstantUtil.NOTIFYSTAFF_STATE_TIMEOUT_NO);
+			newOaOrderDetail.setSmsTimeout(ConstantUtil.NOTIFYSTAFF_STATE_TIMEOUT_NO);
 		} else {
-			newOaOrderDetail
-					.setSmsTimeout(ConstantUtil.NOTIFYSTAFF_STATE_TIMEOUT);
+			newOaOrderDetail.setSmsTimeout(ConstantUtil.NOTIFYSTAFF_STATE_TIMEOUT);
 		}
 
 		getBxMgr().saveObject(newOaOrderDetail); // 保存本节点信息
@@ -353,8 +314,7 @@ public class BizUtil {
 			long newDuration = duration - between;
 
 			// 1000*60*60 1个小时,15个小时即是晚6:00到早9:00的非工作时间
-			Timestamp newPlanStart = new Timestamp(endWork.getTime()
-					+ (1000 * 60 * 60 * 15)); // 得到一个新的计划开始时间，即第二天上午9点
+			Timestamp newPlanStart = new Timestamp(endWork.getTime() + (1000 * 60 * 60 * 15)); // 得到一个新的计划开始时间，即第二天上午9点
 
 			newPlanStart = getWorkTime(newPlanStart); // 得到一个工作时间
 
@@ -379,15 +339,13 @@ public class BizUtil {
 		// 判断是否为周日
 		if ("星期日".equals(day)) {
 			if (workday.indexOf(dateStr) < 0) { // 不包含在工作日中，则加24个小时
-				newPlanStart = new Timestamp(newPlanStart.getTime()
-						+ (1000 * 60 * 60 * 24)); // 得到一个新的计划开始时间，即第二天上午9点
+				newPlanStart = new Timestamp(newPlanStart.getTime() + (1000 * 60 * 60 * 24)); // 得到一个新的计划开始时间，即第二天上午9点
 			} else { // 包含在工作日中
 				return newPlanStart;
 			}
 		} else {
 			if (holidays.indexOf(dateStr) >= 0) { // 包含在节假日中，则加24个小时
-				newPlanStart = new Timestamp(newPlanStart.getTime()
-						+ (1000 * 60 * 60 * 24)); // 得到一个新的计划开始时间，即第二天上午9点
+				newPlanStart = new Timestamp(newPlanStart.getTime() + (1000 * 60 * 60 * 24)); // 得到一个新的计划开始时间，即第二天上午9点
 			} else {
 				return newPlanStart;
 			}
@@ -442,8 +400,7 @@ public class BizUtil {
 	 * @return
 	 * @throws ParseException
 	 */
-	private static Timestamp excludeHolidays(Timestamp ts)
-			throws ParseException {
+	private static Timestamp excludeHolidays(Timestamp ts) throws ParseException {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		String tsString = df.format(ts);
 		String holidays = ResourceUtil.getString("oa.holidays"); // 获取到配置的节假日
@@ -469,8 +426,7 @@ public class BizUtil {
 			tsString = df.format(ts);
 			df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-			ts = new Timestamp(df.parse(tsString).getTime()
-					- (1000 * 60 * 60 * 24));
+			ts = new Timestamp(df.parse(tsString).getTime() - (1000 * 60 * 60 * 24));
 			return excludeHolidays(ts);
 		}
 	}
@@ -562,12 +518,9 @@ public class BizUtil {
 	public static void lastEditBizOrderAndDetail(Integer id) {
 
 		// 1.上一个节点的完成时间
-		Timestamp curTime = getOperatingTime(new Timestamp(
-				System.currentTimeMillis()));// 当前时间
-		OaOrderDetail myOaOrderDetail = (OaOrderDetail) getBxMgr().getObject(
-				OaOrderDetail.class, id);// 上一个流程节点的订单详细vo
-		OaOrder oaOrder = (OaOrder) getBxMgr().getObject(OaOrder.class,
-				myOaOrderDetail.getOaOrder());// 主流程，订单vo
+		Timestamp curTime = getOperatingTime(new Timestamp(System.currentTimeMillis()));// 当前时间
+		OaOrderDetail myOaOrderDetail = (OaOrderDetail) getBxMgr().getObject(OaOrderDetail.class, id);// 上一个流程节点的订单详细vo
+		OaOrder oaOrder = (OaOrder) getBxMgr().getObject(OaOrder.class, myOaOrderDetail.getOaOrder());// 主流程，订单vo
 		myOaOrderDetail.setWfRealFinish(curTime);
 		getBxMgr().saveObject(myOaOrderDetail); // 保存上个节点信息
 
@@ -588,9 +541,7 @@ public class BizUtil {
 	 * @param type
 	 *            订单类型
 	 */
-	public static Float computeTimeRate(Timestamp realStartTime,
-			Timestamp exceptFinish, String processDifinitionKey,
-			String clothClass) {
+	public static Float computeTimeRate(Timestamp realStartTime, Timestamp exceptFinish, String processDifinitionKey, String clothClass) {
 		FSPBean fsp = new FSPBean();
 		fsp.set("define_key", processDifinitionKey);
 		fsp.set("cloth_class", clothClass);
@@ -604,9 +555,7 @@ public class BizUtil {
 			timeBase = getBxMgr().getOnlyObjectBySql(fsp);
 		}
 		if (timeBase == null) {
-			throw new RuntimeException("没有找到流程定义processDifinitionKey:"
-					+ processDifinitionKey + "服装品类clothClass:" + clothClass
-					+ "的时间基线timebase");
+			throw new RuntimeException("没有找到流程定义processDifinitionKey:" + processDifinitionKey + "服装品类clothClass:" + clothClass + "的时间基线timebase");
 		}
 
 		Long durationTotalTime = (Long) timeBase.get("total_duration");
@@ -623,10 +572,8 @@ public class BizUtil {
 	 * @param durationTotalTime
 	 *            持续时长
 	 */
-	private static Float computeTimeRate(Timestamp realStartTime,
-			Timestamp exceptFinish, long durationTotalTime) {
-		Float f = (0f + exceptFinish.getTime() - realStartTime.getTime())
-				/ durationTotalTime;
+	private static Float computeTimeRate(Timestamp realStartTime, Timestamp exceptFinish, long durationTotalTime) {
+		Float f = (0f + exceptFinish.getTime() - realStartTime.getTime()) / durationTotalTime;
 		System.out.println(f);
 		BigDecimal bg = new BigDecimal(f);
 		float f1 = bg.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
@@ -644,8 +591,7 @@ public class BizUtil {
 	 * @param assignment
 	 * @param groupName
 	 */
-	private static void setOaOrderHisOpt(OaOrder oaOrder, String assignment,
-			String groupName) {
+	private static void setOaOrderHisOpt(OaOrder oaOrder, String assignment, String groupName) {
 		String hisOpt = oaOrder.getHisOpt();
 		if (hisOpt == null) {
 			hisOpt = "";
@@ -690,8 +636,7 @@ public class BizUtil {
 	 * @param keys
 	 * @return
 	 */
-	public static String generateDownLoadCsv(List<LazyDynaMap> list,
-			String titles, String keys) {
+	public static String generateDownLoadCsv(List<LazyDynaMap> list, String titles, String keys) {
 		String str = generateCsvStr(list, titles, keys);
 		String path = PathUtil.getTmpDownCsvPath();
 		try {
@@ -703,8 +648,7 @@ public class BizUtil {
 		return path;
 	}
 
-	private static String generateCsvStr(List<LazyDynaMap> list, String titles,
-			String keys) {
+	private static String generateCsvStr(List<LazyDynaMap> list, String titles, String keys) {
 		StringBuffer buf = new StringBuffer();
 		buf.append(titles).append("\n");
 		String[] ss = keys.split(",");
@@ -749,15 +693,9 @@ public class BizUtil {
 		 * 
 		 * 
 		 * 
-		 * DateFormat dateFormat; dateFormat = new
-		 * SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);// 设定格式 // dateFormat
-		 * = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", // Locale.ENGLISH);
-		 * dateFormat.setLenient(false); Timestamp t1 = new
-		 * Timestamp(dateFormat.parse("2013-11-24") .getTime());// util类型
-		 * Timestamp t2 = new Timestamp(dateFormat.parse("2013-11-25")
-		 * .getTime());// util类型 computeTimeRate(t1, t2, 259200000l); } catch
-		 * (ParseException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); }
+		 * DateFormat dateFormat; dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);// 设定格式 // dateFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", // Locale.ENGLISH);
+		 * dateFormat.setLenient(false); Timestamp t1 = new Timestamp(dateFormat.parse("2013-11-24") .getTime());// util类型 Timestamp t2 = new Timestamp(dateFormat.parse("2013-11-25") .getTime());//
+		 * util类型 computeTimeRate(t1, t2, 259200000l); } catch (ParseException e) { // TODO Auto-generated catch block e.printStackTrace(); }
 		 */
 
 		// double a = 1800000l;
@@ -766,10 +704,8 @@ public class BizUtil {
 
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		try {
-			Timestamp ts1 = new Timestamp(df.parse("2014-11-17 23:00:00")
-					.getTime());
-			Timestamp ts2 = new Timestamp(df.parse("2014-11-7 16:00:00")
-					.getTime());
+			Timestamp ts1 = new Timestamp(df.parse("2014-11-17 23:00:00").getTime());
+			Timestamp ts2 = new Timestamp(df.parse("2014-11-7 16:00:00").getTime());
 
 			// System.out.println(getOperatingTime(ts1));
 			// System.out.println(getWorkTimeBetween(ts1, ts2) / (1000 * 60 *

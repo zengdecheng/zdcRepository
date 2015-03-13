@@ -70,13 +70,16 @@ public class OaOrderDetail implements Serializable {
 
 	@Column(name = "sms_timeout")
 	private String smsTimeout;
-	
-	@Column(name="worker")
+
+	@Column(name = "worker")
 	private String worker;
-	
-	@Column(name="work_time")
+
+	@Column(name = "work_time")
 	private java.sql.Timestamp workTime;
-	
+
+	@Column(name = "back_flag")
+	private String backFlag;
+
 	public String getAttachment() {
 		return attachment;
 	}
@@ -243,6 +246,14 @@ public class OaOrderDetail implements Serializable {
 
 	public void setWorkTime(java.sql.Timestamp workTime) {
 		this.workTime = workTime;
+	}
+
+	public String getBackFlag() {
+		return backFlag;
+	}
+
+	public void setBackFlag(String backFlag) {
+		this.backFlag = backFlag;
 	}
 
 	@Override
