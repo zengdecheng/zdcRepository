@@ -45,7 +45,7 @@
 			</div>
 		</div>
 	</div>
-	<s:if test='${"1" eq bean.map.status }'>
+	<s:if test=" 1 == bean.map.status ">
 		<form style="width: 96%; padding: 10px 10px 0;" id="terminateForm">
 			<div style="width:49%; float:left;">终止操作人:${bean.map.terminateUser }</div>
 			<div>终止时间:${bean.map.terminateTime }</div>
