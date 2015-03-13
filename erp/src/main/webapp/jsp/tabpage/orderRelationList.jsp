@@ -23,7 +23,7 @@
 				<td height="40"><label class="">款号：</label></td>
 				<td><input type="text" class="z_inp2" name="fsp.map.style_code" style="width:167px;margin-right: 116px" value="${fsp.map.style_code}" /></td>
 				<td height="40" width="80"><label class="">订单类型：</label></td>
-				<td><s:select theme="simple" list="#{'':'全部','2':'样衣打版','3':'大货生产'}" cssClass="z_inp2" cssStyle="width: 170px;" value="${fsp.map.type}" name="fsp.map.type"></s:select></td>
+				<td><s:select theme="simple" list="#{'':'全部','2':'样衣打版','3':'大货生产'}" cssClass="z_inp2" cssStyle="width: 170px;" value="%{fsp.map.type}" name="fsp.map.type"></s:select></td>
 			</tr>
 			<tr>
 				<td height="40"><label class="">销售：</label></td>
