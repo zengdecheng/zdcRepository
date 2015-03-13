@@ -34,5 +34,13 @@
         	<input id="return_bt" type="button" value="返回" style="width: 120px;" />
     	</div>
    	</div>
+  <script type="text/javascript">
+  	$(function(){
+  		require(["/js/category/categoryList.js"],function(fn){
+  			fn.init();
+  		})
+  	});
+  </script>
   </body>
+
 </html>
