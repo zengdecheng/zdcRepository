@@ -59,6 +59,8 @@
         <mapping class="com.xbd.oa.vo.OaTpe"/>
         <mapping class="com.xbd.oa.vo.OaQiTaoDetail"/>
         <mapping class="com.xbd.oa.vo.OaLogistics"/>
+        <mapping class="com.xbd.oa.vo.OaCategory"/>
     </session-factory>
 
 </hibernate-configuration>
+
