@@ -98,7 +98,7 @@ public class POIUtils {
 	public static void processExcel(OutputStream os, String file, String sheetIndex, Map<String, Object> dynaRow, Map<String, Object> params) {
 		boolean is2007 = false;
 		Workbook wb = null;
-		logger.error("开始写入Excel...");
+		logger.debug("开始写入Excel...");
 		if (!new File(file).exists()) {
 			throw new RuntimeException("the attachment in server [" + file + "]is not exists!");
 		}
@@ -108,23 +108,23 @@ public class POIUtils {
 		try {
 			InputStream input = new FileInputStream(file);
 			if (is2007) {
-				logger.error("开始创建XSSFWorkbook...");
+				logger.debug("开始创建XSSFWorkbook...");
 				wb = new XSSFWorkbook(input);
-				logger.error("结束创建XSSFWorkbook...");
+				logger.debug("结束创建XSSFWorkbook...");
 			} else {
-				logger.error("开始创建HSSFWorkbook...");
+				logger.debug("开始创建HSSFWorkbook...");
 				wb = new HSSFWorkbook(input);
-				logger.error("结束创建HSSFWorkbook...");
+				logger.debug("结束创建HSSFWorkbook...");
 			}
-			logger.error("开始得到目标Sheet...");
+			logger.debug("开始得到目标Sheet...");
 			Sheet sheet = wb.getSheetAt(Integer.parseInt(sheetIndex) - 2);
-			logger.error("结束得到Sheet...");
-			logger.error("开始增加行...");
+			logger.debug("结束得到Sheet...");
+			logger.debug("开始增加行...");
 			dynaRow(sheet, dynaRow);
-			logger.error("结束增加行...");
-			logger.error("开始填充sheet...");
+			logger.debug("结束增加行...");
+			logger.debug("开始填充sheet...");
 			excelFilling(wb, sheet, params);
-			logger.error("结束填充sheet...");
+			logger.debug("结束填充sheet...");
 			wb.write(os);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -146,7 +146,7 @@ public class POIUtils {
 	public static void processExcel(OutputStream os, String file, List<Map<String,Object>> list) {
 		boolean is2007 = false;
 		Workbook wb = null;
-		logger.error("开始写入Excel...");
+		logger.debug("开始写入Excel...");
 		if (!new File(file).exists()) {
 			throw new RuntimeException("the attachment in server [" + file + "]is not exists!");
 		}
@@ -156,27 +156,27 @@ public class POIUtils {
 		try {
 			InputStream input = new FileInputStream(file);
 			if (is2007) {
-				logger.error("开始创建XSSFWorkbook...");
+				logger.debug("开始创建XSSFWorkbook...");
 				wb = new XSSFWorkbook(input);
-				logger.error("结束创建XSSFWorkbook...");
+				logger.debug("结束创建XSSFWorkbook...");
 			} else {
-				logger.error("开始创建HSSFWorkbook...");
+				logger.debug("开始创建HSSFWorkbook...");
 				wb = new HSSFWorkbook(input);
-				logger.error("结束创建HSSFWorkbook...");
+				logger.debug("结束创建HSSFWorkbook...");
 			}
 			for(Map<String,Object> map:list){
 				String sheetIndex = map.get("sheetIndex").toString();
-				logger.error("开始得到目标Sheet...");
+				logger.debug("开始得到目标Sheet...");
 				Sheet sheet = wb.getSheetAt(Integer.parseInt(sheetIndex) - 2);
-				logger.error("结束得到Sheet...");
-				logger.error("开始增加行...");
+				logger.debug("结束得到Sheet...");
+				logger.debug("开始增加行...");
 				Map<String,Object> dynaRow=  (Map<String, Object>) map.get("dynaRow");
 				dynaRow(sheet, dynaRow);
-				logger.error("结束增加行...");
-				logger.error("开始填充sheet...");
+				logger.debug("结束增加行...");
+				logger.debug("开始填充sheet...");
 				Map<String,Object> params=  (Map<String, Object>) map.get("params");
 				excelFilling(wb, sheet, params);
-				logger.error("结束填充sheet...");
+				logger.debug("结束填充sheet...");
 			}
 			wb.write(os);
 		} catch (Exception e) {
@@ -255,7 +255,7 @@ public class POIUtils {
 					try {
 						// String smallPic = value.substring(0, value.lastIndexOf("/") + 1) + "s_" + value.substring(value.lastIndexOf("/") + 1, value.length());
 						String picType = value.substring(value.lastIndexOf("."));
-						logger.error("在"+indexs[0]+"，"+indexs[1]+"，"+indexs[2]+"，"+indexs[3]+"写入图片："+value);
+						logger.debug("在"+indexs[0]+"，"+indexs[1]+"，"+indexs[2]+"，"+indexs[3]+"写入图片："+value);
 						File urlFile = File.createTempFile(System.currentTimeMillis() + "", picType);
 						FileUtils.copyURLToFile(new URL(value), urlFile);
 						byte[] bytes = FileUtils.readFileToByteArray(urlFile);

@@ -10,7 +10,6 @@ import java.util.TreeMap;
 
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
-import open189.sign.ParamsSign;
 
 //TODO 应用通过审核后使用新的appid和appSercret
 public class SMSUtils {
