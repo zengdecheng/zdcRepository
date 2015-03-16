@@ -62,7 +62,9 @@ define([ "v","vl" ], function(v,vl) {
                     async: false,
                     dataType: "json",
                     success: function(data) {
-                		if("0" ==  data.code){
+                    	if("ajaxLogin" == data){
+                			alert("登录超时，请重新登录");
+                		} else if("0" ==  data.code){
                 			jsonData = data;
 
 							if(undefined != data.oaOrderDetail && null != data.oaOrderDetail && undefined != data.oaOrderDetail.other_file && null != data.oaOrderDetail.other_file && "" != data.oaOrderDetail.other_file && "null" != data.oaOrderDetail.other_file) {
@@ -208,17 +210,21 @@ define([ "v","vl" ], function(v,vl) {
 						type: "post",
 						data: params,
 						success: function(data) {
-							$("#logisticsDetile").append("<tr>" +
-							"<td><input type='checkbox' name='logCheckBox' value='"+data.oaLogistics.id+"' /></td>" +
-							"<td><a href='http://www.kuaidi100.com/' target='_blank'>"+data.oaLogistics.logisticsNum+"</a></td>" +
-							"<td>"+data.oaLogistics.logisticsCompany+"</td>" +
-							"<td>"+data.oaLogistics.deliveryPle+"</td>" +
-							"<td>"+data.oaLogistics.deliveryNum+"</td>" +
-							"<td>"+data.oaLogistics.deliveryTime+"</td>" +
-							"<td><a href='"+data.oaLogistics.fileUrl+"' target='_blank'>查看集装箱单</a></td>" +
-							"<td>"+data.oaLogistics.remarks+"</td>" +
-							"</tr>");
-							parent.iFrameHeight("iframeLogistics");
+							if("ajaxLogin" == data){
+	                			alert("登录超时，请重新登录");
+	                		} else {
+								$("#logisticsDetile").append("<tr>" +
+								"<td><input type='checkbox' name='logCheckBox' value='"+data.oaLogistics.id+"' /></td>" +
+								"<td><a href='http://www.kuaidi100.com/' target='_blank'>"+data.oaLogistics.logisticsNum+"</a></td>" +
+								"<td>"+data.oaLogistics.logisticsCompany+"</td>" +
+								"<td>"+data.oaLogistics.deliveryPle+"</td>" +
+								"<td>"+data.oaLogistics.deliveryNum+"</td>" +
+								"<td>"+data.oaLogistics.deliveryTime+"</td>" +
+								"<td><a href='"+data.oaLogistics.fileUrl+"' target='_blank'>查看集装箱单</a></td>" +
+								"<td>"+data.oaLogistics.remarks+"</td>" +
+								"</tr>");
+								parent.iFrameHeight("iframeLogistics");
+	                		}
 						}
 					});
 				}
@@ -249,7 +255,9 @@ define([ "v","vl" ], function(v,vl) {
 	                    type: "post",
 	                    data: params,
 	                    success: function(data) {
-	                		if("0" ==  data.code){
+	                    	if("ajaxLogin" == data){
+	                			alert("登录超时，请重新登录");
+	                		} else if("0" ==  data.code){
 	                			biz.event.putOaTrackesTrData($("#yidongContent").val(), data.oaTrackeUser, data.oaTrackeTime);
 	                			$("#yidongContent").val("");
 	                			parent.iFrameHeight("iframeLogistics");
@@ -320,7 +328,9 @@ define([ "v","vl" ], function(v,vl) {
 	                    type: "post",
 	                    data: params,
 	                    success: function(data) {
-	                		if("0" ==  data.code){
+	                    	if("ajaxLogin" == data){
+	                			alert("登录超时，请重新登录");
+	                		} else if("0" ==  data.code){
 	                			top.location.href = "/bx/todo";
 	                		} else {
 	                			alert(data.msg);

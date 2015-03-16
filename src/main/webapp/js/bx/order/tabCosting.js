@@ -379,7 +379,9 @@ define([ "v","vl" ], function(u,up) {
                     type: "post",
                     async: false,
                     success: function(data) {
-                		if("0" ==  data.code){
+                    	if("ajaxLogin" == data){
+                			alert("登录超时，请重新登录");
+                		} else if("0" ==  data.code){
                 			//将大货单价转换为统一的类型进行填充
                 			if(data.materialCost.length>0){
                 				for(var i=0;i<data.materialCost.length;i++){
@@ -567,7 +569,9 @@ define([ "v","vl" ], function(u,up) {
 	                    type: "post",
 	                    data: params,
 	                    success: function(data) {
-	                		if("0" ==  data.code){
+	                    	if("ajaxLogin" == data){
+	                			alert("登录超时，请重新登录");
+	                		} else if("0" ==  data.code){
 	                			biz.event.putOaTrackesTrData($("#yidongContent").val(), data.oaTrackeUser, data.oaTrackeTime);
 	                			$("#yidongContent").val("");
 	                		} else {
@@ -667,7 +671,9 @@ define([ "v","vl" ], function(u,up) {
 	                    type: "post",
 	                    data: params,
 	                    success: function(data) {
-	                		if("0" ==  data.code){
+	                    	if("ajaxLogin" == data){
+	                			alert("登录超时，请重新登录");
+	                		} else if("0" ==  data.code){
 	                			top.location.href = "/bx/todo";
 	                		} else {
 	                			alert(data.msg);

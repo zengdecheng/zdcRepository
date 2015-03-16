@@ -46,31 +46,32 @@ define([ "u" ], function(u) {
 	                    type: "post",
 	                    data: params,
 	                    success: function(data) {
-	                		if("0" ==  data.code){
-	                			top.location.href = "/bx/todo";
-	                		} else {
-	                			alert(data.msg);
-		        				$("#terminateBtn").removeAttr("disabled");
-	                		}
-	                    },
-	                    error: function() {
-	        				$("#terminateBtn").removeAttr("disabled");
-	                    }
-	                });
-					//这里调用CRM中的接口 需要的参数是订单编号，订单ID，订单状态，数字签名
-					var sellOrderId=$("#sellOrderId").val();//订单Id
-					var orderCode=$("#orderCode").val();//订单编号
-					var status=$("#status").val();//状态
-					var oaSec=$("#oaSec").val();//数字签名
-					var paramsStr={"order_code":orderCode,"order_id":sellOrderId,"order_status":'4',"oa_sec":oaSec};
-					var para=$.param(paramsStr);//将参数格式化
-					$.ajax({
-	                    url: _url_prefix+"ext/modifyOrderStatus",
-	                    type: "post",
-	                    data: para,
-	                    async:false,
-	                    success: function(data) {
-	                		if("sucess" ==  data.code){
+	                    	if("ajaxLogin" == data){
+	                			alert("登录超时，请重新登录");
+	                		} else if("0" ==  data.code){
+	                			//这里调用CRM中的接口 需要的参数是订单编号，订单ID，订单状态，数字签名
+	        					var sellOrderId=$("#sellOrderId").val();//订单Id
+	        					var orderCode=$("#orderCode").val();//订单编号
+	        					var status=$("#status").val();//状态
+	        					var oaSec=$("#oaSec").val();//数字签名
+	        					var paramsStr={"order_code":orderCode,"order_id":sellOrderId,"order_status":'4',"oa_sec":oaSec};
+	        					var para=$.param(paramsStr);//将参数格式化
+	        					$.ajax({
+	        	                    url: _url_prefix+"ext/modifyOrderStatus",
+	        	                    type: "post",
+	        	                    data: para,
+	        	                    async:false,
+	        	                    success: function(data) {
+	        	                		if("success" ==  data.code){
+	        	                		} else {
+//	        	                			alert(data.msg);
+	        		        				$("#terminateBtn").removeAttr("disabled");
+	        	                		}
+	        	                    },
+	        	                    error: function() {
+	        	        				$("#terminateBtn").removeAttr("disabled");
+	        	                    }
+	        	                });
 	                			top.location.href = "/bx/todo";
 	                		} else {
 	                			alert(data.msg);

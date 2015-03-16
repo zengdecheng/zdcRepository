@@ -115,7 +115,9 @@ define([ "v","vl" ], function(u,up) {
                     type: "post",
                     async: false,
                     success: function(data) {
-                		if("0" ==  data.code){
+                    	if("ajaxLogin" == data){
+                			alert("登录超时，请重新登录");
+                		} else if("0" ==  data.code){
                 			jsonData=data;
                 			
                 			$("#oaTpe_id").val(data.sewingId);//将oaTpe的ID设置到隐藏域中
@@ -231,7 +233,9 @@ define([ "v","vl" ], function(u,up) {
 	                    type: "post",
 	                    data: params,
 	                    success: function(data) {
-	                		if("0" ==  data.code){
+	                    	if("ajaxLogin" == data){
+	                			alert("登录超时，请重新登录");
+	                		} else if("0" ==  data.code){
 	                			biz.event.putOaTrackesTrData($("#yidongContent").val(), data.oaTrackeUser, data.oaTrackeTime);
 	                			$("#yidongContent").val("");
 	                		} else {
@@ -301,7 +305,9 @@ define([ "v","vl" ], function(u,up) {
 	                    type: "post",
 	                    data: params,
 	                    success: function(data) {
-	                		if("0" ==  data.code){
+	                    	if("ajaxLogin" == data){
+	                			alert("登录超时，请重新登录");
+	                		} else if("0" ==  data.code){
 	                			top.location.href = "/bx/todo";
 	                		} else {
 	                			alert(data.msg);

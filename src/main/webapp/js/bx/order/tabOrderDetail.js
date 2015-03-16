@@ -169,7 +169,9 @@ define([ "u","layer","v","vl" ], function(u,layer) {
                     type: "post",
                     async: false,
                     success: function(data) {
-                		if("0" ==  data.code){
+                    	if("ajaxLogin" == data){
+                			alert("登录超时，请重新登录");
+                		} else if("0" ==  data.code){
                 			biz.event.setOrderSize(data.orderSizeTitle, data.orderSizeInfo); //设置尺码数量显示
                 			sizeTitle = data.orderSizeTitle;
                 			biz.event.setCusMaterialTableTitle(); //拼接客供料表头
@@ -201,7 +203,9 @@ define([ "u","layer","v","vl" ], function(u,layer) {
                     type: "post",
                     async: false,
                     success: function(data) {
-                		if("0" ==  data.code){
+                    	if("ajaxLogin" == data){
+                			alert("登录超时，请重新登录");
+                		} else if("0" ==  data.code){
                 			//样板码数
                 			$("#sampleSize").val(data.chooseOaOrder.sampleSize);
                 			//送货方式

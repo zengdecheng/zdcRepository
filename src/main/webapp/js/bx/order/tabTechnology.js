@@ -84,7 +84,9 @@ define([ "u","up","v","vl"  ], function(u,up) {
                     type: "post",
                     async: false,
                     success: function(data) {
-                		if("0" ==  data.code){
+                    	if("ajaxLogin" == data){
+                			alert("登录超时，请重新登录");
+                		} else if("0" ==  data.code){
                 			biz.event.setMaterialDescTableData(data.materialDescList); //设置用料说明列表
                 			biz.event.setClothesSizeTableData(data.oaClothesSize, data.oaClothesSizeDetails, data.oaOrderNum); //设置尺码信息
                 			biz.event.setProcessExplainData(data.processExplain); //设置加工信息
@@ -247,7 +249,9 @@ define([ "u","up","v","vl"  ], function(u,up) {
                     url: "/bx/getClothesPositionAndTolerance?position=" + $("#oaClothesSizeType").val(),
                     type: "post",
                     success: function(data) {
-                		if("0" ==  data.code){
+                    	if("ajaxLogin" == data){
+                			alert("登录超时，请重新登录");
+                		} else if("0" ==  data.code){
                 			biz.event.putPositionAndTolerance(data); //设置默认部位和公差到列表
                 		} else {
                 			alert(data.msg);
@@ -555,7 +559,9 @@ define([ "u","up","v","vl"  ], function(u,up) {
 	                    type: "post",
 	                    data: params,
 	                    success: function(data) {
-	                		if("0" ==  data.code){
+	                    	if("ajaxLogin" == data){
+	                			alert("登录超时，请重新登录");
+	                		} else if("0" ==  data.code){
 	                			top.location.href = "/bx/todo";
 	                		} else {
 	                			alert(data.msg);
@@ -580,7 +586,9 @@ define([ "u","up","v","vl"  ], function(u,up) {
 	                    type: "post",
 	                    data: params,
 	                    success: function(data) {
-	                		if("0" ==  data.code){
+	                    	if("ajaxLogin" == data){
+	                			alert("登录超时，请重新登录");
+	                		} else if("0" ==  data.code){
 	                			biz.event.putOaTrackesTrData($("#yidongContent").val(), data.oaTrackeUser, data.oaTrackeTime);
 	                			$("#yidongContent").val("");
 	                		} else {
