@@ -152,8 +152,8 @@ public abstract class DaoHibernate extends DaoEjb {
 			Class clz) {
 		List objs = null;
 		Query query = null;
-		log.debug("fuying sql " + sql);
-//		System.out.println("fuying sql " + sql);
+//		log.debug("fuying sql " + sql);
+		log.warn("fuying sql " + sql);
 		if (clz == null) {
 			// 采用自定义的lazydynamap的list发布到前台
 
