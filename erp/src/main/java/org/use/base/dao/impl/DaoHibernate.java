@@ -153,7 +153,7 @@ public abstract class DaoHibernate extends DaoEjb {
 		List objs = null;
 		Query query = null;
 //		log.debug("fuying sql " + sql);
-		log.warn("fuying sql " + sql);
+		log.warn("FSP: sql " + sql);
 		if (clz == null) {
 			// 采用自定义的lazydynamap的list发布到前台
 
