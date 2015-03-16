@@ -261,6 +261,10 @@ public class BxDaoImpl extends DaoHibernate implements BaseDao {
 	 * 查询品类列表
 	 */
 	public static final String LIST_CATEGORY_BY_SQL="list_category_by_sql";
+	/**
+	 * cmr获取品类列表
+	 */
+	public static final String GET_CATEGORY_BY_SQL="get_category_by_sql";
 	
 	public static void sessionFlush() {
 		DaoHibernate.getSession().clear();
