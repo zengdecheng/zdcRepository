@@ -214,7 +214,7 @@ public class OaOrder implements Serializable {
 	private Float craftTime;
 
 	@Column(name = "feeding_time")
-	private Float feedingTime;
+	private Timestamp feedingTime;
 
 	public String getRelatedOrderCode() {
 		return relatedOrderCode;
@@ -744,11 +744,11 @@ public class OaOrder implements Serializable {
 		this.craftTime = craftTime;
 	}
 
-	public Float getFeedingTime() {
+	public Timestamp getFeedingTime() {
 		return feedingTime;
 	}
 
-	public void setFeedingTime(Float feedingTime) {
+	public void setFeedingTime(Timestamp feedingTime) {
 		this.feedingTime = feedingTime;
 	}
 
