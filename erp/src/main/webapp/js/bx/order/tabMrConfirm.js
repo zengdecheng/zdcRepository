@@ -52,7 +52,9 @@ define([ "u","up"], function(u,up) {
                     type: "post",
                     async: false,
                     success: function(data) {
-                		if("0" ==  data.code){
+                    	if("ajaxLogin" == data){
+                			alert("登录超时，请重新登录");
+                		} else if("0" ==  data.code){
                 			biz.event.setMrConfirmInfo(data.oaMrConfirm); //设置MR确认信息
                 			biz.event.setManageInfoData(data.oaOrderDetail); //设置管理信息
                 		} else {
@@ -177,7 +179,9 @@ define([ "u","up"], function(u,up) {
 		                type: "post",
 		                data: params,
 		                success: function(data) {
-		                	if("0" ==  data.code){
+		                	if("ajaxLogin" == data){
+	                			alert("登录超时，请重新登录");
+	                		} else if("0" ==  data.code){
 		                		top.location.href = "/bx/todo";
 		                	} else {
 		                		alert(data.msg);

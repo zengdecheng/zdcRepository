@@ -658,20 +658,32 @@ public class ExternalAction extends Action {
 								break;
 							}
 							manager.saveObject(oaOrderNum);
-							int orderNum=oaOrderNum.getId();
+							int orderNum = oaOrderNum.getId();
 							oaOrder.setOaOrderNumId(orderNum);
-							//update by 张华 2014-12-24
-							if(StringUtils.isEmpty(oaOrder.getStyleUrl()) || "null".equals(oaOrder.getStyleUrl())){
+							// update by 张华 2014-12-24
+							if (StringUtils.isEmpty(oaOrder.getStyleUrl()) || "null".equals(oaOrder.getStyleUrl())) {
 								oaOrder.setStyleUrl(null);
 							}
-							if(StringUtils.isEmpty(oaOrder.getPicUrl()) || "null".equals(oaOrder.getPicUrl())){
+							if (StringUtils.isEmpty(oaOrder.getPicUrl()) || "null".equals(oaOrder.getPicUrl())) {
 								oaOrder.setPicUrl(null);
 							}
-							if(StringUtils.isEmpty(oaOrder.getFileUrl()) || "null".equals(oaOrder.getFileUrl())){
+							if (StringUtils.isEmpty(oaOrder.getFileUrl()) || "null".equals(oaOrder.getFileUrl())) {
 								oaOrder.setFileUrl(null);
 							}
 							oaOrder.setStatus("0");
 							oaOrder.setTimeRate(1.0f);// 不需要计算折算率
+							
+							// update by 张华 2015-03-13
+							// 设置默认销售准备时间9小时，标准缓冲时间（打版默认缓冲时间：38小时，大货默认缓冲时间：117小时），特殊工艺时间0。此处时间都指为工作时间
+							// 暂时设置品类（原一级分类）为空，crm同步一级分类后再进行同步
+							oaOrder.setStyleClass(null);
+							oaOrder.setSellReadyTime(9.0f);
+							oaOrder.setCraftTime(0.0f);
+							if ("2".equals(oaOrder.getType())) {
+								oaOrder.setStandardTime(38.0f);
+							} else {
+								oaOrder.setStandardTime(117.0f);
+							}
 							manager.saveObject(oaOrder);
 
 							// TODO 保存之后会有 orderid 可以提醒下一流程操作人
@@ -687,8 +699,8 @@ public class ExternalAction extends Action {
 				}
 			}
 		}
+		
 		Struts2Utils.renderJson(resMap);
-
 	}
 
 	/**

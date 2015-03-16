@@ -13,6 +13,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ActionProxy;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
+import com.xbd.oa.utils.Struts2Utils;
 import com.xbd.oa.utils.WebUtil;
 
 /**
@@ -63,7 +64,8 @@ public class LoginInterceptor extends AbstractInterceptor {
 				return invocation.invoke();
 			}
 			if (WebUtil.isAjaxRequest(req)) {
-				res.getOutputStream().write(NEED_LOGIN_AJAX.getBytes("UTF-8"));
+				// res.getOutputStream().write(NEED_LOGIN_AJAX.getBytes("UTF-8"));
+				Struts2Utils.renderText(NEED_LOGIN_AJAX);
 				return null;
 			}
 			return NEED_LOGIN_BX;
