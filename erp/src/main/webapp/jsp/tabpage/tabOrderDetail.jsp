@@ -88,6 +88,7 @@
 					<td width="260px">
 						<div style="padding: 25 0 25 0;">
 							建议投料日期：<span id="feeding_time"></span>
+							<input type="hidden" name="oaOrder.feedingTime" id="feeding_time_value"/>
 						</div>
 						<div style="padding: 25 0 25 0;display:none" id="isPreProductDiv">
 							<span style="color: red;">*</span>产前版完成日期：<input type="text"  id="isPreproduct"
