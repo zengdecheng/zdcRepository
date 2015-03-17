@@ -82,13 +82,42 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 					$(this).prev("input:checkbox[name='oaOrder.styleCraft']").prop("checked",true);
 				}
 				var totalTime = 0;
-//				$("input:checkbox[name='oaOrder.styleCraft']:not(:last)").each(function(index,data){
-//					console.info(index+"   " + data.checked)
-//				});
 				$("input:checkbox[name='oaOrder.styleCraft']:checked").each(function(index,data){
 					totalTime += data.time;
 				});
-				console.info(totalTime);
+				$.ajax({
+                    url: "/bx/getFeedingTime?orderId=" + $(window.parent.document).find("#orderId").val() + "&craftTime=" +totalTime,
+                    type: "post",
+                    dataType: "json",
+                    success: function(data) {
+            			$("#feeding_time").html(data);
+                    }
+                });
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
 			},
 			initValidation:function(){
 				$("#tabOrderDetail").validationEngine('attach',{

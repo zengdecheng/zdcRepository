@@ -5523,6 +5523,14 @@ public class BxAction extends Action {
 
 		Struts2Utils.writeJson(resMap);
 	}
+	
+	public void getFeedingTime() {
+		Integer orderId = Integer.parseInt(Struts2Utils.getParameter("orderId"));
+		Long craftTime = Long.parseLong(Struts2Utils.getParameter("craftTime"));
+		OaOrder order = (OaOrder) manager.getObject(OaOrder.class,orderId);
+		Timestamp feedingTime = BizUtil.culPlanDate(order.getGoodsTime(), 18*60*60*1000L-craftTime-order.getStandardTime());
+		Struts2Utils.writeJson(DateUtil.formatDate(feedingTime));
+	}
 
 	/**
 	 *
