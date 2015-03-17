@@ -677,7 +677,8 @@ public class ExternalAction extends Action {
 							// 设置默认销售准备时间9小时，标准缓冲时间（打版默认缓冲时间：38小时，大货默认缓冲时间：117小时），特殊工艺时间0。此处时间都指为工作时间
 							// 暂时设置品类（原一级分类）为空，crm同步一级分类后再进行同步
 							oaOrder.setStyleClass(null);
-							oaOrder.setGoodsTime(oaOrder.getExceptFinish());
+							SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 18:00:00");
+							oaOrder.setGoodsTime(new Timestamp(df.parse(df.format(oaOrder.getExceptFinish())).getTime()));
 							oaOrder.setSellReadyTime(9 * 60 * 60 * 1000L);
 							oaOrder.setCraftTime(0L);
 							if ("2".equals(oaOrder.getType())) {
