@@ -5506,8 +5506,13 @@ public class BxAction extends Action {
 			}
 			getOrderSize(orderSizeIdStr, resMap); // 获取订单尺码数量
 			getMaterialList(orderIdStr, resMap); // 获取用料搭配信息、客供料信息
-			getManagerInfo(Integer.parseInt(orderIdStr), "2", wfStepIndex,
-					resMap); // 查询管理信息
+			getManagerInfo(Integer.parseInt(orderIdStr), "2", wfStepIndex,resMap); // 查询管理信息
+			//品类列表
+			fsp = new FSPBean();
+			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_CATEGORY);
+			List<LazyDynaMap> categorys = getObjectsBySql(fsp);
+			resMap.put("categorys", categorys);
+			
 			resMap.put("code", 0);
 			resMap.put("msg", "订单详情节点-信息查询成功");
 		} catch (Exception e) {
@@ -5516,7 +5521,7 @@ public class BxAction extends Action {
 			resMap.put("msg", "订单详情节点-信息查询出错");
 		}
 
-		Struts2Utils.renderJson(resMap);
+		Struts2Utils.writeJson(resMap);
 	}
 
 	/**
