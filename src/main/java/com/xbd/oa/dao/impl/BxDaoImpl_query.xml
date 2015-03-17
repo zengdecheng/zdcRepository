@@ -84,6 +84,9 @@
 			<param fspname="name" sqlname="admin"></param>
 		</parser>
 	</function>
+	<!-- 品类选择 -->
+	<function name="get_category" type="sql" sql="select * from oa_category where status =1">
+	</function>
 	<!-- 处理订单 -->
 	<function name="processorder" type="sql" sql="select o.sell_order_code,o.picture_front, a.id,a.oa_order,c.wf_step_name,c.operator top_operator,c.wf_real_finish,a.wf_plan_start,a.wf_real_start,a.wf_step_duration,a.wf_step,a.discrip,a.task_id,
 		c.attachment top_attachment,c.pic top_pic,c.content top_content,a.attachment,a.pic,a.content,a.operator from oa_order_detail a,oa_order o,
