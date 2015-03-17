@@ -1143,6 +1143,4 @@ ote.oa_timebase = ot.id ${case}1">
 	<function name="list_category_by_sql" type="sql" sql="SELECT oa_category.`name`,id,explain_txt,oa_category.`code`,oa_category.`status`,oa_category.dahuo_cyc,oa_category.daban_cyc
 			FROM oa_category">
 	</function>
-	<!-- crm获取oa品类 -->
-	<function name="get_category_by_sql" type="sql" sql="select name,code,status from oa_category"></function>
 </query>
