@@ -9,10 +9,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "oa_order")
 public class OaOrder implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	@Column(name = "begin_time")
 	private java.sql.Timestamp beginTime;
 
@@ -205,16 +206,19 @@ public class OaOrder implements Serializable {
 	private Integer PreproductDays;
 
 	@Column(name = "sell_ready_time")
-	private Float sellReadyTime;
+	private Long sellReadyTime;
 
 	@Column(name = "standard_time")
-	private Float standardTime;
+	private Long standardTime;
 
 	@Column(name = "craft_time")
-	private Float craftTime;
+	private Long craftTime;
 
 	@Column(name = "feeding_time")
 	private Timestamp feedingTime;
+	
+	@Column(name = "goods_time")
+	private Timestamp goodsTime;
 
 	public String getRelatedOrderCode() {
 		return relatedOrderCode;
@@ -720,27 +724,27 @@ public class OaOrder implements Serializable {
 		PreproductDays = preproductDays;
 	}
 
-	public Float getSellReadyTime() {
+	public Long getSellReadyTime() {
 		return sellReadyTime;
 	}
 
-	public void setSellReadyTime(Float sellReadyTime) {
+	public void setSellReadyTime(Long sellReadyTime) {
 		this.sellReadyTime = sellReadyTime;
 	}
 
-	public Float getStandardTime() {
+	public Long getStandardTime() {
 		return standardTime;
 	}
 
-	public void setStandardTime(Float standardTime) {
+	public void setStandardTime(Long standardTime) {
 		this.standardTime = standardTime;
 	}
 
-	public Float getCraftTime() {
+	public Long getCraftTime() {
 		return craftTime;
 	}
 
-	public void setCraftTime(Float craftTime) {
+	public void setCraftTime(Long craftTime) {
 		this.craftTime = craftTime;
 	}
 
@@ -752,6 +756,14 @@ public class OaOrder implements Serializable {
 		this.feedingTime = feedingTime;
 	}
 
+	public Timestamp getGoodsTime() {
+		return goodsTime;
+	}
+
+	public void setGoodsTime(Timestamp goodsTime) {
+		this.goodsTime = goodsTime;
+	}
+
 	public int hashCode() {
 		int hash = 0;
 		hash += (this.id != null ? this.id.hashCode() : 0);
@@ -759,7 +771,6 @@ public class OaOrder implements Serializable {
 	}
 
 	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are not set
 		if (!(object instanceof OaOrder)) {
 			return false;
 		}
