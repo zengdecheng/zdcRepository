@@ -34,6 +34,7 @@ public class BxDaoImpl extends DaoHibernate implements BaseDao {
 	public static final String GET_OA_STAFF = "get_oa_staff";
 	public static final String LOGIN = "login";
 	public static final String PROCESSORDER = "processorder";
+	public static final String GET_CATEGORY = "get_category";
 	public static final String GET_OA_STAFF_PWD="get_oa_staff_pwd";
 
     /**
