@@ -75,6 +75,7 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 				});
 			},
 			choseStyle:function(){
+				var url = 
 				$("#ck_last").prop("checked",false);
 				if($(this).prev("input:checkbox[name='oaOrder.styleCraft']").prop("checked")==true){
 					$(this).prev("input:checkbox[name='oaOrder.styleCraft']").prop("checked",false);
@@ -85,8 +86,15 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 				$("input:checkbox[name='oaOrder.styleCraft']:checked").each(function(index,data){
 					totalTime += data.time;
 				});
+				
+				//产前版完成日期
+				if($("#isPreproduct").val()){
+					url = "/bx/getFeedingTime?orderId=" + $(window.parent.document).find("#orderId").val() + "&craftTime=" +totalTime+"&productTime="+$("#isPreproduct").val();
+				}else{
+					url = "/bx/getFeedingTime?orderId=" + $(window.parent.document).find("#orderId").val() + "&craftTime=" +totalTime;
+				}
 				$.ajax({
-                    url: "/bx/getFeedingTime?orderId=" + $(window.parent.document).find("#orderId").val() + "&craftTime=" +totalTime,
+                    url: url,
                     type: "post",
                     dataType: "json",
                     success: function(data) {
