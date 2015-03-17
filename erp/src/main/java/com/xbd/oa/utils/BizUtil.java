@@ -290,35 +290,62 @@ public class BizUtil {
 	/**
 	 * 根据节点时间和duration算出一个时间（除去非工作时间外）
 	 * 
-	 * @param planStart
-	 *            计划开始时间
+	 * @param date
+	 *            传入要计算的日期时间
 	 * @param duration
 	 *            节点时长
 	 * @return
 	 */
-	public static Timestamp culPlanDate(Timestamp planStart, Long duration) {
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 18:00:00");
-		String endWork_str = df.format(planStart);
-		Timestamp endWork = null;// 工作结束时间
-		try {
-			df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			endWork = new Timestamp(df.parse(endWork_str).getTime());
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		long between = endWork.getTime() - planStart.getTime();// 算出开始时间与结束时间差
-		if (between >= duration) { // 时间差大于duration则该节点开始时间仍属于今天工作时间内
-			return new Timestamp(planStart.getTime() + duration);
-		} else { // 结束时间已不属于今天的范围
-			long newDuration = duration - between;
+	public static Timestamp culPlanDate(Timestamp date, Long duration) {
+//		date = getWorkTime(date); // 得到一个工作时间
+		if (duration >= 0) {
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 18:00:00");
+			String endWork_str = df.format(date);
+			Timestamp endWork = null;// 工作结束时间
+			try {
+				df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				endWork = new Timestamp(df.parse(endWork_str).getTime());
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			long between = endWork.getTime() - date.getTime();// 算出开始时间与结束时间差
+			if (between >= duration) { // 时间差大于duration则该节点开始时间仍属于今天工作时间内
+				return new Timestamp(date.getTime() + duration);
+			} else { // 结束时间已不属于今天的范围
+				long newDuration = duration - between;
 
-			// 1000*60*60 1个小时,15个小时即是晚6:00到早9:00的非工作时间
-			Timestamp newPlanStart = new Timestamp(endWork.getTime() + (1000 * 60 * 60 * 15)); // 得到一个新的计划开始时间，即第二天上午9点
+				// 1000*60*60 1个小时,15个小时即是晚6:00到早9:00的非工作时间
+				Timestamp newDate = new Timestamp(endWork.getTime() + (1000 * 60 * 60 * 15)); // 得到一个新的计划开始时间，即第二天上午9点
 
-			newPlanStart = getWorkTime(newPlanStart); // 得到一个工作时间
+				newDate = getWorkTime(newDate); // 得到一个工作时间
 
-			return culPlanDate(newPlanStart, newDuration);
+				return culPlanDate(newDate, newDuration);
+			}
+		} else {
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 9:00:00");
+			String startWork_str = df.format(date);
+			Timestamp startWork = null;// 工作开始时间
+			try {
+				df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				startWork = new Timestamp(df.parse(startWork_str).getTime());
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			long between = date.getTime() - startWork.getTime();// 算出开始时间与结束时间差
+			if (between >= duration) { // 时间差大于duration则该节点开始时间仍属于今天工作时间内
+				return new Timestamp(date.getTime() + duration);
+			} else { // 结束时间已不属于今天的范围
+				long newDuration = duration + between;
+
+				// 1000*60*60 1个小时,15个小时即是晚6:00到早9:00的非工作时间
+				Timestamp newDate = new Timestamp(startWork.getTime() - (1000 * 60 * 60 * 15)); // 得到一个新的计划开始时间，即前一天下午6点
+
+				newDate = getWorkTime(newDate); // 得到一个工作时间
+
+				return culPlanDate(newDate, newDuration);
+			}
 		}
 	}
 
