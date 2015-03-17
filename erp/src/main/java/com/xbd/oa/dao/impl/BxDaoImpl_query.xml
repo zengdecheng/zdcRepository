@@ -926,6 +926,7 @@ ote.oa_timebase = ot.id ${case}1">
 			<param fspname="date1" sqlname="ood.wf_real_finish" op="&gt;="></param>
 			<param fspname="date2" sqlname="ood.wf_real_finish" op="&lt;"></param>
 			<param fspname="wf_step" sqlname="ood.wf_step"></param>
+			<param fspname="type" sqlname="oo.type"></param>
 		</parser>
 	</function>
 	
