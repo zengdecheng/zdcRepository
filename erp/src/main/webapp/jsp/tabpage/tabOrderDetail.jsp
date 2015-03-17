@@ -93,7 +93,7 @@
 						<div style="padding: 25 0 25 0;display:none" id="isPreProductDiv">
 							<span style="color: red;">*</span>产前版完成日期：<input type="text"  id="isPreproduct"
 								class="z_inp2 createTime" style="width: 150px;" name="oaOrder.preVersionDate"
-								onFocus="WdatePicker({readOnly:true,dateFmt: 'yyyy-MM-dd'})" />
+								onFocus="WdatePicker({readOnly:true,dateFmt: 'yyyy-MM-dd 18:00:00'})" />
 						</div>
 						<div style="padding: 25 0 25 0;">
 							<span style="color: red;">*</span>二级分类：<select id="clothClass"
