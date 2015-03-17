@@ -27,7 +27,7 @@
 					<dd>
 						<select name="oaTimebase.clothClass" style="width: 153px;">
 							<s:iterator value="%{@com.xbd.oa.utils.XbdBuffer@getOaDtList('1')}">
-								<s:if test="${code eq oaTimebase.clothClass}">
+								<s:if test="code = oaTimebase.clothClass">
 									<option selected value="${code }">${value }</option>
 								</s:if>
 								<s:else>
@@ -42,7 +42,7 @@
 					<dd>
 						<select id="process" style="width: 153px;">
 							<s:iterator value="%{@com.xbd.oa.utils.WorkFlowUtil@getProcessDefinitionList()}">
-								<s:if test="${map.id eq oaTimebase.defineId}">
+								<s:if test="map.id = oaTimebase.defineId">
 									<option selected process_id="${map.id }" process_key="${map.key }">${map.name }</option>
 								</s:if>
 								<s:else>

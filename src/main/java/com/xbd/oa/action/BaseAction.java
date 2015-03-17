@@ -8,6 +8,7 @@ import org.use.base.annotation.EJB;
 import org.use.base.manager.Manager;
 
 import com.xbd.oa.business.BaseManager;
+import com.xbd.oa.utils.XbdBuffer;
 
 public class BaseAction extends Action {
 	private static final long serialVersionUID = 1L;
@@ -17,6 +18,8 @@ public class BaseAction extends Action {
 	
 	public List<LazyDynaMap> beans;
 	public LazyDynaMap bean;
+	
+	private String systemEnvironment = XbdBuffer.getClothesSizesByPosition("systemEnvironment");
 	
 	public Manager getBiz() {
 		return manager;
@@ -35,5 +38,9 @@ public class BaseAction extends Action {
 
 	public void setBean(LazyDynaMap bean) {
 		this.bean = bean;
+	}
+	
+	public String getSystemEnvironment() {
+		return systemEnvironment;
 	}
 }
