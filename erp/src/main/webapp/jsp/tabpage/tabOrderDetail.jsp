@@ -71,16 +71,9 @@
 					<td width="260px">男/女款：<span id="styleType"></span></td>
 				</tr>
 				<tr height="28px;">
-					<td width="260px">一级分类：<span id="styleClass"></span></td>
-					<%-- <td width="260px"><span style="color: red;">*</span>二级分类：<select
-						id="clothClass" name="oaOrder.clothClass" style="width: 140px;">
-							<s:iterator
-								value="%{@com.xbd.oa.utils.XbdBuffer@getOaDtList('1')}">
-								<option value="<s:property value="code"/>"><s:property
-										value="value" /></option>
-							</s:iterator>
-					</select></td> --%>
-					<td colspan="2">特殊工艺：<%-- <span id="styleCraft"></span> --%> 
+					<td width="260px">&nbsp;品&nbsp;&nbsp;&nbsp;类：&nbsp;<select id="categorys" name="oaOrder.styleClass">
+						</select></td>
+					<td colspan="2">特殊工艺：
 						<input name="oaOrder.styleCraft" type="checkbox" value="印花"><span class="sp_style_craft" style="cursor:pointer">印花</span>&nbsp;&nbsp;
 						<input name="oaOrder.styleCraft" type="checkbox" value="绣花"><span class="sp_style_craft" style="cursor:pointer">绣花</span>&nbsp;&nbsp;
 						<input name="oaOrder.styleCraft" type="checkbox" value="订珠"><span class="sp_style_craft" style="cursor:pointer">订珠</span>&nbsp;&nbsp;
@@ -92,7 +85,11 @@
 					</td>
 				</tr>
 				<tr height="28px;">
-					<td width="260px"><div style="padding: 25 0 25 0;display:none" id="isPreProductDiv">
+					<td width="260px">
+						<div style="padding: 25 0 25 0;">
+							建议投料日期：<span id="feeding_time"></span>
+						</div>
+						<div style="padding: 25 0 25 0;display:none" id="isPreProductDiv">
 							<span style="color: red;">*</span>产前版完成日期：<input type="text"  id="isPreproduct"
 								class="z_inp2 createTime" style="width: 150px;" name="oaOrder.preVersionDate"
 								onFocus="WdatePicker({readOnly:true,dateFmt: 'yyyy-MM-dd'})" />
