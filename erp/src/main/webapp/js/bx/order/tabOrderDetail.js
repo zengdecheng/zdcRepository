@@ -10,6 +10,8 @@ requirejs.config({
 var materialTr,cusMaterialTr,sizeTitle,width,detailUpdateFlag = false,layerNum = 0;
 var activeIndex = "2";
 var wfStepIndex; //订单节点index
+var selectedIndex = -1;
+var categorys = {};
 define([ "u","layer","v","vl" ], function(u,layer) {
 	var fn = {
 		init : function() {
@@ -56,6 +58,15 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 			$("#sp_none").on("click",biz.event.clearStyle);
 			$("#ck_last").on("click",biz.event.clearStyle);
 			$("input:checkbox[name='oaOrder.styleCraft']:not(:last)").on("click",biz.event.choseStyle);
+			$("#categorys").change(function(){
+				selectedIndex = this.selectedIndex;
+				//清空特殊工艺选择
+				biz.event.clearStyle();
+				//初始化各个选项的耗时
+				biz.event.setStyleCarft(selectedIndex);
+				//计算出建议投料日期
+				
+			})
 		},
 		event : {
 			clearStyle:function(){
@@ -70,6 +81,14 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 				}else{
 					$(this).prev("input:checkbox[name='oaOrder.styleCraft']").prop("checked",true);
 				}
+				var totalTime = 0;
+//				$("input:checkbox[name='oaOrder.styleCraft']:not(:last)").each(function(index,data){
+//					console.info(index+"   " + data.checked)
+//				});
+				$("input:checkbox[name='oaOrder.styleCraft']:checked").each(function(index,data){
+					totalTime += data.time;
+				});
+				console.info(totalTime);
 			},
 			initValidation:function(){
 				$("#tabOrderDetail").validationEngine('attach',{
@@ -106,7 +125,8 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 				$("#styleCode").text($(window.parent.document).find("#styleCode").val());
 				$("#styleDesc").text($(window.parent.document).find("#styleDesc").val());
 				$("#styleType").text($(window.parent.document).find("#styleType").val());
-				$("#styleClass").text($(window.parent.document).find("#styleClass").val());
+				
+				
 				$("#clothClass").val($(window.parent.document).find("#clothClass").val());
 				//$("#styleCraft").text($(window.parent.document).find("#styleCraft").val());
 				//初始化特殊工艺
@@ -167,6 +187,7 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 				$.ajax({
                     url: "/bx/jsonGetSecondNode?orderId=" + $(window.parent.document).find("#orderId").val() + "&orderSizeId=" + $(window.parent.document).find("#orderSizeId").val() + "&wfStepIndex=" + wfStepIndex,
                     type: "post",
+                    dataType: "json",
                     async: false,
                     success: function(data) {
                     	if("ajaxLogin" == data){
@@ -178,6 +199,7 @@ define([ "u","layer","v","vl" ], function(u,layer) {
                 			biz.event.setMaterialTableData(data.oaMaterialList,false); //设置用料搭配列表
                 			biz.event.setCusMaterialTableData(data.oaCusMaterialList,0); //设置客供料列表other_file_name
                 			biz.event.setManageInfoData(data.oaOrderDetail); //设置管理信息
+                			biz.event.setCategorys(data.categorys); //设置管理信息
                 		} else {
                 			alert(data.msg);
                 		}
@@ -456,6 +478,39 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 						$("#hid_attachment_url").val(orderDetail.other_file);
 					}
 				}
+			},
+			setStyleCarft:function(idx){
+				$("input:checkbox[name='oaOrder.styleCraft']:not(:last)").each(function(index,data){
+					if(index==0){
+						$(this).prop("time",categorys[idx].map.printing_time);
+					}else if(index==1){
+						$(this).prop("time",categorys[idx].map.embroidery);
+					}else if(index==2){
+						$(this).prop("time",categorys[idx].map.beads_time);
+					}else if(index==3){
+						$(this).prop("time",categorys[idx].map.folding_time);
+					}else if(index==4){
+						$(this).prop("time",categorys[idx].map.dalan_time);
+					}else if(index==5){
+						$(this).prop("time",categorys[idx].map.washwater_time);
+					}else if(index==6){
+						$(this).prop("time",categorys[idx].map.other_time);
+					}
+				});
+			},
+			setCategorys:function(datas){
+				categorys = datas;
+				var styleClass = $(window.parent.document).find("#styleClass").val();
+				var temp = "";
+				$.each(datas,function(index,data){
+					if(data.map.name == styleClass){
+						$("#categorys").append('<option selected="selected">'+data.map.name+"("+data.map.code+")</option>");
+						selectedIndex = 0;
+					}else{
+						$("#categorys").append("<option>"+data.map.name+"("+data.map.code+")</option>");
+					}
+				});
+				biz.event.setStyleCarft(0);
 			},
 			cusMaterialRemove : function() { //客供料删除行按钮操作
 				if ($(".cus_material_td:checked").length <= 0) {
