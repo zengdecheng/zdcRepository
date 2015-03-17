@@ -91,6 +91,7 @@ define([ "u","layer","v","vl" ], function(u,layer) {
                     dataType: "json",
                     success: function(data) {
             			$("#feeding_time").html(data);
+            			$("#feeding_time_value").val(data);
                     }
                 });
 				
