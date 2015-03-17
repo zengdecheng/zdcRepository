@@ -9099,26 +9099,7 @@ public class BxAction extends Action {
 
 		Struts2Utils.renderJson(resMap);
 	}
-	/**
-	 * CRM获取品类
-	 * @author bzt
-	 * @return
-	 */
-	public void getCategory(){
-		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_CATEGORY_BY_SQL);
-		beans = manager.getObjectsBySql(fsp);
-		try{
-		 if(null !=beans && beans.size()>0){
-			result = JSONArray.fromObject(beans).toString();
-			System.out.println(result);
-			Struts2Utils.renderText(result);
-		 	}
-		}catch (Exception e){
-			e.printStackTrace();
-			Struts2Utils.renderText("no");
-		}
-	}
-
+	
 	public OaLogistics getOaLogistics() {
 		return oaLogistics;
 	}
