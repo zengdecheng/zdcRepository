@@ -55,44 +55,34 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 				layer.close(layerNum);
 			});
 			$(".sp_style_craft").on("click",biz.event.choseStyle);
+			//$("input:checkbox[name='oaOrder.styleCraft']:not(:last)").on("click",biz.event.choseStyle);
+			$("input:checkbox[name='oaOrder.styleCraft']:not(:last)").on("change",biz.event.choseStyle);
 			$("#sp_none").on("click",biz.event.clearStyle);
 			$("#ck_last").on("click",biz.event.clearStyle);
-			$("input:checkbox[name='oaOrder.styleCraft']:not(:last)").on("click",biz.event.choseStyle);
+			$("#isPreproduct").on("blur",biz.event.calcFeedingTime);
 			$("#categorys").change(function(){
 				selectedIndex = this.selectedIndex;
 				//清空特殊工艺选择
 				biz.event.clearStyle();
 				//初始化各个选项的耗时
 				biz.event.setStyleCarft(selectedIndex);
-				//计算出建议投料日期
-				
 			})
 		},
 		event : {
-			clearStyle:function(){
-				$("input:checkbox[name='oaOrder.styleCraft']:not(:last)").each(function(){
-					$(this).prop("checked",false);
-				});
-			},
-			choseStyle:function(){
-				var url = 
-				$("#ck_last").prop("checked",false);
-				if($(this).prev("input:checkbox[name='oaOrder.styleCraft']").prop("checked")==true){
-					$(this).prev("input:checkbox[name='oaOrder.styleCraft']").prop("checked",false);
-				}else{
-					$(this).prev("input:checkbox[name='oaOrder.styleCraft']").prop("checked",true);
-				}
+			calcFeedingTime:function(){
 				var totalTime = 0;
 				$("input:checkbox[name='oaOrder.styleCraft']:checked").each(function(index,data){
-					totalTime += data.time;
+					if(data.time){
+						totalTime += data.time;
+					}
 				});
-				
 				//产前版完成日期
+				var url = "";
 				if($("#isPreproduct").val()){
 					url = "/bx/getFeedingTime?orderId=" + $(window.parent.document).find("#orderId").val() + "&craftTime=" +totalTime+"&productTime="+$("#isPreproduct").val();
 				}else{
 					url = "/bx/getFeedingTime?orderId=" + $(window.parent.document).find("#orderId").val() + "&craftTime=" +totalTime;
-				}
+				};
 				$.ajax({
                     url: url,
                     type: "post",
@@ -102,31 +92,22 @@ define([ "u","layer","v","vl" ], function(u,layer) {
             			$("#feeding_time_value").val(data);
                     }
                 });
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
+			},
+			clearStyle:function(){
+				$("input:checkbox[name='oaOrder.styleCraft']:not(:last)").each(function(){
+					$(this).prop("checked",false);
+				});
+				biz.event.calcFeedingTime();
+			},
+			choseStyle:function(){
+				var url =""; 
+				$("#ck_last").prop("checked",false);
+				if($(this).prev("input:checkbox[name='oaOrder.styleCraft']").prop("checked")==true){
+					$(this).prev("input:checkbox[name='oaOrder.styleCraft']").prop("checked",false);
+				}else{
+					$(this).prev("input:checkbox[name='oaOrder.styleCraft']").prop("checked",true);
+				}
+				biz.event.calcFeedingTime();
 			},
 			initValidation:function(){
 				$("#tabOrderDetail").validationEngine('attach',{
@@ -237,7 +218,13 @@ define([ "u","layer","v","vl" ], function(u,layer) {
                 			biz.event.setMaterialTableData(data.oaMaterialList,false); //设置用料搭配列表
                 			biz.event.setCusMaterialTableData(data.oaCusMaterialList,0); //设置客供料列表other_file_name
                 			biz.event.setManageInfoData(data.oaOrderDetail); //设置管理信息
-                			biz.event.setCategorys(data.categorys); //设置管理信息
+                			biz.event.setCategorys(data.categorys); 		//品类初始化
+                			var oa_feeding_time = $(window.parent.document).find("#oa_feeding_time").val();
+                			if(oa_feeding_time){
+                				$("#feeding_time").html(data);
+                			}else{
+                				biz.event.calcFeedingTime();
+                			}
                 		} else {
                 			alert(data.msg);
                 		}
@@ -280,6 +267,7 @@ define([ "u","layer","v","vl" ], function(u,layer) {
                 			biz.event.setCusMaterialTableData(data.oaCusMaterialList,sizeTitle.length); //设置客供料列表other_file_name
 //                			biz.event.setManageInfoData(data.oaOrderDetail); //设置管理信息
                 			$(".has_id").remove();//移除所有以上所有记录先前id
+                			biz.event.setCategorys(data.categorys); 		//品类初始化
                 		} else {
                 			alert(data.msg);
                 		}
