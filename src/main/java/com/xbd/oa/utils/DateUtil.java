@@ -45,6 +45,15 @@ public class DateUtil {
 	public static String longToddhhmm(Date begin, Date end) {
 		return longToddhhmm(end.getTime() - begin.getTime());
 	}
+	
+	public static String longTohh(Long time) {
+		time = time / 1000;
+		long hour = time % (24 * 3600) / 3600;
+		return hour + "小时";
+	}
+	public static String longTohh(Date begin, Date end) {
+		return longToddhhmm(end.getTime() - begin.getTime());
+	}
 
 	public static String longTohhmm(Long time) {
 		time = time / 1000;
