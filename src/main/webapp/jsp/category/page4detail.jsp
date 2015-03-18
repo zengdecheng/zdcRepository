@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="s" uri="/struts-tags"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -14,7 +15,7 @@ input {
 }
 </style>
 	<div class="step_tool" style="float: none; margin: 0 0 5px;">
-		<span>一级品类管理&nbsp;&lt;&lt;&nbsp;品类添加</span>
+		<span>一级品类管理&nbsp;&lt;&lt;&nbsp;品类详情</span>
 	</div>
 	<div
 		style="background: #4b8df8; font-size: 14px; margin: 5px 5px 5px 0; color: #ffffff; width: 100%;">
@@ -25,23 +26,17 @@ input {
 			<table style="width: 1000px;">
 				<tr>
 					<td height="35" style="width: 50px;"><span style="color: red">*</span>名称：</td>
-					<td style="width: 283px;"><input type="text"
-						name="oaCategory.name"></td>
+					<td style="width: 283px;">${oaCategory.name}</td>
 					<td style="width: 50px;"><span style="color: red">*</span>编号：</td>
-					<td style="width: 283px;"><input type="text"
-						name="oaCategory.code"></td>
+					<td style="width: 283px;">${oaCategory.code}</td>
 					<td style="width: 50px;"><span style="color: red">*</span>状态：</td>
-					<td style="width: 283px;"><select name="oaCategory.status"
-						style="height: 18px; width: 120px;">
-							<option>请选择</option>
-							<option value="0">禁用</option>
-							<option value="1">激活</option>
-					</select></td>
+					<td style="width: 283px;"><s:if test="0 == oaCategory.status">禁用</s:if>
+						<s:elseif test="1 == oaCategory.status">激活</s:elseif>
+						<s:else>未知</s:else></td>
 				</tr>
 				<tr>
 					<td>说明：</td>
-					<td colspan="5"><textarea style="width: 490px; height: 80px;"
-							name="oaCategory.explainTxt"></textarea></td>
+					<td colspan="5">${oaCategory.explainTxt }</td>
 				</tr>
 			</table>
 		</div>
@@ -53,51 +48,46 @@ input {
 			<table style="width: 1000px;">
 				<tr>
 					<td width="140" height="30"><span style="color: red">*</span>大货标准缓冲（小时）：</td>
-					<td width="200"><input type="text" name="oaCategory.dahuoCyc"></td>
+					<td width="200">${oaCategory.dahuoCyc }</td>
 					<td width="140"><span style="color: red">*</span>打版标准缓冲（小时）：</td>
-					<td width="200"><input type="text" name="oaCategory.dabanCyc"></td>
+					<td width="200">${oaCategory.dabanCyc }</td>
 					<td width="86">&nbsp;</td>
 					<td width="200">&nbsp;</td>
 				</tr>
 				<tr>
 					<td height="30">绣花（小时）：</td>
-					<td><input type="text" name="oaCategory.embroidery"></td>
+					<td>${oaCategory.embroidery }</td>
 					<td>洗水（小时）：</td>
-					<td><input type="text" name="oaCategory.washwaterTime"></td>
+					<td>${oaCategory.washwaterTime }</td>
 					<td>印花（小时）：</td>
-					<td><input type="text" name="oaCategory.printingTime"></td>
+					<td>${oaCategory.printingTime }</td>
 				</tr>
 				<tr>
 					<td height="30">缩折/打条（小时）：</td>
-					<td><input type="text" name="oaCategory.foldingTime"></td>
+					<td>${oaCategory.foldingTime }</td>
 					<td>打揽（小时）：</td>
-					<td><input type="text" name="oaCategory.dalanTime"></td>
+					<td>${oaCategory.dalanTime }</td>
 					<td>订珠（小时）：</td>
-					<td><input type="text" name="oaCategory.beadsTime"></td>
+					<td>${oaCategory.beadsTime }</td>
 				</tr>
 				<tr>
 					<td height="30">销售等待（小时）：</td>
-					<td><input type="text" name="oaCategory.sellWait"></td>
+					<td>${oaCategory.sellWait }</td>
 					<td>货款等待（小时）：</td>
-					<td><input type="text" name="oaCategory.paymentWait"></td>
+					<td>${oaCategory.paymentWait }</td>
 					<td>其他（小时）：</td>
-					<td><input type="text" name="oaCategory.otherTime"></td>
+					<td>${oaCategory.otherTime }</td>
 				</tr>
 				<tr>
 					<td>备注：</td>
-					<td colspan="5"><textarea name="oaCategory.remark"
-							style="width: 505px; height: 80px;"></textarea></td>
+					<td colspan="5">${oaCategory.remark }</td>
 				</tr>
 			</table>
-			<div style="height: 40px; line-height: 50px; text-align: center;">
-				<input type="submit" value="保存" style="width: 115px; height: 25px;">
-				<input type="button" value="取消" style="width: 115px; height: 25px;">
-			</div>
 		</div>
 	</form>
 	<script type="text/javascript">
 		$(function() {
-			require("/category/page4edit.js", function(fn) {
+			require("/category/page4add.js", function(fn) {
 				fn.init();
 			});
 		});
