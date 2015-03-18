@@ -79,6 +79,7 @@ public class CategoryAction extends BaseAction {
 	 */
 	public String page4detail() {
 		oaCategory = findOaCategory(oaCategory);
+		oaCategory = ms2hour(oaCategory);
 		return "category/page4detail";
 	}
 
@@ -92,6 +93,7 @@ public class CategoryAction extends BaseAction {
 	 */
 	public String page4edit() {
 		oaCategory = findOaCategory(oaCategory);
+		oaCategory = ms2hour(oaCategory);
 		return "category/page4edit";
 	}
 
@@ -195,6 +197,7 @@ public class CategoryAction extends BaseAction {
 			e.printStackTrace();
 			logger.error(e.getMessage());
 		}
+
 		return oaCategory;
 	}
 
@@ -208,6 +211,66 @@ public class CategoryAction extends BaseAction {
 	 * @return
 	 */
 	private OaCategory ms2hour(OaCategory oaCategory) {
+		try {
+			if (null != oaCategory.getDahuoCyc() && oaCategory.getDahuoCyc() > 0) {
+				oaCategory.setDahuoCyc(oaCategory.getDahuoCyc() / 60 / 60 / 1000);
+			}
+			if (null != oaCategory.getDabanCyc() && oaCategory.getDabanCyc() > 0) {
+				oaCategory.setDabanCyc(oaCategory.getDabanCyc() / 60 / 60 / 1000);
+			}
+
+			if (null != oaCategory.getEmbroidery() && oaCategory.getEmbroidery() > 0) {
+				oaCategory.setEmbroidery(oaCategory.getEmbroidery() / 60 / 60 / 1000);
+			} else {
+				oaCategory.setEmbroidery(0l);
+			}
+			if (null != oaCategory.getWashwaterTime() && oaCategory.getWashwaterTime() > 0) {
+				oaCategory.setWashwaterTime(oaCategory.getWashwaterTime() / 60 / 60 / 1000);
+			} else {
+				oaCategory.setWashwaterTime(0l);
+			}
+			if (null != oaCategory.getPrintingTime() && oaCategory.getPrintingTime() > 0) {
+				oaCategory.setPrintingTime(oaCategory.getPrintingTime() / 60 / 60 / 1000);
+			} else {
+				oaCategory.setPrintingTime(0l);
+			}
+
+			if (null != oaCategory.getFoldingTime() && oaCategory.getFoldingTime() > 0) {
+				oaCategory.setFoldingTime(oaCategory.getFoldingTime() / 60 / 60 / 1000);
+			} else {
+				oaCategory.setFoldingTime(0l);
+			}
+			if (null != oaCategory.getDalanTime() && oaCategory.getDalanTime() > 0) {
+				oaCategory.setDalanTime(oaCategory.getDalanTime() / 60 / 60 / 1000);
+			} else {
+				oaCategory.setDalanTime(0l);
+			}
+			if (null != oaCategory.getBeadsTime() && oaCategory.getBeadsTime() > 0) {
+				oaCategory.setBeadsTime(oaCategory.getBeadsTime() / 60 / 60 / 1000);
+			} else {
+				oaCategory.setBeadsTime(0l);
+			}
+
+			if (null != oaCategory.getSellWait() && oaCategory.getSellWait() > 0) {
+				oaCategory.setSellWait(oaCategory.getSellWait() / 60 / 60 / 1000);
+			} else {
+				oaCategory.setSellWait(0l);
+			}
+			if (null != oaCategory.getPaymentWait() && oaCategory.getPaymentWait() > 0) {
+				oaCategory.setPaymentWait(oaCategory.getPaymentWait() / 60 / 60 / 1000);
+			} else {
+				oaCategory.setPaymentWait(0l);
+			}
+			if (null != oaCategory.getOtherTime() && oaCategory.getOtherTime() > 0) {
+				oaCategory.setOtherTime(oaCategory.getOtherTime() / 60 / 60 / 1000);
+			} else {
+				oaCategory.setOtherTime(0l);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		}
 
 		return oaCategory;
 	}
