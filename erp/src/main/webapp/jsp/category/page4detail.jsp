@@ -14,7 +14,8 @@ input {
 	width: 160px;
 }
 </style>
-	<div class="step_tool" style="float: none; margin: 0 0 5px; width: 100%;">
+	<div class="step_tool"
+		style="float: none; margin: 0 0 5px; width: 100%;">
 		<span>一级品类管理&nbsp;&lt;&lt;&nbsp;品类详情</span>
 	</div>
 	<div
@@ -31,8 +32,7 @@ input {
 					<td style="width: 283px;">${oaCategory.code}</td>
 					<td style="width: 50px;"><span style="color: red">*</span>状态：</td>
 					<td style="width: 283px;"><s:if test="0 == oaCategory.status">禁用</s:if>
-						<s:elseif test="1 == oaCategory.status">激活</s:elseif>
-						<s:else>未知</s:else></td>
+						<s:elseif test="1 == oaCategory.status">激活</s:elseif> <s:else>未知</s:else></td>
 				</tr>
 				<tr>
 					<td>说明：</td>
@@ -84,13 +84,12 @@ input {
 				</tr>
 			</table>
 		</div>
+		<div style="height: 40px; line-height: 80px; text-align: center;">
+			<!-- <input type="submit" value="保存" style="width: 115px; height: 25px;"> -->
+			<input type="button" value="返回"
+				onclick="javascript:window.history.go(-1);"
+				style="width: 115px; height: 25px;">&nbsp;
+		</div>
 	</form>
-	<script type="text/javascript">
-		$(function() {
-			require("/category/page4detail.js", function(fn) {
-				fn.init();
-			});
-		});
-	</script>
 </body>
 </html>

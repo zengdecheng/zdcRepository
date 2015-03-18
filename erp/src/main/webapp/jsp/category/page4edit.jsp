@@ -92,7 +92,7 @@ input {
 			</table>
 			<div style="height: 40px; line-height: 50px; text-align: center;">
 				<input type="submit" value="保存" style="width: 115px; height: 25px;">
-				<input type="button" value="取消" style="width: 115px; height: 25px;">
+				<input type="button" value="取消" onclick="javascript:window.history.go(-1);" style="width: 115px; height: 25px;">
 			</div>
 		</div>
 		<input type="hidden" name="oaCategory.id" value="${oaCategory.id }" >
