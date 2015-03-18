@@ -25,4 +25,6 @@
 			<param fspname="sellOrderId" sqlname="sell_order_id"></param>
 		</parser>
 	</function>
+	<!-- crm获取oa品类 -->
+	<function name="get_category_by_sql" type="sql" sql="select name,code,status from oa_category"></function>
 </query>
