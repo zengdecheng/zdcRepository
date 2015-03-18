@@ -5285,6 +5285,7 @@ public class BxAction extends Action {
 		bean.set("relatedOrderId", oaOrder.getRelatedOrderId());
 		bean.set("relatedOrderType", oaOrder.getRelatedOrderType());
 		bean.set("hisOpt", oaOrder.getHisOpt());
+		bean.set("feeding_time", oaOrder.getFeedingTime());
 		bean.set("relatedOrderDetailId", "");
 		if (null != oaOrder.getRelatedOrderId() && oaOrder.getRelatedOrderId() > 0) { // 关联订单存在，则查询关联订单最新detail的Id
 			// FSPBean fspBean = new FSPBean();
