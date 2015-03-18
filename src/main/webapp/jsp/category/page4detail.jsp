@@ -14,7 +14,7 @@ input {
 	width: 160px;
 }
 </style>
-	<div class="step_tool" style="float: none; margin: 0 0 5px;">
+	<div class="step_tool" style="float: none; margin: 0 0 5px; width: 100%;">
 		<span>一级品类管理&nbsp;&lt;&lt;&nbsp;品类详情</span>
 	</div>
 	<div
@@ -87,7 +87,7 @@ input {
 	</form>
 	<script type="text/javascript">
 		$(function() {
-			require("/category/page4add.js", function(fn) {
+			require("/category/page4detail.js", function(fn) {
 				fn.init();
 			});
 		});
