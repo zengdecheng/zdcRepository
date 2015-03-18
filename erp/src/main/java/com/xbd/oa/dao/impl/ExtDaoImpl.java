@@ -24,6 +24,10 @@ public class ExtDaoImpl extends DaoHibernate implements BaseDao {
 	 * 根据crm的订单编号查询oa_order中是否有该订单
 	 */
 	public static final String GET_OA_ORDER_BY_SELL_ORDER_CODE="get_oa_order_by_sell_order_code";
+	/**
+	 * cmr获取品类列表
+	 */
+	public static final String GET_CATEGORY_BY_SQL="get_category_by_sql";
 
 	@Override
 	public String parseFspBean2Eql(FSPBean fsp, List params) {
