@@ -1,5 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
-<%@taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="s" uri="/struts-tags"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
@@ -7,7 +7,7 @@
 </head>
 
 <body>
-	<div class="step_tool" style="float: none; margin: 0 0 5px;">
+	<div class="step_tool" style="float: none; margin: 0 0 5px; width: 100%;">
 		<span>一级品类管理&nbsp;&lt;&lt;&nbsp;品类列表</span>
 	</div>
 	<div>
@@ -53,7 +53,7 @@
 	</div>
 	<script type="text/javascript">
 		$(function() {
-			require([ "/js/category/categoryList.js" ], function(fn) {
+			require([ "/category/page4list.js" ], function(fn) {
 				fn.init();
 			})
 		});
