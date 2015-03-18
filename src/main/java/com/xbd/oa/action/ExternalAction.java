@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.json.JSONArray;
+
 import org.apache.commons.beanutils.LazyDynaMap;
 import org.apache.commons.lang.StringUtils;
 import org.use.base.FSPBean;
@@ -21,6 +23,7 @@ import org.use.base.manager.Manager;
 import org.use.base.utils.base.DateUtils;
 
 import com.xbd.oa.business.BaseManager;
+import com.xbd.oa.dao.impl.BxDaoImpl;
 import com.xbd.oa.dao.impl.ExtDaoImpl;
 import com.xbd.oa.utils.BizUtil;
 import com.xbd.oa.utils.ConstantUtil;
@@ -761,7 +764,27 @@ public class ExternalAction extends Action {
 
 		return md5StrBuff.toString();
 	}
-
+	/**
+	 * CRM获取品类
+	 * @author bzt
+	 * @return
+	 */
+	public void getCategory(){
+		fsp.set(FSPBean.FSP_QUERY_BY_XML, ExtDaoImpl.GET_CATEGORY_BY_SQL);
+		List<LazyDynaMap> beans = manager.getObjectsBySql(fsp);
+		String result="";
+		try{
+		 if(null !=beans && beans.size()>0){
+			result = JSONArray.fromObject(beans).toString();
+			//System.out.println(result);
+			Struts2Utils.renderText(result);
+		 	}
+		}catch (Exception e){
+			e.printStackTrace();
+			Struts2Utils.renderText("no");
+		}
+	}
+	
 	/******************* CRM所需接口结束 ********************/
 
 	public OaOrder getOaOrder() {
