@@ -1,6 +1,5 @@
 package com.xbd.erp.category.action;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -9,7 +8,6 @@ import org.use.base.FSPBean;
 import com.xbd.oa.action.BaseAction;
 import com.xbd.oa.dao.impl.BxDaoImpl;
 import com.xbd.oa.vo.OaCategory;
-import com.xbd.oa.vo.OaStaff;
 
 @Results({ @Result(name = "page4list", type = "redirect", location = "category/list") })
 public class CategoryAction extends BaseAction {
@@ -33,7 +31,6 @@ public class CategoryAction extends BaseAction {
 	 */
 	// page4list
 	public String list() {
-		fsp = new FSPBean();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_CATEGORY_BY_SQL);
 		fsp.setPageFlag(FSPBean.ACTIVE_PAGINATION);
 		beans = manager.getObjectsBySql(fsp);
