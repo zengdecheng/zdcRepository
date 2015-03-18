@@ -82,6 +82,7 @@
 	<input type="hidden" id="orderSizeId" value="${bean.map.orderSizeId }">
 	<input type="hidden" id="orderId" value="${bean.map.orderId }">
 	<input type="hidden" id="orderDetail" value="${bean.map.orderDetail }">
+	<input type="hidden" id="oa_feeding_time" value="${bean.map.feeding_time }">
 	<input type="hidden" id="orderDetailId" value="${bean.map.orderDetailId }">
 	<input type="hidden" id="wfStepIndex" value="${bean.map.wfStepIndex }">
 	<input type="hidden" id="wfStep" value="${bean.map.wfStep }">
