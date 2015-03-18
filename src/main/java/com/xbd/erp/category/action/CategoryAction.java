@@ -37,6 +37,7 @@ public class CategoryAction extends BaseAction {
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_CATEGORY_BY_SQL);
 		fsp.setPageFlag(FSPBean.ACTIVE_PAGINATION);
 		beans = manager.getObjectsBySql(fsp);
+		fsp.setRecordCount(beans.size());
 		return "category/page4list";
 	}
 
