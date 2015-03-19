@@ -10,10 +10,10 @@
 			<tr>
 				<td><table cellpadding="0" cellspacing="0" border="0">
 						<tr>
-							<td width="60" height="40"><label class="">客户编号：</label></td>
+							<td width="60" height="40"><label class="">客户名称：</label></td>
 							<td width="135"><input type="text" class="z_inp2"
-								name="fsp.map.cus_code" value="${fsp.map.cus_code}" maxlength='20' /></td>
-							<td width="60"><label class="">样衣款式：</label></td>
+								name="fsp.map.cus_name" value="${fsp.map.cus_name}" maxlength='20' /></td>
+							<td width="60"><label class="">款号：</label></td>
 							<td width="135"><input type="text" class="z_inp2"
 								name="fsp.map.style_code" value="${fsp.map.style_code}" maxlength='20' /></td>
 							<td width="60"><label class="">订单编号：</label></td>
@@ -30,7 +30,7 @@
 									<option value="3"
 										<s:if test='fsp.map.type=="3"'>selected="selected"</s:if>>大货生产</option>
 							</select></td>
-							<td><input id="search_btn" type="button"
+							<td><input type="submit"
 								value="查&nbsp;&nbsp;询" class="z_submit2" /></td>
 						</tr>
 					</table></td>
@@ -44,15 +44,15 @@
 		<th width="8" height="40"></th>
 		<th width="40" height="40">优先级</th>
 		<th width="8" height="40"></th>
-		<th width="70">订单号</th>
+		<th width="70">订单编号</th>
 		<th width="65">订单类型</th>
 		<th width="65">款号</th>
 		<th width="100">款式描述</th>
 		<th width="80">客户名称</th>
 		<th width="40">数量</th>
 		<th width="80">创建日期</th>
-		<th width="90">剩余时间</th>
-		<th width="90">当前节点剩余时间</th>
+		<!-- <th width="90">剩余时间</th>
+		<th width="90">当前节点剩余时间</th> -->
 		<th width="45">负责MR</th>
 		<th width="90">当前节点</th>
 		<th width="45">负责人</th>
@@ -92,31 +92,29 @@
 			<td>${map.cus_name}</td>
 			<td>${map.want_cnt}</td>
 			<td>${map.begin_time}</td>
-			<td class="z_title_sty3"><s:property
+			<%-- <td class="z_title_sty3"><s:property
 					value="%{@com.xbd.oa.utils.WebUtil@minusTime(map.except_finish)}" /></td>
 			<td class="z_title_sty3"><s:property
-					value="%{@com.xbd.oa.utils.WebUtil@minusTimeAndOffset(map.wf_real_start,map.wf_step_duration)}" /></td>
+					value="%{@com.xbd.oa.utils.WebUtil@minusTimeAndOffset(map.wf_real_start,map.wf_step_duration)}" /></td> --%>
 			<td>${map.mr_name}</td>
 			<td>${map.wf_step_name}</td>
 			<td>${map.operator}</td>
 			<s:if
 				test="#session.is_manager != null && #session.is_manager.admin != map.operator">
-				<td class="z_title_sty1" colspan="2">${map.operator}</td>
+				<td class="z_title_sty1" colspan="2">${map.operator}
 			</s:if>
 			<s:elseif
 				test="#session.is_manager != null && #session.is_manager.admin == map.operator">
 				<td class="z_title_sty5"><a class="assign_btn"
 					oaOrderDetailId="${map.oa_order_detail}" oaOrderId="${map.id}"
-					href="javascript:void(0)">分配</a></td>
-				<td class="z_title_sty5"><a
-					href="/bx/processOrder?oaOrderDetail.id=${map.oa_order_detail}">处理</a></td>
+					href="javascript:void(0)">分配</a>
+					<a href="/bx/processOrder?oaOrderDetail.id=${map.oa_order_detail}">处理</a>
 			</s:elseif>
 			<s:else>
-				<td class="z_title_sty5" colspan="2"><a
-					href="/bx/processOrder?oaOrderDetail.id=${map.oa_order_detail}">处理</a></td>
+				<td class="z_title_sty5" colspan="2">
+					<a href="/bx/processOrder?oaOrderDetail.id=${map.oa_order_detail}">处理</a>
 			</s:else>
-			<td class="z_title_sty5"><a
-				href="/bx/viewOrderDetail?oaOrder.id=${map.id}">进度</a></td>
+				<a class="z_title_sty5" href="/bx/viewOrderDetail?oaOrder.id=${map.id}">进度</a></td>
 		</tr>
 	</s:iterator>
 </table>
@@ -132,7 +130,22 @@
 			value="取&nbsp;&nbsp;消" class="z_submit3 z_close cancel" />
 	</div>
 </div>
-<div id="Form"></div>
+<table cellspacing="0" cellpadding="0" border="1" class="z_table_style2" width="1008" style="margin-top: 10px; text-align: center">
+	<tr>
+		<td>生产总数</td>
+		<td>${statisticsMap.want_count}</td>
+		<td>黑色订单</td>
+		<td>${statisticsMap.blackNum} (${statisticsMap.black}%)</td>
+		<td>红色订单</td>
+		<td>${statisticsMap.redNum} (${statisticsMap.red}%)</td>
+		<td>黄色订单</td>
+		<td>${statisticsMap.orangeNum} (${statisticsMap.orange}%)</td>
+		<td>绿色订单</td>
+		<td>${statisticsMap.greenNum} (${statisticsMap.green}%)</td>
+		<td>蓝色订单</td>
+		<td>${statisticsMap.greenNum} (${statisticsMap.green}%)</td>
+	</tr>
+</table>
 <s:include value="/jsp/parts/page.jsp"></s:include>
 <%-- <s:include value="%{ctx}/jsp/parts/pageControl.jsp"></s:include> --%>
 <script type="text/javascript">
