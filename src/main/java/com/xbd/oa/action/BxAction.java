@@ -393,7 +393,8 @@ public class BxAction extends Action {
 
 	@SuppressWarnings("unchecked")
 	public String todo() throws ParseException {
-		//fsp.setPageFlag(FSPBean.ACTIVE_PAGINATION);
+		String orderField = Struts2Utils.getParameter("orderField");
+		Boolean orderType = Boolean.parseBoolean(Struts2Utils.getParameter("orderType"));
 		if (WebUtil.ifManager()) {
 			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_ORGWF_BY_SQL);
 			fsp.set("org", WebUtil.getCurrentLoginBx().getOaOrg());
@@ -433,7 +434,13 @@ public class BxAction extends Action {
 		}
 		bean.set("counts", counts);
 		CommonSort<LazyDynaMap> cs = new CommonSort<LazyDynaMap>();
-		cs.ListPropertySort(beans, "data", true);
+		if(StringUtils.isBlank(orderField)){
+			orderType = false;
+			orderField = "data";
+		}
+		cs.ListPropertySort(beans, orderField, orderType);
+		bean.set("orderType", orderType);
+		bean.set("orderField", orderField);
 		fsp.setRecordCount(beans.size());
 		beans = beans.subList((fsp.getPageNo()-1)*fsp.getPageSize(), (fsp.getPageNo()-1)*fsp.getPageSize()+(int)fsp.getRecordCount()%fsp.getPageSize());
 		processPageInfo(getObjectsCountSql(fsp));
