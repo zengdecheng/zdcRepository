@@ -95,7 +95,7 @@
 	</form>
 </div>
 <div style="width:100%;overflow-x:scroll;overflow-y:hidden">
-	<table border="0" cellspacing="0" cellpadding="0" class="z_table_style2" width="1008">
+	<table border="0" cellspacing="0" cellpadding="0" class="z_table_style2" width="1208">
 		<tr>
 			<th width="8" height="40"></th>
 			<th width="40" height="40">优先级</th>
@@ -112,7 +112,7 @@
 			<th width="90">技术完成日期（大货）</th>
 			<th width="90">品类</th>
 			<th width="50">负责MR</th>
-			<th width="110">当前节点</th>
+			<th width="70">当前节点</th>
 			<th width="50">负责人</th>
 			<th>操作</th>
 		</tr>
