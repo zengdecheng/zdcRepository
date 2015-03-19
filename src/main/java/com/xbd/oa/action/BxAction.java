@@ -6971,7 +6971,7 @@ public class BxAction extends Action {
 				double time = ((double) (tamp.getTime() - begin_time.getTime() + 24 * 60 * 60 * 1000) / (double) (except_finish.getTime() - begin_time.getTime() + 24 * 60 * 60 * 1000)) * 100;
 				DecimalFormat df = new DecimalFormat("#");
 				String time_consume = df.format(time);
-				oaOrderDetail.put("step_finish_time_consume", time_consume);// 设置当前节点流入的耗时
+				oaOrderDetail.put("step_finish_time_consume", time_consume);// 设置当前节点流出的耗时
 			} else {
 				oaOrderDetail.put("step_finish_time_consume", "");
 			}
