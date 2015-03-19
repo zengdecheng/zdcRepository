@@ -4489,9 +4489,10 @@ public class BxAction extends Action {
 			float data = 0;
 			int data1 = 0;
 			//toc部分
-			float order_Cycle = (beans.get(i).get("sell_ready_time") != null ? (float)beans.get(i).get("sell_ready_time") : 0) 
-					+ (beans.get(i).get("standard_time") != null ? (float)beans.get(i).get("standard_time") : 0)
-					+ (beans.get(i).get("craft_time") != null ? (float)beans.get(i).get("craft_time") : 0);
+			float order_Cycle = 0;
+//					(beans.get(i).get("sell_ready_time") != null ? (float)beans.get(i).get("sell_ready_time") : 0) 
+//					+ (beans.get(i).get("standard_time") != null ? (float)beans.get(i).get("standard_time") : 0)
+//					+ (beans.get(i).get("craft_time") != null ? (float)beans.get(i).get("craft_time") : 0);
 			
 			
 			if(order_Cycle > 0){
