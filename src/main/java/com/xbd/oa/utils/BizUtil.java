@@ -220,12 +220,23 @@ public class BizUtil {
 		}
 
 		// update by 张华 2015-03-11
-		// 判断如果此流程流转属于退回上一步，那么设置此节点back_flag字段为1
+		// 判断如果此流程流转属于退回上一步，那么设置此节点和之前节点back_flag字段为1
 		try {
 			int stepIndex1 = Integer.parseInt(lastOaOrderDetail.getWfStep().substring(lastOaOrderDetail.getWfStep().lastIndexOf("_") + 1, lastOaOrderDetail.getWfStep().length()));
 			int stepIndex2 = Integer.parseInt(delegateTask.getTaskDefinitionKey().substring(delegateTask.getTaskDefinitionKey().lastIndexOf("_") + 1, delegateTask.getTaskDefinitionKey().length()));
 			if (stepIndex1 > stepIndex2) {
 				lastOaOrderDetail.setBackFlag("1");
+			}
+			// 查询上一节点，并设置back_flag字段为1
+			FSPBean fsp = new FSPBean();
+			fsp.set("oaOrder", lastOaOrderDetail.getOaOrder());
+			fsp.set("wfStep", delegateTask.getTaskDefinitionKey());
+			// fsp.set("inx", lastOaOrderDetail.getInx().intValue());
+			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_OA_ORDER_DETAIL_BY_EQL);
+			List<OaOrderDetail> list = getBxMgr().getObjectsByEql(fsp);
+			for (OaOrderDetail oaOrderDetail : list) {
+				oaOrderDetail.setBackFlag("1");
+				getBxMgr().saveObject(oaOrderDetail);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -297,7 +308,7 @@ public class BizUtil {
 	 * @return
 	 */
 	public static Timestamp culPlanDate(Timestamp date, Long duration) {
-//		date = getWorkTime(date); // 得到一个工作时间
+		// date = getWorkTime(date); // 得到一个工作时间
 		if (duration >= 0) {
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 18:00:00");
 			String endWork_str = df.format(date);
