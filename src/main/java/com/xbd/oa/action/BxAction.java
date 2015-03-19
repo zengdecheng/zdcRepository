@@ -433,7 +433,9 @@ public class BxAction extends Action {
 		}
 		bean.set("counts", counts);
 		CommonSort<LazyDynaMap> cs = new CommonSort<LazyDynaMap>();
-		cs.ListPropertySort(beans, "data", false);
+		cs.ListPropertySort(beans, "data", true);
+		fsp.setRecordCount(beans.size());
+		beans = beans.subList((fsp.getPageNo()-1)*fsp.getPageSize(), (fsp.getPageNo()-1)*fsp.getPageSize()+(int)fsp.getRecordCount()%fsp.getPageSize());
 		processPageInfo(getObjectsCountSql(fsp));
 		return "todo";
 	}
