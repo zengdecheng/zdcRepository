@@ -409,16 +409,26 @@ public class BxAction extends Action {
 			counts[0] += (Integer)bean.get("want_cnt");
 			
 			//订单周期
-			Long sellReadyTime = (Long) bean.get("sell_ready_time");
-			Long standardTime = (Long)bean.get("standard_time");
-			Long craftTime = (Long)bean.get("craft_time");
+			Long sellReadyTime = bean.get("sell_ready_time")==null?0:(Long) bean.get("sell_ready_time");
+			Long standardTime = bean.get("standard_time")==null?0:(Long) bean.get("standard_time");
+			Long craftTime = bean.get("craft_time")==null?0:(Long) bean.get("craft_time");
 			Long orderTime = (sellReadyTime+standardTime+craftTime)/9*24;
 			//交期
 			Timestamp goodsTime = (Timestamp) bean.get("goods_time");
 			//当前工作时间
 			Timestamp workTime = BizUtil.getOperatingTime(new Timestamp(new Date().getTime()));
-			Double persent = (double) ((workTime.getTime()-goodsTime.getTime()+orderTime - 60*60*1000*24)/orderTime);
-			System.out.println(persent);
+			Integer persent = (int) ((workTime.getTime()-goodsTime.getTime()+orderTime - 60*60*1000*24)/orderTime);
+			if(persent>100){
+				
+			}else if(persent>=66){
+				
+			}else if(persent>=33){
+				
+			}else if(persent>=0){
+				
+			}else if(persent<0){
+			
+			}
 		}
 		
 		
