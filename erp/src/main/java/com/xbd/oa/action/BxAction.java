@@ -390,27 +390,7 @@ public class BxAction extends Action {
 		return "logout";
 	}
 
-	public void test() {
-		BizUtil.test();
-	}
-
-	public void testAssign() {
-		String id = (String) Struts2Utils.getParameter("id");
-		BizUtil.assignOther(Integer.parseInt(id), "付莹", "mr");
-	}
-
-	// @FSP(hasBack = AnnoConst.HAS_BACK_YES)
-	// public String todo() {
-	// fsp.setPageFlag(FSPBean.ACTIVE_PAGINATION);
-	// fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_ORDERWF_BY_SQL);
-	// fsp.set("operator", WebUtil.getCurrentLoginBx().getLoginName());
-	// fsp.set(FSPBean.FSP_ORDER, " order by oo.begin_time desc");
-	// beans = getObjectsBySql(fsp);
-	// processPageInfo(getObjectsCountSql(fsp));
-	// return "todo";
-	// }
-
-	@FSP(hasBack = AnnoConst.HAS_BACK_YES)
+	@SuppressWarnings("unchecked")
 	public String todo() throws ParseException {
 		fsp.setPageFlag(FSPBean.ACTIVE_PAGINATION);
 		if (WebUtil.ifManager()) {
@@ -422,32 +402,30 @@ public class BxAction extends Action {
 		}
 		fsp.set(FSPBean.FSP_ORDER, " order by oo.begin_time desc");
 		beans = getObjectsBySql(fsp);
-		Date date=new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS");
-		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-		String time=sdf.format(date);
-		LazyDynaMap bean =new LazyDynaMap();
-		java.text.DecimalFormat df=new java.text.DecimalFormat("#");
-		for(int i=0;i<beans.size();i++){
-				   bean = beans.get(i);
-				   float nowDate = sdf.parse(time).getTime();
-			       float begin_time = sdf1.parse( beans.get(i).get("begin_time").toString()).getTime();
-			       float except_finish = sdf1.parse(beans.get(i).get("except_finish").toString()).getTime();
-
-				  if(0!=begin_time && 0!=except_finish ){
-					  float baifenzhu=(nowDate-begin_time+24*60*60*1000)/(except_finish-begin_time+24*60*60*1000);
-					  float data=baifenzhu*100;
-					  bean.set("data", df.format(data));
-					  beans.set(i, bean);
-				  }else{
-					  bean.set("data", 0);
-					  beans.set(i, bean);
-				  }
+		//统计值[生产总数][黑色订单][红色订单][黄色订单][绿色订单][蓝色订单]
+		Integer[] counts = {0,0,0,0,0,0};
+		//优先级计算
+		for(LazyDynaMap bean:beans){
+			counts[0] += (Integer)bean.get("want_cnt");
+			
+			//订单周期
+			Long sellReadyTime = (Long) bean.get("sell_ready_time");
+			Long standardTime = (Long)bean.get("standard_time");
+			Long craftTime = (Long)bean.get("craft_time");
+			Long orderTime = (sellReadyTime+standardTime+craftTime)/9*24;
+			//交期
+			Timestamp goodsTime = (Timestamp) bean.get("goods_time");
+			//当前工作时间
+			Timestamp workTime = BizUtil.getOperatingTime(new Timestamp(new Date().getTime()));
+			Double persent = (double) ((workTime.getTime()-goodsTime.getTime()+orderTime - 60*60*1000*24)/orderTime);
+			System.out.println(persent);
 		}
+		
+		
 		processPageInfo(getObjectsCountSql(fsp));
 		return "todo";
 	}
-
+	
 	@FSP(hasBack = AnnoConst.HAS_BACK_YES)
 	public String order_list() {
 		fsp.setPageFlag(FSPBean.ACTIVE_PAGINATION);
