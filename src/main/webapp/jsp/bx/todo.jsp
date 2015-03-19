@@ -48,15 +48,15 @@
 		<th width="70">订单编号</th>
 		<th width="65">订单类型</th>
 		<th width="65">款号</th>
-		<th width="100">款式描述</th>
-		<th width="80">客户名称</th>
-		<th width="40">数量</th>
+		<th width="120">款式描述</th>
+		<th width="140">客户名称</th>
+		<th width="50">数量</th>
 		<th width="80" class="orderBy" name="begin_time" style="cursor:pointer;">创建日期</th>
 		<!-- <th width="90">剩余时间</th>
 		<th width="90">当前节点剩余时间</th> -->
-		<th width="45">负责MR</th>
-		<th width="90">当前节点</th>
-		<th width="45">负责人</th>
+		<th width="55">负责MR</th>
+		<th width="120">当前节点</th>
+		<th width="55">负责人</th>
 		<th colspan="3">操作</th>
 	</tr>
 	<s:if test="beans.size()==0">
@@ -103,17 +103,17 @@
 			<td>${map.operator}</td>
 			<s:if
 				test="#session.is_manager != null && #session.is_manager.admin != map.operator">
-				<td class="z_title_sty1" colspan="2">${map.operator}
+				<td class="z_title_sty1" colspan="3">${map.operator}
 			</s:if>
 			<s:elseif
 				test="#session.is_manager != null && #session.is_manager.admin == map.operator">
-				<td class="z_title_sty5"><a class="assign_btn"
+				<td class="z_title_sty5" colspan="3"><a class="assign_btn"
 					oaOrderDetailId="${map.oa_order_detail}" oaOrderId="${map.id}"
 					href="javascript:void(0)">分配</a>
 					<a href="/bx/processOrder?oaOrderDetail.id=${map.oa_order_detail}">处理</a>
 			</s:elseif>
 			<s:else>
-				<td class="z_title_sty5" colspan="2">
+				<td class="z_title_sty5" colspan="3">
 					<a href="/bx/processOrder?oaOrderDetail.id=${map.oa_order_detail}">处理</a>
 			</s:else>
 				<a class="z_title_sty5" href="/bx/viewOrderDetail?oaOrder.id=${map.id}">进度</a></td>
