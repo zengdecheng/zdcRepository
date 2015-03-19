@@ -551,26 +551,95 @@ ote.oa_timebase = ot.id ${case}1">
 	<!--订单列表查询 -->
 	<!-- update by fangwei 2014.12.03 -->
 	<!-- update by 张华 2014-12-30 -->
-	<!-- update by 范蠡 2015-01-29 -->
-	<function name="get_order_list" type="sql" sql="select * from (
+	<!-- update by 范蠡 2015-01-29
+	
+	LEFT JOIN(
 														SELECT
-															ROUND(((unix_timestamp() * 1000 - unix_timestamp(begin_time) * 1000)+24*60*60*1000)/((unix_timestamp(except_finish) * 1000 - unix_timestamp(begin_time) * 1000)+24*60*60*1000),1) * 100 as data,
-															o.sell_order_id, o.sell_order_code, o.oa_order_detail, o.his_opt, o.id, o.type, o.style_type, o.style_craft,o.style_class, o.sales,
-															o.style_code, o.style_desc, o.style_id, o.cus_id, o.cus_name, o.begin_time, o.want_cnt, o.mr_name, o.tpe_name,
-															o.wf_step_name, o.wf_step, o.wf_step_duration, o.cloth_class, o.pay_type, o.order_code, o.wf_plan_start, o.wf_real_start, o.except_finish, o.city, o.is_urgent,
-															o.operator, o.status
+															name,
+															dahuo_cyc,
+															daban_cyc
 														FROM
-															oa_order AS o
-														) oder  LEFT JOIN  (select oa_order_id, sewing_num, sewing_total, sewing_factory from oa_tpe) tpe
-														on oder.id = tpe.oa_order_id
-														LEFT JOIN (select oa_order_id as cost_oa_order_id, p_sam from oa_cost) cost
-                                                        ON oder.id = cost.cost_oa_order_id
-														LEFT JOIN  (select oa_order_id as qa_order_id, qualified_num_info, unqualified_num_info, qualified_total, unqualified_total from oa_qa) qa
-														ON oder.id = qa.qa_order_id
-														LEFT JOIN (select wf_step as odel_wf_step, wf_real_start as odel_wf_real_start, oa_order as odel_oa_order from oa_order_detail) odel
-															ON oder.id = odel_oa_order
-														LEFT JOIN (select wf_step as odelqa_wf_step, wf_real_start as odelqa_wf_real_start, oa_order as odelqa_oa_order from oa_order_detail) odelqa
-															ON oder.id = odelqa_oa_order
+															oa_category
+													)cg ON oder.style_class = cg.name
+	 -->
+	<function name="get_order_list" type="sql" sql="SELECT * FROM
+														(
+															SELECT
+																o.sell_order_id, o.sell_order_code, o.oa_order_detail, o.his_opt, o.id,
+																o.type, o.style_type, o.style_craft, o.style_class, o.sales, o.style_code,
+																o.style_desc, o.style_id, o.cus_id, o.cus_name, o.begin_time, o.want_cnt,
+																o.mr_name, o.tpe_name, o.wf_step_name, o.wf_step, o.wf_step_duration,
+																o.cloth_class, o.pay_type, o.order_code, o.wf_plan_start, o.wf_real_start,
+																o.except_finish, o.city, o.is_urgent, o.operator, o. STATUS,
+																o.sell_ready_time, o.standard_time, o.craft_time, o.feeding_time, o.goods_time
+															FROM
+																oa_order AS o
+														)oder
+													LEFT JOIN(
+														SELECT
+															oa_order_id, sewing_num, sewing_total, sewing_factory
+														FROM 
+														oa_tpe
+													)tpe ON oder.id = tpe.oa_order_id
+													LEFT JOIN(
+														SELECT
+															oa_order_id AS cost_oa_order_id, p_sam
+														FROM
+															oa_cost
+													)cost ON oder.id = cost.cost_oa_order_id
+													LEFT JOIN(
+														SELECT
+															value,
+															code
+														FROM
+															oa_dt
+													)dt ON oder.cloth_class = dt.code
+													LEFT JOIN(
+														SELECT
+															oa_order_id AS qa_order_id, qualified_num_info, unqualified_num_info,
+															qualified_total, unqualified_total
+														FROM
+															oa_qa
+													)qa ON oder.id = qa.qa_order_id
+													LEFT JOIN(
+														SELECT
+															wf_step AS odel_wf_step, wf_real_start AS odel_wf_real_start, wf_real_finish AS odel_wf_real_finish,
+															oa_order AS odel_oa_order
+														FROM
+															oa_order_detail
+														WHERE
+															1 = 1
+														AND(
+															wf_step = 'c_mr_improve_2'
+															OR wf_step = 'b_mr_improve_2'
+														) and back_flag != 1
+													)odel ON oder.id = odel_oa_order
+													LEFT JOIN(
+														SELECT
+															wf_step AS ppc_wf_step,
+															wf_real_start AS ppc_wf_real_start,
+															wf_real_finish AS ppc_wf_real_finish,
+															oa_order AS ppc_oa_order
+														FROM
+															oa_order_detail
+														WHERE
+															1 = 1
+														AND wf_step = 'c_ppc_assign_3'
+														and back_flag != 1
+													)ppc ON oder.id = ppc_oa_order
+													LEFT JOIN(
+														SELECT
+															wf_step AS odelqa_wf_step,
+															wf_real_start AS odelqa_wf_real_start,
+															wf_real_finish AS odelqa_wf_real_finish,
+															oa_order AS odelqa_oa_order
+														FROM
+															oa_order_detail
+														WHERE
+															1 = 1
+														AND wf_step = 'c_ppc_confirm_7'
+														 and back_flag != 1
+													)odelqa ON oder.id = odelqa_oa_order
 														where oder.STATUS = '0' and oder.wf_step != 'finish_999' ${case}1 GROUP BY oder.id order by oder.begin_time desc">
 		<parser index="1">
 			<param fspname="sell_order_code" sqlname="oder.sell_order_code" op="like"></param>
@@ -587,8 +656,6 @@ ote.oa_timebase = ot.id ${case}1">
 			<param fspname="city" sqlname="oder.city"></param>
 			<param fspname="wf_step" sqlname="oder.wf_step"></param>
 			<param fspname="is_urgent" sqlname="oder.is_urgent"></param>
-			<param fspname="data1" sqlname="oder.data"  op="&gt;"></param>
-			<param fspname="data2" sqlname="oder.data"  op="&lt;="></param>
 			<param fspname="start_time1" sqlname="oder.begin_time" op="&gt;="></param>
 			<param fspname="start_time2" sqlname="oder.begin_time" op="&lt;"></param>
 			<param fspname="sewing_factory" sqlname="tpe.sewing_factory"></param>
@@ -596,8 +663,12 @@ ote.oa_timebase = ot.id ${case}1">
 			<param fspname="odelqa_wf_step" sqlname="odelqa_wf_step"></param>
 			<param fspname="odel_wf_real_start" sqlname="odel_wf_real_start" op="&gt;="></param>
 			<param fspname="odel_wf_real_start1" sqlname="odel_wf_real_start" op="&lt;"></param>
+            <param fspname="odel_wf_real_finish" sqlname="odel_wf_real_finish" op="&gt;="></param>
+            <param fspname="odel_wf_real_finish1" sqlname="odel_wf_real_finish" op="&lt;"></param>
 			<param fspname="odelqa_wf_real_start" sqlname="odelqa_wf_real_start" op="&gt;="></param>
 			<param fspname="odelqa_wf_real_start1" sqlname="odelqa_wf_real_start" op="&lt;"></param>
+            <param fspname="ppc_wf_real_finish" sqlname="ppc_wf_real_finish" op="&gt;="></param>
+			<param fspname="ppc_wf_real_finish1" sqlname="ppc_wf_real_finish" op="&lt;"></param>
 		</parser>
 	</function>
 
@@ -1146,5 +1217,24 @@ ote.oa_timebase = ot.id ${case}1">
 	<!-- 查询品类列表 -->
 	<function name="list_category_by_sql" type="sql" sql="SELECT oa_category.`name`,id,explain_txt,oa_category.`code`,oa_category.`status`,oa_category.dahuo_cyc,oa_category.daban_cyc
 			FROM oa_category">
+	</function>
+	
+	<!-- 查询品类列表for ALl -->
+	<function name="list_category_all_by_sql" type="sql" sql="SELECT * FROM oa_category where 1=1 ${case}1">
+		<parser index="1">
+			<param fspname="style_class" sqlname="name"></param>
+		</parser>
+	</function>
+	
+	
+	<!-- 获取15分钟内未处理的任务 -->
+	<function name="get_oa_order_by_sql" type="sql" sql="select * from oa_order where 1=1  ">
+	</function>
+	
+	<!-- 订单详细查询 -->
+	<function name="list_oa_order_detail_order_by_sql" type="sql" sql="select * from oa_order_detail where 1=1 ${case}1 ">
+		<parser index="1">
+			<param fspname="oa_order" sqlname="oa_order"></param>
+		</parser>
 	</function>
 </query>

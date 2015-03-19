@@ -355,7 +355,7 @@ public class BizUtil {
 	 * @param newPlanStart
 	 * @return
 	 */
-	private static Timestamp getWorkTime(Timestamp newPlanStart) {
+	public static Timestamp getWorkTime(Timestamp newPlanStart) {
 		SimpleDateFormat df = new SimpleDateFormat("E");// 格式化得到星期
 		String day = df.format(newPlanStart);
 		df = new SimpleDateFormat("yyyy-MM-dd"); // 格式化得到日期
