@@ -46,10 +46,18 @@
 		</table>
 	</form>
 	<s:include value="/jsp/parts/page.jsp"></s:include>
-	<div style="float: right; margin-right: 100px; margin-top: -48px;">
-		<input id="addCategory" type="button" value="添加品类"
-			style="width: 100px; margin-right: 10px; height: 26px;" />
-	</div>
+	<s:if test="beans.size()==0">
+		<div style="float: right; margin-right: 100px; margin-top: 25px;">
+			<input id="addCategory" type="button" value="添加品类"
+				style="width: 100px; margin-right: 10px; height: 26px;" />
+		</div>
+	</s:if>
+	<s:else>
+		<div style="float: right; margin-right: 100px; margin-top: -48px;">
+			<input id="addCategory" type="button" value="添加品类"
+				style="width: 100px; margin-right: 10px; height: 26px;" />
+		</div>
+	</s:else>
 </div>
 <script type="text/javascript">
 	$(function() {
