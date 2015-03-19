@@ -307,7 +307,7 @@ public class CategoryAction extends BaseAction {
 				}
 
 				// 货期
-				if (oaOrder.getPreVersionDate() != null) {
+				if (oaOrder.getPreVersionDate() != null && null != oaOrder.getPreproductDays()) {
 					Date preVersion = (Date) oaOrder.getPreVersionDate();
 					Calendar c = Calendar.getInstance();
 					c.setTime(preVersion);
@@ -321,7 +321,7 @@ public class CategoryAction extends BaseAction {
 
 			manager.saveObject(oaOrder);
 		}
-		
+
 		return null;
 	}
 
@@ -425,7 +425,7 @@ public class CategoryAction extends BaseAction {
 				updateOaderDetail(stepMap_08);
 			}
 		}
-		
+
 		return null;
 	}
 
