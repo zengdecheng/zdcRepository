@@ -7,6 +7,8 @@ requirejs.config({
 	}
 });
 var oaOrderDetailId = 0, oaOrderId = 0, staffList;
+var orderType;
+var orderField;
 define(["p","f","u"], function(p,f,u) {
 	var fn = {
 		init : function(){
@@ -23,14 +25,43 @@ define(["p","f","u"], function(p,f,u) {
 					$(n).addClass("z_title_sty4");
 				}
 			});
+			var orderField = $("#orderField").val();
+			var orderType = $("#orderType").val();
+			if(orderType == "false"){
+				orderType ="↓";
+			}else{
+				orderType ="↑";
+			}
+			console.info(orderField);
+			if(orderField=="data"){
+				$(".orderBy[name=data]").html($(".orderBy[name=data]").html()+orderType);
+			}else{
+				$(".orderBy[name=begin_time]").html($(".orderBy[name=begin_time]").html()+orderType);
+			}
 		},
 		bind : function(){
 			$("#search_btn").on("click",biz.event.search);
+			$(".orderBy").on("click",biz.event.orderBy);
 			$(".assign_btn").on("click",biz.event.jsonGetStaff); //分配事件绑定
 			$('.cancel').on("click", biz.event.cancel); //取消事件绑定
 			$("#assignConfirmBtn").on("click" , biz.event.jsonAssignOrder); //确认分配事件绑定
 		},
 		event : {
+			orderBy: function(){
+				var orderField = $("#orderField").val();
+				var orderType = $("#orderType").val();
+				if($(this).attr("name")==orderField){
+					if(orderType=="true"){
+						$("#orderType").val("false");
+					}else{
+						$("#orderType").val("true");
+					}
+				}else{
+					$("#orderField").val($(this).attr("name"));
+					$("#orderType").val("false");
+				}
+				biz.event.list();
+			},
 			search : function(){
 				biz.event.list();
 			},

@@ -6,6 +6,8 @@
 <link rel="stylesheet" type="text/css" href="/css/form3.css" />
 <div class="z_assign_list" id="form_search_div">
 	<form method="post">
+		<input type="hidden" name="orderField" id="orderField" value="${bean.map.orderField}"/>
+		<input type="hidden" name="orderType" id="orderType" value="${bean.map.orderType}"/>
 		<table cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td><table cellpadding="0" cellspacing="0" border="0">
@@ -42,16 +44,14 @@
 <table border="0" cellspacing="0" cellpadding="0" class="z_table_style2"
 	width="1008">
 	<tr>
-		<th width="8" height="40"></th>
-		<th width="40" height="40">优先级</th>
-		<th width="8" height="40"></th>
+		<th width="70" height="40" class="orderBy" name="data" style="cursor:pointer;">优先级</th>
 		<th width="70">订单编号</th>
 		<th width="65">订单类型</th>
 		<th width="65">款号</th>
 		<th width="100">款式描述</th>
 		<th width="80">客户名称</th>
 		<th width="40">数量</th>
-		<th width="80">创建日期</th>
+		<th width="80" class="orderBy" name="begin_time" style="cursor:pointer;">创建日期</th>
 		<!-- <th width="90">剩余时间</th>
 		<th width="90">当前节点剩余时间</th> -->
 		<th width="45">负责MR</th>
@@ -66,7 +66,6 @@
 	</s:if>
 	<s:iterator value="beans" status="st">
 		<tr>
-			<td></td>
 			<td>
 				<s:if test="map.data < 0">
 					<div style="background-color:#0000FF;color:#fff;height:22px;line-height: 22px; text-align: center;">${map.data }%</div>
@@ -84,7 +83,6 @@
 					<div style="background-color:#000;color:#fff;height:22px; line-height: 22px; text-align: center;">${map.data }%</div>
 				</s:else>
 			</td>
-			<td></td>
 			<td><a class="z_title_sty5"
 				href="/bx/orderDetail?oaOrderDetail.id=${map.oa_order_detail}"
 				style="word-wrap: break-word;">${map.sell_order_code}</a></td>
