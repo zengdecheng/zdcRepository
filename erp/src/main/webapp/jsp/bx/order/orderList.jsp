@@ -66,7 +66,7 @@
 				<td><label class="">订单颜色：</label></td>
 				<td>
 					<input type="hidden" id="orderColorHid" value="${orderColor}" />
-					<s:select cssClass="z_inp2" list="#{'':'全部','0-33':'绿色','33-66':'橙色','66-100':'红色','100-99999999':'黑色'}" id="orderColor" theme="simple" name="orderColor" value="%{orderColor}" cssStyle="width: 170px"></s:select></td>
+					<s:select cssClass="z_inp2" list="#{'':'全部','-1':'蓝色','0':'绿色','33':'橙色','66':'红色','100':'黑色'}" id="orderColor" theme="simple" name="orderColor" value="%{orderColor}" cssStyle="width: 170px"></s:select></td>
 
 				<td><label class="">工厂：</label></td>
 				<td><input type="text" name="fsp.map.sewing_factory" value="${fsp.map.sewing_factory}" class="z_inp2" style="width:167px;" maxlength='20' /></td>
@@ -76,12 +76,21 @@
 				<td height="40"><label class="">MR补录订单日期：</label></td>
 				<td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odel_wf_real_start" value="${fsp.map.odel_wf_real_start}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odel_wf_real_start1" value="${fsp.map.odel_wf_real_start1}" onFocus="WdatePicker({readOnly:true})" /></td>
 
-				<td height="40"><label class="">QA完工日期：</label></td>
-				<td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odelqa_wf_real_start" value="${fsp.map.odelqa_wf_real_start}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odelqa_wf_real_start1" value="${fsp.map.odelqa_wf_real_start1}" onFocus="WdatePicker({readOnly:true})" /></td>
+				<td height="40"><label class="">MR完成日期：</label></td>
+				<td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odel_wf_real_finish" value="${fsp.map.odel_wf_real_finish}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odel_wf_real_finish1" value="${fsp.map.odel_wf_real_finish1}" onFocus="WdatePicker({readOnly:true})" /></td>
 
-				<td><input type="submit" value="查询" style="width: 60px;" /></td>
-				<td><input id="reset_btn" type="button" value="重置" style="width: 60px;" /></td>
-			</tr>
+                <td height="40"><label class="">技术完工日期：</label></td>
+                <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.ppc_wf_real_finish" value="${fsp.map.ppc_wf_real_finish}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.ppc_wf_real_finish1" value="${fsp.map.ppc_wf_real_finish1}" onFocus="WdatePicker({readOnly:true})" /></td>
+
+                <td height="40"><label class="">QA完工日期：</label></td>
+                <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odelqa_wf_real_finish" value="${fsp.map.odelqa_wf_real_finish}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odelqa_wf_real_finish1" value="${fsp.map.odelqa_wf_real_finish1}" onFocus="WdatePicker({readOnly:true})" /></td>
+            </tr>
+
+            <tr>
+                <td colspan="8" align="right"><input type="submit" value="查询" style="width: 60px;" />
+                    <input id="reset_btn" type="button" value="重置" style="width: 60px;" />
+                </td>
+            </tr>
 		</table>
 	</form>
 </div>
@@ -97,8 +106,8 @@
 		<th width="80">客户名称</th>
 		<th width="50">数量</th>
 		<th width="80">创建日期</th>
-		<th width="90">订单进度</th>
-		<th width="90">当前节点进度</th>
+		<th width="90">建议投料日期</th>
+		<th width="90">品类</th>
 		<th width="50">负责MR</th>
 		<th width="110">当前节点</th>
 		<th width="50">负责人</th>
@@ -111,14 +120,17 @@
 		<tr>
 			<td></td>
 			<td>
-				<s:if test="map.data <= 33">
+				<s:if test="map.data >= 0 && map.data <= 33">
 					<div style="background-color:#33cc00;color:#fff;height:22px;line-height: 22px; text-align: center;">${map.data }%</div>
 				</s:if>
-				<s:elseif test="map.data <= 66">
+				<s:elseif test="map.data >= 0 && map.data <= 66">
 					<div style="background-color:#ff9900;color:#fff;height:22px;line-height: 22px; text-align: center;">${map.data }%</div>
 				</s:elseif>
-				<s:elseif test="map.data <= 100">
+				<s:elseif test="map.data >= 0 && map.data <= 100">
 					<div style="background-color:#ff3300;color:#fff;height:22px;line-height: 22px; text-align: center;">${map.data }%</div>
+				</s:elseif>
+				<s:elseif test="map.data < 0">
+					<div style="background-color:rgb(0, 3, 255);color:#fff;height:22px;line-height: 22px; text-align: center;">${map.data }%</div>
 				</s:elseif>
 				<s:else>
 					<div style="background-color:#000;color:#fff;height:22px; line-height: 22px; text-align: center;">${map.data }%</div>
@@ -132,8 +144,8 @@
 			<td>${map.cus_name}</td>
 			<td>${map.want_cnt}</td>
 			<td>${map.begin_time}</td>
-			<td class="z_title_sty3"><s:property value="%{@com.xbd.oa.utils.WebUtil@minusTime(map.except_finish)}" /></td>
-			<td class="z_title_sty3"><s:property value="%{@com.xbd.oa.utils.WebUtil@minusTimeAndOffset(map.wf_real_start,map.wf_step_duration)}" /></td>
+			<td>${map.feeding_time}</td>
+			<td>${map.style_class}</td>
 			<td>${map.mr_name}</td>
 			<td>${map.wf_step_name}</td>
 			<td>${map.operator}</td>
@@ -154,6 +166,8 @@
 		<td>${statisticsMap.orangeNum} (${statisticsMap.orange}%)</td>
 		<td>绿色订单</td>
 		<td>${statisticsMap.greenNum} (${statisticsMap.green}%)</td>
+		<td>蓝色订单</td>
+		<td>${statisticsMap.blueNum} (${statisticsMap.green}%)</td>
 	</tr>
 </table>
 
