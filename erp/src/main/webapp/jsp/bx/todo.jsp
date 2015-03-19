@@ -38,6 +38,7 @@
 		</table>
 	</form>
 </div>
+
 <table border="0" cellspacing="0" cellpadding="0" class="z_table_style2"
 	width="1008">
 	<tr>
@@ -67,10 +68,13 @@
 		<tr>
 			<td></td>
 			<td>
-				<s:if test="map.data <= 33">
-					<div style="background-color:#33cc00;color:#fff;height:22px;line-height: 22px; text-align: center;">${map.data }%</div>
+				<s:if test="map.data < 0">
+					<div style="background-color:#0000FF;color:#fff;height:22px;line-height: 22px; text-align: center;">${map.data }%</div>
 				</s:if>
-				<s:elseif test="map.data <= 66">
+				<s:elseif test="map.data < 33">
+					<div style="background-color:#33cc00;color:#fff;height:22px;line-height: 22px; text-align: center;">${map.data }%</div>
+				</s:elseif>
+				<s:elseif test="map.data < 66">
 					<div style="background-color:#ff9900;color:#fff;height:22px;line-height: 22px; text-align: center;">${map.data }%</div>
 				</s:elseif>
 				<s:elseif test="map.data <= 100">
@@ -130,20 +134,20 @@
 			value="取&nbsp;&nbsp;消" class="z_submit3 z_close cancel" />
 	</div>
 </div>
-<table cellspacing="0" cellpadding="0" border="1" class="z_table_style2" width="1008" style="margin-top: 10px; text-align: center">
+<table cellspacing="0" cellpadding="0" border="1" class="z_table_style2" width="950" style="margin-top: 10px; text-align: center">
 	<tr>
 		<td>生产总数</td>
-		<td>${statisticsMap.want_count}</td>
+		<td>${bean.map.counts[0]}</td>
 		<td>黑色订单</td>
-		<td>${statisticsMap.blackNum} (${statisticsMap.black}%)</td>
+		<td>${bean.map.counts[1]} (${bean.map.counts[1]/bean.map.counts[6]*100}%)</td>
 		<td>红色订单</td>
-		<td>${statisticsMap.redNum} (${statisticsMap.red}%)</td>
+		<td>${bean.map.counts[2]} (${bean.map.counts[2]/bean.map.counts[6]*100}%)</td>
 		<td>黄色订单</td>
-		<td>${statisticsMap.orangeNum} (${statisticsMap.orange}%)</td>
+		<td>${bean.map.counts[3]} (${bean.map.counts[3]/bean.map.counts[6]*100}%)</td>
 		<td>绿色订单</td>
-		<td>${statisticsMap.greenNum} (${statisticsMap.green}%)</td>
+		<td>${bean.map.counts[4]} (${bean.map.counts[4]/bean.map.counts[6]*100}%)</td>
 		<td>蓝色订单</td>
-		<td>${statisticsMap.greenNum} (${statisticsMap.green}%)</td>
+		<td>${bean.map.counts[5]} (${bean.map.counts[5]/bean.map.counts[6]*100}%)</td>
 	</tr>
 </table>
 <s:include value="/jsp/parts/page.jsp"></s:include>

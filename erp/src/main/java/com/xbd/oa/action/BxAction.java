@@ -46,6 +46,7 @@ import com.xbd.oa.business.BaseManager;
 import com.xbd.oa.dao.impl.BxDaoImpl;
 //import com.xbd.oa.servlet.AutoNotifyServlet_stop;
 import com.xbd.oa.utils.BizUtil;
+import com.xbd.oa.utils.CommonSort;
 import com.xbd.oa.utils.ConstantUtil;
 import com.xbd.oa.utils.DateUtil;
 import com.xbd.oa.utils.ExcelUtils;
@@ -392,7 +393,7 @@ public class BxAction extends Action {
 
 	@SuppressWarnings("unchecked")
 	public String todo() throws ParseException {
-		fsp.setPageFlag(FSPBean.ACTIVE_PAGINATION);
+		//fsp.setPageFlag(FSPBean.ACTIVE_PAGINATION);
 		if (WebUtil.ifManager()) {
 			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_ORGWF_BY_SQL);
 			fsp.set("org", WebUtil.getCurrentLoginBx().getOaOrg());
@@ -402,12 +403,11 @@ public class BxAction extends Action {
 		}
 		fsp.set(FSPBean.FSP_ORDER, " order by oo.begin_time desc");
 		beans = getObjectsBySql(fsp);
-		//统计值[生产总数][黑色订单][红色订单][黄色订单][绿色订单][蓝色订单]
-		Integer[] counts = {0,0,0,0,0,0};
+		//统计值[生产总数][黑色订单][红色订单][黄色订单][绿色订单][蓝色订单][总数]
+		Integer[] counts = {0,0,0,0,0,0,beans.size()};
 		//优先级计算
 		for(LazyDynaMap bean:beans){
 			counts[0] += (Integer)bean.get("want_cnt");
-			
 			//订单周期
 			Long sellReadyTime = bean.get("sell_ready_time")==null?0:(Long) bean.get("sell_ready_time");
 			Long standardTime = bean.get("standard_time")==null?0:(Long) bean.get("standard_time");
@@ -419,19 +419,21 @@ public class BxAction extends Action {
 			Timestamp workTime = BizUtil.getOperatingTime(new Timestamp(new Date().getTime()));
 			Integer persent = (int) ((workTime.getTime()-goodsTime.getTime()+orderTime - 60*60*1000*24)/orderTime);
 			if(persent>100){
-				
+				counts[1] += 1;
 			}else if(persent>=66){
-				
+				counts[2] += 1;
 			}else if(persent>=33){
-				
+				counts[3] += 1;
 			}else if(persent>=0){
-				
+				counts[4] += 1;
 			}else if(persent<0){
-			
+				counts[5] += 1;
 			}
+			bean.set("data", persent);
 		}
-		
-		
+		bean.set("counts", counts);
+		CommonSort<LazyDynaMap> cs = new CommonSort<LazyDynaMap>();
+		cs.ListPropertySort(beans, "data", false);
 		processPageInfo(getObjectsCountSql(fsp));
 		return "todo";
 	}
