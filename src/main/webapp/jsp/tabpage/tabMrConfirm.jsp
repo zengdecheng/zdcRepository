@@ -60,15 +60,15 @@
 				</tr>
 				<tr height="28px;">
 					<td colspan="2">MR备注:&nbsp;&nbsp;<textarea id="detailContent"
-							name="oaOrderDetail.content" style="width: 560px; height: 143px;"
+							name="oaOrderDetail.content" style="width: 560px; height: 100px;"
 							maxlength="1000"></textarea></td>
 					<td>
-						<div style="height: 99px;">
+						<div style="height: 105px;">
 							<span style="line-height: 22px;">进度信息:<span>
 									<div
-										style="height: 142px; width: 80%; float: right; border: 1px solid rgb(205, 205, 205);">
+										style="height: 100px; width: 80%; float: right; border: 1px solid rgb(205, 205, 205);">
 										<p
-											style="padding: 0 0 0 10px; margin: 0; background-color: yellow; line-height: 22px;"
+											style="padding: 0 0 0 10px; margin: 0; background-color: yellow; line-height: 22px; display:none;"
 											id="detailSchedule">还未流入</p>
 										<ul style="margin: 0; padding: 0 0 0 10px; line-height: 19px;">
 											<li id="detailRealStart">流入时间:</li>
@@ -81,7 +81,7 @@
 												<div id="detailRealFinishColor"
 													style="color: #fff; margin-bottom: 1px; width: 45px; text-align: center; display: inline-block;"></div>
 											</li>
-											<li id="detailDuration">标准工时:</li>
+											<li style="display:none;" id="detailDuration">标准工时:</li>
 											<li id="detailRealTime">实际耗时:</li>
 										</ul>
 									</div>
