@@ -95,7 +95,7 @@ define(
 							getOperator('cp');
 						} else if ($("#nodeSelect").val() == "b_qc_confirm_6") {
 							$("#operatorSelect").empty();
-							getOperator('qa');
+							getOperator('mr');
 						} else{
 							$("#operatorSelect").empty();
 							$("#operatorSelect").append("<option value=''>请选择</option>");
@@ -139,6 +139,7 @@ define(
                         });
 
                     }
+                    
 				}
 			}
 			return fn;
@@ -149,6 +150,7 @@ function getOperator(name){
 		type:'POST',
 		async:false,//这里必须加上，这样是ajax同步调用的意思，否则，无法回显所需的值
 		success:function(data){
+			$("#operatorSelect").append("<option value='all'>全部</option>");
 			$.each(data, function(i, n) {
 				$("#operatorSelect").append("<option value='"+data[i].login_name+"'>"+data[i].login_name+"</option>");
 				/*if(i==0){
