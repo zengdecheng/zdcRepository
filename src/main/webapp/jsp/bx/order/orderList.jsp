@@ -79,7 +79,7 @@
 				<td height="40"><label class="">MR完成日期：</label></td>
 				<td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odel_wf_real_finish" value="${fsp.map.odel_wf_real_finish}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odel_wf_real_finish1" value="${fsp.map.odel_wf_real_finish1}" onFocus="WdatePicker({readOnly:true})" /></td>
 
-                <td height="40"><label class="">技术完工日期：</label></td>
+                <td height="40"><label class="">技术完工日期（大货）：</label></td>
                 <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.ppc_wf_real_finish" value="${fsp.map.ppc_wf_real_finish}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.ppc_wf_real_finish1" value="${fsp.map.ppc_wf_real_finish1}" onFocus="WdatePicker({readOnly:true})" /></td>
 
                 <td height="40"><label class="">QA完工日期：</label></td>
@@ -94,65 +94,71 @@
 		</table>
 	</form>
 </div>
-<table border="0" cellspacing="0" cellpadding="0" class="z_table_style2" width="1008">
-	<tr>
-		<th width="8" height="40"></th>
-		<th width="40" height="40">优先级</th>
-		<th width="8" height="40"></th>
-		<th width="80">订单号</th>
-		<th width="70">订单类型</th>
-		<th width="70">款号</th>
-		<th width="100">款式描述</th>
-		<th width="80">客户名称</th>
-		<th width="50">数量</th>
-		<th width="80">创建日期</th>
-		<th width="90">建议投料日期</th>
-		<th width="90">品类</th>
-		<th width="50">负责MR</th>
-		<th width="110">当前节点</th>
-		<th width="50">负责人</th>
-		<th>操作</th>
-	</tr>
-	<s:if test="beans.size()==0">
-		<tr><td colspan="16" style="text-align:center;">当前没有任何数据！</td></tr>	
-	</s:if>
-	<s:iterator value="beans" status="st">
+<div style="width:100%;overflow-x:scroll;overflow-y:hidden">
+	<table border="0" cellspacing="0" cellpadding="0" class="z_table_style2" width="1008">
 		<tr>
-			<td></td>
-			<td>
-				<s:if test="map.data >= 0 && map.data <= 33">
-					<div style="background-color:#33cc00;color:#fff;height:22px;line-height: 22px; text-align: center;">${map.data }%</div>
-				</s:if>
-				<s:elseif test="map.data >= 0 && map.data <= 66">
-					<div style="background-color:#ff9900;color:#fff;height:22px;line-height: 22px; text-align: center;">${map.data }%</div>
-				</s:elseif>
-				<s:elseif test="map.data >= 0 && map.data <= 100">
-					<div style="background-color:#ff3300;color:#fff;height:22px;line-height: 22px; text-align: center;">${map.data }%</div>
-				</s:elseif>
-				<s:elseif test="map.data < 0">
-					<div style="background-color:rgb(0, 3, 255);color:#fff;height:22px;line-height: 22px; text-align: center;">${map.data }%</div>
-				</s:elseif>
-				<s:else>
-					<div style="background-color:#000;color:#fff;height:22px; line-height: 22px; text-align: center;">${map.data }%</div>
-				</s:else>
-			</td>
-			<td></td>
-			<td><a class="z_title_sty5" href="/bx/orderDetail?oaOrderDetail.id=${map.oa_order_detail}" style="word-wrap: break-word;">${map.sell_order_code}</a></td>
-			<td><s:if test="map.type==1">模拟报价</s:if> <s:if test="map.type==2">样衣打版</s:if> <s:if test="map.type==3">大货生产</s:if></td>
-			<td><a class="z_title_sty5" target="_blank" href="${pageContext.request.contextPath}/jsp/outside/styleDetail.jsp?styleId=${map.style_id}">${map.style_code}</a></td>
-			<td>${map.style_desc}</td>
-			<td>${map.cus_name}</td>
-			<td>${map.want_cnt}</td>
-			<td>${map.begin_time}</td>
-			<td>${map.feeding_time}</td>
-			<td>${map.style_class}</td>
-			<td>${map.mr_name}</td>
-			<td>${map.wf_step_name}</td>
-			<td>${map.operator}</td>
-			<td><a class="z_title_sty5" href="/bx/viewOrderDetail?oaOrder.id=${map.id}">进度</a>	</td>
+			<th width="8" height="40"></th>
+			<th width="40" height="40">优先级</th>
+			<th width="8" height="40"></th>
+			<th width="80">订单号</th>
+			<th width="70">订单类型</th>
+			<th width="70">款号</th>
+			<th width="100">款式描述</th>
+			<th width="80">客户名称</th>
+			<th width="50">数量</th>
+			<th width="80">创建日期</th>
+			<th width="90">建议投料日期</th>
+			<th width="80">MR完成日期</th>
+			<th width="90">技术完成日期（大货）</th>
+			<th width="90">品类</th>
+			<th width="50">负责MR</th>
+			<th width="110">当前节点</th>
+			<th width="50">负责人</th>
+			<th>操作</th>
 		</tr>
-	</s:iterator>
-</table>
+		<s:if test="beans.size()==0">
+			<tr><td colspan="16" style="text-align:center;">当前没有任何数据！</td></tr>	
+		</s:if>
+		<s:iterator value="beans" status="st">
+			<tr>
+				<td></td>
+				<td>
+					<s:if test="map.data >= 0 && map.data <= 33">
+						<div style="background-color:#33cc00;color:#fff;height:22px;line-height: 22px; text-align: center;">${map.data }%</div>
+					</s:if>
+					<s:elseif test="map.data >= 0 && map.data <= 66">
+						<div style="background-color:#ff9900;color:#fff;height:22px;line-height: 22px; text-align: center;">${map.data }%</div>
+					</s:elseif>
+					<s:elseif test="map.data >= 0 && map.data <= 100">
+						<div style="background-color:#ff3300;color:#fff;height:22px;line-height: 22px; text-align: center;">${map.data }%</div>
+					</s:elseif>
+					<s:elseif test="map.data < 0">
+						<div style="background-color:rgb(0, 3, 255);color:#fff;height:22px;line-height: 22px; text-align: center;">${map.data }%</div>
+					</s:elseif>
+					<s:else>
+						<div style="background-color:#000;color:#fff;height:22px; line-height: 22px; text-align: center;">${map.data }%</div>
+					</s:else>
+				</td>
+				<td></td>
+				<td><a class="z_title_sty5" href="/bx/orderDetail?oaOrderDetail.id=${map.oa_order_detail}" style="word-wrap: break-word;">${map.sell_order_code}</a></td>
+				<td><s:if test="map.type==1">模拟报价</s:if> <s:if test="map.type==2">样衣打版</s:if> <s:if test="map.type==3">大货生产</s:if></td>
+				<td><a class="z_title_sty5" target="_blank" href="${pageContext.request.contextPath}/jsp/outside/styleDetail.jsp?styleId=${map.style_id}">${map.style_code}</a></td>
+				<td>${map.style_desc}</td>
+				<td>${map.cus_name}</td>
+				<td>${map.want_cnt}</td>
+				<td>${map.begin_time}</td>
+				<td>${map.feeding_time}</td>
+				<td>${map.odel_wf_real_finish}</td>
+				<td>${map.ppc_wf_real_finish}</td>
+				<td>${map.style_class}</td>
+				<td>${map.mr_name}</td>
+				<td>${map.wf_step_name}</td>
+				<td>${map.operator}</td>
+				<td><a class="z_title_sty5" href="/bx/viewOrderDetail?oaOrder.id=${map.id}">进度</a>	</td>
+			</tr>
+		</s:iterator>
+	</table>
+</div>
 
 <table cellspacing="0" cellpadding="0" border="1" class="z_table_style2" width="1008" style="margin-top: 20px; text-align: center">
 	<tr>

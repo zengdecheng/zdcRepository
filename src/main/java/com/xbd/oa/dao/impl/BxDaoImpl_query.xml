@@ -611,7 +611,7 @@ ote.oa_timebase = ot.id ${case}1">
 														AND(
 															wf_step = 'c_mr_improve_2'
 															OR wf_step = 'b_mr_improve_2'
-														) and back_flag != 1
+														) and ISNULL(back_flag)
 													)odel ON oder.id = odel_oa_order
 													LEFT JOIN(
 														SELECT
@@ -624,7 +624,7 @@ ote.oa_timebase = ot.id ${case}1">
 														WHERE
 															1 = 1
 														AND wf_step = 'c_ppc_assign_3'
-														and back_flag != 1
+														and ISNULL(back_flag)
 													)ppc ON oder.id = ppc_oa_order
 													LEFT JOIN(
 														SELECT
@@ -637,7 +637,7 @@ ote.oa_timebase = ot.id ${case}1">
 														WHERE
 															1 = 1
 														AND wf_step = 'c_ppc_confirm_7'
-														 and back_flag != 1
+														 and ISNULL(back_flag)
 													)odelqa ON oder.id = odelqa_oa_order
 														where oder.STATUS = '0' and oder.wf_step != 'finish_999' ${case}1 GROUP BY oder.id order by oder.begin_time desc">
 		<parser index="1">
