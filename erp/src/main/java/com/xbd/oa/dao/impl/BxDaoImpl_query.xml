@@ -1227,13 +1227,13 @@ ote.oa_timebase = ot.id ${case}1">
 	
 	
 	<!-- 获取15分钟内未处理的任务 -->
-	<function name="get_oa_order_by_sql" type="sql" sql="select * from oa_order where 1=1  ">
+	<function name="get_oa_order_by_eql" type="eql" sql="select vo from OaOrder vo where 1=1">
 	</function>
 	
 	<!-- 订单详细查询 -->
-	<function name="list_oa_order_detail_order_by_sql" type="sql" sql="select * from oa_order_detail where 1=1 ${case}1 ">
+	<function name="list_oa_order_detail_order_by_eql" type="eql" sql="select vo from OaOrderDetail vo where 1=1 ${case}1 ">
 		<parser index="1">
-			<param fspname="oa_order" sqlname="oa_order"></param>
+			<param fspname="oa_order" sqlname="oaOrder"></param>
 		</parser>
 	</function>
 </query>
