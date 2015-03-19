@@ -54,7 +54,7 @@
 				<td><label class="">紧急订单：</label></td>
 				<td><s:select cssClass="z_inp2" list="#{'':'全部','0':'加急','1':'普通'}" theme="simple" name="fsp.map.is_urgent" value="${fsp.map.is_urgent}" cssStyle="width: 170px"></s:select></td> --%>
 				<td><input type="submit" value="查询" style="width: 60px;" /></td>
-				<td><input id="reset" type="reset" value="重置" style="width: 60px;" /></td>
+				<td><input id="reset" type="button" value="重置" style="width: 60px;" /></td>
 			</tr>
 		</table>
 	</form>

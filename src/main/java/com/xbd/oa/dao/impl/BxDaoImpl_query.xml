@@ -1198,10 +1198,6 @@ ote.oa_timebase = ot.id ${case}1">
 			<param fspname="cus_name" sqlname="mian.cus_name" op="like"></param>
 			<param fspname="style_code" sqlname="mian.style_code" op="like"></param>
 			<param fspname="sewing_factory" sqlname="mian.sewing_factory" op="like"></param>
-			<param fspname="start_time1" sqlname="mian.begin_time" op="&gt;="></param>
-			<param fspname="start_time2" sqlname="mian.begin_time" op="&lt;"></param>
-			<param fspname="end_time1" sqlname="mian.end_time" op="&gt;="></param>
-			<param fspname="end_time2" sqlname="mian.end_time" op="&lt;"></param>
 		</parser>
 	</function>
 
