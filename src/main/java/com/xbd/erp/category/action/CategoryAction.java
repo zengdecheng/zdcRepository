@@ -6,11 +6,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.beanutils.LazyDynaBean;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -21,7 +18,6 @@ import com.xbd.oa.dao.impl.BxDaoImpl;
 import com.xbd.oa.vo.OaCategory;
 import com.xbd.oa.vo.OaOrder;
 import com.xbd.oa.vo.OaOrderDetail;
-import com.xbd.oa.vo.OaStaff;
 @Results({ @Result(name = "page4list", type = "redirect", location = "category/list") })
 public class CategoryAction extends BaseAction {
 

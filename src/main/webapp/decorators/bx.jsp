@@ -64,7 +64,6 @@
                         <!--<s:if test="@com.xbd.oa.utils.WebUtil@getCurrentLoginBxGroup() == 'mr' " >
                         	<li class="fab_border"><a href="/bx/add_baojia">新增订单</a></li>
                         </s:if> -->
-                        <li class="fab_border"><a href="/report!hello">测试测试</a></li>
                         <li class="fab_border"><a href="/bx/order_timeout">时间异动订单</a></li>
                         <!-- <li class="fab_border"><a href="/bx/order_list">订单列表1</a></li> -->
                     	<li class="fab_border"><a href="/bx/orderList">在制订单列表</a></li>
