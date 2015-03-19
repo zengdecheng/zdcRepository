@@ -29,6 +29,22 @@ public class CommonSort<T> {
 		Collections.sort(list, comparator);
 	}
 	
+	
+	/**
+	 * 数组属性快速排序
+	 * @param srcArray 目标数组
+	 * @param propertyName 属性名称
+	 * @param orderBy 排序类型，true正序，false逆序
+	 */
+	public void ArrayPropertySort(T[] srcArray,String propertyName,Boolean orderBy){
+		if (null==srcArray) {
+			return ;
+		}
+		Object[] genArray = getArray(srcArray, propertyName);
+		String fieldName = this.getFieldName(srcArray, propertyName);
+		arraySort(srcArray, genArray,fieldName,0,srcArray.length-1,orderBy);
+	}
+	
 	public class PropertyComparator implements Comparator<Object> {
 		private String propertyName;
 		private Boolean orderBy;
@@ -235,20 +251,5 @@ public class CommonSort<T> {
 		Object temp = obj[i];
 		obj[i] =obj[h];
 		obj[h] = temp;
-	}
-	
-	/**
-	 * 数组属性排序
-	 * @param srcArray 目标数组
-	 * @param propertyName 属性名称
-	 * @param orderBy 排序类型，true正序，false逆序
-	 */
-	public void ArrayPropertySort(T[] srcArray,String propertyName,Boolean orderBy){
-		if (null==srcArray) {
-			return ;
-		}
-		Object[] genArray = getArray(srcArray, propertyName);
-		String fieldName = this.getFieldName(srcArray, propertyName);
-		arraySort(srcArray, genArray,fieldName,0,srcArray.length-1,orderBy);
 	}
 }
