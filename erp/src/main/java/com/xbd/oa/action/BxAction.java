@@ -1129,6 +1129,9 @@ public class BxAction extends Action {
             sheet1FileInfo.put(j+",33", lazyMap.get("order_code") != null ? lazyMap.get("order_code") : "");//合同号
             sheet1FileInfo.put(j+",34", lazyMap.get("pay_type") != null ? lazyMap.get("pay_type") : "");//付款方式
             sheet1FileInfo.put(j+",35", superList.get(i).get("p_sam") != null ? superList.get(i).get("p_sam") : "");//核价SAM
+            
+            sheet1FileInfo.put(j+",36", lazyMap.get("odel_wf_real_finish") !=null ? new CustomCell(lazyMap.get("odel_wf_real_finish"), "Date") : new CustomCell());//MR完成日期
+            sheet1FileInfo.put(j+",37", lazyMap.get("ppc_wf_real_finish") !=null ? new CustomCell(lazyMap.get("ppc_wf_real_finish"), "Date") : new CustomCell());//技术完成日期
             i++;
             j++;
         }
@@ -4464,7 +4467,6 @@ public class BxAction extends Action {
 		Map<String, String> statisticsMap = new HashMap<String, String>();
 		
 		//toc部分声明变量
-		int cycle = 0;
 		long newTime = BizUtil.getWorkTime(new Timestamp(new Date().getTime())).getTime();
 		//统计部分声明变量
 		int count = 0;
@@ -4478,26 +4480,39 @@ public class BxAction extends Action {
 		List<LazyDynaMap> colorList = new ArrayList<LazyDynaMap>();
 		
 		for(int i = 0; i < beans.size(); i++){
-			float data = 0;
-			int data1 = 0;
-			//toc部分
-			float order_Cycle = 0;
-//					(beans.get(i).get("sell_ready_time") != null ? (float)beans.get(i).get("sell_ready_time") : 0) 
-//					+ (beans.get(i).get("standard_time") != null ? (float)beans.get(i).get("standard_time") : 0)
-//					+ (beans.get(i).get("craft_time") != null ? (float)beans.get(i).get("craft_time") : 0);
+//			float data = 0;
+//			int data1 = 0;
+//			//toc部分
+//			float order_Cycle = 0;
+////					(beans.get(i).get("sell_ready_time") != null ? (float)beans.get(i).get("sell_ready_time") : 0) 
+////					+ (beans.get(i).get("standard_time") != null ? (float)beans.get(i).get("standard_time") : 0)
+////					+ (beans.get(i).get("craft_time") != null ? (float)beans.get(i).get("craft_time") : 0);
+//			
+//			
+//			if(order_Cycle > 0){
+//				long except_finish = beans.get(i).get("goods_time") != null ? BizUtil.getWorkTime((Timestamp)beans.get(i).get("goods_time")).getTime() : 0;
+//				data = newTime - (except_finish - order_Cycle  + (9 * 60 * 60 * 1000)) / order_Cycle ;
+//						
+//				data = new BigDecimal(data).setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();	
+////				data1  = (int)(data * 100);
+//				String d = data+"";
+//				data = Float.parseFloat(d.substring(0, d.indexOf(".")+3)) * 100;
+//				
+//				cycle = (int)data;
+//			}
 			
 			
-			if(order_Cycle > 0){
-				long except_finish = beans.get(i).get("goods_time") != null ? BizUtil.getWorkTime((Timestamp)beans.get(i).get("goods_time")).getTime() : 0;
-				data = newTime - (except_finish - order_Cycle  + (9 * 60 * 60 * 1000)) / order_Cycle ;
-						
-				data = new BigDecimal(data).setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();	
-//				data1  = (int)(data * 100);
-				String d = data+"";
-				data = Float.parseFloat(d.substring(0, d.indexOf(".")+3)) * 100;
-				
-				cycle = (int)data;
-			}
+			//订单周期
+			Long sellReadyTime = beans.get(i).get("sell_ready_time")==null?0:(Long) beans.get(i).get("sell_ready_time");
+			Long standardTime = beans.get(i).get("standard_time") ==null?0:(Long) beans.get(i).get("standard_time");
+			Long craftTime = beans.get(i).get("craft_time") ==null?0:(Long) beans.get(i).get("craft_time");
+			Long orderTime = (sellReadyTime+standardTime+craftTime)/9*24;
+			//交期
+			Timestamp goodsTime = (Timestamp) beans.get(i).get("goods_time");
+			//当前工作时间
+			Timestamp workTime = BizUtil.getOperatingTime(new Timestamp(new Date().getTime()));
+			Integer cycle = (int) ((workTime.getTime()-goodsTime.getTime()+orderTime - 60*60*1000*24)/orderTime);
+			
 			
 			beans.get(i).set("data", cycle);
 			if(orderColor != null && !"".equals(orderColor)){
