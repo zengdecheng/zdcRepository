@@ -34,7 +34,7 @@ public class CategoryAction extends BaseAction {
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_CATEGORY_BY_SQL);
 		fsp.setPageFlag(FSPBean.ACTIVE_PAGINATION);
 		beans = manager.getObjectsBySql(fsp);
-		fsp.setRecordCount(beans.size());
+		fsp.setRecordCount(getObjectsCountSql(fsp));
 		return "category/page4list";
 	}
 
@@ -61,7 +61,6 @@ public class CategoryAction extends BaseAction {
 	 */
 	public String add() {
 		if (null != oaCategory) {
-			oaCategory = hour2ms(oaCategory);
 			manager.saveObject(oaCategory);
 		}
 		return "page4list";
@@ -77,7 +76,6 @@ public class CategoryAction extends BaseAction {
 	 */
 	public String page4detail() {
 		oaCategory = findOaCategory(oaCategory);
-		oaCategory = ms2hour(oaCategory);
 		return "category/page4detail";
 	}
 
@@ -91,7 +89,6 @@ public class CategoryAction extends BaseAction {
 	 */
 	public String page4edit() {
 		oaCategory = findOaCategory(oaCategory);
-		oaCategory = ms2hour(oaCategory);
 		return "category/page4edit";
 	}
 
@@ -105,7 +102,6 @@ public class CategoryAction extends BaseAction {
 	 */
 	public String edit() {
 		if (null != oaCategory) {
-			oaCategory = hour2ms(oaCategory);
 			manager.saveObject(oaCategory);
 		}
 		return "page4list";
