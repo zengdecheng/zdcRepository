@@ -3,18 +3,12 @@ package com.xbd.oa;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.beanutils.LazyDynaMap;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.junit.Test;
 
-import com.xbd.oa.utils.DateUtil;
 import com.xbd.oa.utils.POIUtilsEx;
 import com.xbd.oa.vo.CustomCell;
 

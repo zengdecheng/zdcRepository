@@ -8,7 +8,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TreeMap;
 
-import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
 //TODO 应用通过审核后使用新的appid和appSercret

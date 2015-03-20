@@ -1,6 +1,18 @@
 package org.use.base.daoquery;
 
-import org.apache.oro.text.regex.*;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+
+import org.apache.oro.text.regex.MatchResult;
+import org.apache.oro.text.regex.PatternCompiler;
+import org.apache.oro.text.regex.PatternMatcher;
+import org.apache.oro.text.regex.PatternMatcherInput;
+import org.apache.oro.text.regex.Perl5Compiler;
+import org.apache.oro.text.regex.Perl5Matcher;
 import org.exolab.castor.mapping.Mapping;
 import org.use.base.FSPBean;
 import org.use.base.dao.impl.DaoEjb;
@@ -9,13 +21,6 @@ import org.use.base.daoquery.bean.ParamBean;
 import org.use.base.daoquery.bean.ParserBean;
 import org.use.base.daoquery.bean.QueryBean;
 import org.use.base.utils.base.CastorUtils;
-
-import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 
 public class DaoQueryByXml {
 	private static PatternMatcher matcher = new Perl5Matcher();
