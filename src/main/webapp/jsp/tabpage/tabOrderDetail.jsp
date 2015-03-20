@@ -89,6 +89,8 @@
 						<div style="padding: 25 0 25 0;">
 							建议投料日期：<span id="feeding_time"></span>
 							<input type="hidden" name="oaOrder.feedingTime" id="feeding_time_value"/>
+							<input type="hidden" name="oaOrder.sellReadyTime" id="sell_ready_time"/>
+							<input type="hidden" name="oaOrder.standardTime" id="standard_time"/>
 							<input type="hidden" name="oaOrder.craftTime" id="oaOrder_craftTime"/>
 						</div>
 						<div style="padding: 25 0 25 0;" id="isPreProductDiv">

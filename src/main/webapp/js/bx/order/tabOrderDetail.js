@@ -78,15 +78,19 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 				});
 				
 				$("#oaOrder_craftTime").val(totalTime);
+				
 				//得到缓冲时间
 				var idx = $("#categorys option:selected").index();
 				var orderTypeNum = $(window.parent.document).find("#orderTypeNum").val();
 				var standardTime =0;
 				if(orderTypeNum==2){
 					standardTime =categorys[idx].map.daban_cyc;
+					$("#standard_time").val(categorys[idx].map.daban_cyc);
 				}else {
 					standardTime =categorys[idx].map.dahuo_cyc;
+					$("#standard_time").val(categorys[idx].map.dahuo_cyc);
 				}
+				$("#sell_ready_time").val(categorys[idx].map.sell_wait);
 				
 				//产前版完成日期
 				var url = "";
@@ -237,9 +241,21 @@ define([ "u","layer","v","vl" ], function(u,layer) {
                 			biz.event.setManageInfoData(data.oaOrderDetail); //设置管理信息
                 			biz.event.setCategorys(data.categorys); 		//品类初始化
                 			var oa_feeding_time = $(window.parent.document).find("#oa_feeding_time").val();
+                			var sell_ready_time = $(window.parent.document).find("#sell_ready_time").val();
+                			var standard_time = $(window.parent.document).find("#standard_time").val();
                 			
                 			if(oa_feeding_time){
                 				$("#feeding_time").html(oa_feeding_time);
+                			}else{
+                				biz.event.calcFeedingTime();
+                			}
+                			if(sell_ready_time){
+                				$("#sell_ready_time").html(sell_ready_time);
+                			}else{
+                				biz.event.calcFeedingTime();
+                			}
+                			if(standard_time){
+                				$("#standard_time").html(standard_time);
                 			}else{
                 				biz.event.calcFeedingTime();
                 			}

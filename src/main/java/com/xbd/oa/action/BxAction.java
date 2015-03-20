@@ -5588,6 +5588,8 @@ public class BxAction extends Action {
 		bean.set("relatedOrderType", oaOrder.getRelatedOrderType());
 		bean.set("hisOpt", oaOrder.getHisOpt());
 		bean.set("feeding_time", oaOrder.getFeedingTime());
+		bean.set("sell_ready_time", oaOrder.getSellReadyTime());
+		bean.set("standard_time", oaOrder.getStandardTime());
 		bean.set("relatedOrderDetailId", "");
 		if (null != oaOrder.getRelatedOrderId() && oaOrder.getRelatedOrderId() > 0) { // 关联订单存在，则查询关联订单最新detail的Id
 			// FSPBean fspBean = new FSPBean();
@@ -6041,6 +6043,8 @@ public class BxAction extends Action {
 			oaOrder1.setStyleClass(oaOrder.getStyleClass());
 			oaOrder1.setCraftTime(oaOrder.getCraftTime());//特殊工艺用时
 			oaOrder1.setFeedingTime(oaOrder.getFeedingTime());//建议投料日期
+			oaOrder1.setStandardTime(oaOrder.getStandardTime());
+			oaOrder1.setSellReadyTime(oaOrder.getSellReadyTime());
 			// 关联订单时，保存被关联订单的ID、订单编号、类型 Add by ZQ 2014-12-22
 			String relatedOrderCode = oaOrder.getRelatedOrderCode();
 			if (StringUtils.isNotEmpty(relatedOrderCode)) {
