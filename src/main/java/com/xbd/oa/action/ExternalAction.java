@@ -683,6 +683,13 @@ public class ExternalAction extends Action {
 							oaOrder.setGoodsTime(new Timestamp(df.parse(df.format(oaOrder.getExceptFinish())).getTime()));
 							oaOrder.setSellReadyTime(9 * 60 * 60 * 1000L);
 							oaOrder.setCraftTime(0L);
+
+							// 判断产前版是否存在，并进行数据格式化
+							if (null == oaOrder.getPreVersionDate()) {
+								oaOrder.setPreproductDays(null);
+							} else if(0 == oaOrder.getPreproductDays()) {
+								oaOrder.setPreproductDays(1);
+							}
 							if ("2".equals(oaOrder.getType())) {
 								oaOrder.setStandardTime(38 * 60 * 60 * 1000L);
 							} else {
@@ -763,27 +770,29 @@ public class ExternalAction extends Action {
 
 		return md5StrBuff.toString();
 	}
+
 	/**
 	 * CRM获取品类
+	 * 
 	 * @author bzt
 	 * @return
 	 */
-	public void getCategory(){
+	public void getCategory() {
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, ExtDaoImpl.GET_CATEGORY_BY_SQL);
 		List<LazyDynaMap> beans = manager.getObjectsBySql(fsp);
-		String result="";
-		try{
-		 if(null !=beans && beans.size()>0){
-			result = JSONArray.fromObject(beans).toString();
-			//System.out.println(result);
-			Struts2Utils.renderText(result);
-		 	}
-		}catch (Exception e){
+		String result = "";
+		try {
+			if (null != beans && beans.size() > 0) {
+				result = JSONArray.fromObject(beans).toString();
+				// System.out.println(result);
+				Struts2Utils.renderText(result);
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
 			Struts2Utils.renderText("no");
 		}
 	}
-	
+
 	/******************* CRM所需接口结束 ********************/
 
 	public OaOrder getOaOrder() {
