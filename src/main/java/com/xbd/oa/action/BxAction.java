@@ -6993,21 +6993,27 @@ public class BxAction extends Action {
 			Date except_finish = oaOrder.getExceptFinish();
 			// 查询出最早的订单流入该节点的日期
 			if (null != tampMap.get("wf_real_start")) {
-				Timestamp tamp = (Timestamp) tampMap.get("wf_real_start");
-				double time = ((double) (tamp.getTime() - begin_time.getTime() + 24 * 60 * 60 * 1000) / (double) (except_finish.getTime() - begin_time.getTime() + 24 * 60 * 60 * 1000)) * 100;
-				DecimalFormat df = new DecimalFormat("#");
-				String time_consume = df.format(time);
-				oaOrderDetail.put("step_start_time_consume", time_consume);// 设置当前节点流入的耗时
+				Long sellReadyTime = oaOrder.getSellReadyTime()==null?0L:oaOrder.getSellReadyTime();
+				Long standardTimes = oaOrder.getStandardTime()==null?0L:oaOrder.getStandardTime();
+				Long craftTime = oaOrder.getCraftTime()==null?0L:oaOrder.getCraftTime();
+				Long orderTime = (sellReadyTime+standardTimes+craftTime)/9*24;
+				Timestamp goodsTime = oaOrder.getGoodsTime();
+				Timestamp workTime = BizUtil.getOperatingTime((Timestamp)tampMap.get("wf_real_start"));
+				Integer persent = (int) ((workTime.getTime()-goodsTime.getTime()+orderTime - 60*60*1000*24d)/orderTime*100);
+				oaOrderDetail.put("step_start_time_consume", persent);// 设置当前节点流入的耗时
 			} else {
 				oaOrderDetail.put("step_start_time_consume", "");
 			}
 			// 计算当前订单流出该节点的耗时= （订单流出日期-下单日期+1）÷（交货日期-下单日期+1）*100%
 			if (null != tampMap.get("wf_real_finish")) {
-				Timestamp tamp = (Timestamp) tampMap.get("wf_real_finish");
-				double time = ((double) (tamp.getTime() - begin_time.getTime() + 24 * 60 * 60 * 1000) / (double) (except_finish.getTime() - begin_time.getTime() + 24 * 60 * 60 * 1000)) * 100;
-				DecimalFormat df = new DecimalFormat("#");
-				String time_consume = df.format(time);
-				oaOrderDetail.put("step_finish_time_consume", time_consume);// 设置当前节点流入的耗时
+				Long sellReadyTime = oaOrder.getSellReadyTime()==null?0L:oaOrder.getSellReadyTime();
+				Long standardTimes = oaOrder.getStandardTime()==null?0L:oaOrder.getStandardTime();
+				Long craftTime = oaOrder.getCraftTime()==null?0L:oaOrder.getCraftTime();
+				Long orderTime = (sellReadyTime+standardTimes+craftTime)/9*24;
+				Timestamp goodsTime = oaOrder.getGoodsTime();
+				Timestamp workTime = BizUtil.getOperatingTime((Timestamp)tampMap.get("wf_real_finish"));
+				Integer persent = (int) ((workTime.getTime()-goodsTime.getTime()+orderTime - 60*60*1000*24d)/orderTime*100);
+				oaOrderDetail.put("step_finish_time_consume", persent);// 设置当前节点流入的耗时
 			} else {
 				oaOrderDetail.put("step_finish_time_consume", "");
 			}
