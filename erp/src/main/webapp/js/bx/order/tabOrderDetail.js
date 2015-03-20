@@ -480,9 +480,11 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 					}
 					if(undefined != orderDetail.step_start_time_consume && null != orderDetail.step_start_time_consume && "" != orderDetail.step_start_time_consume) {
 						var rate=parseFloat(orderDetail.step_start_time_consume);
-						if(rate <= 33){
+						if(rate < 0){
+							$("#detailRealStartColor").css("background-color","#0000FF");
+						}else if(rate < 33){
 							$("#detailRealStartColor").css("background-color","#33cc00");
-						}else if(rate <= 66){
+						}else if(rate < 66){
 							$("#detailRealStartColor").css("background-color","#ff9900");
 						}else if(rate <= 100){
 							$("#detailRealStartColor").css("background-color","#ff3300");
@@ -493,14 +495,16 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 					}
 					if(undefined != orderDetail.step_finish_time_consume && null != orderDetail.step_finish_time_consume && "" != orderDetail.step_finish_time_consume) {
 						var rate=parseFloat(orderDetail.step_finish_time_consume);
-						if(rate <= 33){
-							$("#detailRealFinishColor").css("background-color","#33cc00");
-						}else if(rate <= 66){
-							$("#detailRealFinishColor").css("background-color","#ff9900");
+						if(rate < 0){
+							$("#detailRealStartColor").css("background-color","#0000FF");
+						}else if(rate < 33){
+							$("#detailRealStartColor").css("background-color","#33cc00");
+						}else if(rate < 66){
+							$("#detailRealStartColor").css("background-color","#ff9900");
 						}else if(rate <= 100){
-							$("#detailRealFinishColor").css("background-color","#ff3300");
+							$("#detailRealStartColor").css("background-color","#ff3300");
 						}else {
-							$("#detailRealFinishColor").css("background-color","#000000");
+							$("#detailRealStartColor").css("background-color","#000000");
 						}
 						$("#detailRealFinishColor").text(orderDetail.step_finish_time_consume + "%");
 					}
