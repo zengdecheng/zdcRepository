@@ -20,6 +20,17 @@ define(
 							$(n).addClass("z_title_sty4");
 						}
 					});
+					
+					
+					if($("#yxjOrderHid").val() == "1"){
+                		$("#yxjOrder").html("优先级&nbsp;↑");
+                	}else if($("#yxjOrderHid").val() == "2"){
+                		$("#yxjOrder").html("优先级&nbsp;↓");
+                	}else if($("#yxjOrderHid").val() == "3"){
+                		$("#cjrqOrder").html("创建日期&nbsp;↑");
+                	}else if($("#yxjOrderHid").val() == "4"){
+                		$("#cjrqOrder").html("创建日期&nbsp;↓");
+                	}
 					biz.event.getSellStaffs(); // 获取销售人员
 					biz.event.getMrStaffs(); // 获取mr人员
 					biz.event.resetNodeSelect(true);
@@ -37,6 +48,8 @@ define(
 					$("#close_layer").on("click",biz.event.closeWin);
                     $("#reset_btn").on("click",biz.event.resetFrom);
                     $("#output").on("click",biz.event.outExcel);
+                    $("#yxjOrder").on("click",biz.event.yxjOrder);
+                    $("#cjrqOrder").on("click",biz.event.cjrqOrder);
 				},
 				event : {
 					getSellStaffs : function(e) {
@@ -215,6 +228,18 @@ define(
                             $("#output").removeAttr("disabled");
                             $("#output").val("导出报表");
                         },30000);
+                    },
+                    yxjOrder : function(){
+                    	if($("#yxjOrderHid").val() == "3" || $("#yxjOrderHid").val() == "4"){
+                    		$("#yxjOrderHid").val("1");
+                    	}
+                    	$("#orderList").submit();
+                    },
+                    cjrqOrder : function(){
+                    	if($("#yxjOrderHid").val() == "1" || $("#yxjOrderHid").val() == "2"){
+                    		$("#yxjOrderHid").val("3");
+                    	}
+                    	$("#orderList").submit();
                     }
 				}
 			}
