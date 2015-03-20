@@ -454,7 +454,7 @@ public class POIUtilsEx {
 				if(zeroBlank){
 					if(type.indexOf("-") == -1){
 						cell.setCellValue(d);
-						cell.setCellStyle(getDataFormat(wb,cc,"0.00"));
+						cell.setCellStyle(getDataFormat(wb,cc,"0.##"));
 					}else{
 						String decimalFormat =type.substring(type.indexOf("-")+1);
 						DecimalFormat df=new DecimalFormat(decimalFormat);
@@ -467,7 +467,7 @@ public class POIUtilsEx {
 					} else {
 						if(type.indexOf("-") == -1){
 							cell.setCellValue(d);
-							cell.setCellStyle(getDataFormat(wb,cc,"0.00"));
+							cell.setCellStyle(getDataFormat(wb,cc,"0.##"));
 						}else{
 							String decimalFormat =type.substring(type.indexOf("-")+1);
 							DecimalFormat df=new DecimalFormat(decimalFormat);

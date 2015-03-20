@@ -34,8 +34,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 public class POIUtils {
 	public static final Logger logger = Logger.getLogger(POIUtils.class);
-	public static DecimalFormat format2=new DecimalFormat("0.0#");
-	public static DecimalFormat format3=new DecimalFormat("0.0##");
+	public static DecimalFormat format2=new DecimalFormat("0.##");
+	public static DecimalFormat format3=new DecimalFormat("0.###");
 	/**
 	 * 设置样式
 	 * 
@@ -143,6 +143,7 @@ public class POIUtils {
 	/**
 	 * 初始化
 	 */
+	@SuppressWarnings("unchecked")
 	public static void processExcel(OutputStream os, String file, List<Map<String,Object>> list) {
 		boolean is2007 = false;
 		Workbook wb = null;
@@ -218,7 +219,7 @@ public class POIUtils {
 			if (indexs.length == 2) {
 				row = sheet.getRow(Integer.parseInt(indexs[0]));
 				cell = row.createCell(Integer.parseInt(indexs[1]));
-				if("0".equals(value) || "0.00".equals(value) || "0.0".equals(value)){
+				if("0.00".equals(value) ||"0.00".equals(value) || "0.0".equals(value)){
 				}else{
 					if(entry.getValue() instanceof Number){
 						cell.setCellValue(Float.parseFloat(format2.format(Double.parseDouble(value))));
@@ -231,7 +232,7 @@ public class POIUtils {
 				row = sheet.getRow(Integer.parseInt(indexs[0]));
 				cell = row.createCell(Integer.parseInt(indexs[1]));
 				String type = indexs[2];
-				if("0".equals(value) || "0.00".equals(value) || "0.0".equals(value)){
+				if("0.000".equals(value) ||"0.00".equals(value) || "0.0".equals(value)){
 				}else{
 					try {
 						if(type.equals("3Double")){
