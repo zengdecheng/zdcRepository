@@ -67,9 +67,11 @@ define([ "u" ], function(u) {
 					}
 					
 					var rate=$("#time_consume").attr("data");
-					if(parseFloat(rate) <= 33){
+					if(parseFloat(rate) <0){
+						$("#rate").css({"background-color":"#0000ff","color":"white"});
+					}else if(parseFloat(rate) < 33){
 						$("#rate").css({"background-color":"#33cc00","color":"white"});
-					}else if(parseFloat(rate) <= 66){
+					}else if(parseFloat(rate) < 66){
 						$("#rate").css({"background-color":"#ff9900","color":"white"});
 					}else if(parseFloat(rate) <= 100){
 						$("#rate").css({"background-color":"#ff3300","color":"white"});
