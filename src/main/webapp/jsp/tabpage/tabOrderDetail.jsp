@@ -71,7 +71,7 @@
 					<td width="260px">男/女款：<span id="styleType"></span></td>
 				</tr>
 				<tr height="28px;">
-					<td width="260px">&nbsp;品&nbsp;&nbsp;&nbsp;类：&nbsp;<select id="categorys" name="oaOrder.styleClass">
+					<td width="260px">一级品类：<select id="categorys" name="oaOrder.styleClass">
 						</select></td>
 					<td colspan="2">特殊工艺：
 						<input name="oaOrder.styleCraft" type="checkbox" value="印花"><span class="sp_style_craft" style="cursor:pointer">印花</span>&nbsp;&nbsp;
@@ -96,7 +96,7 @@
 								onFocus="WdatePicker({readOnly:true,dateFmt: 'yyyy-MM-dd 18:00:00'})" />
 						</div>
 						<div style="padding: 25 0 25 0;">
-							<span style="color: red;">*</span>二级分类：<select id="clothClass"
+							<span style="color: red;">*</span>二级品类：<select id="clothClass"
 								name="oaOrder.clothClass" style="width: 140px;">
 								<s:iterator
 									value="%{@com.xbd.oa.utils.XbdBuffer@getOaDtList('1')}">
