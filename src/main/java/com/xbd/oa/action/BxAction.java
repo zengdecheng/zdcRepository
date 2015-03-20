@@ -5660,9 +5660,9 @@ public class BxAction extends Action {
 		}
 		
 		//订单周期
-		Long sellReadyTime = oaOrder.getSellReadyTime();
-		Long standardTime = oaOrder.getStandardTime();
-		Long craftTime = oaOrder.getCraftTime();
+		Long sellReadyTime = oaOrder.getSellReadyTime()==null?0l:oaOrder.getSellReadyTime();
+		Long standardTime = oaOrder.getStandardTime()==null?0l:oaOrder.getStandardTime();
+		Long craftTime = oaOrder.getCraftTime()==null?0l:oaOrder.getCraftTime();
 		Long orderTime = (sellReadyTime+standardTime+craftTime)/9*24;
 		//交期
 		Timestamp goodsTime = oaOrder.getGoodsTime();
