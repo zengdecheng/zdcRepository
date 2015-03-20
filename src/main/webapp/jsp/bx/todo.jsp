@@ -6,18 +6,21 @@
 <link rel="stylesheet" type="text/css" href="/css/form3.css" />
 <div class="z_assign_list" id="form_search_div">
 	<form method="post">
-		<input type="hidden" name="orderField" id="orderField" value="${bean.map.orderField}"/>
-		<input type="hidden" name="orderType" id="orderType" value="${bean.map.orderType}"/>
+		<input type="hidden" name="orderField" id="orderField"
+			value="${bean.map.orderField}" /> <input type="hidden"
+			name="orderType" id="orderType" value="${bean.map.orderType}" />
 		<table cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td><table cellpadding="0" cellspacing="0" border="0">
 						<tr>
 							<td width="60" height="40"><label class="">客户名称：</label></td>
 							<td width="135"><input type="text" class="z_inp2"
-								name="fsp.map.cus_name" value="${fsp.map.cus_name}" maxlength='20' /></td>
+								name="fsp.map.cus_name" value="${fsp.map.cus_name}"
+								maxlength='20' /></td>
 							<td width="60"><label class="">款号：</label></td>
 							<td width="135"><input type="text" class="z_inp2"
-								name="fsp.map.style_code" value="${fsp.map.style_code}" maxlength='20' /></td>
+								name="fsp.map.style_code" value="${fsp.map.style_code}"
+								maxlength='20' /></td>
 							<td width="60"><label class="">订单编号：</label></td>
 							<td width="135"><input type="text" class="z_inp2"
 								name="fsp.map.sell_order_code"
@@ -32,8 +35,8 @@
 									<option value="3"
 										<s:if test='fsp.map.type=="3"'>selected="selected"</s:if>>大货生产</option>
 							</select></td>
-							<td><input type="submit"
-								value="查&nbsp;&nbsp;询" class="z_submit2" /></td>
+							<td><input type="submit" value="查&nbsp;&nbsp;询"
+								class="z_submit2" /></td>
 						</tr>
 					</table></td>
 			</tr>
@@ -44,19 +47,21 @@
 <table border="0" cellspacing="0" cellpadding="0" class="z_table_style2"
 	width="1008">
 	<tr>
-		<th width="70" height="40" class="orderBy" name="data" style="cursor:pointer;">优先级</th>
-		<th width="70">订单编号</th>
-		<th width="65">订单类型</th>
+		<th width="60" height="40" class="orderBy" name="data"
+			style="cursor: pointer;">优先级</th>
+		<th width="65">订单编号</th>
+		<th width="60">订单类型</th>
 		<th width="65">款号</th>
-		<th width="120">款式描述</th>
-		<th width="140">客户名称</th>
+		<th width="115">款式描述</th>
+		<th width="135">客户名称</th>
 		<th width="50">数量</th>
-		<th width="80" class="orderBy" name="begin_time" style="cursor:pointer;">创建日期</th>
-		<!-- <th width="90">剩余时间</th>
-		<th width="90">当前节点剩余时间</th> -->
-		<th width="55">负责MR</th>
-		<th width="120">当前节点</th>
-		<th width="55">负责人</th>
+		<th width="70" class="orderBy" name="begin_time"
+			style="cursor: pointer;">创建日期</th>
+		<!-- <th width="90">剩余时间</th> -->
+		<th width="90">当前节点剩余时间</th>
+		<th width="50">负责MR</th>
+		<th width="100">当前节点</th>
+		<th width="50">负责人</th>
 		<th colspan="3">操作</th>
 	</tr>
 	<s:if test="beans.size()==0">
@@ -66,23 +71,22 @@
 	</s:if>
 	<s:iterator value="beans" status="st">
 		<tr>
-			<td>
-				<s:if test="map.data < 0">
-					<div style="background-color:#0000FF;color:#fff;height:22px;line-height: 22px; text-align: center;">${map.data }%</div>
-				</s:if>
-				<s:elseif test="map.data < 33">
-					<div style="background-color:#33cc00;color:#fff;height:22px;line-height: 22px; text-align: center;">${map.data }%</div>
-				</s:elseif>
-				<s:elseif test="map.data < 66">
-					<div style="background-color:#ff9900;color:#fff;height:22px;line-height: 22px; text-align: center;">${map.data }%</div>
-				</s:elseif>
-				<s:elseif test="map.data <= 100">
-					<div style="background-color:#ff3300;color:#fff;height:22px;line-height: 22px; text-align: center;">${map.data }%</div>
-				</s:elseif>
-				<s:else>
-					<div style="background-color:#000;color:#fff;height:22px; line-height: 22px; text-align: center;">${map.data }%</div>
-				</s:else>
-			</td>
+			<td><s:if test="map.data < 0">
+					<div
+						style="background-color: #0000FF; color: #fff; height: 22px; line-height: 22px; text-align: center;">${map.data }%</div>
+				</s:if> <s:elseif test="map.data < 33">
+					<div
+						style="background-color: #33cc00; color: #fff; height: 22px; line-height: 22px; text-align: center;">${map.data }%</div>
+				</s:elseif> <s:elseif test="map.data < 66">
+					<div
+						style="background-color: #ff9900; color: #fff; height: 22px; line-height: 22px; text-align: center;">${map.data }%</div>
+				</s:elseif> <s:elseif test="map.data <= 100">
+					<div
+						style="background-color: #ff3300; color: #fff; height: 22px; line-height: 22px; text-align: center;">${map.data }%</div>
+				</s:elseif> <s:else>
+					<div
+						style="background-color: #000; color: #fff; height: 22px; line-height: 22px; text-align: center;">${map.data }%</div>
+				</s:else></td>
 			<td><a class="z_title_sty5"
 				href="/bx/orderDetail?oaOrderDetail.id=${map.oa_order_detail}"
 				style="word-wrap: break-word;">${map.sell_order_code}</a></td>
@@ -95,9 +99,9 @@
 			<td>${map.want_cnt}</td>
 			<td>${map.begin_time}</td>
 			<%-- <td class="z_title_sty3"><s:property
-					value="%{@com.xbd.oa.utils.WebUtil@minusTime(map.except_finish)}" /></td>
+					value="%{@com.xbd.oa.utils.WebUtil@minusTime(map.except_finish)}" /></td> --%>
 			<td class="z_title_sty3"><s:property
-					value="%{@com.xbd.oa.utils.WebUtil@minusTimeAndOffset(map.wf_real_start,map.wf_step_duration)}" /></td> --%>
+					value="%{@com.xbd.oa.utils.WebUtil@minusTimeAndOffset(map.wf_real_start,map.wf_step_duration)}" /></td>
 			<td>${map.mr_name}</td>
 			<td>${map.wf_step_name}</td>
 			<td>${map.operator}</td>
@@ -109,14 +113,16 @@
 				test="#session.is_manager != null && #session.is_manager.admin == map.operator">
 				<td class="z_title_sty5" colspan="3"><a class="assign_btn"
 					oaOrderDetailId="${map.oa_order_detail}" oaOrderId="${map.id}"
-					href="javascript:void(0)">分配</a>
-					<a href="/bx/processOrder?oaOrderDetail.id=${map.oa_order_detail}">处理</a>
+					href="javascript:void(0)">分配</a> <a
+					href="/bx/processOrder?oaOrderDetail.id=${map.oa_order_detail}">处理</a>
 			</s:elseif>
 			<s:else>
-				<td class="z_title_sty5" colspan="3">
-					<a href="/bx/processOrder?oaOrderDetail.id=${map.oa_order_detail}">处理</a>
+				<td class="z_title_sty5" colspan="3"><a
+					href="/bx/processOrder?oaOrderDetail.id=${map.oa_order_detail}">处理</a>
 			</s:else>
-				<a class="z_title_sty5" href="/bx/viewOrderDetail?oaOrder.id=${map.id}">进度</a></td>
+			<a class="z_title_sty5"
+				href="/bx/viewOrderDetail?oaOrder.id=${map.id}">进度</a>
+			</td>
 		</tr>
 	</s:iterator>
 </table>
@@ -132,20 +138,21 @@
 			value="取&nbsp;&nbsp;消" class="z_submit3 z_close cancel" />
 	</div>
 </div>
-<table cellspacing="0" cellpadding="0" border="1" class="z_table_style2" width="950" style="margin-top: 10px; text-align: center">
+<table cellspacing="0" cellpadding="0" border="1" class="z_table_style2"
+	width="950" style="margin-top: 10px; text-align: center">
 	<tr>
 		<td>生产总数</td>
 		<td>${bean.map.counts[0]}</td>
 		<td>黑色订单</td>
-		<td>${bean.map.counts[1]} (${bean.map.scale[0]}%)</td>
+		<td>${bean.map.counts[1]}(${bean.map.scale[0]}%)</td>
 		<td>红色订单</td>
-		<td>${bean.map.counts[2]} (${bean.map.scale[1]}%)</td>
+		<td>${bean.map.counts[2]}(${bean.map.scale[1]}%)</td>
 		<td>黄色订单</td>
-		<td>${bean.map.counts[3]} (${bean.map.scale[2]}%)</td>
+		<td>${bean.map.counts[3]}(${bean.map.scale[2]}%)</td>
 		<td>绿色订单</td>
-		<td>${bean.map.counts[4]} (${bean.map.scale[3]}%)</td>
+		<td>${bean.map.counts[4]}(${bean.map.scale[3]}%)</td>
 		<td>蓝色订单</td>
-		<td>${bean.map.counts[5]} (${bean.map.scale[4]}%)</td>
+		<td>${bean.map.counts[5]}(${bean.map.scale[4]}%)</td>
 	</tr>
 </table>
 <s:include value="/jsp/parts/page.jsp"></s:include>

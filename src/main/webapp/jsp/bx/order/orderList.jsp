@@ -113,6 +113,7 @@
 			<th width="80">客户名称</th>
 			<th width="50">数量</th>
 			<th width="80"><span id="cjrqOrder" style="color: rgb(0, 3, 255); cursor: auto;">创建日期&nbsp;↓</span></th>
+			<th width="90">当前节点剩余时间</th>
 			<th width="90">建议投料日期</th>
 			<th width="80">MR完成日期</th>
 			<th width="90">技术完成日期（大货）</th>
@@ -153,6 +154,8 @@
 				<td>${map.cus_name}</td>
 				<td>${map.want_cnt}</td>
 				<td>${map.begin_time}</td>
+				<td class="z_title_sty3"><s:property
+					value="%{@com.xbd.oa.utils.WebUtil@minusTimeAndOffset(map.wf_real_start,map.wf_step_duration)}" /></td>
 				<td>${map.feeding_time}</td>
 				<td>${map.odel_wf_real_finish}</td>
 				<td>${map.ppc_wf_real_finish}</td>
