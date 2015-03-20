@@ -76,13 +76,25 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 						totalTime += data.time;
 					}
 				});
+				
+				$("#oaOrder_craftTime").val(totalTime);
+				//得到缓冲时间
+				var idx = $("#categorys option:selected").index();
+				var orderTypeNum = $(window.parent.document).find("#orderTypeNum").val();
+				var standardTime =0;
+				if(orderTypeNum==2){
+					standardTime =categorys[idx].map.daban_cyc;
+				}else {
+					standardTime =categorys[idx].map.dahuo_cyc;
+				}
+				
 				//产前版完成日期
 				var url = "";
 				if($("#isPreproduct").val()){
-					url = "/bx/getFeedingTime?orderId=" + $(window.parent.document).find("#orderId").val() + "&craftTime=" +totalTime+"&productTime="+$("#isPreproduct").val();
+					url = "/bx/getFeedingTime?orderId=" + $(window.parent.document).find("#orderId").val() +"&standardTime=" +standardTime+ "&craftTime=" +totalTime+"&productTime="+$("#isPreproduct").val();
 				}else{
-					url = "/bx/getFeedingTime?orderId=" + $(window.parent.document).find("#orderId").val() + "&craftTime=" +totalTime;
-				};
+					url = "/bx/getFeedingTime?orderId=" + $(window.parent.document).find("#orderId").val() +"&standardTime=" +standardTime+"&craftTime=" +totalTime;
+				}
 				$.ajax({
                     url: url,
                     type: "post",
@@ -220,8 +232,9 @@ define([ "u","layer","v","vl" ], function(u,layer) {
                 			biz.event.setManageInfoData(data.oaOrderDetail); //设置管理信息
                 			biz.event.setCategorys(data.categorys); 		//品类初始化
                 			var oa_feeding_time = $(window.parent.document).find("#oa_feeding_time").val();
+                			
                 			if(oa_feeding_time){
-                				$("#feeding_time").html(data);
+                				$("#feeding_time").html(oa_feeding_time);
                 			}else{
                 				biz.event.calcFeedingTime();
                 			}
@@ -530,10 +543,10 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 				var temp = "";
 				$.each(datas,function(index,data){
 					if(data.map.name == styleClass){
-						$("#categorys").append('<option selected="selected">'+data.map.name+"("+data.map.code+")</option>");
+						$("#categorys").append('<option selected="selected" value="'+data.map.name+'">'+data.map.name+"("+data.map.code+")</option>");
 						selectedIndex = 0;
 					}else{
-						$("#categorys").append("<option>"+data.map.name+"("+data.map.code+")</option>");
+						$("#categorys").append("<option value="+data.map.name+">"+data.map.name+"("+data.map.code+")</option>");
 					}
 				});
 				biz.event.setStyleCarft(0);
