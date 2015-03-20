@@ -32,7 +32,6 @@ define(["p","f","u"], function(p,f,u) {
 			}else{
 				orderType ="↑";
 			}
-			console.info(orderField);
 			if(orderField=="data"){
 				$(".orderBy[name=data]").html($(".orderBy[name=data]").html()+orderType);
 			}else{
