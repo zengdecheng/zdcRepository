@@ -15,6 +15,9 @@
 			border-collapse: collapse;
 			border: none;
 		}
+		.order {
+			color: rgb(0, 3, 255); cursor: auto;
+		}
 	</style>
 </head>
 <body>
@@ -83,12 +86,14 @@
                 <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.ppc_wf_real_finish" value="${fsp.map.ppc_wf_real_finish}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.ppc_wf_real_finish1" value="${fsp.map.ppc_wf_real_finish1}" onFocus="WdatePicker({readOnly:true})" /></td>
 
                 <td height="40"><label class="">QA完工日期：</label></td>
-                <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odelqa_wf_real_finish" value="${fsp.map.odelqa_wf_real_finish}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odelqa_wf_real_finish1" value="${fsp.map.odelqa_wf_real_finish1}" onFocus="WdatePicker({readOnly:true})" /></td>
+                <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odelqa_wf_real_finish" value="${fsp.map.odelqa_wf_real_finish}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 73px;" name="fsp.map.odelqa_wf_real_finish1" value="${fsp.map.odelqa_wf_real_finish1}" onFocus="WdatePicker({readOnly:true})" /></td>
             </tr>
 
             <tr>
                 <td colspan="8" align="right"><input type="submit" value="查询" style="width: 60px;" />
                     <input id="reset_btn" type="button" value="重置" style="width: 60px;" />
+                    
+                    <input type="hidden" id="yxjOrderHid" name="fsp.map.yxjOrderHid" value="${fsp.map.yxjOrderHid}" />
                 </td>
             </tr>
 		</table>
@@ -98,7 +103,8 @@
 	<table border="0" cellspacing="0" cellpadding="0" class="z_table_style2" width="1208">
 		<tr>
 			<th width="8" height="40"></th>
-			<th width="40" height="40">优先级</th>
+			<th width="60" height="40"><span id="yxjOrder" style="color: rgb(0, 3, 255); cursor: auto;">优先级&nbsp;↓</span>
+			</th>
 			<th width="8" height="40"></th>
 			<th width="80">订单号</th>
 			<th width="70">订单类型</th>
@@ -106,7 +112,7 @@
 			<th width="100">款式描述</th>
 			<th width="80">客户名称</th>
 			<th width="50">数量</th>
-			<th width="80">创建日期</th>
+			<th width="80"><span id="cjrqOrder" style="color: rgb(0, 3, 255); cursor: auto;">创建日期&nbsp;↓</span></th>
 			<th width="90">建议投料日期</th>
 			<th width="80">MR完成日期</th>
 			<th width="90">技术完成日期（大货）</th>
@@ -150,7 +156,7 @@
 				<td>${map.feeding_time}</td>
 				<td>${map.odel_wf_real_finish}</td>
 				<td>${map.ppc_wf_real_finish}</td>
-				<td>${map.style_class}</td>
+				<td>${map.name}</td>
 				<td>${map.mr_name}</td>
 				<td>${map.wf_step_name}</td>
 				<td>${map.operator}</td>
@@ -173,7 +179,7 @@
 		<td>绿色订单</td>
 		<td>${statisticsMap.greenNum} (${statisticsMap.green}%)</td>
 		<td>蓝色订单</td>
-		<td>${statisticsMap.blueNum} (${statisticsMap.green}%)</td>
+		<td>${statisticsMap.blueNum} (${statisticsMap.blue}%)</td>
 	</tr>
 </table>
 
