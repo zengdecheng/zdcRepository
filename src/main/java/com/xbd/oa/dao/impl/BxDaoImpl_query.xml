@@ -824,11 +824,11 @@ ote.oa_timebase = ot.id ${case}1">
 	<function name="list_relation_order_by_sql" type="sql" sql="select id,sell_order_code,style_code,style_desc,cus_name,sales,type,oa_order_num_id from oa_order where right(wf_step,1)>2 ${case}1  ">
 		<parser index="1">
 			<param fspname="codeOrName" sqlname=" concat(cus_code,' ',cus_name)" op="like"></param>
-			<param fspname="style_code" sqlname="style_code"></param>
+			<param fspname="style_code" sqlname="style_code" op="like"></param>
 			<param fspname="type" sqlname="type"></param>
 			<param fspname="sales" sqlname="sales"></param>
 			<param fspname="mr_name" sqlname="mr_name"></param>
-			<param fspname="sell_order_code" sql="sell_order_code"></param>
+			<param fspname="sell_order_code" sql="sell_order_code" op="like"></param>
 		</parser>
 	</function>
 	<!--查询管理信息内容 -->
