@@ -18,7 +18,7 @@
 							<td width="185">
 								<input type="text" class="z_inp2" style="width:167px;" name="fsp.map.cus_name" value="${fsp.map.cus_name}"  maxlength='20' />
 							</td>
-							<td width="65"><label class="">样衣款号：</label></td>
+							<td width="65"><label class="">款号：</label></td>
 							<td width="185">
 								<input type="text" class="z_inp2" style="width:167px;" name="fsp.map.style_code" value="${fsp.map.style_code}"  maxlength='20' />
 							</td>
@@ -146,7 +146,7 @@
 		class="z_table_style2">
 		<tr>
 			<th width="8"></th>
-			<th width="80">订单号</th>
+			<th width="80">订单编号</th>
 			<th width="80">订单类型</th>
 			<th width="80">款号</th>
 			<th width="80">款式描述</th>
@@ -186,7 +186,7 @@
 				<td>${map.wf_step_name}</td>
 				<td>${map.mr_name}</td>
 				<td>${map.sewing_factory}</td>
-				<td>${map.tpe_name}</td>
+				<td>${map.tpedel_operator}</td>
 				<td>${map.sewing_total}</td>
 				<td>${map.qualified_total}</td>
 				<td>${map.qadel_wf_real_finish}</td>
