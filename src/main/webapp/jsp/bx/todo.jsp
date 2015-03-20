@@ -137,15 +137,15 @@
 		<td>生产总数</td>
 		<td>${bean.map.counts[0]}</td>
 		<td>黑色订单</td>
-		<td>${bean.map.counts[1]} (${bean.map.counts[1]/bean.map.counts[6]*100}%)</td>
+		<td>${bean.map.counts[1]} (${bean.map.scale[0]}%)</td>
 		<td>红色订单</td>
-		<td>${bean.map.counts[2]} (${bean.map.counts[2]/bean.map.counts[6]*100}%)</td>
+		<td>${bean.map.counts[2]} (${bean.map.scale[1]}%)</td>
 		<td>黄色订单</td>
-		<td>${bean.map.counts[3]} (${bean.map.counts[3]/bean.map.counts[6]*100}%)</td>
+		<td>${bean.map.counts[3]} (${bean.map.scale[2]}%)</td>
 		<td>绿色订单</td>
-		<td>${bean.map.counts[4]} (${bean.map.counts[4]/bean.map.counts[6]*100}%)</td>
+		<td>${bean.map.counts[4]} (${bean.map.scale[3]}%)</td>
 		<td>蓝色订单</td>
-		<td>${bean.map.counts[5]} (${bean.map.counts[5]/bean.map.counts[6]*100}%)</td>
+		<td>${bean.map.counts[5]} (${bean.map.scale[4]}%)</td>
 	</tr>
 </table>
 <s:include value="/jsp/parts/page.jsp"></s:include>

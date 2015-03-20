@@ -1,6 +1,8 @@
 package com.xbd.erp.category.action;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -307,15 +309,31 @@ public class CategoryAction extends BaseAction {
 				}
 
 				// 货期
+				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 18:00:00");
 				if (oaOrder.getPreVersionDate() != null && null != oaOrder.getPreproductDays()) {
 					Date preVersion = (Date) oaOrder.getPreVersionDate();
 					Calendar c = Calendar.getInstance();
 					c.setTime(preVersion);
 					c.add(c.DAY_OF_YEAR, oaOrder.getPreproductDays());
 					Date temp_date = c.getTime();
-					oaOrder.setGoodsTime(new Timestamp(temp_date.getTime()));
+
+					try {
+						String string = df.format(temp_date);
+						df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						oaOrder.setGoodsTime(new Timestamp(df.parse(string).getTime()));
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				} else {
-					oaOrder.setGoodsTime(oaOrder.getExceptFinish());
+					try {
+						String string = df.format(oaOrder.getExceptFinish());
+						df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						oaOrder.setGoodsTime(new Timestamp(df.parse(string).getTime()));
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 

@@ -345,7 +345,7 @@ public class BizUtil {
 				e.printStackTrace();
 			}
 			long between = date.getTime() - startWork.getTime();// 算出开始时间与结束时间差
-			if (between >= duration) { // 时间差大于duration则该节点开始时间仍属于今天工作时间内
+			if (between >= -duration) { // 时间差大于duration则该节点开始时间仍属于今天工作时间内
 				return new Timestamp(date.getTime() + duration);
 			} else { // 结束时间已不属于今天的范围
 				long newDuration = duration + between;

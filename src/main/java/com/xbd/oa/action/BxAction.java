@@ -433,6 +433,15 @@ public class BxAction extends Action {
 			bean.set("data", persent);
 		}
 		bean.set("counts", counts);
+		
+		String scale[] = new String[5];
+		scale[0] = String.format("%.1f", counts[1].floatValue() / counts[6] * 100);
+		scale[1] = String.format("%.1f", counts[2].floatValue() / counts[6] * 100);
+		scale[2] = String.format("%.1f", counts[3].floatValue() / counts[6] * 100);
+		scale[3] = String.format("%.1f", counts[4].floatValue() / counts[6] * 100);
+		scale[4] = String.format("%.1f", counts[5].floatValue() / counts[6] * 100);
+		bean.set("scale", scale);
+		
 		CommonSort<LazyDynaMap> cs = new CommonSort<LazyDynaMap>();
 		if(StringUtils.isBlank(orderField)){
 			orderType = false;
