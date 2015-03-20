@@ -202,13 +202,21 @@ define(
 						}, 30000);
 					},
 					yxjOrder : function() {
-						if ($("#yxjOrderHid").val() == "3" || $("#yxjOrderHid").val() == "4") {
+						if($("#yxjOrderHid").val() == "1"){
+							$("#yxjOrderHid").val("2");
+						}else if($("#yxjOrderHid").val() == "2"){
+							$("#yxjOrderHid").val("1");
+						}else if ($("#yxjOrderHid").val() == "3" || $("#yxjOrderHid").val() == "4") {
 							$("#yxjOrderHid").val("1");
 						}
 						$("#orderList").submit();
 					},
 					cjrqOrder : function() {
-						if ($("#yxjOrderHid").val() == "1" || $("#yxjOrderHid").val() == "2") {
+						if($("#yxjOrderHid").val() == "3"){
+							$("#yxjOrderHid").val("4");
+						}else if($("#yxjOrderHid").val() == "4"){
+							$("#yxjOrderHid").val("3");
+						}else if ($("#yxjOrderHid").val() == "1" || $("#yxjOrderHid").val() == "2") {
 							$("#yxjOrderHid").val("3");
 						}
 						$("#orderList").submit();
