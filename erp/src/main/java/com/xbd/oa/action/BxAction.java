@@ -5646,21 +5646,23 @@ public class BxAction extends Action {
 		if ("finish_999".equals(wfStepIndex)) {
 			tamp = oaOrder.getEndTime();
 		}
-		// 计算当前订单的耗时= (当前日期-产前版完成日期)/打版完成的天数
-		if(null!=oaOrder.getPreVersionDate() && !"".equals(oaOrder.getPreVersionDate())){
-			if(null!=oaOrder.getPreproductDays()){
-				long time=((tamp.getTime()-oaOrder.getPreVersionDate().getTime())*100/(oaOrder.getPreproductDays()*24*60*60*1000));
-				String time_consume = df.format(time);
-				bean.set("time_consume", time_consume);// 设置当前的耗时
-			}
+		
+		//订单周期
+		Long sellReadyTime = oaOrder.getSellReadyTime();
+		Long standardTime = oaOrder.getStandardTime();
+		Long craftTime = oaOrder.getCraftTime();
+		Long orderTime = (sellReadyTime+standardTime+craftTime)/9*24;
+		//交期
+		Timestamp goodsTime = oaOrder.getGoodsTime();
+		//当前工作时间
+		Timestamp workTime = null;
+		if(("finish_999").equals(oaOrder.getWfStep())){
+			workTime = BizUtil.getOperatingTime(oaOrder.getEndTime());
 		}else{
-			// 计算当前订单的耗时= （当前日期-下单日期+1）÷（交货日期-下单日期+1）*100%
-			Date begin_time = oaOrder.getBeginTime();
-			Date except_finish = oaOrder.getExceptFinish();
-			double time = ((double) (tamp.getTime() - begin_time.getTime() + 24 * 60 * 60 * 1000) / (double) (except_finish.getTime() - begin_time.getTime() + 24 * 60 * 60 * 1000)) * 100;
-			String time_consume = df.format(time);
-			bean.set("time_consume", time_consume);// 设置当前的耗时
+			workTime = BizUtil.getOperatingTime(new Timestamp(new Date().getTime()));
 		}
+		Integer persent = (int) ((workTime.getTime()-goodsTime.getTime()+orderTime - 60*60*1000*24)/orderTime);
+		bean.set("time_consume", persent);// 设置当前的耗时
 	}
 
 	/**
