@@ -697,7 +697,7 @@ ote.oa_timebase = ot.id ${case}1">
 	</function>
 
 	<!-- 获取部门待做任务-->
-	<function name="list_orgwf_by_sql" type="sql" sql="SELECT oo.id,ood.id oa_order_detail,oo.style_id,oo.goods_time, oo.feeding_time, oo.standard_time, oo.craft_time, oo.sell_ready_time, oo.sell_order_code, oo.type, oo.style_code, oo.style_desc, oo.cus_name, oo.want_cnt, oo.begin_time, oo.style_class, oo.mr_name, oo.wf_step_name, oo.operator 
+	<function name="list_orgwf_by_sql" type="sql" sql="SELECT oo.id,ood.id oa_order_detail,oo.style_id,oo.goods_time, oo.feeding_time, oo.standard_time, oo.craft_time, oo.sell_ready_time, oo.sell_order_code, oo.type, oo.style_code, oo.style_desc, oo.cus_name, oo.want_cnt, oo.begin_time, oo.style_class, oo.mr_name, oo.wf_step_name, oo.operator,oo.wf_real_start,oo.wf_step_duration 
 		FROM oa_order AS oo ,oa_order_detail AS ood,oa_staff AS os
 		WHERE oo.wf_step != 'finish_999' AND oo.`status` = '0' 
 		AND oo.oa_order_detail = ood.id
@@ -712,7 +712,7 @@ ote.oa_timebase = ot.id ${case}1">
 	</function>
 
 	<!-- 查询 order 和 工作流表 -->
-	<function name="list_orderwf_by_sql" type="sql" sql="select oo.id,ood.id oa_order_detail,oo.sell_order_code,oo.type,oo.is_urgent,oo.style_id,oo.goods_time, oo.feeding_time, oo.standard_time, oo.craft_time, oo.sell_ready_time,oo.style_code,oo.style_desc,oo.cus_id,oo.cus_code,oo.cus_name,oo.want_cnt,oo.begin_time,oo.mr_name,oo.wf_step_name,oo.wf_real_start,oo.wf_plan_start,oo.wf_step_duration,oo.except_finish,oo.city,oo.operator,oo.wf_step 
+	<function name="list_orderwf_by_sql" type="sql" sql="select oo.id,ood.id oa_order_detail,oo.sell_order_code,oo.type,oo.is_urgent,oo.style_id,oo.goods_time, oo.feeding_time, oo.standard_time, oo.craft_time, oo.sell_ready_time,oo.style_code,oo.style_desc,oo.cus_id,oo.cus_code,oo.cus_name,oo.want_cnt,oo.begin_time,oo.mr_name,oo.wf_step_name,oo.wf_real_start,oo.wf_plan_start,oo.wf_step_duration,oo.except_finish,oo.city,oo.operator,oo.wf_step,oo.wf_real_start,oo.wf_step_duration 
 			from oa_order oo ,oa_order_detail ood
 			where oo.id = ood.oa_order
 			  and oo.oa_order_detail = ood.id 
