@@ -4635,7 +4635,7 @@ public class BxAction extends Action {
 			statisticsMap.put("blue", (int)new BigDecimal((blueNum/(float)beansNums) * 100).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue()+"");
 			statisticsMap.put("green", (int)new BigDecimal((greenNum/(float)beansNums) * 100).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue()+""); //new BigDecimal((greenNum/beansNums) * 10).setScale(5, BigDecimal.ROUND_HALF_UP).floatValue()
 			statisticsMap.put("orange", (int)new BigDecimal((orangeNum/(float)beansNums) * 100).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue()+"");//new BigDecimal((orangeNum/beansNums) * 10).setScale(5, BigDecimal.ROUND_HALF_UP).floatValue()
-			statisticsMap.put("red", (int)new BigDecimal((redNum/(float)beansNums) * 100).setScale(0, BigDecimal.ROUND_HALF_UP).floatValue()+"");
+			statisticsMap.put("red", (int)new BigDecimal((redNum/(float)beansNums) * 100).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue()+"");
 			statisticsMap.put("black", (int)new BigDecimal((blackNum/(float)beansNums) * 100).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue()+"");
 		}
 		Struts2Utils.getRequest().setAttribute("statisticsMap", statisticsMap);
