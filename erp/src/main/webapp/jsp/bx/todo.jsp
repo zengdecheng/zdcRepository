@@ -58,7 +58,7 @@
 		<th width="70" class="orderBy" name="begin_time"
 			style="cursor: pointer;">创建日期</th>
 		<!-- <th width="90">剩余时间</th> -->
-		<!-- <th width="90">当前节点剩余时间</th> -->
+		<th width="90">当前节点剩余时间</th>
 		<th width="50">负责MR</th>
 		<th width="100">当前节点</th>
 		<th width="50">负责人</th>
@@ -100,8 +100,8 @@
 			<td>${map.begin_time}</td>
 			<%-- <td class="z_title_sty3"><s:property
 					value="%{@com.xbd.oa.utils.WebUtil@minusTime(map.except_finish)}" /></td> --%>
-			<%-- <td class="z_title_sty3"><s:property
-					value="%{@com.xbd.oa.utils.WebUtil@minusTimeAndOffset(map.wf_real_start,map.wf_step_duration)}" /></td> --%>
+			<td class="z_title_sty3"><s:property
+					value="%{@com.xbd.oa.utils.WebUtil@minusTimeAndOffset(map.wf_real_start,map.wf_step_duration)}" /></td>
 			<td>${map.mr_name}</td>
 			<td>${map.wf_step_name}</td>
 			<td>${map.operator}</td>
