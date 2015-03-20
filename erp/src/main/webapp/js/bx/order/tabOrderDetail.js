@@ -66,6 +66,7 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 				biz.event.clearStyle();
 				//初始化各个选项的耗时
 				biz.event.setStyleCarft(selectedIndex);
+				biz.event.calcFeedingTime();
 			})
 		},
 		event : {
