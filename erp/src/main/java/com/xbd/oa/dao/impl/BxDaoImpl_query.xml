@@ -585,6 +585,14 @@ ote.oa_timebase = ot.id ${case}1">
 													)tpe ON oder.id = tpe.oa_order_id
 													LEFT JOIN(
 														SELECT
+															name,
+															dahuo_cyc,
+															daban_cyc
+														FROM
+															oa_category
+													)cg ON oder.style_class = cg.name
+													LEFT JOIN(
+														SELECT
 															oa_order_id AS cost_oa_order_id, p_sam
 														FROM
 															oa_cost
@@ -642,7 +650,7 @@ ote.oa_timebase = ot.id ${case}1">
 														AND wf_step = 'c_ppc_confirm_7'
 														 and ISNULL(back_flag)
 													)odelqa ON oder.id = odelqa_oa_order
-														where oder.STATUS = '0' and oder.wf_step != 'finish_999' ${case}1 GROUP BY oder.id order by oder.begin_time desc">
+														where oder.STATUS = '0' and oder.wf_step != 'finish_999' ${case}1 GROUP BY oder.id ">
 		<parser index="1">
 			<param fspname="sell_order_code" sqlname="oder.sell_order_code" op="like"></param>
 			<param fspname="style_type" sqlname="oder.style_type"></param>
