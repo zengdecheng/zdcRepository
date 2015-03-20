@@ -675,8 +675,8 @@ ote.oa_timebase = ot.id ${case}1">
 			<param fspname="odel_wf_real_start1" sqlname="odel_wf_real_start" op="&lt;"></param>
             <param fspname="odel_wf_real_finish" sqlname="odel_wf_real_finish" op="&gt;="></param>
             <param fspname="odel_wf_real_finish1" sqlname="odel_wf_real_finish" op="&lt;"></param>
-			<param fspname="odelqa_wf_real_start" sqlname="odelqa_wf_real_start" op="&gt;="></param>
-			<param fspname="odelqa_wf_real_start1" sqlname="odelqa_wf_real_start" op="&lt;"></param>
+			<param fspname="odelqa_wf_real_finish" sqlname="odelqa_wf_real_finish" op="&gt;="></param>
+			<param fspname="odelqa_wf_real_finish1" sqlname="odelqa_wf_real_finish" op="&lt;"></param>
             <param fspname="ppc_wf_real_finish" sqlname="ppc_wf_real_finish" op="&gt;="></param>
 			<param fspname="ppc_wf_real_finish1" sqlname="ppc_wf_real_finish" op="&lt;"></param>
 		</parser>
