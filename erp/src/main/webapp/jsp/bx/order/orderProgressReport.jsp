@@ -63,9 +63,9 @@
 	<table border="0" cellspacing="0" cellpadding="0" class="z_table_style2" width="1008">
 		<tr>
 			<th width="32" height="40" align="center">序号</th>
-			<th width="75" height="40">订单号</th>
+			<th width="75" height="40">订单编号</th>
 			<th width="173" height="40">客户</th>
-			<th width="70">一级分类</th>
+			<th width="70">品类</th>
 			<th width="194">二级分类</th>
 			<th width="70">MR处理人</th>
 			<s:if test="fsp.map.type eq 2">

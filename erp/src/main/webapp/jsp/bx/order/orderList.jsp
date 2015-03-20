@@ -25,7 +25,7 @@
 	<form method="post" id="orderList">
 		<table cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td width="65" height="40"><label class="">订单号：</label></td>
+				<td width="65" height="40"><label class="">订单编号：</label></td>
 				<td width="185"><input type="text" class="z_inp2" name="fsp.map.sell_order_code" style="width:167px;" value="${fsp.map.sell_order_code}" maxlength='20' /></td>
 				<td width="65"><label class="">男/女款：</label></td>
 				<td width="185"><s:select cssClass="z_inp2" list="{'男','女','儿童'}" theme="simple" headerKey="" name="fsp.map.style_type" value="%{fsp.map.style_type}" cssStyle="width: 170px" headerValue="请选择"></s:select></td>
@@ -39,7 +39,7 @@
 			<tr>
 				<td height="40"><label class="">款号：</label></td>
 				<td><input type="text" class="z_inp2" name="fsp.map.style_code" style="width:167px;" value="${fsp.map.style_code}" maxlength='20' /></td>
-				<td><label class="">一级分类：</label></td>
+				<td><label class="">品类：</label></td>
 				<td><s:select  theme="simple" list="#{'针织裤子':'针织裤子','梳织裤子':'梳织裤子','针织上衣':'针织上衣','梳织上衣':'梳织上衣','连衣裙':'连衣裙','半身裙':'半身裙','羽绒':'羽绒','棉衣':'棉衣','夹克/外套':'夹克/外套','牛仔':'牛仔'}" headerKey="" name="fsp.map.style_class" value="%{fsp.map.style_class}" cssStyle="width: 167px" cssClass="z_inp2" headerValue="请选择"></s:select></td>
 				<td><label class="">客户：</label></td>
 				<td><input type="text" name="fsp.map.cus_name" value="${fsp.map.cus_name}" class="z_inp2" style="width:167px;" maxlength='20' /></td>
@@ -51,7 +51,7 @@
 			<tr>
 				<td height="40"><label class="">销售：</label></td>
 				<td><select id="crm_staff_sales" class="z_inp2" style="width: 170px;" name="fsp.map.sales" value="${fsp.map.sales}"></select></td>
-				<td><label class="">MR跟单：</label></td>
+				<td><label class="">MR：</label></td>
 				<td><select id="crm_staff_mr" class="z_inp2" style="width: 170px;" name="fsp.map.mr_name" value="${fsp.map.mr_name}"></select></td>
 				<td><label class="">TPE：</label></td>
 				<td><s:select theme="simple" list="@com.xbd.oa.utils.XbdBuffer@getStaffsByGroupName('qc')" listKey="map.login_name" listValue="map.login_name" headerKey="" headerValue="请选择" cssClass="z_inp2" cssStyle="width: 170px;" name="fsp.map.tpe_name" value="%{fsp.map.tpe_name}"></s:select></td>
@@ -118,7 +118,7 @@
 			<th width="80">MR完成日期</th>
 			<th width="90">技术完成日期（大货）</th>
 			<th width="90">品类</th>
-			<th width="50">负责MR</th>
+			<th width="50">MR</th>
 			<th width="70">当前节点</th>
 			<th width="50">负责人</th>
 			<th>操作</th>
@@ -160,7 +160,7 @@
 				<td>${map.odel_wf_real_finish}</td>
 				<td>${map.ppc_wf_real_finish}</td>
 				<td>${map.name}</td>
-				<td>${map.mr_name}</td>
+				<td>${map.odel_operator}</td>
 				<td>${map.wf_step_name}</td>
 				<td>${map.operator}</td>
 				<td><a class="z_title_sty5" href="/bx/viewOrderDetail?oaOrder.id=${map.id}">进度</a>	</td>
