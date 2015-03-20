@@ -21,7 +21,6 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.commons.beanutils.LazyDynaMap;
-import org.use.base.utils.base.FileUtils;
 
 public class WorkFlowUtil {
 	private static ProcessEngine _processEngine;

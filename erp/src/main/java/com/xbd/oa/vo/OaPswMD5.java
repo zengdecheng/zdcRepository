@@ -1,6 +1,5 @@
 package com.xbd.oa.vo;
 import java.security.MessageDigest;
-import java.security.MessageDigest;
 
 public class OaPswMD5 {
 	public final static String PswToMD5(String s){

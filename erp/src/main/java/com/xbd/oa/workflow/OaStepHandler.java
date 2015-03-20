@@ -7,7 +7,6 @@ import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 
 import com.xbd.oa.utils.BizUtil;
-import com.xbd.oa.utils.XbdBuffer;
 
 public class OaStepHandler implements TaskListener {
 
