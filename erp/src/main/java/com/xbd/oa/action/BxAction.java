@@ -100,8 +100,8 @@ public class BxAction extends Action {
 
 	private static final long serialVersionUID = 1095934307773047305L;
 	public static final Logger logger = Logger.getLogger(BxAction.class);
-	private static DecimalFormat decimalFormat=new DecimalFormat("0.0#");
-	private static DecimalFormat decimalFormat3=new DecimalFormat("0.0##");
+	private static DecimalFormat decimalFormat=new DecimalFormat("0.##");
+	private static DecimalFormat decimalFormat3=new DecimalFormat("0.###");
 	@EJB(name = "com.xbd.oa.business.impl.BxManagerImpl")
 	private BaseManager manager;
 	private String nickName;
@@ -418,7 +418,7 @@ public class BxAction extends Action {
 			Timestamp goodsTime = (Timestamp) bean.get("goods_time");
 			//当前工作时间
 			Timestamp workTime = BizUtil.getOperatingTime(new Timestamp(new Date().getTime()));
-			Integer persent = (int) ((workTime.getTime()-goodsTime.getTime()+orderTime - 60*60*1000*24)/orderTime);
+			Integer persent = (int) ((workTime.getTime()-goodsTime.getTime()+orderTime - 60*60*1000*24d)/orderTime*100);
 			if(persent>100){
 				counts[1] += 1;
 			}else if(persent>=66){
@@ -3502,7 +3502,7 @@ public class BxAction extends Action {
 		}
 		int orderSum = basic.size();
 		// 添加序号
-		DecimalFormat df = new DecimalFormat("0.00");
+		DecimalFormat df = new DecimalFormat("0.##");
 		for (int i = 1; i < 7; i++) {
 			ArrayList<String> data = new ArrayList<String>();
 			data.add(i + "");
@@ -3976,7 +3976,7 @@ public class BxAction extends Action {
 		}
 		int orderSum = basic.size();
 		// 添加序号
-		DecimalFormat df = new DecimalFormat("0.00");
+		DecimalFormat df = new DecimalFormat("0.##");
 		for (int i = 1; i < 10; i++) {
 			ArrayList<String> data = new ArrayList<String>();
 			data.add(i + "");
@@ -4249,7 +4249,7 @@ public class BxAction extends Action {
 		float weiKuanRate = 0;
 		float faHuoTotal = 0;
 		float faHuoRate = 0;
-		DecimalFormat df = new DecimalFormat("0.00");
+		DecimalFormat df = new DecimalFormat("0.##");
 		if (!stepCount.isEmpty()) {
 			for (int i = 0; i < stepCount.size(); i++) {
 				LazyDynaMap bean = stepCount.get(i);
@@ -4400,7 +4400,7 @@ public class BxAction extends Action {
 		float heSuanRate = 0;
 		float mrCheckTotal = 0;
 		float mrCheckRate = 0;
-		DecimalFormat df = new DecimalFormat("0.00");
+		DecimalFormat df = new DecimalFormat("0.##");
 		if (!stepCount.isEmpty()) {
 			for (int i = 0; i < stepCount.size(); i++) {
 				LazyDynaMap bean = stepCount.get(i);
@@ -5661,7 +5661,7 @@ public class BxAction extends Action {
 		}else{
 			workTime = BizUtil.getOperatingTime(new Timestamp(new Date().getTime()));
 		}
-		Integer persent = (int) ((workTime.getTime()-goodsTime.getTime()+orderTime - 60*60*1000*24)/orderTime);
+		Integer persent = (int) ((workTime.getTime()-goodsTime.getTime()+orderTime - 60*60*1000*24d)/orderTime*100);
 		bean.set("time_consume", persent);// 设置当前的耗时
 	}
 
@@ -5822,14 +5822,15 @@ public class BxAction extends Action {
 	public void getFeedingTime() {
 		Integer orderId = Integer.parseInt(Struts2Utils.getParameter("orderId"));
 		Long craftTime = Long.parseLong(Struts2Utils.getParameter("craftTime"));
+		Long standardTime = Long.parseLong(Struts2Utils.getParameter("standardTime"));
 		String productTime = Struts2Utils.getParameter("productTime");
 		OaOrder order = (OaOrder) manager.getObject(OaOrder.class,orderId);
 		Timestamp feedingTime = null;
 		if(StringUtils.isNotBlank(productTime)){
 			Timestamp ptime = new Timestamp(DateUtil.parseDate(productTime).getTime());
-			feedingTime = BizUtil.culPlanDate(ptime,order.getPreproductDays()*24*60*60*1000 + 18*60*60*1000L-craftTime-order.getStandardTime());
+			feedingTime = BizUtil.culPlanDate(ptime,order.getPreproductDays()*24*60*60*1000 + 18*60*60*1000L-craftTime-standardTime);
 		}else{
-			feedingTime = BizUtil.culPlanDate(order.getGoodsTime(), 18*60*60*1000L-craftTime-order.getStandardTime());
+			feedingTime = BizUtil.culPlanDate(order.getGoodsTime(), 18*60*60*1000L-craftTime-standardTime);
 		}
 		Struts2Utils.writeJson(DateUtil.formatDate(feedingTime));
 	}
@@ -6027,6 +6028,9 @@ public class BxAction extends Action {
 			oaOrder1.setTpeName(oaOrder.getTpeName()); // tpe，即qc
 			oaOrder1.setPreVersionDate(oaOrder.getPreVersionDate()); // 保存产前版日期
 			oaOrder1.setStyleCraft(oaOrder.getStyleCraft());//保存生产工艺
+			oaOrder1.setStyleClass(oaOrder.getStyleClass());
+			oaOrder1.setCraftTime(oaOrder.getCraftTime());//特殊工艺用时
+			oaOrder1.setFeedingTime(oaOrder.getFeedingTime());//建议投料日期
 			// 关联订单时，保存被关联订单的ID、订单编号、类型 Add by ZQ 2014-12-22
 			String relatedOrderCode = oaOrder.getRelatedOrderCode();
 			if (StringUtils.isNotEmpty(relatedOrderCode)) {
@@ -10102,11 +10106,11 @@ public class BxAction extends Action {
 		sheetFileInfo.put(t+",8", "平均值：");
 		sheetFileInfo.put(t+",21",new CustomCell("\"总数:\"&SUM(INDIRECT(\"V2\"):INDIRECT(\"V\"&(ROW()-1)))", "Expression"));
 		
-		sheetFileInfo.put(t+",47", new CustomCell("IF(ISERR(AVERAGE(AV1:AV"+t+")),\"\",AVERAGE(AV1:AV"+t+"))", "Expression","0.0%"));
-		sheetFileInfo.put(t+",48", new CustomCell("IF(ISERR(AVERAGE(AW1:AW"+t+")),\"\",AVERAGE(AW1:AW"+t+"))", "Expression","0.0%"));
-		sheetFileInfo.put(t+",49", new CustomCell("IF(ISERR(AVERAGE(AX1:AX"+t+")),\"\",AVERAGE(AX1:AX"+t+"))", "Expression","0.0%"));
-		sheetFileInfo.put(t+",50", new CustomCell("IF(ISERR(AVERAGE(AY1:AY"+t+")),\"\",AVERAGE(AY1:AY"+t+"))", "Expression","0.0%"));
-		sheetFileInfo.put(t+",51", new CustomCell("IF(ISERR(AVERAGE(AZ1:AZ"+t+")),\"\",AVERAGE(AZ1:AZ"+t+"))", "Expression","0.0%"));
+		sheetFileInfo.put(t+",47", new CustomCell("IF(ISERR(AVERAGE(AV1:AV"+t+")),\"\",AVERAGE(AV1:AV"+t+"))", "Expression","0.#%"));
+		sheetFileInfo.put(t+",48", new CustomCell("IF(ISERR(AVERAGE(AW1:AW"+t+")),\"\",AVERAGE(AW1:AW"+t+"))", "Expression","0.#%"));
+		sheetFileInfo.put(t+",49", new CustomCell("IF(ISERR(AVERAGE(AX1:AX"+t+")),\"\",AVERAGE(AX1:AX"+t+"))", "Expression","0.#%"));
+		sheetFileInfo.put(t+",50", new CustomCell("IF(ISERR(AVERAGE(AY1:AY"+t+")),\"\",AVERAGE(AY1:AY"+t+"))", "Expression","0.#%"));
+		sheetFileInfo.put(t+",51", new CustomCell("IF(ISERR(AVERAGE(AZ1:AZ"+t+")),\"\",AVERAGE(AZ1:AZ"+t+"))", "Expression","0.#%"));
 		
 		sheetFileInfo.put(t+",10", new CustomCell("IF(AND(INDEX(AV:AZ,ROW(),1)<>\"\",INDEX(AV:AZ,ROW(),1)<>0),TEXT(INDEX(AV:AZ,ROW(),1)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
 		sheetFileInfo.put(t+",11", new CustomCell("IF(AND(INDEX(AV:AZ,ROW(),2)<>\"\",INDEX(AV:AZ,ROW(),2)<>0),TEXT(INDEX(AV:AZ,ROW(),2)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
@@ -10116,11 +10120,11 @@ public class BxAction extends Action {
 		sheetFileInfo.put(t+",15", new CustomCell("IF(AND(SUM(AV"+(t+1)+":AZ"+(t+1)+")<>\"\",SUM(AV"+(t+1)+":AZ"+(t+1)+")<>0),TEXT(SUM(AV"+(t+1)+":AZ"+(t+1)+")/86400,\"[h]小时mm分\"),\"\")", "Expression"));
 		
 		
-		sheetFileInfo.put(t+",16", new CustomCell("IF(ISERR(AVERAGE(Q2:Q"+t+")),\"\",AVERAGE(Q2:Q"+t+"))", "Expression","0.0%"));
-		sheetFileInfo.put(t+",17", new CustomCell("IF(ISERR(AVERAGE(R2:R"+t+")),\"\",AVERAGE(R2:R"+t+"))", "Expression","0.0%"));
-		sheetFileInfo.put(t+",18", new CustomCell("IF(ISERR(AVERAGE(S2:S"+t+")),\"\",AVERAGE(S2:S"+t+"))", "Expression","0.0%"));
-		sheetFileInfo.put(t+",19", new CustomCell("IF(ISERR(AVERAGE(T2:T"+t+")),\"\",AVERAGE(T2:T"+t+"))", "Expression","0.0%"));
-		sheetFileInfo.put(t+",20", new CustomCell("IF(ISERR(AVERAGE(U2:U"+t+")),\"\",AVERAGE(U2:U"+t+"))", "Expression","0.0%"));
+		sheetFileInfo.put(t+",16", new CustomCell("IF(ISERR(AVERAGE(Q2:Q"+t+")),\"\",AVERAGE(Q2:Q"+t+"))", "Expression","0.#%"));
+		sheetFileInfo.put(t+",17", new CustomCell("IF(ISERR(AVERAGE(R2:R"+t+")),\"\",AVERAGE(R2:R"+t+"))", "Expression","0.#%"));
+		sheetFileInfo.put(t+",18", new CustomCell("IF(ISERR(AVERAGE(S2:S"+t+")),\"\",AVERAGE(S2:S"+t+"))", "Expression","0.#%"));
+		sheetFileInfo.put(t+",19", new CustomCell("IF(ISERR(AVERAGE(T2:T"+t+")),\"\",AVERAGE(T2:T"+t+"))", "Expression","0.#%"));
+		sheetFileInfo.put(t+",20", new CustomCell("IF(ISERR(AVERAGE(U2:U"+t+")),\"\",AVERAGE(U2:U"+t+"))", "Expression","0.#%"));
 		
 		fillInfo.put(sheetNames+"FileInfo", sheetFileInfo);
 		fillInfo.put(sheetNames+"MergeCell", sheetMergeCell);
@@ -10260,14 +10264,14 @@ public class BxAction extends Action {
 		sheetFileInfo.put(t+",21", new CustomCell("IF(AND(SUM(AY"+(t+1)+":BF"+(t+1)+")<>\"\",SUM(AY"+(t+1)+":BF"+(t+1)+")<>0),TEXT(SUM(AY"+(t+1)+":BF"+(t+1)+")/86400,\"[h]小时mm分\"),\"\")", "Expression"));
 		
 		
-		sheetFileInfo.put(t+",22", new CustomCell("IF(ISERR(AVERAGE(W2:W"+t+")),\"\",AVERAGE(W2:W"+t+"))", "Expression","0.0%"));
-		sheetFileInfo.put(t+",23", new CustomCell("IF(ISERR(AVERAGE(X2:X"+t+")),\"\",AVERAGE(X2:X"+t+"))", "Expression","0.0%"));
-		sheetFileInfo.put(t+",24", new CustomCell("IF(ISERR(AVERAGE(Y2:Y"+t+")),\"\",AVERAGE(Y2:Y"+t+"))", "Expression","0.0%"));
-		sheetFileInfo.put(t+",25", new CustomCell("IF(ISERR(AVERAGE(Z2:Z"+t+")),\"\",AVERAGE(Z2:Z"+t+"))", "Expression","0.0%"));
-		sheetFileInfo.put(t+",26", new CustomCell("IF(ISERR(AVERAGE(AA2:AA"+t+")),\"\",AVERAGE(AA2:AA"+t+"))", "Expression","0.0%"));
-		sheetFileInfo.put(t+",27", new CustomCell("IF(ISERR(AVERAGE(AB2:AB"+t+")),\"\",AVERAGE(AB2:AB"+t+"))", "Expression","0.0%"));
-		sheetFileInfo.put(t+",28", new CustomCell("IF(ISERR(AVERAGE(AC2:AC"+t+")),\"\",AVERAGE(AC2:AC"+t+"))", "Expression","0.0%"));
-		sheetFileInfo.put(t+",29", new CustomCell("IF(ISERR(AVERAGE(AD2:AD"+t+")),\"\",AVERAGE(AD2:AD"+t+"))", "Expression","0.0%"));
+		sheetFileInfo.put(t+",22", new CustomCell("IF(ISERR(AVERAGE(W2:W"+t+")),\"\",AVERAGE(W2:W"+t+"))", "Expression","0.#%"));
+		sheetFileInfo.put(t+",23", new CustomCell("IF(ISERR(AVERAGE(X2:X"+t+")),\"\",AVERAGE(X2:X"+t+"))", "Expression","0.#%"));
+		sheetFileInfo.put(t+",24", new CustomCell("IF(ISERR(AVERAGE(Y2:Y"+t+")),\"\",AVERAGE(Y2:Y"+t+"))", "Expression","0.#%"));
+		sheetFileInfo.put(t+",25", new CustomCell("IF(ISERR(AVERAGE(Z2:Z"+t+")),\"\",AVERAGE(Z2:Z"+t+"))", "Expression","0.#%"));
+		sheetFileInfo.put(t+",26", new CustomCell("IF(ISERR(AVERAGE(AA2:AA"+t+")),\"\",AVERAGE(AA2:AA"+t+"))", "Expression","0.#%"));
+		sheetFileInfo.put(t+",27", new CustomCell("IF(ISERR(AVERAGE(AB2:AB"+t+")),\"\",AVERAGE(AB2:AB"+t+"))", "Expression","0.#%"));
+		sheetFileInfo.put(t+",28", new CustomCell("IF(ISERR(AVERAGE(AC2:AC"+t+")),\"\",AVERAGE(AC2:AC"+t+"))", "Expression","0.#%"));
+		sheetFileInfo.put(t+",29", new CustomCell("IF(ISERR(AVERAGE(AD2:AD"+t+")),\"\",AVERAGE(AD2:AD"+t+"))", "Expression","0.#%"));
 		
 		fillInfo.put(sheetNames+"FileInfo", sheetFileInfo);
 		fillInfo.put(sheetNames+"MergeCell", sheetMergeCell);
@@ -10288,7 +10292,7 @@ public class BxAction extends Action {
 			}
 		}
 		sheetFileInfo.put(index+","+opratorIndex, "".equals(op)?new CustomCell():op);
-		sheetFileInfo.put(index+","+dataIndex, new CustomCell("IF(AND(INDIRECT(\"AZ\"&ROW())<>\"\",INDIRECT(\"AZ\"&ROW())<>0),ROUND(INDEX(AV:AZ,ROW(),"+(dataIndex-15)+")/BA"+(index+1)+",3),\"\")", "Expression","0.0%"));
+		sheetFileInfo.put(index+","+dataIndex, new CustomCell("IF(AND(INDIRECT(\"AZ\"&ROW())<>\"\",INDIRECT(\"AZ\"&ROW())<>0),ROUND(INDEX(AV:AZ,ROW(),"+(dataIndex-15)+")/BA"+(index+1)+",3),\"\")", "Expression","0.#%"));
 		
 		Short color ;
 		if(plan_time>real_time){
@@ -10328,7 +10332,7 @@ public class BxAction extends Action {
 			}
 		}
 		sheetFileInfo.put(index+","+opratorIndex, "".equals(op)?new CustomCell():op);
-		sheetFileInfo.put(index+","+dataIndex, new CustomCell("IF(AND(INDIRECT(\"BF\"&ROW())<>\"\",INDIRECT(\"BF\"&ROW())<>0),ROUND(INDEX(AY:BG,ROW(),"+(dataIndex-21)+")/BG"+(index+1)+",3),\"\")", "Expression","0.0%"));
+		sheetFileInfo.put(index+","+dataIndex, new CustomCell("IF(AND(INDIRECT(\"BF\"&ROW())<>\"\",INDIRECT(\"BF\"&ROW())<>0),ROUND(INDEX(AY:BG,ROW(),"+(dataIndex-21)+")/BG"+(index+1)+",3),\"\")", "Expression","0.#%"));
 		Short color ;
 		if(plan_time>real_time){
 			color = IndexedColors.GREEN.index;
