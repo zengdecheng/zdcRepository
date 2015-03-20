@@ -118,6 +118,7 @@ public class POIUtils {
 			}
 			logger.debug("开始得到目标Sheet...");
 			Sheet sheet = wb.getSheetAt(Integer.parseInt(sheetIndex) - 2);
+			sheet.setForceFormulaRecalculation(true);
 			logger.debug("结束得到Sheet...");
 			logger.debug("开始增加行...");
 			dynaRow(sheet, dynaRow);
@@ -178,6 +179,7 @@ public class POIUtils {
 				Map<String,Object> params=  (Map<String, Object>) map.get("params");
 				excelFilling(wb, sheet, params);
 				logger.debug("结束填充sheet...");
+				sheet.setForceFormulaRecalculation(true);
 			}
 			wb.write(os);
 		} catch (Exception e) {
