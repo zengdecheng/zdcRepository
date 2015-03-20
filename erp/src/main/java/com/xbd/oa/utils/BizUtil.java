@@ -344,19 +344,21 @@ public class BizUtil {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			long between = date.getTime() - startWork.getTime();// 算出开始时间与结束时间差
-			if (between >= -duration) { // 时间差大于duration则该节点开始时间仍属于今天工作时间内
-				return new Timestamp(date.getTime() + duration);
-			} else { // 结束时间已不属于今天的范围
-				long newDuration = duration + between;
 
-				// 1000*60*60 1个小时,15个小时即是晚6:00到早9:00的非工作时间
-				Timestamp newDate = new Timestamp(startWork.getTime() - (1000 * 60 * 60 * 15)); // 得到一个新的计划开始时间，即前一天下午6点
-
-				newDate = getWorkTime(newDate); // 得到一个工作时间
-
-				return culPlanDate(newDate, newDuration);
+			Timestamp newDate = null;
+			long newDuration = duration;
+			// 1000*60*60 1个小时,15个小时即是晚6:00到早9:00的非工作时间
+			newDate = new Timestamp(startWork.getTime() - (1000 * 60 * 60 * 15)); // 得到一个新的计划开始时间，即前一天下午6点
+			
+			if (getWorkTime(startWork).getTime() == startWork.getTime()) { // 说明是工作日
+				long between = date.getTime() - startWork.getTime();// 算出开始时间与结束时间差
+				if (between >= -duration) { // 时间差大于duration则该节点开始时间仍属于今天工作时间内
+					return new Timestamp(date.getTime() + duration);
+				} else { // 结束时间已不属于今天的范围
+					newDuration = duration + between;
+				}
 			}
+			return culPlanDate(newDate, newDuration);
 		}
 	}
 
@@ -726,29 +728,14 @@ public class BizUtil {
 	}
 
 	public static void main(String[] args) {
-		/*
-		 * try { //System.out.println(259200000l / (1000 * 3600 * 24) + "天");
-		 * 
-		 * 
-		 * 
-		 * DateFormat dateFormat; dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);// 设定格式 // dateFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", // Locale.ENGLISH);
-		 * dateFormat.setLenient(false); Timestamp t1 = new Timestamp(dateFormat.parse("2013-11-24") .getTime());// util类型 Timestamp t2 = new Timestamp(dateFormat.parse("2013-11-25") .getTime());//
-		 * util类型 computeTimeRate(t1, t2, 259200000l); } catch (ParseException e) { // TODO Auto-generated catch block e.printStackTrace(); }
-		 */
-
-		// double a = 1800000l;
-		// double b = 3600 * 1000;
-		// System.out.println(a / b);
-
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		try {
-			Timestamp ts1 = new Timestamp(df.parse("2014-11-17 23:00:00").getTime());
-			Timestamp ts2 = new Timestamp(df.parse("2014-11-7 16:00:00").getTime());
-
-			// System.out.println(getOperatingTime(ts1));
-			// System.out.println(getWorkTimeBetween(ts1, ts2) / (1000 * 60 *
-			// 60));
-			System.out.println(culPlanDate(ts2, (long) (1000 * 60 * 60 * 4)));
+			// System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), 9L * 1000 * 60 * 60));
+			// System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), 18L * 1000 * 60 * 60));
+			// System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), 27L * 1000 * 60 * 60));
+			System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), -27L * 1000 * 60 * 60));
+			System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), -36L * 1000 * 60 * 60));
+			System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), -45L * 1000 * 60 * 60));
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
