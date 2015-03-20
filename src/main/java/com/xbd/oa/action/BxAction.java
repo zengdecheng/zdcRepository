@@ -922,7 +922,7 @@ public class BxAction extends Action {
 			Timestamp goodsTime = (Timestamp) beans.get(i).get("goods_time");
 			//当前工作时间
 			Timestamp workTime = BizUtil.getOperatingTime(new Timestamp(new Date().getTime()));
-			Integer cycle1 = (int) ((workTime.getTime()-goodsTime.getTime()+orderTime - 60*60*1000*24)/orderTime);
+			Integer cycle1 = (int) ((workTime.getTime()-goodsTime.getTime()+orderTime - 60*60*1000*24d)/orderTime*100);
 			
 			beans.get(i).set("data", cycle1);
 			if(orderColor != null && !"".equals(orderColor)){
@@ -4519,7 +4519,7 @@ public class BxAction extends Action {
 			Timestamp goodsTime = (Timestamp) beans.get(i).get("goods_time");
 			//当前工作时间
 			Timestamp workTime = BizUtil.getOperatingTime(new Timestamp(new Date().getTime()));
-			Integer cycle = (int) ((workTime.getTime()-goodsTime.getTime()+orderTime - 60*60*1000*24)/orderTime);
+			Integer cycle = (int) ((workTime.getTime()-goodsTime.getTime()+orderTime - 60*60*1000*24d)/orderTime*100);
 			
 			
 			beans.get(i).set("data", cycle);
