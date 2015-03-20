@@ -106,7 +106,7 @@
 			<th width="60" height="40"><span id="yxjOrder" style="color: rgb(0, 3, 255); cursor: auto;">优先级&nbsp;↓</span>
 			</th>
 			<th width="8" height="40"></th>
-			<th width="80">订单号</th>
+			<th width="80">订单编号</th>
 			<th width="70">订单类型</th>
 			<th width="70">款号</th>
 			<th width="100">款式描述</th>

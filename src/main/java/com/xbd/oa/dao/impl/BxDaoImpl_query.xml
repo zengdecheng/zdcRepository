@@ -650,7 +650,7 @@ ote.oa_timebase = ot.id ${case}1">
 			<param fspname="his_opt" sqlname="oder.his_opt" op="like"></param>
 			<param fspname="cus_name" sqlname="oder.cus_name" op="like"></param>
 			<param fspname="sales" sqlname="oder.sales"></param>
-			<param fspname="mr_name" sqlname="oder.mr_name"></param>
+			<param fspname="mr_name" sqlname="odel_operator"></param>
 			<param fspname="tpe_name" sqlname="tpedel_operator"></param>
 			<param fspname="type" sqlname="oder.type"></param>
 			<param fspname="city" sqlname="oder.city"></param>

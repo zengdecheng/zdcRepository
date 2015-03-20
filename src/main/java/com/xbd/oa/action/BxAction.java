@@ -4473,12 +4473,11 @@ public class BxAction extends Action {
 		
 		Struts2Utils.getRequest().setAttribute("orderColor", orderColor);
 		if(fsp.getMap().get("yxjOrderHid") != null && "3".equals(fsp.getMap().get("yxjOrderHid"))){
-			
 			fsp.set(FSPBean.FSP_ORDER, " order by oder.begin_time desc");
-			fsp.getMap().put("yxjOrderHid", "4");	
+			fsp.getMap().put("yxjOrderHid", "3");	
 		}else if(fsp.getMap().get("yxjOrderHid") != null && "4".equals(fsp.getMap().get("yxjOrderHid"))){
 			fsp.set(FSPBean.FSP_ORDER, " order by oder.begin_time");
-			fsp.getMap().put("yxjOrderHid", "3");	
+			fsp.getMap().put("yxjOrderHid", "4");	
 		}  
 		
 		
@@ -4605,7 +4604,7 @@ public class BxAction extends Action {
 	                }
 	            }
 			}
-			fsp.getMap().put("yxjOrderHid", "2");
+			fsp.getMap().put("yxjOrderHid", "1");
 		}else if(fsp.getMap().get("yxjOrderHid") == null || "".equals(fsp.getMap().get("yxjOrderHid"))
 				 || "2".equals(fsp.getMap().get("yxjOrderHid"))){
 			for(int i = 0; i < beans.size(); i++){
@@ -4619,7 +4618,7 @@ public class BxAction extends Action {
 	                }
 	            }
 			}
-			fsp.getMap().put("yxjOrderHid", "1");
+			fsp.getMap().put("yxjOrderHid", "2");
 		} 
 		
 		
