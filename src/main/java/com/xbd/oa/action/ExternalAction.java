@@ -685,11 +685,17 @@ public class ExternalAction extends Action {
 							oaOrder.setCraftTime(0L);
 
 							// 判断产前版是否存在，并进行数据格式化
-							if (null == oaOrder.getPreVersionDate()) {
+							if ("1".equals(oaOrder.getIsPreproduct())) { // 需要产前版
+								if (null == oaOrder.getPreVersionDate()) {
+									oaOrder.setPreproductDays(null);
+								} else if (0 == oaOrder.getPreproductDays()) {
+									oaOrder.setPreproductDays(1);
+								}
+							} else { // 不需要产前版
+								oaOrder.setPreVersionDate(null);
 								oaOrder.setPreproductDays(null);
-							} else if(0 == oaOrder.getPreproductDays()) {
-								oaOrder.setPreproductDays(1);
 							}
+
 							if ("2".equals(oaOrder.getType())) {
 								oaOrder.setStandardTime(38 * 60 * 60 * 1000L);
 							} else {

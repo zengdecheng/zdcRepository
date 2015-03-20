@@ -187,10 +187,15 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 					$("#t_repeatNum").show();
 					$("#t_repeatReason").show();
 					$("#repeatNum").text($(window.parent.document).find("#repeatNum").val());
-					$("#repeatReason").text($(window.parent.document).find("#repeatReason").val());	
+					$("#repeatReason").text($(window.parent.document).find("#repeatReason").val());
+					$("#isPreProductDiv").remove();
 				}else if("大货生产"==$(window.parent.document).find("#orderType").val()){
-					$("#isPreProductDiv").show();
-					$("#isPreproduct").val($(window.parent.document).find("#preVersionDate").val());//填充产前版日期	
+					if("1" == $(window.parent.document).find("#isPreProduct").val()) {
+						$("#isPreProductDiv").show();
+						$("#isPreproduct").val($(window.parent.document).find("#preVersionDate").val());//填充产前版日期	
+					} else {
+						$("#isPreProductDiv").remove();
+					}
 				}
 				//添加关联客户编号、ID、类型回显 Add by ZQ 2014-12-22
 				$("#related_order_code").val($(window.parent.document).find("#relatedOrderCode").val());

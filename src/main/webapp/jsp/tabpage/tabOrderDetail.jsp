@@ -91,8 +91,8 @@
 							<input type="hidden" name="oaOrder.feedingTime" id="feeding_time_value"/>
 							<input type="hidden" name="oaOrder.craftTime" id="oaOrder_craftTime"/>
 						</div>
-						<div style="padding: 25 0 25 0;display:none" id="isPreProductDiv">
-							<span style="color: red;">*</span>产前版完成日期：<input type="text"  id="isPreproduct"
+						<div style="padding: 25 0 25 0;" id="isPreProductDiv">
+							<span style="color: red;">*</span>产前版完成日期：<input type="text" id="isPreproduct"
 								class="z_inp2 createTime" style="width: 150px;" name="oaOrder.preVersionDate"
 								onFocus="WdatePicker({readOnly:true,dateFmt: 'yyyy-MM-dd 18:00:00'})" />
 						</div>
