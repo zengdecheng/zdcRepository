@@ -5828,7 +5828,7 @@ public class BxAction extends Action {
 		Timestamp feedingTime = null;
 		if(StringUtils.isNotBlank(productTime)){
 			Timestamp ptime = new Timestamp(DateUtil.parseDate(productTime).getTime());
-			feedingTime = BizUtil.culPlanDate(ptime,order.getPreproductDays()*24*60*60*1000 + 18*60*60*1000L-craftTime-standardTime);
+			feedingTime = BizUtil.culPlanDate(ptime,(order.getPreproductDays()==null?0:order.getPreproductDays())*24*60*60*1000 + 18*60*60*1000L-craftTime-standardTime);
 		}else{
 			feedingTime = BizUtil.culPlanDate(order.getGoodsTime(), 18*60*60*1000L-craftTime-standardTime);
 		}
