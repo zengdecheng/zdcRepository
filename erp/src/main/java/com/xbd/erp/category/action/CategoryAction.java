@@ -335,6 +335,19 @@ public class CategoryAction extends BaseAction {
 						e.printStackTrace();
 					}
 				}
+
+				// 产前版日期
+				if (null != oaOrder.getPreVersionDate()) {
+					df = new SimpleDateFormat("yyyy-MM-dd 18:00:00");
+					try {
+						String string = df.format(oaOrder.getPreVersionDate());
+						df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						oaOrder.setPreVersionDate(new Timestamp(df.parse(string).getTime()));
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			}
 
 			manager.saveObject(oaOrder);
