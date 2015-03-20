@@ -170,6 +170,7 @@ ote.oa_timebase = ot.id ${case}1">
 																	mrdel_oa_order, mrdel_wf_step, mrdel_wf_real_start, mrdel_operator,
 																	mrdb_oa_order, mrdb_wf_step, mrdb_wf_real_start, mrdb_operator,
 																	fidel_oa_order, fidel_wf_step, fidel_wf_real_start, fidel_operator,
+																	tpedel_oa_order, tpedel_wf_step, tpedel_wf_real_start, tpedel_operator,
 																	bqcdel_oa_order, bqcdel_wf_step, bqcdel_wf_plan_start, bqcdel_wf_real_finish, bqcdel_wf_step_duration, bqcdel_operator
 																from
 																(
@@ -218,12 +219,14 @@ ote.oa_timebase = ot.id ${case}1">
 	                                                                ON mian.id = mrdb_oa_order
 																LEFT JOIN (select oa_order as fidel_oa_order, wf_step as fidel_wf_step, wf_real_start as fidel_wf_real_start, operator as fidel_operator from oa_order_detail where 1=1 and (wf_step = 'c_fi_pay_4' or wf_step = 'b_ppc_confirm_3')) fidel
 																	on mian.id = fidel_oa_order
+																LEFT JOIN (select oa_order as tpedel_oa_order, wf_step as tpedel_wf_step, wf_real_start as tpedel_wf_real_start, operator as tpedel_operator from oa_order_detail where 1=1 and wf_step = 'c_qc_cutting_6' order by id desc) tpedel
+																	on mian.id = tpedel_oa_order
 																LEFT JOIN(SELECT oa_order AS bqcdel_oa_order, wf_step AS bqcdel_wf_step, wf_plan_start as bqcdel_wf_plan_start, wf_real_finish AS bqcdel_wf_real_finish, wf_step_duration as bqcdel_wf_step_duration, operator AS bqcdel_operator FROM oa_order_detail WHERE 1 = 1 AND wf_step = 'b_qc_confirm_6' order by id desc) bqcdel
 	                                                                ON mian.id = bqcdel_oa_order
 																where 1 = 1  ${case}1  GROUP BY mian.id  ORDER BY mian.end_time desc">
 		<parser index="1">
             <param fspname="his_opt" sqlname="mian.his_opt" op="like"></param>
-			<param fspname="cus_name" sqlname="mian.cus_name"></param>
+			<param fspname="cus_name" sqlname="mian.cus_name"  op="like"></param>
 			<param fspname="style_code" sqlname="mian.style_code" op="like"></param>
 			<param fspname="sell_order_code" sqlname="mian.sell_order_code" op="like"></param>
 			<param fspname="type" sqlname="mian.type"></param>
@@ -231,7 +234,7 @@ ote.oa_timebase = ot.id ${case}1">
 			<param fspname="order_code" sqlname="mian.order_code" op="like"></param>
 			<param fspname="sales" sqlname="mian.sales"></param>
 			<param fspname="mr_name" sqlname="mian.mr_name"></param>
-			<param fspname="tpe_name" sqlname="mian.tpe_name"></param>
+			<param fspname="tpe_name" sqlname="tpedel_operator"></param>
 			<param fspname="sewing_factory" sqlname="mian.sewing_factory"></param>
 			<param fspname="status" sqlname="mian.status"></param>
 			<param fspname="wf_step" sqlname="mian.wf_step"></param>
@@ -598,7 +601,7 @@ ote.oa_timebase = ot.id ${case}1">
 													)qa ON oder.id = qa.qa_order_id
 													LEFT JOIN(
 														SELECT
-															wf_step AS odel_wf_step, wf_real_start AS odel_wf_real_start, wf_real_finish AS odel_wf_real_finish,
+															wf_step AS odel_wf_step, operator AS odel_operator, wf_real_start AS odel_wf_real_start, wf_real_finish AS odel_wf_real_finish,
 															oa_order AS odel_oa_order
 														FROM
 															oa_order_detail
@@ -622,6 +625,8 @@ ote.oa_timebase = ot.id ${case}1">
 														AND wf_step = 'c_ppc_assign_3'
 														and ISNULL(back_flag)
 													)ppc ON oder.id = ppc_oa_order
+													LEFT JOIN (select oa_order as tpedel_oa_order, wf_step as tpedel_wf_step, wf_real_start as tpedel_wf_real_start, operator as tpedel_operator from oa_order_detail where 1=1 and wf_step = 'c_qc_cutting_6' and ISNULL(back_flag)) tpedel
+																	on oder.id = tpedel_oa_order 
 													LEFT JOIN(
 														SELECT
 															wf_step AS odelqa_wf_step,
@@ -646,7 +651,7 @@ ote.oa_timebase = ot.id ${case}1">
 			<param fspname="cus_name" sqlname="oder.cus_name" op="like"></param>
 			<param fspname="sales" sqlname="oder.sales"></param>
 			<param fspname="mr_name" sqlname="oder.mr_name"></param>
-			<param fspname="tpe_name" sqlname="oder.tpe_name"></param>
+			<param fspname="tpe_name" sqlname="tpedel_operator"></param>
 			<param fspname="type" sqlname="oder.type"></param>
 			<param fspname="city" sqlname="oder.city"></param>
 			<param fspname="wf_step" sqlname="oder.wf_step"></param>
