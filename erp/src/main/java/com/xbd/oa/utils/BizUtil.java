@@ -334,6 +334,7 @@ public class BizUtil {
 				return culPlanDate(newDate, newDuration);
 			}
 		} else {
+			date = getWorkTime(date); // 得到一个工作时间
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 9:00:00");
 			String startWork_str = df.format(date);
 			Timestamp startWork = null;// 工作开始时间
@@ -369,6 +370,7 @@ public class BizUtil {
 	 * @return
 	 */
 	public static Timestamp getWorkTime(Timestamp newPlanStart) {
+		newPlanStart = getOperatingTime(newPlanStart);
 		SimpleDateFormat df = new SimpleDateFormat("E");// 格式化得到星期
 		String day = df.format(newPlanStart);
 		df = new SimpleDateFormat("yyyy-MM-dd"); // 格式化得到日期
@@ -743,11 +745,11 @@ public class BizUtil {
 			// System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), 9L * 1000 * 60 * 60));
 			// System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), 18L * 1000 * 60 * 60));
 			// System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), 27L * 1000 * 60 * 60));
-			// System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), -27L * 1000 * 60 * 60));
-			// System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), -36L * 1000 * 60 * 60));
-			// System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), -45L * 1000 * 60 * 60));
+			System.out.println(culPlanDate(new Timestamp(df.parse("2015-03-31 00:00:00").getTime()), -2L * 1000 * 60 * 60));
+//			 System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), -36L * 1000 * 60 * 60));
+//			 System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), -45L * 1000 * 60 * 60));
 
-			System.out.println(getWorkTime(new Timestamp(df.parse("2015-03-22 10:00:00").getTime())));
+			// System.out.println(getWorkTime(new Timestamp(df.parse("2015-03-22 10:00:00").getTime())));
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
