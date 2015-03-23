@@ -61,7 +61,7 @@ import com.xbd.oa.utils.Struts2Utils;
 import com.xbd.oa.utils.WebUtil;
 import com.xbd.oa.utils.WorkFlowUtil;
 import com.xbd.oa.utils.XbdBuffer;
-import com.xbd.oa.vo.CustomCell;
+import com.xbd.oa.vo.base.CustomCell;
 import com.xbd.oa.vo.OaClothesSize;
 import com.xbd.oa.vo.OaClothesSizeDetail;
 import com.xbd.oa.vo.OaCost;
