@@ -65,9 +65,9 @@
 			<th width="32" height="40" align="center">序号</th>
 			<th width="75" height="40">订单编号</th>
 			<th width="173" height="40">客户</th>
-			<th width="70">品类</th>
-			<th width="194">二级分类</th>
-			<th width="70">MR处理人</th>
+			<th width="70">一级品类</th>
+			<th width="194">二级品类</th>
+			<th width="70">MR</th>
 			<s:if test="fsp.map.type eq 2">
 				<th width="96">MR用时</th>
 				<th width="96">采购用时</th>

@@ -169,6 +169,7 @@ ote.oa_timebase = ot.id ${case}1">
 																	wldel_oa_order, wldel_wf_step, wldel_wf_plan_start, wldel_wf_step_duration, wldel_wf_real_finish,
 																	mrdel_oa_order, mrdel_wf_step, mrdel_wf_real_start, mrdel_operator,
 																	mrdb_oa_order, mrdb_wf_step, mrdb_wf_real_start, mrdb_operator,
+																	odel_wf_step, odel_operator, odel_oa_order,
 																	fidel_oa_order, fidel_wf_step, fidel_wf_real_start, fidel_operator,
 																	tpedel_oa_order, tpedel_wf_step, tpedel_wf_real_start, tpedel_operator,
 																	bqcdel_oa_order, bqcdel_wf_step, bqcdel_wf_plan_start, bqcdel_wf_real_finish, bqcdel_wf_step_duration, bqcdel_operator
@@ -180,8 +181,9 @@ ote.oa_timebase = ot.id ${case}1">
 																	tpe.sewing_num,
 																	tpe.sewing_total,
 																	qa.qualified_num_info,
-																	unqualified_num_info,
+																	qa.unqualified_num_info,
 																	qa.qualified_total,
+																	qa.unqualified_total,
 																	cost.p_sam,
 																	qadel_oa_order,
 																	qadel_wf_step,
@@ -217,6 +219,18 @@ ote.oa_timebase = ot.id ${case}1">
 																	on mian.id = mrdel_oa_order
                                                                 LEFT JOIN( select oa_order AS mrdb_oa_order, wf_step AS mrdb_wf_step, wf_real_start AS mrdb_wf_real_start, operator AS mrdb_operator from oa_order_detail where 1 = 1 and wf_step = 'b_mr_improve_2' order by id desc) mrdb
 	                                                                ON mian.id = mrdb_oa_order
+	                                                            LEFT JOIN(
+																	SELECT
+																		wf_step AS odel_wf_step, operator AS odel_operator, oa_order AS odel_oa_order
+																	FROM
+																		oa_order_detail
+																	WHERE
+																		1 = 1
+																	AND(
+																		wf_step = 'c_mr_improve_2'
+																		OR wf_step = 'b_mr_improve_2'
+																	) and ISNULL(back_flag)
+																)odel ON mian.id = odel_oa_order
 																LEFT JOIN (select oa_order as fidel_oa_order, wf_step as fidel_wf_step, wf_real_start as fidel_wf_real_start, operator as fidel_operator from oa_order_detail where 1=1 and (wf_step = 'c_fi_pay_4' or wf_step = 'b_ppc_confirm_3')) fidel
 																	on mian.id = fidel_oa_order
 																LEFT JOIN (select oa_order as tpedel_oa_order, wf_step as tpedel_wf_step, wf_real_start as tpedel_wf_real_start, operator as tpedel_operator from oa_order_detail where 1=1 and wf_step = 'c_qc_cutting_6' order by id desc) tpedel
@@ -233,7 +247,7 @@ ote.oa_timebase = ot.id ${case}1">
 			<param fspname="city" sqlname="mian.city"></param>
 			<param fspname="order_code" sqlname="mian.order_code" op="like"></param>
 			<param fspname="sales" sqlname="mian.sales"></param>
-			<param fspname="mr_name" sqlname="mian.mr_name"></param>
+			<param fspname="mr_name" sqlname="odel_operator"></param>
 			<param fspname="tpe_name" sqlname="tpedel_operator"></param>
 			<param fspname="sewing_factory" sqlname="mian.sewing_factory"></param>
 			<param fspname="status" sqlname="mian.status"></param>

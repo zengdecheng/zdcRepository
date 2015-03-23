@@ -39,7 +39,7 @@
 			<tr>
 				<td height="40"><label class="">款号：</label></td>
 				<td><input type="text" class="z_inp2" name="fsp.map.style_code" style="width:167px;" value="${fsp.map.style_code}" maxlength='20' /></td>
-				<td><label class="">品类：</label></td>
+				<td><label class="">一级品类：</label></td>
 				<td><s:select  theme="simple" list="#{'针织裤子':'针织裤子','梳织裤子':'梳织裤子','针织上衣':'针织上衣','梳织上衣':'梳织上衣','连衣裙':'连衣裙','半身裙':'半身裙','羽绒':'羽绒','棉衣':'棉衣','夹克/外套':'夹克/外套','牛仔':'牛仔'}" headerKey="" name="fsp.map.style_class" value="%{fsp.map.style_class}" cssStyle="width: 167px" cssClass="z_inp2" headerValue="请选择"></s:select></td>
 				<td><label class="">客户：</label></td>
 				<td><input type="text" name="fsp.map.cus_name" value="${fsp.map.cus_name}" class="z_inp2" style="width:167px;" maxlength='20' /></td>
@@ -117,7 +117,7 @@
 			<th width="90">建议投料日期</th>
 			<th width="80">MR完成日期</th>
 			<th width="90">技术完成日期（大货）</th>
-			<th width="90">品类</th>
+			<th width="90">一级品类</th>
 			<th width="50">MR</th>
 			<th width="70">当前节点</th>
 			<th width="50">负责人</th>
