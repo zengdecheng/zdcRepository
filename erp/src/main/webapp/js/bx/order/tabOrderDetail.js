@@ -283,6 +283,7 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 				$.ajax({
                     url: "/bx/jsonGetSecondNode?orderId=" + iframeVal[0] + "&orderSizeId=" + iframeVal[3] + "&isChoose=chooseOrder" + "&wfStepIndex=" + wfStepIndex,
                     type: "post",
+                    dataType: "json",
                     async: false,
                     success: function(data) {
                     	if("ajaxLogin" == data){
