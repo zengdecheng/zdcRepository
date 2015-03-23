@@ -100,7 +100,7 @@
 	</form>
 </div>
 <div style="width:100%;overflow-x:scroll;overflow-y:hidden">
-	<table border="0" cellspacing="0" cellpadding="0" class="z_table_style2" width="1208">
+	<table border="0" cellspacing="0" cellpadding="0" class="z_table_style2" width="1308">
 		<tr>
 			<th width="8" height="40"></th>
 			<th width="60" height="40"><span id="yxjOrder" style="color: rgb(0, 3, 255); cursor: auto;">优先级&nbsp;↓</span>
@@ -121,7 +121,7 @@
 			<th width="50">MR</th>
 			<th width="70">当前节点</th>
 			<th width="50">负责人</th>
-			<th>操作</th>
+			<th width="50">操作</th>
 		</tr>
 		<s:if test="beans.size()==0">
 			<tr><td colspan="16" style="text-align:center;">当前没有任何数据！</td></tr>	
