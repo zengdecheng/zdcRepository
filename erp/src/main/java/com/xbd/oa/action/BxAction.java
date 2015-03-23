@@ -433,12 +433,14 @@ public class BxAction extends Action {
 		}
 		bean.set("counts", counts);
 
-		String scale[] = new String[5];
-		scale[0] = String.format("%.1f", counts[1].floatValue() / counts[6] * 100);
-		scale[1] = String.format("%.1f", counts[2].floatValue() / counts[6] * 100);
-		scale[2] = String.format("%.1f", counts[3].floatValue() / counts[6] * 100);
-		scale[3] = String.format("%.1f", counts[4].floatValue() / counts[6] * 100);
-		scale[4] = String.format("%.1f", counts[5].floatValue() / counts[6] * 100);
+		String scale[] = {"0","0","0","0","0"};;
+		if(counts[6]!=0){
+			scale[0] = String.format("%.1f", counts[1].floatValue() / counts[6] * 100);
+			scale[1] = String.format("%.1f", counts[2].floatValue() / counts[6] * 100);
+			scale[2] = String.format("%.1f", counts[3].floatValue() / counts[6] * 100);
+			scale[3] = String.format("%.1f", counts[4].floatValue() / counts[6] * 100);
+			scale[4] = String.format("%.1f", counts[5].floatValue() / counts[6] * 100);
+		}
 		bean.set("scale", scale);
 
 		CommonSort<LazyDynaMap> cs = new CommonSort<LazyDynaMap>();
@@ -450,8 +452,8 @@ public class BxAction extends Action {
 		bean.set("orderType", orderType);
 		bean.set("orderField", orderField);
 		fsp.setRecordCount(beans.size());
-		int fromIndex = (fsp.getPageNo() - 1) * fsp.getPageSize();
-		int toIndex = (fromIndex + fsp.getPageSize()) < beans.size() ? fromIndex + fsp.getPageSize() : fromIndex + (int) fsp.getRecordCount() % fsp.getPageSize();
+		int fromIndex = (fsp.getPageNo()-1)*fsp.getPageSize();
+		int toIndex = (fromIndex+fsp.getPageSize())<=beans.size()?fromIndex+fsp.getPageSize():fromIndex+(int)fsp.getRecordCount()%fsp.getPageSize();
 		beans = beans.subList(fromIndex, toIndex);
 		processPageInfo(getObjectsCountSql(fsp));
 		return "todo";
