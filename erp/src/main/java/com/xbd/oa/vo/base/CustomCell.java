@@ -1,4 +1,4 @@
-package com.xbd.oa.vo;
+package com.xbd.oa.vo.base;
 
 import java.util.Arrays;
 
