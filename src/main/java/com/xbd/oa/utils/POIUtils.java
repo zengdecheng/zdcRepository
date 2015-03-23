@@ -257,7 +257,7 @@ public class POIUtils {
 				} else {
 					try {
 						// String smallPic = value.substring(0, value.lastIndexOf("/") + 1) + "s_" + value.substring(value.lastIndexOf("/") + 1, value.length());
-						String picType = value.substring(value.lastIndexOf("."));
+						String picType = value.substring(value.lastIndexOf(".")).toLowerCase();;
 						logger.debug("在"+indexs[0]+"，"+indexs[1]+"，"+indexs[2]+"，"+indexs[3]+"写入图片："+value);
 						File urlFile = File.createTempFile(System.currentTimeMillis() + "", picType);
 						FileUtils.copyURLToFile(new URL(value), urlFile);
