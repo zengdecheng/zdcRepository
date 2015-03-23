@@ -33,7 +33,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.xbd.oa.vo.CustomCell;
+import com.xbd.oa.vo.base.CustomCell;
 
 /**
  * @author fangwei 2015-01-30
