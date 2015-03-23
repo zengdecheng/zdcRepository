@@ -278,7 +278,7 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 					sizeTitleStr += "-";
 				}
 				$("#related_order_type").after("<input type='hidden' name='isChoose' value='choosed' /><input type='hidden' name='sizeTitles' value='"+sizeTitleStr+"' />");
-				layer.close(layerNum);
+//				layer.close(layerNum);
 				$("#cancel_relate").show();
 				$.ajax({
                     url: "/bx/jsonGetSecondNode?orderId=" + iframeVal[0] + "&orderSizeId=" + iframeVal[3] + "&isChoose=chooseOrder" + "&wfStepIndex=" + wfStepIndex,

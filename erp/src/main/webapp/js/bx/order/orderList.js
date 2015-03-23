@@ -139,11 +139,13 @@ define(
 						var op = $("input[name=futureOrder]:checked").val();
 						// 判断是否选中
 						if (undefined == op || "" == op) {
-							alert("请选择中要关联的订单号");
+							alert("请选择要关联的订单号");
 							return;
 						}
 						// 调用父窗口元素事件
 						$(window.parent.document).find("#chooseBtn").click();
+						// 关闭窗口
+						biz.event.closeWin();
 					},
 					// Add by ZQ 2014-12-20 判断是否选中，选中后进行业务操作
 					closeWin : function() {
