@@ -585,6 +585,8 @@ public class BxAction extends Action {
 					buf.append(WebUtil.getTimeDisPlayExcel(Math.abs(diff)));
 					sheet1FileInfo.put(j + ",7", buf.toString());// 订单进度
 				}
+				
+				sheet1FileInfo.put(j + ",8", lazyMap.get("mrdb_operator") != null ? lazyMap.get("mrdb_operator") : "");// 负责MR
 
 				sheet1FileInfo.put(j + ",18", lazyMap.get("mrdb_wf_real_start") != null ? new CustomCell(lazyMap.get("mrdb_wf_real_start"), "Date") : new CustomCell());// MR补录订单日期
 				sheet1FileInfo.put(j + ",23", lazyMap.get("jsdel_operator") != null ? lazyMap.get("jsdel_operator") : "");// 打版技术
@@ -647,9 +649,16 @@ public class BxAction extends Action {
 					buf.append(WebUtil.getTimeDisPlayExcel(Math.abs(diff)));
 					sheet1FileInfo.put(j + ",7", buf.toString());// 订单进度
 				}
+				
+				sheet1FileInfo.put(j + ",8", lazyMap.get("mrdel_operator") != null ? lazyMap.get("mrdel_operator") : "");// 负责MR
 
+				sheet1FileInfo.put(j + ",11", lazyMap.get("tpedel_operator") != null ? lazyMap.get("tpedel_operator") : "");// TPE
 				sheet1FileInfo.put(j + ",18", lazyMap.get("mrdel_wf_real_start") != null ? new CustomCell(lazyMap.get("mrdel_wf_real_start"), "Date") : new CustomCell());// MR补录订单日期
 
+				sheet1FileInfo.put(j + ",12", lazyMap.get("sewing_total") != null ? lazyMap.get("sewing_total") : "0");// 车缝产出数量
+				sheet1FileInfo.put(j + ",13", lazyMap.get("qualified_total") != null ? lazyMap.get("qualified_total") : "0");// 合格数量
+				sheet1FileInfo.put(j + ",14", lazyMap.get("unqualified_total") != null ? lazyMap.get("unqualified_total") : "0");// 次品数量
+				
 				sheet1FileInfo.put(j + ",23", lazyMap.get("jshdel_operator") != null ? lazyMap.get("jshdel_operator") : "");// 大货技术
 				// 计算实际生产周期
 				if (superList.get(i).get("qadel_wf_real_finish") != null && !"".equals(superList.get(i).get("qadel_wf_real_finish")) && superList.get(i).get("mrdel_wf_real_start") != null
@@ -698,13 +707,11 @@ public class BxAction extends Action {
 			// sheet1FileInfo.put(j+",7", lazyMap.get("begin_time") !=null ? lazyMap.get("begin_time") : "");//下单日期
 			sheet1FileInfo.put(j + ",6", lazyMap.get("begin_time") != null ? new CustomCell(lazyMap.get("begin_time"), "Date") : new CustomCell());
 
-			sheet1FileInfo.put(j + ",8", lazyMap.get("mr_name") != null ? lazyMap.get("mr_name") : "");// 负责MR
+			
 			sheet1FileInfo.put(j + ",9", lazyMap.get("sales") != null ? lazyMap.get("sales") : "");// 负责销售
 			sheet1FileInfo.put(j + ",10", lazyMap.get("sewing_factory") != null ? lazyMap.get("sewing_factory") : "");// 工厂
-			sheet1FileInfo.put(j + ",11", lazyMap.get("tpe_name") != null ? lazyMap.get("tpe_name") : "");// TPE
-			sheet1FileInfo.put(j + ",12", lazyMap.get("sewing_total") != null ? lazyMap.get("sewing_total") : "");// 车缝产出数量
-			sheet1FileInfo.put(j + ",13", lazyMap.get("qualified_total") != null ? lazyMap.get("qualified_total") : "");// 合格数量
-			sheet1FileInfo.put(j + ",14", lazyMap.get("unqualified_total") != null ? lazyMap.get("unqualified_total") : "");// 次品数量
+			
+			
 			if (lazyMap.get("sewing_total") != null && !"".equals(lazyMap.get("sewing_total")) && lazyMap.get("qualified_total") != null && !"".equals(lazyMap.get("qualified_total"))) {
 				sheet1FileInfo.put(j + ",15", (int) new BigDecimal((Float.parseFloat(lazyMap.get("qualified_total").toString()) / Float.parseFloat(lazyMap.get("sewing_total").toString())) * 100)
 						.setScale(0, BigDecimal.ROUND_HALF_UP).floatValue() + "%");// 合格率
@@ -1000,7 +1007,7 @@ public class BxAction extends Action {
 			sheet1FileInfo.put(j + ",7", lazyMap.get("begin_time") != null ? new CustomCell(lazyMap.get("begin_time"), "Date") : new CustomCell());// 下单日期
 			// sheet1FileInfo.put(j+",8", lazyMap.get("style_class") != null ? lazyMap.get("style_class") : "");//品类
 			sheet1FileInfo.put(j + ",8", lazyMap.get("feeding_time") != null ? lazyMap.get("feeding_time") : "");// 建议投料日
-			sheet1FileInfo.put(j + ",9", lazyMap.get("mr_name") != null ? lazyMap.get("mr_name") : "");// 负责MR
+			sheet1FileInfo.put(j + ",9", lazyMap.get("odel_operator") != null ? lazyMap.get("odel_operator") : "");// 负责MR
 			sheet1FileInfo.put(j + ",10", lazyMap.get("wf_step_name") != null ? lazyMap.get("wf_step_name") : "");// 当前节点
 			sheet1FileInfo.put(j + ",11", lazyMap.get("operator") != null ? lazyMap.get("operator") : "");// 当前负责人
 			sheet1FileInfo.put(j + ",12", lazyMap.get("sales") != null ? lazyMap.get("sales") : "");// 负责销售
@@ -1171,6 +1178,9 @@ public class BxAction extends Action {
 		// fsp.set("del_operator_c", "c_ppc_assign_3");
 		// }
 		// }
+		
+		
+		
 
 		superList = getObjectsBySql(fsp);
 		Map<String, String> statisticsMap = new HashMap<String, String>();

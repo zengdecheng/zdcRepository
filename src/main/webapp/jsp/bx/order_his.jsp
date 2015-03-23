@@ -64,7 +64,7 @@
 							<td>
 								<select id="crm_staff_sales" class="z_inp2 " style="width: 170px;" name="fsp.map.sales" value="${fsp.map.sales}"></select>
 							</td>
-							<td><label class="">MR跟单：</label></td>
+							<td><label class="">MR：</label></td>
 							<td>
 								<select id="crm_staff_mr" class="z_inp2" style="width: 170px;" name="fsp.map.mr_name" value="${fsp.map.mr_name}"></select>
 							</td>
@@ -154,7 +154,7 @@
 			<th width="80">数量</th>
 			<th width="80">下单日期</th>
 			<th width="80">订单进度</th>
-			<th width="80">负责MR</th>
+			<th width="80">MR</th>
 			<th width="80">工厂</th>
 			<th width="80">TPE</th>
 			<th width="80">车缝产出数量</th>
@@ -184,7 +184,9 @@
 				<td>${map.want_cnt}</td>
 				<td>${map.begin_time}</td>
 				<td>${map.wf_step_name}</td>
-				<td>${map.mr_name}</td>
+				<td>
+					<s:if test="map.type==2">${map.mrdb_operator}</s:if> <s:if test="map.type==3">${map.mrdel_operator}</s:if>
+				</td>
 				<td>${map.sewing_factory}</td>
 				<td>${map.tpedel_operator}</td>
 				<td>${map.sewing_total}</td>
