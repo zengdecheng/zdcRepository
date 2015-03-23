@@ -132,6 +132,13 @@ define([ "v","vl" ], function(u,up) {
                 				var downFile = "<a downloadurl='" +data.oaOrderDetail.other_file + "' class='z_title_sty1 mar_l10 download_a download' href='javascript:void(0)'>" + data.oaOrderDetail.other_file_name + "</a>";
         						$("#otherFile").html(downFile);
             				}
+
+        					//进度信息超时
+        					if(6 <= parseInt(wfStepIndex)) {
+        						if(undefined == data.oaOrderDetail.wf_real_finish || null == data.oaOrderDetail.wf_real_finish || "" == data.oaOrderDetail.wf_real_finish) {
+        							data.oaOrderDetail.schedule = "进行中";
+        						}
+        					}
                 			if(undefined != data.oaOrderDetail && null != data.oaOrderDetail  && undefined != data.oaOrderDetail.schedule && null != data.oaOrderDetail.schedule) {
                 				if(data.oaOrderDetail.schedule.indexOf("超时") >= 0) {
                 					$("#detailSchedule").css("background-color", "red");
