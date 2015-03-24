@@ -113,4 +113,88 @@ public class OaMaterialList extends CommonBean{
 	public void setType(String type) {
 		this.type = type;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((color == null) ? 0 : color.hashCode());
+		result = prime * result + ((materialName == null) ? 0 : materialName.hashCode());
+		result = prime * result + ((materialProp == null) ? 0 : materialProp.hashCode());
+		result = prime * result + ((oaOrderId == null) ? 0 : oaOrderId.hashCode());
+		result = prime * result + ((orderNum == null) ? 0 : orderNum.hashCode());
+		result = prime * result + ((position == null) ? 0 : position.hashCode());
+		result = prime * result + ((supplierAddr == null) ? 0 : supplierAddr.hashCode());
+		result = prime * result + ((supplierName == null) ? 0 : supplierName.hashCode());
+		result = prime * result + ((supplierTel == null) ? 0 : supplierTel.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		OaMaterialList other = (OaMaterialList) obj;
+		if (color == null) {
+			if (other.color != null)
+				return false;
+		} else if (!color.equals(other.color))
+			return false;
+		if (materialName == null) {
+			if (other.materialName != null)
+				return false;
+		} else if (!materialName.equals(other.materialName))
+			return false;
+		if (materialProp == null) {
+			if (other.materialProp != null)
+				return false;
+		} else if (!materialProp.equals(other.materialProp))
+			return false;
+		if (oaOrderId == null) {
+			if (other.oaOrderId != null)
+				return false;
+		} else if (!oaOrderId.equals(other.oaOrderId))
+			return false;
+		if (orderNum == null) {
+			if (other.orderNum != null)
+				return false;
+		} else if (!orderNum.equals(other.orderNum))
+			return false;
+		if (position == null) {
+			if (other.position != null)
+				return false;
+		} else if (!position.equals(other.position))
+			return false;
+		if (supplierAddr == null) {
+			if (other.supplierAddr != null)
+				return false;
+		} else if (!supplierAddr.equals(other.supplierAddr))
+			return false;
+		if (supplierName == null) {
+			if (other.supplierName != null)
+				return false;
+		} else if (!supplierName.equals(other.supplierName))
+			return false;
+		if (supplierTel == null) {
+			if (other.supplierTel != null)
+				return false;
+		} else if (!supplierTel.equals(other.supplierTel))
+			return false;
+		if (type == null) {
+			if (other.type != null)
+				return false;
+		} else if (!type.equals(other.type))
+			return false;
+		return true;
+	}
+
+	public String toString() {
+		return "OaMaterialList [color=" + color + ", materialName=" + materialName + ", materialProp=" + materialProp + ", orderNum=" + orderNum + ", position=" + position + ", supplierAddr=" + supplierAddr + ", supplierName=" + supplierName + ", supplierTel=" + supplierTel + ", type=" + type + ", oaOrderId=" + oaOrderId + ", getId()=" + getId() + "]";
+	}
+
 }

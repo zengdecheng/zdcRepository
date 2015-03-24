@@ -109,4 +109,82 @@ public class OaLogistics extends CommonBean{
 		this.remarks = remarks;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((carNum == null) ? 0 : carNum.hashCode());
+		result = prime * result + ((deliveryNum == null) ? 0 : deliveryNum.hashCode());
+		result = prime * result + ((deliveryPle == null) ? 0 : deliveryPle.hashCode());
+		result = prime * result + ((deliveryTime == null) ? 0 : deliveryTime.hashCode());
+		result = prime * result + ((fileUrl == null) ? 0 : fileUrl.hashCode());
+		result = prime * result + ((logisticsCompany == null) ? 0 : logisticsCompany.hashCode());
+		result = prime * result + ((logisticsNum == null) ? 0 : logisticsNum.hashCode());
+		result = prime * result + ((oaOrderId == null) ? 0 : oaOrderId.hashCode());
+		result = prime * result + ((remarks == null) ? 0 : remarks.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		OaLogistics other = (OaLogistics) obj;
+		if (carNum == null) {
+			if (other.carNum != null)
+				return false;
+		} else if (!carNum.equals(other.carNum))
+			return false;
+		if (deliveryNum == null) {
+			if (other.deliveryNum != null)
+				return false;
+		} else if (!deliveryNum.equals(other.deliveryNum))
+			return false;
+		if (deliveryPle == null) {
+			if (other.deliveryPle != null)
+				return false;
+		} else if (!deliveryPle.equals(other.deliveryPle))
+			return false;
+		if (deliveryTime == null) {
+			if (other.deliveryTime != null)
+				return false;
+		} else if (!deliveryTime.equals(other.deliveryTime))
+			return false;
+		if (fileUrl == null) {
+			if (other.fileUrl != null)
+				return false;
+		} else if (!fileUrl.equals(other.fileUrl))
+			return false;
+		if (logisticsCompany == null) {
+			if (other.logisticsCompany != null)
+				return false;
+		} else if (!logisticsCompany.equals(other.logisticsCompany))
+			return false;
+		if (logisticsNum == null) {
+			if (other.logisticsNum != null)
+				return false;
+		} else if (!logisticsNum.equals(other.logisticsNum))
+			return false;
+		if (oaOrderId == null) {
+			if (other.oaOrderId != null)
+				return false;
+		} else if (!oaOrderId.equals(other.oaOrderId))
+			return false;
+		if (remarks == null) {
+			if (other.remarks != null)
+				return false;
+		} else if (!remarks.equals(other.remarks))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "OaLogistics [oaOrderId=" + oaOrderId + ", logisticsNum=" + logisticsNum + ", logisticsCompany=" + logisticsCompany + ", deliveryPle=" + deliveryPle + ", deliveryNum=" + deliveryNum + ", deliveryTime=" + deliveryTime + ", carNum=" + carNum + ", remarks=" + remarks + ", fileUrl=" + fileUrl + ", getId()=" + getId() + "]";
+	}
+
 }
