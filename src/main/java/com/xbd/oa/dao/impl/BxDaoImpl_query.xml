@@ -1260,4 +1260,19 @@ ote.oa_timebase = ot.id ${case}1">
 			<param fspname="oa_order" sqlname="oaOrder"></param>
 		</parser>
 	</function>
+
+
+    <!-- 今日工作日报 -->
+    <function name="get_today_report_by_sql" type="sql" sql="select group_concat(id) as ids, type, count(*) as num, SUM(want_cnt) as want_cnt  from oa_order where 1=1 ${case}1 GROUP BY type ORDER BY type">
+        <parser index="1">
+            <param fspname="begin_time" sqlname="begin_time"></param>
+        </parser>
+    </function>
+
+    <!-- 今日工作日报2 -->
+    <function name="get_today_report_orderDetail_by_sql" type="sql" sql="select * from oa_order_detail where 1=1 and ISNULL(back_flag)  ${case}1 $$">
+        <parser index="1">
+            <param fspname="type" sqlname="type"></param>
+        </parser>
+    </function>
 </query>

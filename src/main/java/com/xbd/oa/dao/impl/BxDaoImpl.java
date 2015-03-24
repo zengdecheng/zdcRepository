@@ -265,7 +265,13 @@ public class BxDaoImpl extends DaoHibernate implements BaseDao {
 	public static final String LIST_CATEGORY_ALL_BY_SQL="list_category_all_by_sql";
 	public static final String GET_OA_ORDER_BY_EQL="get_oa_order_by_eql";
 	public static final String LIST_OA_ORDER_DETAIL_ORDER_BY_EQL="list_oa_order_detail_order_by_eql";
-	
+
+    /**
+     * 今日工作报表
+     */
+    public static final String GET_TODAY_REPORT_BY_SQL="get_today_report_by_sql";
+    public static final String GET_TODAY_REPORT_ORDERDETAIL_BY_SQL="get_today_report_orderDetail_by_sql";
+
 	
 	public static void sessionFlush() {
 		DaoHibernate.getSession().clear();
