@@ -680,20 +680,21 @@ public class ExternalAction extends Action {
 							// 暂时设置品类（原一级分类）为空，crm同步一级分类后再进行同步
 							oaOrder.setStyleClass(null);
 							SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 18:00:00");
-							oaOrder.setGoodsTime(new Timestamp(df.parse(df.format(oaOrder.getExceptFinish())).getTime()));
+							SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+							oaOrder.setGoodsTime(new Timestamp(sdf.parse(df.format(oaOrder.getExceptFinish())).getTime()));
 							oaOrder.setSellReadyTime(9 * 60 * 60 * 1000L);
 							oaOrder.setCraftTime(0L);
 
 							// 判断产前版是否存在，并进行数据格式化
 							if ("1".equals(oaOrder.getIsPreproduct())) { // 需要产前版
-								if(null == oaOrder.getPreproductDays() || 0 == oaOrder.getPreproductDays()) {
+								if (null == oaOrder.getPreproductDays() || 0 == oaOrder.getPreproductDays()) {
 									oaOrder.setPreproductDays(1);
 								}
 							} else { // 不需要产前版
 								oaOrder.setPreVersionDate(null);
 								oaOrder.setPreproductDays(null);
 							}
-
+							
 							if ("2".equals(oaOrder.getType())) {
 								oaOrder.setStandardTime(38 * 60 * 60 * 1000L);
 							} else {

@@ -253,7 +253,7 @@ define([ "u","layer","v","vl" ], function(u,layer) {
                 			var standard_time = $(window.parent.document).find("#standard_time").val();
                 			
                 			if(oa_feeding_time){
-                				$("#feeding_time").val(oa_feeding_time);
+                				$("#feeding_time").html(oa_feeding_time);
                 			}else{
                 				biz.event.calcFeedingTime();
                 			}

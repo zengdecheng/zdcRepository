@@ -5902,8 +5902,12 @@ public class BxAction extends Action {
 		OaOrder order = (OaOrder) manager.getObject(OaOrder.class, orderId);
 		Timestamp feedingTime = null;
 		if (StringUtils.isNotBlank(productTime)) {
-			Timestamp ptime = new Timestamp(DateUtil.parseDate(productTime).getTime());
-			feedingTime = BizUtil.culPlanDate(ptime, (order.getPreproductDays() == null ? 0 : order.getPreproductDays()) * 24 * 60 * 60 * 1000 + 0L - craftTime - standardTime);
+			Timestamp ptime = new Timestamp(DateUtil.parseDate(productTime).getTime() + (order.getPreproductDays() == null ? 0 : order.getPreproductDays()) * 24 * 60 * 60 * 1000);
+			logger.warn(craftTime);
+			logger.warn(standardTime);
+			logger.warn(order.getPreproductDays());
+			logger.warn(ptime);
+			feedingTime = BizUtil.culPlanDate(ptime, -craftTime - standardTime);
 		} else {
 			feedingTime = BizUtil.culPlanDate(order.getGoodsTime(), 0L - craftTime - standardTime);
 		}

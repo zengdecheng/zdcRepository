@@ -325,12 +325,14 @@ public class BizUtil {
 			if (between >= duration) { // 时间差大于duration则该节点开始时间仍属于今天工作时间内
 				return new Timestamp(date.getTime() + duration);
 			} else { // 结束时间已不属于今天的范围
-				long newDuration = duration - between;
+				long newDuration = duration;
 
 				// 1000*60*60 1个小时,15个小时即是晚6:00到早9:00的非工作时间
 				Timestamp newDate = new Timestamp(endWork.getTime() + (1000 * 60 * 60 * 15)); // 得到一个新的计划开始时间，即第二天上午9点
 
-				newDate = getWorkTime(newDate); // 得到一个工作时间
+				if (endWork.getTime() != getWorkTime(newDate).getTime()) {
+					newDuration = duration - between;
+				}
 
 				return culPlanDate(newDate, newDuration);
 			}
@@ -469,13 +471,17 @@ public class BizUtil {
 
 			// 如果计算得出的ts是星期日且不包含在工作日中，则减去一天，否则正常以ts计算
 			if (day.equals("星期日") && workday.indexOf(dateStr) < 0) {
-				ts = new Timestamp(ts.getTime() - (1000 * 60 * 60 * 24));// 1000*60*60
+				df = new SimpleDateFormat("yyyy-MM-dd 18:00:00");
+				tsString = df.format(ts);
+				df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				
+				ts = new Timestamp(df.parse(tsString).getTime() - (1000 * 60 * 60 * 24));// 1000*60*60
 																			// 1个小时
 				return excludeHolidays(ts);
 			}
 			return ts;
 		} else {
-			df = new SimpleDateFormat("yyyy-MM-dd 18:00:01");
+			df = new SimpleDateFormat("yyyy-MM-dd 18:00:00");
 			tsString = df.format(ts);
 			df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -764,7 +770,7 @@ public class BizUtil {
 			// System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), 9L * 1000 * 60 * 60));
 			// System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), 18L * 1000 * 60 * 60));
 			// System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), 27L * 1000 * 60 * 60));
-			System.out.println(culPlanDate(new Timestamp(df.parse("2015-03-31 00:00:00").getTime()), -2L * 1000 * 60 * 60));
+			System.out.println(culPlanDate(new Timestamp(df.parse("2015-03-26 18:00:00").getTime()), 33L * 1000 * 60 * 60));
 			// System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), -36L * 1000 * 60 * 60));
 			// System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), -45L * 1000 * 60 * 60));
 
