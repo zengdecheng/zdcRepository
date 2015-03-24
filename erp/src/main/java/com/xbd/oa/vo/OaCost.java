@@ -240,7 +240,7 @@ public class OaCost extends CommonBean {
 		this.dtotal3 = dtotal3;
 	}
 
-	public void setmGoodsPrice(Float mGoodsPrice) {
+	public void setMGoodsPrice(Float mGoodsPrice) {
 		this.mGoodsPrice = mGoodsPrice;
 	}
 
@@ -248,7 +248,7 @@ public class OaCost extends CommonBean {
 		this.minuteWageRate = minuteWageRate;
 	}
 
-	public void setmShearPrice(Float mShearPrice) {
+	public void setMShearPrice(Float mShearPrice) {
 		this.mShearPrice = mShearPrice;
 	}
 
@@ -256,11 +256,11 @@ public class OaCost extends CommonBean {
 		this.oaOrderId = oaOrderId;
 	}
 
-	public void setoEmbroider(Float oEmbroider) {
+	public void setOEmbroider(Float oEmbroider) {
 		this.oEmbroider = oEmbroider;
 	}
 
-	public void setoMemo(String oMemo) {
+	public void setOMemo(String oMemo) {
 		this.oMemo = oMemo;
 	}
 
@@ -276,35 +276,35 @@ public class OaCost extends CommonBean {
 		this.orderNum3 = orderNum3;
 	}
 
-	public void setoStamp(Float oStamp) {
+	public void setOStamp(Float oStamp) {
 		this.oStamp = oStamp;
 	}
 
-	public void setoWash(Float oWash) {
+	public void setOWash(Float oWash) {
 		this.oWash = oWash;
 	}
 
-	public void setpCutting(String pCutting) {
+	public void setPCutting(String pCutting) {
 		this.pCutting = pCutting;
 	}
 
-	public void setpFactoryMatch(String pFactoryMatch) {
+	public void setPFactoryMatch(String pFactoryMatch) {
 		this.pFactoryMatch = pFactoryMatch;
 	}
 
-	public void setpLast(String pLast) {
+	public void setPLast(String pLast) {
 		this.pLast = pLast;
 	}
 
-	public void setpMemo(String pMemo) {
+	public void setPMemo(String pMemo) {
 		this.pMemo = pMemo;
 	}
 
-	public void setpSam(Float pSam) {
+	public void setPSam(Float pSam) {
 		this.pSam = pSam;
 	}
 
-	public void setpSew(String pSew) {
+	public void setPSew(String pSew) {
 		this.pSew = pSew;
 	}
 
