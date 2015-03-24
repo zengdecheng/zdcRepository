@@ -2,112 +2,115 @@ package com.xbd.oa.vo;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import com.xbd.oa.vo.base.CommonBean;
 
 /**
  * 品类表
+ * 
  * @author fangwei
- * @version 创建时间：2015年3月23日  下午5:14:29
+ * @version 创建时间：2015年3月23日 下午5:14:29
  */
-@Entity(name = "oa_category")
-public class OaCategory extends CommonBean{
+@Entity
+@Table(name = "oa_category")
+public class OaCategory extends CommonBean {
 
 	private static final long serialVersionUID = 1L;
 
-	private String name;				//名称			
-	private String code;				//编号
-	private String status;				//状态
-	private Long dahuoCyc;				//大货生产周期
-	private Long dabanCyc;				//打版生产周期
-	private Long embroidery;			//绣花时间
-	private Long washwaterTime;			//洗水时间
-	private Long printingTime;			//印花时间
-	private Long foldingTime;			//缩折/打条时间
-	private Long dalanTime;				//打揽时间
-	private Long beadsTime;				//订珠时间
-	private Long otherTime;				//其他时间
-	private String remark;				//备注
-	private String explainTxt;			//说明
-	private Long paymentWait;			//贷款等待时间
-	private Long sellWait;				//销售等待时间
-	
-	@Column(name = "beads_time",columnDefinition="BIGINT(13)")
+	private String name; // 名称
+	private String code; // 编号
+	private String status; // 状态
+	private Long dahuoCyc; // 大货生产周期
+	private Long dabanCyc; // 打版生产周期
+	private Long embroidery; // 绣花时间
+	private Long washwaterTime; // 洗水时间
+	private Long printingTime; // 印花时间
+	private Long foldingTime; // 缩折/打条时间
+	private Long dalanTime; // 打揽时间
+	private Long beadsTime; // 订珠时间
+	private Long otherTime; // 其他时间
+	private String remark; // 备注
+	private String explainTxt; // 说明
+	private Long paymentWait; // 贷款等待时间
+	private Long sellWait; // 销售等待时间
+
+	@Column(name = "beads_time", columnDefinition = "BIGINT(13)")
 	public Long getBeadsTime() {
 		return beadsTime;
 	}
 
-	@Column(name = "code",length = 50)
+	@Column(name = "code", length = 50)
 	public String getCode() {
 		return code;
 	}
-	
-	@Column(name = "daban_cyc",columnDefinition="BIGINT(13)")
+
+	@Column(name = "daban_cyc", columnDefinition = "BIGINT(13)")
 	public Long getDabanCyc() {
 		return dabanCyc;
 	}
 
-	@Column(name = "dahuo_cyc",columnDefinition="BIGINT(13)")
+	@Column(name = "dahuo_cyc", columnDefinition = "BIGINT(13)")
 	public Long getDahuoCyc() {
 		return dahuoCyc;
 	}
-	@Column(name = "dalan_time",columnDefinition="BIGINT(13)")
+
+	@Column(name = "dalan_time", columnDefinition = "BIGINT(13)")
 	public Long getDalanTime() {
 		return dalanTime;
 	}
 
-	@Column(name = "embroidery",columnDefinition="BIGINT(13)")
+	@Column(name = "embroidery", columnDefinition = "BIGINT(13)")
 	public Long getEmbroidery() {
 		return embroidery;
 	}
 
-	@Column(name = "explain_txt",length = 200)
+	@Column(name = "explain_txt", length = 200)
 	public String getExplainTxt() {
 		return explainTxt;
 	}
 
-	@Column(name = "folding_time",columnDefinition="BIGINT(13)")
+	@Column(name = "folding_time", columnDefinition = "BIGINT(13)")
 	public Long getFoldingTime() {
 		return foldingTime;
 	}
 
-	@Column(name = "name",length = 20)
+	@Column(name = "name", length = 20)
 	public String getName() {
 		return name;
 	}
 
-	@Column(name = "other_time",columnDefinition="BIGINT(13)")
+	@Column(name = "other_time", columnDefinition = "BIGINT(13)")
 	public Long getOtherTime() {
 		return otherTime;
 	}
 
-	@Column(name = "payment_wait",columnDefinition="BIGINT(13)")
+	@Column(name = "payment_wait", columnDefinition = "BIGINT(13)")
 	public Long getPaymentWait() {
 		return paymentWait;
 	}
 
-	@Column(name = "printing_time",columnDefinition="BIGINT(13)")
+	@Column(name = "printing_time", columnDefinition = "BIGINT(13)")
 	public Long getPrintingTime() {
 		return printingTime;
 	}
 
-	
-	@Column(name = "remark",length = 200)
+	@Column(name = "remark", length = 200)
 	public String getRemark() {
 		return remark;
 	}
 
-	@Column(name = "sell_wait",columnDefinition="BIGINT(13)")
+	@Column(name = "sell_wait", columnDefinition = "BIGINT(13)")
 	public Long getSellWait() {
 		return sellWait;
 	}
 
-	@Column(name = "status",columnDefinition="CHAR(1)")
+	@Column(name = "status", columnDefinition = "CHAR(1)")
 	public String getStatus() {
 		return status;
 	}
 
-	@Column(name = "washwater_time",columnDefinition="BIGINT(13)")
+	@Column(name = "washwater_time", columnDefinition = "BIGINT(13)")
 	public Long getWashwaterTime() {
 		return washwaterTime;
 	}
@@ -167,6 +170,7 @@ public class OaCategory extends CommonBean{
 	public void setSellWait(Long sellWait) {
 		this.sellWait = sellWait;
 	}
+
 	public void setStatus(String status) {
 		this.status = status;
 	}
@@ -289,6 +293,8 @@ public class OaCategory extends CommonBean{
 	}
 
 	public String toString() {
-		return "OaCategory [name=" + name + ", code=" + code + ", status=" + status + ", dahuoCyc=" + dahuoCyc + ", dabanCyc=" + dabanCyc + ", embroidery=" + embroidery + ", washwaterTime=" + washwaterTime + ", printingTime=" + printingTime + ", foldingTime=" + foldingTime + ", dalanTime=" + dalanTime + ", beadsTime=" + beadsTime + ", otherTime=" + otherTime + ", remark=" + remark + ", explainTxt=" + explainTxt + ", paymentWait=" + paymentWait + ", sellWait=" + sellWait + "]";
+		return "OaCategory [name=" + name + ", code=" + code + ", status=" + status + ", dahuoCyc=" + dahuoCyc + ", dabanCyc=" + dabanCyc + ", embroidery=" + embroidery + ", washwaterTime="
+				+ washwaterTime + ", printingTime=" + printingTime + ", foldingTime=" + foldingTime + ", dalanTime=" + dalanTime + ", beadsTime=" + beadsTime + ", otherTime=" + otherTime
+				+ ", remark=" + remark + ", explainTxt=" + explainTxt + ", paymentWait=" + paymentWait + ", sellWait=" + sellWait + "]";
 	}
 }

@@ -2,47 +2,51 @@ package com.xbd.oa.vo;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import com.xbd.oa.vo.base.CommonBean;
 
 /**
  * oa_客供料明细
+ * 
  * @author fangwei
- * @version 创建时间：2015年3月24日  上午11:36:32
+ * @version 创建时间：2015年3月24日 上午11:36:32
  */
-@Entity(name = "oa_cus_material_list")
-public class OaCusMaterialList extends CommonBean{
+@Entity
+@Table(name = "oa_cus_material_list")
+public class OaCusMaterialList extends CommonBean {
 	private static final long serialVersionUID = 1L;
 
-	private Float amount;				//用料
-	private Float consume;				//客供损耗
-	private String isComplete;			//是否齐全
-	private String materialName;		//物料名称
-	private String memo;				//位置说明 备注
-	private Float total;				//合计
-	private Integer oaOrderId;			//订单ID
-	private String orderNum;			//订单数量内容
+	private Float amount; // 用料
+	private Float consume; // 客供损耗
+	private String isComplete; // 是否齐全
+	private String materialName; // 物料名称
+	private String memo; // 位置说明 备注
+	private Float total; // 合计
+	private Integer oaOrderId; // 订单ID
+	private String orderNum; // 订单数量内容
 
-	@Column(name = "amount",columnDefinition="float(10,2)")
+	@Column(name = "amount", columnDefinition = "float(10,2)")
 	public Float getAmount() {
 		return amount;
 	}
-	@Column(name = "consume",columnDefinition="float(10,2)")
+
+	@Column(name = "consume", columnDefinition = "float(10,2)")
 	public Float getConsume() {
 		return consume;
 	}
 
-	@Column(name = "is_complete",columnDefinition="CHAR(1)")
+	@Column(name = "is_complete", columnDefinition = "CHAR(1)")
 	public String getIsComplete() {
 		return isComplete;
 	}
 
-	@Column(name = "material_name",columnDefinition="varchar(20)")
+	@Column(name = "material_name", columnDefinition = "varchar(20)")
 	public String getMaterialName() {
 		return materialName;
 	}
 
-	@Column(name = "memo",columnDefinition="varchar(50)")
+	@Column(name = "memo", columnDefinition = "varchar(50)")
 	public String getMemo() {
 		return memo;
 	}
@@ -52,12 +56,12 @@ public class OaCusMaterialList extends CommonBean{
 		return oaOrderId;
 	}
 
-	@Column(name = "order_num",columnDefinition="varchar(1000)")
+	@Column(name = "order_num", columnDefinition = "varchar(1000)")
 	public String getOrderNum() {
 		return orderNum;
 	}
 
-	@Column(name = "total",columnDefinition="float(10,2)")
+	@Column(name = "total", columnDefinition = "float(10,2)")
 	public Float getTotal() {
 		return total;
 	}
@@ -158,8 +162,9 @@ public class OaCusMaterialList extends CommonBean{
 			return false;
 		return true;
 	}
-	
+
 	public String toString() {
-		return "OaCusMaterialList [amount=" + amount + ", consume=" + consume + ", isComplete=" + isComplete + ", materialName=" + materialName + ", memo=" + memo + ", total=" + total + ", oaOrderId=" + oaOrderId + ", orderNum=" + orderNum + ", getId()=" + getId() + "]";
+		return "OaCusMaterialList [amount=" + amount + ", consume=" + consume + ", isComplete=" + isComplete + ", materialName=" + materialName + ", memo=" + memo + ", total=" + total
+				+ ", oaOrderId=" + oaOrderId + ", orderNum=" + orderNum + ", getId()=" + getId() + "]";
 	}
 }

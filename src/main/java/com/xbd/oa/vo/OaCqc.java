@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -11,58 +12,60 @@ import com.xbd.oa.vo.base.CommonBean;
 
 /**
  * CQC表
+ * 
  * @author fangwei
  * @version 创建时间：2015年3月24日 上午10:39:46
  */
-@Entity(name = "oa_cqc")
+@Entity
+@Table(name = "oa_cqc")
 public class OaCqc extends CommonBean {
 	private static final long serialVersionUID = 1L;
 
-	private Float applyUnitNum;			//申购 实际单件用量
-	private Float lossBundles;			//损耗 捆条布
-	private String lossMemo;			//损耗 备注
-	private Float lossOddments;			//损耗 预料
-	private Float lossYiyou;			//损耗 衣友布损
-	private Float lossCompany;			//损耗 公司损耗
-	private Float lossOther;			//损耗 预留配布及用途
-	private Integer oaMaterialList;		//用料搭配ID
-	private String receiveMemo;			//签收 备注
-	private Float receiveNum;			//签收 验布实收数量
-	private String receiveRate;			//签收 布次率
-	private Date receiveTime;			//签收 到布时间
-	private String shearNumInfo;		//裁剪 数量信息
+	private Float applyUnitNum; // 申购 实际单件用量
+	private Float lossBundles; // 损耗 捆条布
+	private String lossMemo; // 损耗 备注
+	private Float lossOddments; // 损耗 预料
+	private Float lossYiyou; // 损耗 衣友布损
+	private Float lossCompany; // 损耗 公司损耗
+	private Float lossOther; // 损耗 预留配布及用途
+	private Integer oaMaterialList; // 用料搭配ID
+	private String receiveMemo; // 签收 备注
+	private Float receiveNum; // 签收 验布实收数量
+	private String receiveRate; // 签收 布次率
+	private Date receiveTime; // 签收 到布时间
+	private String shearNumInfo; // 裁剪 数量信息
 
-	@Column(name = "apply_unit_num",columnDefinition="float(10,2)")
+	@Column(name = "apply_unit_num", columnDefinition = "float(10,2)")
 	public Float getApplyUnitNum() {
 		return applyUnitNum;
 	}
 
-	@Column(name = "loss_bundles",columnDefinition="float(10,2)")
+	@Column(name = "loss_bundles", columnDefinition = "float(10,2)")
 	public Float getLossBundles() {
 		return lossBundles;
 	}
 
-	@Column(name = "loss_company",columnDefinition="float(10,2)")
+	@Column(name = "loss_company", columnDefinition = "float(10,2)")
 	public Float getLossCompany() {
 		return lossCompany;
 	}
 
-	@Column(name = "loss_memo",columnDefinition="varchar(500)")
+	@Column(name = "loss_memo", columnDefinition = "varchar(500)")
 	public String getLossMemo() {
 		return lossMemo;
 	}
 
-	@Column(name = "loss_oddments",columnDefinition="float(10,2)")
+	@Column(name = "loss_oddments", columnDefinition = "float(10,2)")
 	public Float getLossOddments() {
 		return lossOddments;
 	}
 
-	@Column(name = "loss_other",columnDefinition="float(10,2)")
+	@Column(name = "loss_other", columnDefinition = "float(10,2)")
 	public Float getLossOther() {
 		return lossOther;
 	}
 
-	@Column(name = "loss_yiyou",columnDefinition="float(10,2)")
+	@Column(name = "loss_yiyou", columnDefinition = "float(10,2)")
 	public Float getLossYiyou() {
 		return lossYiyou;
 	}
@@ -72,28 +75,28 @@ public class OaCqc extends CommonBean {
 		return oaMaterialList;
 	}
 
-	@Column(name = "receive_memo",columnDefinition="varchar(500)")
+	@Column(name = "receive_memo", columnDefinition = "varchar(500)")
 	public String getReceiveMemo() {
 		return receiveMemo;
 	}
 
-	@Column(name = "receive_num",columnDefinition="float(10,2)")
+	@Column(name = "receive_num", columnDefinition = "float(10,2)")
 	public Float getReceiveNum() {
 		return receiveNum;
 	}
 
-	@Column(name = "receive_rate",columnDefinition="varchar(100)")
+	@Column(name = "receive_rate", columnDefinition = "varchar(100)")
 	public String getReceiveRate() {
 		return receiveRate;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "receive_time",columnDefinition="timestamp null default null ")
+	@Column(name = "receive_time", columnDefinition = "timestamp null default null ")
 	public Date getReceiveTime() {
 		return receiveTime;
 	}
 
-	@Column(name = "shear_num_info",columnDefinition="varchar(200)")
+	@Column(name = "shear_num_info", columnDefinition = "varchar(200)")
 	public String getShearNumInfo() {
 		return shearNumInfo;
 	}
@@ -248,6 +251,8 @@ public class OaCqc extends CommonBean {
 	}
 
 	public String toString() {
-		return "OaCqc [applyUnitNum=" + applyUnitNum + ", lossBundles=" + lossBundles + ", lossMemo=" + lossMemo + ", lossOddments=" + lossOddments + ", lossYiyou=" + lossYiyou + ", lossCompany=" + lossCompany + ", lossOther=" + lossOther + ", oaMaterialList=" + oaMaterialList + ", receiveMemo=" + receiveMemo + ", receiveNum=" + receiveNum + ", receiveRate=" + receiveRate + ", receiveTime=" + receiveTime + ", shearNumInfo=" + shearNumInfo + ", getId()=" + getId() + "]";
+		return "OaCqc [applyUnitNum=" + applyUnitNum + ", lossBundles=" + lossBundles + ", lossMemo=" + lossMemo + ", lossOddments=" + lossOddments + ", lossYiyou=" + lossYiyou + ", lossCompany="
+				+ lossCompany + ", lossOther=" + lossOther + ", oaMaterialList=" + oaMaterialList + ", receiveMemo=" + receiveMemo + ", receiveNum=" + receiveNum + ", receiveRate=" + receiveRate
+				+ ", receiveTime=" + receiveTime + ", shearNumInfo=" + shearNumInfo + ", getId()=" + getId() + "]";
 	}
 }

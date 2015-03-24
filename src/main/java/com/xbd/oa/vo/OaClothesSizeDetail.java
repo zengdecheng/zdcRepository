@@ -2,35 +2,39 @@ package com.xbd.oa.vo;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import com.xbd.oa.vo.base.CommonBean;
+
 /**
  * 尺寸表详情
+ * 
  * @author fangwei
- * @version 创建时间：2015年3月23日  下午5:14:29
+ * @version 创建时间：2015年3月23日 下午5:14:29
  */
-@Entity(name = "oa_clothes_size_detail")
+@Entity
+@Table(name = "oa_clothes_size_detail")
 public class OaClothesSizeDetail extends CommonBean {
 
 	private static final long serialVersionUID = 1L;
 
-	private Integer oaOrder;			//订单ID
-	private String clothSize;			//款式尺寸
-	private String position;			//位置
-	private String samplePageSize;		//基码纸样尺寸
-	private String tolerance;			//公差
-	
+	private Integer oaOrder; // 订单ID
+	private String clothSize; // 款式尺寸
+	private String position; // 位置
+	private String samplePageSize; // 基码纸样尺寸
+	private String tolerance; // 公差
+
 	@Column(name = "oa_order")
 	public Integer getOaOrder() {
 		return oaOrder;
 	}
 
-	@Column(name = "cloth_size",length = 200)
+	@Column(name = "cloth_size", length = 200)
 	public String getClothSize() {
 		return clothSize;
 	}
 
-	@Column(name = "position",length = 50)
+	@Column(name = "position", length = 50)
 	public String getPosition() {
 		return position;
 	}
@@ -40,7 +44,7 @@ public class OaClothesSizeDetail extends CommonBean {
 		return samplePageSize;
 	}
 
-	@Column(name = "tolerance" , length = 20)
+	@Column(name = "tolerance", length = 20)
 	public String getTolerance() {
 		return tolerance;
 	}
