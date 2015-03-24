@@ -11,7 +11,6 @@ import com.xbd.oa.vo.base.CommonBean;
 
 /**
  * CQC表
- * 
  * @author fangwei
  * @version 创建时间：2015年3月24日 上午10:39:46
  */
