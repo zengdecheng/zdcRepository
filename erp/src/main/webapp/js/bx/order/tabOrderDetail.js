@@ -187,6 +187,13 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 				$("#salesMemo").text($(window.parent.document).find("#salesMemo").val());
 				$("#mrMemo").text($(window.parent.document).find("#mrMemo").val());
 				$("#sales").text($(window.parent.document).find("#sales").val());
+				//update by 张华 2015-03-24
+				$("#feeding_time_value").text($(window.parent.document).find("#oa_feeding_time").val());
+				$("#sell_ready_time").text($(window.parent.document).find("#sell_ready_time").val());
+				$("#standard_time").text($(window.parent.document).find("#standard_time").val());
+				$("#oaOrder_craftTime").text($(window.parent.document).find("#craft_time").val());
+				$("#preProductDays").text($(window.parent.document).find("#preProductDays").val());
+				
 				//判断订单类型
 				if("样衣打版"==$(window.parent.document).find("#orderType").val()){
 					$("#t_repeatNum").show();

@@ -5607,6 +5607,7 @@ public class BxAction extends Action {
 		// 大货新增加的产前版
 		bean.set("isPreproduct", oaOrder.getIsPreproduct());// 是否需要产前版
 		bean.set("preVersionDate", oaOrder.getPreVersionDate());// 产前版日期
+		bean.set("preProductDays", oaOrder.getPreproductDays());// 产前版天数
 		// 获取关联订单的信息 Add by ZQ 2014-12-22
 		bean.set("relatedOrderCode", oaOrder.getRelatedOrderCode());
 		bean.set("relatedOrderId", oaOrder.getRelatedOrderId());
@@ -5614,6 +5615,7 @@ public class BxAction extends Action {
 		bean.set("hisOpt", oaOrder.getHisOpt());
 		bean.set("feeding_time", oaOrder.getFeedingTime());
 		bean.set("sell_ready_time", oaOrder.getSellReadyTime());
+		bean.set("craft_time", oaOrder.getCraftTime());
 		bean.set("standard_time", oaOrder.getStandardTime());
 		bean.set("relatedOrderDetailId", "");
 		if (null != oaOrder.getRelatedOrderId() && oaOrder.getRelatedOrderId() > 0) { // 关联订单存在，则查询关联订单最新detail的Id
@@ -6082,6 +6084,14 @@ public class BxAction extends Action {
 			oaOrder1.setFeedingTime(oaOrder.getFeedingTime());// 建议投料日期
 			oaOrder1.setStandardTime(oaOrder.getStandardTime());
 			oaOrder1.setSellReadyTime(oaOrder.getSellReadyTime());
+			// 判断产前版日期，获得新的货期
+			if (null != oaOrder.getPreVersionDate()) {
+				if (null == oaOrder.getPreproductDays() || 0 >= oaOrder.getPreproductDays().intValue()) {
+					oaOrder1.setPreproductDays(1);
+				}
+				oaOrder1.setGoodsTime(new Timestamp(oaOrder1.getPreVersionDate().getTime() + oaOrder1.getPreproductDays() * 24 * 60 * 60 * 1000));
+			}
+
 			// 关联订单时，保存被关联订单的ID、订单编号、类型 Add by ZQ 2014-12-22
 			String relatedOrderCode = oaOrder.getRelatedOrderCode();
 			if (StringUtils.isNotEmpty(relatedOrderCode)) {
@@ -7056,7 +7066,8 @@ public class BxAction extends Action {
 				SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				Timestamp goodsTime = new Timestamp(sdf.parse(df1.format(oaOrder.getGoodsTime())).getTime());
-				Timestamp curTime = new Timestamp(sdf.parse(df1.format(workTime)).getTime());;
+				Timestamp curTime = new Timestamp(sdf.parse(df1.format(workTime)).getTime());
+				;
 				// 计算进度信息
 				Float persent = (float) ((curTime.getTime() - goodsTime.getTime() + orderTime - 60 * 60 * 1000 * 24d) / orderTime * 100);
 				Float persent2 = (float) ((curTime.getTime() - goodsTime.getTime() + orderTime.floatValue()) / orderTime.floatValue() * 100);
@@ -7080,7 +7091,8 @@ public class BxAction extends Action {
 				SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				Timestamp goodsTime = new Timestamp(sdf.parse(df1.format(oaOrder.getGoodsTime())).getTime());
-				Timestamp curTime = new Timestamp(sdf.parse(df1.format(workTime)).getTime());;
+				Timestamp curTime = new Timestamp(sdf.parse(df1.format(workTime)).getTime());
+				;
 				// 计算进度信息
 				Float persent = (float) ((curTime.getTime() - goodsTime.getTime() + orderTime - 60 * 60 * 1000 * 24d) / orderTime * 100);
 				Float persent2 = (float) ((curTime.getTime() - goodsTime.getTime() + orderTime.floatValue()) / orderTime.floatValue() * 100);

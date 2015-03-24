@@ -89,6 +89,7 @@
 	<input type="hidden" id="orderDetail" value="${bean.map.orderDetail }">
 	<input type="hidden" id="oa_feeding_time" value="${bean.map.feeding_time }">
 	<input type="hidden" id="sell_ready_time" value="${bean.map.sell_ready_time }">
+	<input type="hidden" id="craft_time" value="${bean.map.craft_time }">
 	<input type="hidden" id="standard_time" value="${bean.map.standard_time }">
 	<input type="hidden" id="orderDetailId"
 		value="${bean.map.orderDetailId }">
