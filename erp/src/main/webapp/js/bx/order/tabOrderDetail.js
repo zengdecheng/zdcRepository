@@ -188,11 +188,11 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 				$("#mrMemo").text($(window.parent.document).find("#mrMemo").val());
 				$("#sales").text($(window.parent.document).find("#sales").val());
 				//update by 张华 2015-03-24
-				$("#feeding_time_value").text($(window.parent.document).find("#oa_feeding_time").val());
-				$("#sell_ready_time").text($(window.parent.document).find("#sell_ready_time").val());
-				$("#standard_time").text($(window.parent.document).find("#standard_time").val());
-				$("#oaOrder_craftTime").text($(window.parent.document).find("#craft_time").val());
-				$("#preProductDays").text($(window.parent.document).find("#preProductDays").val());
+				$("#feeding_time_value").val($(window.parent.document).find("#oa_feeding_time").val());
+				$("#sell_ready_time").val($(window.parent.document).find("#sell_ready_time").val());
+				$("#standard_time").val($(window.parent.document).find("#standard_time").val());
+				$("#oaOrder_craftTime").val($(window.parent.document).find("#craft_time").val());
+				$("#preProductDays").val($(window.parent.document).find("#preProductDays").val());
 				
 				//判断订单类型
 				if("样衣打版"==$(window.parent.document).find("#orderType").val()){
@@ -575,6 +575,7 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 				categorys = datas;
 				var styleClass = $(window.parent.document).find("#styleClass").val();
 				var temp = "";
+				$("#categorys").append("<option value=''>请选择</option>");
 				$.each(datas,function(index,data){
 					if(data.map.name == styleClass){
 						$("#categorys").append('<option selected="selected" value="'+data.map.name+'">'+data.map.name+"("+data.map.code+")</option>");

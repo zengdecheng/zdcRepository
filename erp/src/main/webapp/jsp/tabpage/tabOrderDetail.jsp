@@ -71,7 +71,7 @@
 					<td width="260px">男/女款：<span id="styleType"></span></td>
 				</tr>
 				<tr height="28px;">
-					<td width="260px">一级品类：<select id="categorys" name="oaOrder.styleClass">
+					<td width="260px">一级品类：<select id="categorys" class="validate[required]" name="oaOrder.styleClass">
 						</select></td>
 					<td colspan="2">特殊工艺：
 						<input name="oaOrder.styleCraft" type="checkbox" value="印花"><span class="sp_style_craft" style="cursor:pointer">印花</span>&nbsp;&nbsp;
