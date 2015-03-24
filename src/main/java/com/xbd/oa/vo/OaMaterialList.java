@@ -1,149 +1,116 @@
 package com.xbd.oa.vo;
-import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
-@SuppressWarnings("serial") 
+import com.xbd.oa.vo.base.CommonBean;
+
 @Entity
 @Table(name = "oa_material_list")
-public class OaMaterialList implements Serializable {
-	@Column(name = "color")
-	private String color;
-	
-	@Id
-	@GeneratedValue
-	@Column(name = "id")
-	private Integer id;
-	
-	@Column(name = "material_name")
-	private String materialName;
-	
-	@Column(name = "material_prop")
-	private String materialProp;
-	
-	@Column(name = "order_num")
-	private Float orderNum;
-	
-	@Column(name = "position")
-	private String position;
-	
-	@Column(name = "supplier_addr")
-	private String supplierAddr;
-	
-	@Column(name = "supplier_name")
-	private String supplierName;
-	
-	@Column(name = "supplier_tel")
-	private String supplierTel;
-	
-	@Column(name = "type")
-	private String type;
-	
-	@Column(name = "oa_order_id")
-	private Integer oaOrderId;
+public class OaMaterialList extends CommonBean{
 
+	private static final long serialVersionUID = 1L;
+
+	private String color;				//色号
+	private String materialName;		//面料名称
+	private String materialProp;		//面料属性
+	private Float orderNum;				//订单数量
+	private String position;			//位置
+	private String supplierAddr;		//供应商地址
+	private String supplierName;		//供应商名称
+	private String supplierTel;			//供应商电话
+	private String type;				//主/辅料
+	private Integer oaOrderId;			//订单ID
+	
+
+	@Column(name = "color",columnDefinition="varchar(20)")
 	public String getColor() {
 		return color;
 	}
-	public void setColor(String color) {
-		this.color = color;
-	}
-	
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	
+
+	@Column(name = "material_name",columnDefinition="varchar(20)")
 	public String getMaterialName() {
 		return materialName;
 	}
-	public void setMaterialName(String materialName) {
-		this.materialName = materialName;
-	}
-	
+
+	@Column(name = "material_prop",columnDefinition="varchar(20)")
 	public String getMaterialProp() {
 		return materialProp;
 	}
-	public void setMaterialProp(String materialProp) {
-		this.materialProp = materialProp;
-	}
-	
-	public Float getOrderNum() {
-		return orderNum;
-	}
-	public void setOrderNum(Float orderNum) {
-		this.orderNum = orderNum;
-	}
-	
-	public String getPosition() {
-		return position;
-	}
-	public void setPosition(String position) {
-		this.position = position;
-	}
-	
-	public String getSupplierAddr() {
-		return supplierAddr;
-	}
-	public void setSupplierAddr(String supplierAddr) {
-		this.supplierAddr = supplierAddr;
-	}
-	
-	public String getSupplierName() {
-		return supplierName;
-	}
-	public void setSupplierName(String supplierName) {
-		this.supplierName = supplierName;
-	}
-	
-	public String getSupplierTel() {
-		return supplierTel;
-	}
-	public void setSupplierTel(String supplierTel) {
-		this.supplierTel = supplierTel;
-	}
-	
-	public String getType() {
-		return type;
-	}
-	public void setType(String type) {
-		this.type = type;
-	}
-	
+
+	@Column(name = "oa_order_id")
 	public Integer getOaOrderId() {
 		return oaOrderId;
 	}
+
+	@Column(name = "order_num",columnDefinition="float(10,2)")
+	public Float getOrderNum() {
+		return orderNum;
+	}
+
+	@Column(name = "position",columnDefinition="varchar(20)")
+	public String getPosition() {
+		return position;
+	}
+
+	@Column(name = "supplier_addr",columnDefinition="varchar(50)")
+	public String getSupplierAddr() {
+		return supplierAddr;
+	}
+
+	@Column(name = "supplier_name",columnDefinition="varchar(20)")
+	public String getSupplierName() {
+		return supplierName;
+	}
+
+	@Column(name = "supplier_tel",columnDefinition="varchar(20)")
+	public String getSupplierTel() {
+		return supplierTel;
+	}
+
+	@Column(name = "type",columnDefinition="varchar(20)")
+	public String getType() {
+		return type;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	public void setMaterialName(String materialName) {
+		this.materialName = materialName;
+	}
+
+	public void setMaterialProp(String materialProp) {
+		this.materialProp = materialProp;
+	}
+
 	public void setOaOrderId(Integer oaOrderId) {
 		this.oaOrderId = oaOrderId;
 	}
-@Override
-	public int hashCode() {
-		int hash = 0;
-		hash += (this.id != null ? this.id.hashCode() : 0);
-		return hash;
+
+	public void setOrderNum(Float orderNum) {
+		this.orderNum = orderNum;
 	}
 
-@Override
-	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are not set
-		if (!(object instanceof OaMaterialList)) {
-			return false;
-		}
-		OaMaterialList other = (OaMaterialList) object;
-		if (this.id != other.id
-				&& (this.id == null || !this.id
-						.equals(other.id)))
-			return false;
-		return true;
+	public void setPosition(String position) {
+		this.position = position;
 	}
-@Override
-	 public String toString() {
-        return "OaMaterialList[id=" + id + "]";
-    }
-  }
+
+	public void setSupplierAddr(String supplierAddr) {
+		this.supplierAddr = supplierAddr;
+	}
+
+	public void setSupplierName(String supplierName) {
+		this.supplierName = supplierName;
+	}
+
+	public void setSupplierTel(String supplierTel) {
+		this.supplierTel = supplierTel;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+}
