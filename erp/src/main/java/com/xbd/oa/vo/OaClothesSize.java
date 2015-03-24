@@ -2,22 +2,25 @@ package com.xbd.oa.vo;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import com.xbd.oa.vo.base.CommonBean;
 
 /**
  * 尺寸表
+ * 
  * @author fangwei
- * @version 创建时间：2015年3月23日  下午5:14:29
+ * @version 创建时间：2015年3月23日 下午5:14:29
  */
-@Entity(name = "oa_clothes_size")
+@Entity
+@Table(name = "oa_clothes_size")
 public class OaClothesSize extends CommonBean {
 	private static final long serialVersionUID = 1L;
 
-	private Integer oaOrderId;		//订单ID
-	private String sampleSize;		//订单基码
-	private String type;			//款式分类
-	private String unit;			//单位
+	private Integer oaOrderId; // 订单ID
+	private String sampleSize; // 订单基码
+	private String type; // 款式分类
+	private String unit; // 单位
 
 	@Column(name = "oa_order_id")
 	public Integer getOaOrderId() {
@@ -99,5 +102,5 @@ public class OaClothesSize extends CommonBean {
 	public String toString() {
 		return "OaClothesSize [oaOrderId=" + oaOrderId + ", sampleSize=" + sampleSize + ", type=" + type + ", unit=" + unit + "]";
 	}
-	
+
 }

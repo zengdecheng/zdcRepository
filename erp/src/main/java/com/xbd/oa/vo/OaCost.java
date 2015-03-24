@@ -2,6 +2,7 @@ package com.xbd.oa.vo;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import com.xbd.oa.vo.base.CommonBean;
 /**
@@ -9,7 +10,8 @@ import com.xbd.oa.vo.base.CommonBean;
  * @author fangwei
  * @version 创建时间：2015年3月23日  下午5:14:29
  */
-@Entity(name = "oa_cost")
+@Entity
+@Table(name = "oa_cost")
 public class OaCost extends CommonBean {
 	private static final long serialVersionUID = 1L;
 
@@ -510,6 +512,10 @@ public class OaCost extends CommonBean {
 	}
 
 	public String toString() {
-		return "OaCost [bhe1=" + bhe1 + ", bhe2=" + bhe2 + ", bhe3=" + bhe3 + ", btotal1=" + btotal1 + ", btotal2=" + btotal2 + ", btotal3=" + btotal3 + ", d1=" + d1 + ", d2=" + d2 + ", d3=" + d3 + ", dtotal1=" + dtotal1 + ", dtotal2=" + dtotal2 + ", dtotal3=" + dtotal3 + ", minuteWageRate=" + minuteWageRate + ", mGoodsPrice=" + mGoodsPrice + ", mShearPrice=" + mShearPrice + ", oaOrderId=" + oaOrderId + ", oEmbroider=" + oEmbroider + ", oMemo=" + oMemo + ", orderNum1=" + orderNum1 + ", orderNum2=" + orderNum2 + ", orderNum3=" + orderNum3 + ", oStamp=" + oStamp + ", oWash=" + oWash + ", pCutting=" + pCutting + ", pFactoryMatch=" + pFactoryMatch + ", pLast=" + pLast + ", pMemo=" + pMemo + ", pSew=" + pSew + ", pSam=" + pSam + ", waiXieTotalPrice=" + waiXieTotalPrice + "]";
+		return "OaCost [bhe1=" + bhe1 + ", bhe2=" + bhe2 + ", bhe3=" + bhe3 + ", btotal1=" + btotal1 + ", btotal2=" + btotal2 + ", btotal3=" + btotal3 + ", d1=" + d1 + ", d2=" + d2 + ", d3=" + d3
+				+ ", dtotal1=" + dtotal1 + ", dtotal2=" + dtotal2 + ", dtotal3=" + dtotal3 + ", minuteWageRate=" + minuteWageRate + ", mGoodsPrice=" + mGoodsPrice + ", mShearPrice=" + mShearPrice
+				+ ", oaOrderId=" + oaOrderId + ", oEmbroider=" + oEmbroider + ", oMemo=" + oMemo + ", orderNum1=" + orderNum1 + ", orderNum2=" + orderNum2 + ", orderNum3=" + orderNum3 + ", oStamp="
+				+ oStamp + ", oWash=" + oWash + ", pCutting=" + pCutting + ", pFactoryMatch=" + pFactoryMatch + ", pLast=" + pLast + ", pMemo=" + pMemo + ", pSew=" + pSew + ", pSam=" + pSam
+				+ ", waiXieTotalPrice=" + waiXieTotalPrice + "]";
 	}
 }
