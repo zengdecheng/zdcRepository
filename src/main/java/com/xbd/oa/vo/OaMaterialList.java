@@ -6,6 +6,11 @@ import javax.persistence.Table;
 
 import com.xbd.oa.vo.base.CommonBean;
 
+/**
+ * 用料搭配明细表
+ * @author fangwei
+ * @version 创建时间：2015年3月24日  下午4:52:15
+ */
 @Entity
 @Table(name = "oa_material_list")
 public class OaMaterialList extends CommonBean{
