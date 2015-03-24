@@ -84,6 +84,7 @@
 	<input type="hidden" id="orderDetail" value="${bean.map.orderDetail }">
 	<input type="hidden" id="oa_feeding_time" value="${bean.map.feeding_time }">
 	<input type="hidden" id="sell_ready_time" value="${bean.map.sell_ready_time }">
+	<input type="hidden" id="craft_time" value="${bean.map.craft_time }">
 	<input type="hidden" id="standard_time" value="${bean.map.standard_time }">
 	<input type="hidden" id="orderDetailId" value="${bean.map.orderDetailId }">
 	<input type="hidden" id="wfStepIndex" value="${bean.map.wfStepIndex }">
@@ -101,6 +102,7 @@
 	<input type="hidden" id="status" value="${bean.map.status }">
 	<input type="hidden" id="isPreProduct" value="${bean.map.isPreproduct }">
 	<input type="hidden" id="preVersionDate" value="${bean.map.preVersionDate }">
+	<input type="hidden" id="preProductDays" value="${bean.map.preProductDays }">
 	<!-- 隐藏元素 -->
 	<!-- tab标签页 -->
 	<div class="order_tab_all">

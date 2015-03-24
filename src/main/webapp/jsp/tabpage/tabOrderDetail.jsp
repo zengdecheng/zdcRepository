@@ -92,6 +92,7 @@
 							<input type="hidden" name="oaOrder.sellReadyTime" id="sell_ready_time"/>
 							<input type="hidden" name="oaOrder.standardTime" id="standard_time"/>
 							<input type="hidden" name="oaOrder.craftTime" id="oaOrder_craftTime"/>
+							<input type="hidden" name="oaOrder.PreproductDays" id="preProductDays"/>
 						</div>
 						<div style="padding: 25 0 25 0;" id="isPreProductDiv">
 							<span style="color: red;">*</span>产前版完成日期：<input type="text" id="isPreproduct"
