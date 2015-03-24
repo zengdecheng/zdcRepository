@@ -163,7 +163,7 @@ public class OaCost extends CommonBean {
 	}
 
 	@Column(name = "p_factory_match",columnDefinition="varchar(1000)")
-	public String getpFactoryMatch() {
+	public String getPFactoryMatch() {
 		return pFactoryMatch;
 	}
 
@@ -178,7 +178,7 @@ public class OaCost extends CommonBean {
 	}
 
 	@Column(name = "p_sam",columnDefinition="float(10,2)")
-	public Float getpSam() {
+	public Float getPSam() {
 		return pSam;
 	}
 
