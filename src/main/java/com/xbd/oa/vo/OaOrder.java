@@ -1103,9 +1103,11 @@ public class OaOrder extends CommonBean {
 		return true;
 	}
 
+	@Override
 	public String toString() {
 		return "OaOrder [beginTime=" + beginTime + ", city=" + city + ", clothClass=" + clothClass + ", cusCode=" + cusCode + ", sampleSize=" + sampleSize + ", cusId=" + cusId + ", cusName=" + cusName + ", endTime=" + endTime + ", exceptFinish=" + exceptFinish + ", fileUrl=" + fileUrl + ", hisOpt=" + hisOpt + ", isUrgent=" + isUrgent + ", sellMemo=" + sellMemo + ", contractSpecialMemo=" + contractSpecialMemo + ", memo=" + memo + ", mrName=" + mrName + ", oaOrderDetail=" + oaOrderDetail + ", oaOrderNumId=" + oaOrderNumId + ", operator=" + operator + ", orderCode=" + orderCode + ", payType=" + payType + ", picUrl=" + picUrl + ", pictureBack=" + pictureBack + ", pictureFront=" + pictureFront + ", priceMax=" + priceMax + ", priceMin=" + priceMin + ", sales=" + sales + ", sellOrderCode=" + sellOrderCode + ", sellOrderId=" + sellOrderId + ", sendtype=" + sendtype + ", status=" + status + ", styleClass=" + styleClass + ", styleCode=" + styleCode + ", styleCraft=" + styleCraft
 				+ ", styleDesc=" + styleDesc + ", styleId=" + styleId + ", styleType=" + styleType + ", styleUrl=" + styleUrl + ", tel=" + tel + ", timeRate=" + timeRate + ", contractAmount=" + contractAmount + ", confirmStaff=" + confirmStaff + ", tpeName=" + tpeName + ", type=" + type + ", wantCnt=" + wantCnt + ", wfPlanStart=" + wfPlanStart + ", wfRealStart=" + wfRealStart + ", wfStep=" + wfStep + ", wfStepDuration=" + wfStepDuration + ", wfStepName=" + wfStepName + ", wantDhcnt=" + wantDhcnt + ", relatedOrderCode=" + relatedOrderCode + ", relatedOrderType=" + relatedOrderType + ", relatedOrderId=" + relatedOrderId + ", terminateUser=" + terminateUser + ", terminateMemo=" + terminateMemo + ", terminateTime=" + terminateTime + ", repeatReason=" + repeatReason + ", repeatNum=" + repeatNum + ", isPreproduct=" + isPreproduct + ", preVersionDate=" + preVersionDate + ", PreproductDays=" + PreproductDays + ", sellReadyTime=" + sellReadyTime + ", standardTime=" + standardTime
-				+ ", craftTime=" + craftTime + ", feedingTime=" + feedingTime + ", goodsTime=" + goodsTime + "]";
+				+ ", craftTime=" + craftTime + ", feedingTime=" + feedingTime + ", goodsTime=" + goodsTime + ", getId()=" + getId() + "]";
 	}
+
 }
