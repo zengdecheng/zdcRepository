@@ -6,6 +6,11 @@ import javax.persistence.Table;
 
 import com.xbd.oa.vo.base.CommonBean;
 
+/**
+ * 打版清单表
+ * @author fangwei
+ * @version 创建时间：2015年3月24日  下午4:08:05
+ */
 @Entity
 @Table(name = "oa_da_ban_info")
 public class OaDaBanInfo extends CommonBean {
