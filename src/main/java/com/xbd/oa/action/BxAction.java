@@ -5862,6 +5862,25 @@ public class BxAction extends Action {
 			fsp = new FSPBean();
 			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_CATEGORY);
 			List<LazyDynaMap> categorys = getObjectsBySql(fsp);
+			LazyDynaMap map = new LazyDynaMap();
+			map.set("printing_time", "0");
+			map.set("remark", "");
+			map.set("status", "");
+			map.set("payment_wait", "0");
+			map.set("folding_time", "0");
+			map.set("code", "");
+			map.set("id", "0");
+			map.set("other_time", "0");
+			map.set("washwater_time", "0");
+			map.set("sell_wait", "0");
+			map.set("dahuo_cyc", "0");
+			map.set("explain_txt", "");
+			map.set("beads_time", "0");
+			map.set("name", "请选择");
+			map.set("daban_cyc", "0");
+			map.set("dalan_time", "0");
+			map.set("embroidery", "0");
+			categorys.add(0, map);
 			resMap.put("categorys", categorys);
 
 			resMap.put("code", 0);
