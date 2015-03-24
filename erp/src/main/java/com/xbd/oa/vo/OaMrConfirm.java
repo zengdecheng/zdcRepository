@@ -1,98 +1,109 @@
 package com.xbd.oa.vo;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
-@SuppressWarnings("serial")
+import com.xbd.oa.vo.base.CommonBean;
+
+/**
+ * mr确认表
+ * @author fangwei
+ * @version 创建时间：2015年3月24日  下午4:53:40
+ */
 @Entity
 @Table(name = "oa_mr_confirm")
-public class OaMrConfirm implements Serializable {
+public class OaMrConfirm extends CommonBean{
 
-	@Id
-	@GeneratedValue
-	@Column(name = "id")
-	private Integer id;
+	private static final long serialVersionUID = 1L;
 
-	@Column(name = "if_repeat")
-	private String ifRepeat; // 是否需要复版；0是需要，1是不需要
+	private String ifRepeat;			 	// 是否需要复版；0是需要，1是不需要
+	private String ifQualified; 			// 是否合格；0是合格，1是不合格
+	private String unqualifiedReason;		// 不合格原因
+	private Integer oaOrder;				// 订单ID
 
-	@Column(name = "if_qualified")
-	private Integer ifQualified; // 是否合格；0是合格，1是不合格
-
-	@Column(name = "unqualified_reason")
-	private String unqualifiedReason;
-
-	@Column(name = "oa_order")
-	private int oaOrder;
-
-	public Integer getId() {
-		return id;
+	@Column(name = "if_qualified", columnDefinition = "CHAR(1)")
+	public String getIfQualified() {
+		return ifQualified;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
+	@Column(name = "if_repeat", columnDefinition = "CHAR(1)")
 	public String getIfRepeat() {
 		return ifRepeat;
+	}
+
+	@Column(name = "oa_order")
+	public Integer getOaOrder() {
+		return oaOrder;
+	}
+
+	@Column(name = "unqualified_reason", columnDefinition = "varchar(500)")
+	public String getUnqualifiedReason() {
+		return unqualifiedReason;
+	}
+
+	public void setIfQualified(String ifQualified) {
+		this.ifQualified = ifQualified;
 	}
 
 	public void setIfRepeat(String ifRepeat) {
 		this.ifRepeat = ifRepeat;
 	}
 
-	public Integer getIfQualified() {
-		return ifQualified;
-	}
-
-	public void setIfQualified(Integer ifQualified) {
-		this.ifQualified = ifQualified;
-	}
-
-	public String getUnqualifiedReason() {
-		return unqualifiedReason;
+	public void setOaOrder(Integer oaOrder) {
+		this.oaOrder = oaOrder;
 	}
 
 	public void setUnqualifiedReason(String unqualifiedReason) {
 		this.unqualifiedReason = unqualifiedReason;
 	}
 
-	public int getOaOrder() {
-		return oaOrder;
-	}
-
-	public void setOaOrder(int oaOrder) {
-		this.oaOrder = oaOrder;
-	}
-
 	@Override
 	public int hashCode() {
-		int hash = 0;
-		hash += (this.id != null ? this.id.hashCode() : 0);
-		return hash;
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((ifQualified == null) ? 0 : ifQualified.hashCode());
+		result = prime * result + ((ifRepeat == null) ? 0 : ifRepeat.hashCode());
+		result = prime * result + ((oaOrder == null) ? 0 : oaOrder.hashCode());
+		result = prime * result + ((unqualifiedReason == null) ? 0 : unqualifiedReason.hashCode());
+		return result;
 	}
 
 	@Override
-	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are
-		// not set
-		if (!(object instanceof OaMrConfirm)) {
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		}
-		OaMrConfirm other = (OaMrConfirm) object;
-		if (this.id != other.id
-				&& (this.id == null || !this.id.equals(other.id)))
+		if (getClass() != obj.getClass())
+			return false;
+		OaMrConfirm other = (OaMrConfirm) obj;
+		if (ifQualified == null) {
+			if (other.ifQualified != null)
+				return false;
+		} else if (!ifQualified.equals(other.ifQualified))
+			return false;
+		if (ifRepeat == null) {
+			if (other.ifRepeat != null)
+				return false;
+		} else if (!ifRepeat.equals(other.ifRepeat))
+			return false;
+		if (oaOrder == null) {
+			if (other.oaOrder != null)
+				return false;
+		} else if (!oaOrder.equals(other.oaOrder))
+			return false;
+		if (unqualifiedReason == null) {
+			if (other.unqualifiedReason != null)
+				return false;
+		} else if (!unqualifiedReason.equals(other.unqualifiedReason))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "OaMrConfirm[id=" + id + "]";
+		return "OaMrConfirm [ifRepeat=" + ifRepeat + ", ifQualified=" + ifQualified + ", unqualifiedReason=" + unqualifiedReason + ", oaOrder=" + oaOrder + ", getId()=" + getId() + "]";
 	}
+
 }
