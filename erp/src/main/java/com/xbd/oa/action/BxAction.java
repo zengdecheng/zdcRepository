@@ -406,18 +406,24 @@ public class BxAction extends Action {
 		// 统计值[生产总数][黑色订单][红色订单][黄色订单][绿色订单][蓝色订单][总数]
 		Integer[] counts = { 0, 0, 0, 0, 0, 0, beans.size() };
 		// 优先级计算
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Timestamp workTime = BizUtil.getOperatingTime(new Timestamp(new Date().getTime())); // 当前工作时间
+		Timestamp curTime = new Timestamp(sdf.parse(df.format(new Date())).getTime());
 		for (LazyDynaMap bean : beans) {
 			counts[0] += (Integer) bean.get("want_cnt");
 			// 订单周期
 			Long sellReadyTime = bean.get("sell_ready_time") == null ? 0 : (Long) bean.get("sell_ready_time");
 			Long standardTime = bean.get("standard_time") == null ? 0 : (Long) bean.get("standard_time");
 			Long craftTime = bean.get("craft_time") == null ? 0 : (Long) bean.get("craft_time");
-			Long orderTime = (sellReadyTime + standardTime + craftTime) / 9 * 24;
-			// 交期
-			Timestamp goodsTime = (Timestamp) bean.get("goods_time");
-			// 当前工作时间
-			Timestamp workTime = BizUtil.getOperatingTime(new Timestamp(new Date().getTime()));
-			Integer persent = (int) ((workTime.getTime() - goodsTime.getTime() + orderTime - 60 * 60 * 1000 * 24d) / orderTime * 100);
+			Long orderTime = (sellReadyTime + standardTime + craftTime) / 9 * 24; // 订单周期，单位毫秒
+			// 交期、当前时间
+			Timestamp goodsTime = new Timestamp(sdf.parse(df.format((Timestamp) bean.get("goods_time"))).getTime());
+			// 计算进度信息
+			Float persent = (float) ((curTime.getTime() - goodsTime.getTime() + orderTime - 60 * 60 * 1000 * 24d) / orderTime * 100);
+			Float persent2 = (float) ((curTime.getTime() - goodsTime.getTime() + orderTime.floatValue()) / orderTime.floatValue() * 100);
+			Float hourPersent = (persent2.floatValue() - persent) / 9;
+			persent = BizUtil.culCurToc(workTime, persent, hourPersent);
 			if (persent > 100) {
 				counts[1] += 1;
 			} else if (persent >= 66) {
@@ -433,8 +439,9 @@ public class BxAction extends Action {
 		}
 		bean.set("counts", counts);
 
-		String scale[] = {"0","0","0","0","0"};;
-		if(counts[6]!=0){
+		String scale[] = { "0", "0", "0", "0", "0" };
+
+		if (counts[6] != 0) {
 			scale[0] = String.format("%.1f", counts[1].floatValue() / counts[6] * 100);
 			scale[1] = String.format("%.1f", counts[2].floatValue() / counts[6] * 100);
 			scale[2] = String.format("%.1f", counts[3].floatValue() / counts[6] * 100);
@@ -452,8 +459,8 @@ public class BxAction extends Action {
 		bean.set("orderType", orderType);
 		bean.set("orderField", orderField);
 		fsp.setRecordCount(beans.size());
-		int fromIndex = (fsp.getPageNo()-1)*fsp.getPageSize();
-		int toIndex = (fromIndex+fsp.getPageSize())<=beans.size()?fromIndex+fsp.getPageSize():fromIndex+(int)fsp.getRecordCount()%fsp.getPageSize();
+		int fromIndex = (fsp.getPageNo() - 1) * fsp.getPageSize();
+		int toIndex = (fromIndex + fsp.getPageSize()) <= beans.size() ? fromIndex + fsp.getPageSize() : fromIndex + (int) fsp.getRecordCount() % fsp.getPageSize();
 		beans = beans.subList(fromIndex, toIndex);
 		processPageInfo(getObjectsCountSql(fsp));
 		return "todo";
@@ -585,7 +592,7 @@ public class BxAction extends Action {
 					buf.append(WebUtil.getTimeDisPlayExcel(Math.abs(diff)));
 					sheet1FileInfo.put(j + ",7", buf.toString());// 订单进度
 				}
-				
+
 				sheet1FileInfo.put(j + ",8", lazyMap.get("mrdb_operator") != null ? lazyMap.get("mrdb_operator") : "");// 负责MR
 
 				sheet1FileInfo.put(j + ",18", lazyMap.get("mrdb_wf_real_start") != null ? new CustomCell(lazyMap.get("mrdb_wf_real_start"), "Date") : new CustomCell());// MR补录订单日期
@@ -649,7 +656,7 @@ public class BxAction extends Action {
 					buf.append(WebUtil.getTimeDisPlayExcel(Math.abs(diff)));
 					sheet1FileInfo.put(j + ",7", buf.toString());// 订单进度
 				}
-				
+
 				sheet1FileInfo.put(j + ",8", lazyMap.get("mrdel_operator") != null ? lazyMap.get("mrdel_operator") : "");// 负责MR
 
 				sheet1FileInfo.put(j + ",11", lazyMap.get("tpedel_operator") != null ? lazyMap.get("tpedel_operator") : "");// TPE
@@ -658,7 +665,7 @@ public class BxAction extends Action {
 				sheet1FileInfo.put(j + ",12", lazyMap.get("sewing_total") != null ? lazyMap.get("sewing_total") : "0");// 车缝产出数量
 				sheet1FileInfo.put(j + ",13", lazyMap.get("qualified_total") != null ? lazyMap.get("qualified_total") : "0");// 合格数量
 				sheet1FileInfo.put(j + ",14", lazyMap.get("unqualified_total") != null ? lazyMap.get("unqualified_total") : "0");// 次品数量
-				
+
 				sheet1FileInfo.put(j + ",23", lazyMap.get("jshdel_operator") != null ? lazyMap.get("jshdel_operator") : "");// 大货技术
 				// 计算实际生产周期
 				if (superList.get(i).get("qadel_wf_real_finish") != null && !"".equals(superList.get(i).get("qadel_wf_real_finish")) && superList.get(i).get("mrdel_wf_real_start") != null
@@ -707,11 +714,9 @@ public class BxAction extends Action {
 			// sheet1FileInfo.put(j+",7", lazyMap.get("begin_time") !=null ? lazyMap.get("begin_time") : "");//下单日期
 			sheet1FileInfo.put(j + ",6", lazyMap.get("begin_time") != null ? new CustomCell(lazyMap.get("begin_time"), "Date") : new CustomCell());
 
-			
 			sheet1FileInfo.put(j + ",9", lazyMap.get("sales") != null ? lazyMap.get("sales") : "");// 负责销售
 			sheet1FileInfo.put(j + ",10", lazyMap.get("sewing_factory") != null ? lazyMap.get("sewing_factory") : "");// 工厂
-			
-			
+
 			if (lazyMap.get("sewing_total") != null && !"".equals(lazyMap.get("sewing_total")) && lazyMap.get("qualified_total") != null && !"".equals(lazyMap.get("qualified_total"))) {
 				sheet1FileInfo.put(j + ",15", (int) new BigDecimal((Float.parseFloat(lazyMap.get("qualified_total").toString()) / Float.parseFloat(lazyMap.get("sewing_total").toString())) * 100)
 						.setScale(0, BigDecimal.ROUND_HALF_UP).floatValue() + "%");// 合格率
@@ -1178,9 +1183,6 @@ public class BxAction extends Action {
 		// fsp.set("del_operator_c", "c_ppc_assign_3");
 		// }
 		// }
-		
-		
-		
 
 		superList = getObjectsBySql(fsp);
 		Map<String, String> statisticsMap = new HashMap<String, String>();
@@ -4482,6 +4484,11 @@ public class BxAction extends Action {
 
 		List<LazyDynaMap> colorList = new ArrayList<LazyDynaMap>();
 
+		// 当前工作时间
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Timestamp workTime = BizUtil.getOperatingTime(new Timestamp(new Date().getTime()));
+		Timestamp curTime = new Timestamp(sdf.parse(df.format(new Date())).getTime());
 		for (int i = 0; i < beans.size(); i++) {
 			// float data = 0;
 			// int data1 = 0;
@@ -4510,10 +4517,16 @@ public class BxAction extends Action {
 			Long craftTime = beans.get(i).get("craft_time") == null ? 0 : (Long) beans.get(i).get("craft_time");
 			Long orderTime = (sellReadyTime + standardTime + craftTime) / 9 * 24;
 			// 交期
-			Timestamp goodsTime = (Timestamp) beans.get(i).get("goods_time");
-			// 当前工作时间
-			Timestamp workTime = BizUtil.getOperatingTime(new Timestamp(new Date().getTime()));
-			Integer cycle = (int) ((workTime.getTime() - goodsTime.getTime() + orderTime - 60 * 60 * 1000 * 24d) / orderTime * 100);
+			// Timestamp goodsTime = (Timestamp) beans.get(i).get("goods_time");
+			// Integer cycle = (int) ((workTime.getTime() - goodsTime.getTime() + orderTime - 60 * 60 * 1000 * 24d) / orderTime * 100);
+
+			// 交期、当前时间
+			Timestamp goodsTime = new Timestamp(sdf.parse(df.format((Timestamp) beans.get(i).get("goods_time"))).getTime());
+			// 计算进度信息
+			Float cycle = (float) ((curTime.getTime() - goodsTime.getTime() + orderTime - 60 * 60 * 1000 * 24d) / orderTime * 100);
+			Float persent2 = (float) ((curTime.getTime() - goodsTime.getTime() + orderTime.floatValue()) / orderTime.floatValue() * 100);
+			Float hourPersent = (persent2.floatValue() - cycle) / 9;
+			cycle = BizUtil.culCurToc(workTime, cycle, hourPersent);
 
 			beans.get(i).set("data", cycle);
 			if (orderColor != null && !"".equals(orderColor)) {
@@ -4577,7 +4590,7 @@ public class BxAction extends Action {
 		if (fsp.getMap().get("yxjOrderHid") == null || "".equals(fsp.getMap().get("yxjOrderHid")) || "1".equals(fsp.getMap().get("yxjOrderHid"))) {
 			for (int i = 0; i < beans.size(); i++) {
 				for (int j = i; j < beans.size(); j++) {
-					if (Integer.parseInt(beans.get(i).get("data").toString()) < Integer.parseInt(beans.get(j).get("data").toString())) {
+					if ((float) beans.get(i).get("data") < (float) beans.get(j).get("data")) {
 						LazyDynaMap temp = beans.get(i);
 						beans.set(i, beans.get(j));
 						beans.set(j, temp);
@@ -4605,12 +4618,16 @@ public class BxAction extends Action {
 		statisticsMap.put("blueNum", blueNum + "");
 		statisticsMap.put("blackNum", blackNum + "");
 
-		if(beansNums > 0){
-			statisticsMap.put("blue", new BigDecimal((blueNum/(float)beansNums) * 100).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue()+"");
-			statisticsMap.put("green", new BigDecimal((greenNum/(float)beansNums) * 100).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue()+""); //new BigDecimal((greenNum/beansNums) * 10).setScale(5, BigDecimal.ROUND_HALF_UP).floatValue()
-			statisticsMap.put("orange", new BigDecimal((orangeNum/(float)beansNums) * 100).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue()+"");//new BigDecimal((orangeNum/beansNums) * 10).setScale(5, BigDecimal.ROUND_HALF_UP).floatValue()
-			statisticsMap.put("red", new BigDecimal((redNum/(float)beansNums) * 100).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue()+"");
-			statisticsMap.put("black", new BigDecimal((blackNum/(float)beansNums) * 100).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue()+"");
+		if (beansNums > 0) {
+			statisticsMap.put("blue", new BigDecimal((blueNum / (float) beansNums) * 100).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue() + "");
+			statisticsMap.put("green", new BigDecimal((greenNum / (float) beansNums) * 100).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue() + ""); // new BigDecimal((greenNum/beansNums) *
+																																						// 10).setScale(5,
+																																						// BigDecimal.ROUND_HALF_UP).floatValue()
+			statisticsMap.put("orange", new BigDecimal((orangeNum / (float) beansNums) * 100).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue() + "");// new BigDecimal((orangeNum/beansNums) *
+																																						// 10).setScale(5,
+																																						// BigDecimal.ROUND_HALF_UP).floatValue()
+			statisticsMap.put("red", new BigDecimal((redNum / (float) beansNums) * 100).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue() + "");
+			statisticsMap.put("black", new BigDecimal((blackNum / (float) beansNums) * 100).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue() + "");
 		}
 		Struts2Utils.getRequest().setAttribute("statisticsMap", statisticsMap);
 
@@ -5668,20 +5685,37 @@ public class BxAction extends Action {
 		}
 
 		// 订单周期
-		Long sellReadyTime = oaOrder.getSellReadyTime()==null?0l:oaOrder.getSellReadyTime();
-		Long standardTime = oaOrder.getStandardTime()==null?0l:oaOrder.getStandardTime();
-		Long craftTime = oaOrder.getCraftTime()==null?0l:oaOrder.getCraftTime();
+		Long sellReadyTime = oaOrder.getSellReadyTime() == null ? 0l : oaOrder.getSellReadyTime();
+		Long standardTime = oaOrder.getStandardTime() == null ? 0l : oaOrder.getStandardTime();
+		Long craftTime = oaOrder.getCraftTime() == null ? 0l : oaOrder.getCraftTime();
 		Long orderTime = (sellReadyTime + standardTime + craftTime) / 9 * 24;
-		// 交期
+
+		// 交期、当前时间
+		SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Timestamp goodsTime = oaOrder.getGoodsTime();
+		Timestamp curTime = new Timestamp(new Date().getTime());
 		// 当前工作时间
 		Timestamp workTime = null;
 		if (("finish_999").equals(oaOrder.getWfStep())) {
 			workTime = BizUtil.getOperatingTime(oaOrder.getEndTime());
+			curTime = workTime;
 		} else {
-			workTime = BizUtil.getOperatingTime(new Timestamp(new Date().getTime()));
+			workTime = BizUtil.getOperatingTime(curTime);
 		}
-		Integer persent = (int) ((workTime.getTime() - goodsTime.getTime() + orderTime - 60 * 60 * 1000 * 24d) / orderTime * 100);
+		try {
+			goodsTime = new Timestamp(sdf.parse(df1.format(goodsTime)).getTime());
+			curTime = new Timestamp(sdf.parse(df1.format(curTime)).getTime());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// 计算进度信息
+		Float persent = (float) ((curTime.getTime() - goodsTime.getTime() + orderTime - 60 * 60 * 1000 * 24d) / orderTime * 100);
+		Float persent2 = (float) ((curTime.getTime() - goodsTime.getTime() + orderTime.floatValue()) / orderTime.floatValue() * 100);
+		Float hourPersent = (persent2.floatValue() - persent) / 9;
+		persent = BizUtil.culCurToc(workTime, persent, hourPersent);
+
 		bean.set("time_consume", persent);// 设置当前的耗时
 	}
 
@@ -7011,26 +7045,48 @@ public class BxAction extends Action {
 			Date except_finish = oaOrder.getExceptFinish();
 			// 查询出最早的订单流入该节点的日期
 			if (null != tampMap.get("wf_real_start")) {
+				// 订单周期
 				Long sellReadyTime = oaOrder.getSellReadyTime() == null ? 0L : oaOrder.getSellReadyTime();
 				Long standardTimes = oaOrder.getStandardTime() == null ? 0L : oaOrder.getStandardTime();
 				Long craftTime = oaOrder.getCraftTime() == null ? 0L : oaOrder.getCraftTime();
 				Long orderTime = (sellReadyTime + standardTimes + craftTime) / 9 * 24;
-				Timestamp goodsTime = oaOrder.getGoodsTime();
 				Timestamp workTime = BizUtil.getOperatingTime((Timestamp) tampMap.get("wf_real_start"));
-				Integer persent = (int) ((workTime.getTime() - goodsTime.getTime() + orderTime - 60 * 60 * 1000 * 24d) / orderTime * 100);
+
+				// 交期、当前时间
+				SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Timestamp goodsTime = new Timestamp(sdf.parse(df1.format(oaOrder.getGoodsTime())).getTime());
+				Timestamp curTime = new Timestamp(sdf.parse(df1.format(workTime)).getTime());;
+				// 计算进度信息
+				Float persent = (float) ((curTime.getTime() - goodsTime.getTime() + orderTime - 60 * 60 * 1000 * 24d) / orderTime * 100);
+				Float persent2 = (float) ((curTime.getTime() - goodsTime.getTime() + orderTime.floatValue()) / orderTime.floatValue() * 100);
+				Float hourPersent = (persent2.floatValue() - persent) / 9;
+				persent = BizUtil.culCurToc(workTime, persent, hourPersent);
+
 				oaOrderDetail.put("step_start_time_consume", persent);// 设置当前节点流入的耗时
 			} else {
 				oaOrderDetail.put("step_start_time_consume", "");
 			}
 			// 计算当前订单流出该节点的耗时= （订单流出日期-下单日期+1）÷（交货日期-下单日期+1）*100%
 			if (null != tampMap.get("wf_real_finish")) {
+				// 订单周期
 				Long sellReadyTime = oaOrder.getSellReadyTime() == null ? 0L : oaOrder.getSellReadyTime();
 				Long standardTimes = oaOrder.getStandardTime() == null ? 0L : oaOrder.getStandardTime();
 				Long craftTime = oaOrder.getCraftTime() == null ? 0L : oaOrder.getCraftTime();
 				Long orderTime = (sellReadyTime + standardTimes + craftTime) / 9 * 24;
-				Timestamp goodsTime = oaOrder.getGoodsTime();
 				Timestamp workTime = BizUtil.getOperatingTime((Timestamp) tampMap.get("wf_real_finish"));
-				Integer persent = (int) ((workTime.getTime() - goodsTime.getTime() + orderTime - 60 * 60 * 1000 * 24d) / orderTime * 100);
+
+				// 交期、当前时间
+				SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Timestamp goodsTime = new Timestamp(sdf.parse(df1.format(oaOrder.getGoodsTime())).getTime());
+				Timestamp curTime = new Timestamp(sdf.parse(df1.format(workTime)).getTime());;
+				// 计算进度信息
+				Float persent = (float) ((curTime.getTime() - goodsTime.getTime() + orderTime - 60 * 60 * 1000 * 24d) / orderTime * 100);
+				Float persent2 = (float) ((curTime.getTime() - goodsTime.getTime() + orderTime.floatValue()) / orderTime.floatValue() * 100);
+				Float hourPersent = (persent2.floatValue() - persent) / 9;
+				persent = BizUtil.culCurToc(workTime, persent, hourPersent);
+
 				oaOrderDetail.put("step_finish_time_consume", persent);// 设置当前节点流入的耗时
 			} else {
 				oaOrderDetail.put("step_finish_time_consume", "");
