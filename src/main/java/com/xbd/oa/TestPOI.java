@@ -10,7 +10,7 @@ import org.apache.commons.beanutils.LazyDynaMap;
 import org.junit.Test;
 
 import com.xbd.oa.utils.POIUtilsEx;
-import com.xbd.oa.vo.CustomCell;
+import com.xbd.oa.vo.base.CustomCell;
 
 public class TestPOI {
 	/**

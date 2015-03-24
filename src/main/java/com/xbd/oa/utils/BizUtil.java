@@ -3,6 +3,7 @@ package com.xbd.oa.utils;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -560,6 +561,24 @@ public class BizUtil {
 	}
 
 	/**
+	 * 
+	 * @Title: culCurToc
+	 * @Description: TODO计算当前时间得TOC值
+	 *
+	 * @author 张华
+	 * @param curTime
+	 * @param persent
+	 * @param hourPersent
+	 * @return
+	 */
+	public static float culCurToc(Timestamp curTime, Float persent, Float hourPersent) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(curTime);
+		int hour = calendar.get(Calendar.HOUR_OF_DAY);
+		return Float.parseFloat(String.format("%.1f", (persent + hourPersent * (hour - 9))));
+	}
+
+	/**
 	 * 最后个节点的修改业务模块，包含order主表和order_detail子表
 	 * 
 	 * @param processInstanceId
@@ -746,8 +765,8 @@ public class BizUtil {
 			// System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), 18L * 1000 * 60 * 60));
 			// System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), 27L * 1000 * 60 * 60));
 			System.out.println(culPlanDate(new Timestamp(df.parse("2015-03-31 00:00:00").getTime()), -2L * 1000 * 60 * 60));
-//			 System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), -36L * 1000 * 60 * 60));
-//			 System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), -45L * 1000 * 60 * 60));
+			// System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), -36L * 1000 * 60 * 60));
+			// System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), -45L * 1000 * 60 * 60));
 
 			// System.out.println(getWorkTime(new Timestamp(df.parse("2015-03-22 10:00:00").getTime())));
 		} catch (ParseException e) {

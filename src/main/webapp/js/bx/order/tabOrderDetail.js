@@ -519,15 +519,15 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 					if(undefined != orderDetail.step_finish_time_consume && null != orderDetail.step_finish_time_consume && "" != orderDetail.step_finish_time_consume) {
 						var rate=parseFloat(orderDetail.step_finish_time_consume);
 						if(rate < 0){
-							$("#detailRealStartColor").css("background-color","#0000FF");
+							$("#detailRealFinishColor").css("background-color","#0000FF");
 						}else if(rate < 33){
-							$("#detailRealStartColor").css("background-color","#33cc00");
+							$("#detailRealFinishColor").css("background-color","#33cc00");
 						}else if(rate < 66){
-							$("#detailRealStartColor").css("background-color","#ff9900");
+							$("#detailRealFinishColor").css("background-color","#ff9900");
 						}else if(rate <= 100){
-							$("#detailRealStartColor").css("background-color","#ff3300");
+							$("#detailRealFinishColor").css("background-color","#ff3300");
 						}else {
-							$("#detailRealStartColor").css("background-color","#000000");
+							$("#detailRealFinishColor").css("background-color","#000000");
 						}
 						$("#detailRealFinishColor").text(orderDetail.step_finish_time_consume + "%");
 					}
