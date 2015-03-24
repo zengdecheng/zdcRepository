@@ -253,17 +253,17 @@ define([ "u","layer","v","vl" ], function(u,layer) {
                 			var standard_time = $(window.parent.document).find("#standard_time").val();
                 			
                 			if(oa_feeding_time){
-                				$("#feeding_time").html(oa_feeding_time);
+                				$("#feeding_time").val(oa_feeding_time);
                 			}else{
                 				biz.event.calcFeedingTime();
                 			}
                 			if(sell_ready_time){
-                				$("#sell_ready_time").html(sell_ready_time);
+                				$("#sell_ready_time").val(sell_ready_time);
                 			}else{
                 				biz.event.calcFeedingTime();
                 			}
                 			if(standard_time){
-                				$("#standard_time").html(standard_time);
+                				$("#standard_time").val(standard_time);
                 			}else{
                 				biz.event.calcFeedingTime();
                 			}
@@ -575,13 +575,21 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 				categorys = datas;
 				var styleClass = $(window.parent.document).find("#styleClass").val();
 				var temp = "";
-				$("#categorys").append("<option value=''>请选择</option>");
 				$.each(datas,function(index,data){
-					if(data.map.name == styleClass){
-						$("#categorys").append('<option selected="selected" value="'+data.map.name+'">'+data.map.name+"("+data.map.code+")</option>");
-						selectedIndex = 0;
-					}else{
-						$("#categorys").append("<option value="+data.map.name+">"+data.map.name+"("+data.map.code+")</option>");
+					if(0 == index) {
+						if(data.map.name == styleClass){
+							$("#categorys").append('<option selected="selected" value="">'+data.map.name+"</option>");
+							selectedIndex = 0;
+						}else{
+							$("#categorys").append("<option value=''>"+data.map.name+"</option>");
+						}
+					} else {
+						if(data.map.name == styleClass){
+							$("#categorys").append('<option selected="selected" value="'+data.map.name+'">'+data.map.name+"("+data.map.code+")</option>");
+							selectedIndex = 0;
+						}else{
+							$("#categorys").append("<option value="+data.map.name+">"+data.map.name+"("+data.map.code+")</option>");
+						}
 					}
 				});
 				biz.event.setStyleCarft(0);
