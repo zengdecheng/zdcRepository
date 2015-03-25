@@ -1,170 +1,152 @@
 package com.xbd.oa.vo;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.xbd.oa.vo.base.CommonBean;
-
-/**
- * oa_客供料明细
- * 
- * @author fangwei
- * @version 创建时间：2015年3月24日 上午11:36:32
- */
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "oa_cus_material_list")
-public class OaCusMaterialList extends CommonBean {
-	private static final long serialVersionUID = 1L;
+public class OaCusMaterialList implements Serializable {
+	@Column(name = "amount")
+	private Float amount;
 
-	private Float amount; // 用料
-	private Float consume; // 客供损耗
-	private String isComplete; // 是否齐全
-	private String materialName; // 物料名称
-	private String memo; // 位置说明 备注
-	private Float total; // 合计
-	private Integer oaOrderId; // 订单ID
-	private String orderNum; // 订单数量内容
+	@Column(name = "consume")
+	private Float consume;
 
-	@Column(name = "amount", columnDefinition = "float(10,2)")
-	public Float getAmount() {
-		return amount;
-	}
+	@Id
+	@GeneratedValue
+	@Column(name = "id")
+	private Integer id;
 
-	@Column(name = "consume", columnDefinition = "float(10,2)")
-	public Float getConsume() {
-		return consume;
-	}
+	@Column(name = "is_complete")
+	private String isComplete;
 
-	@Column(name = "is_complete", columnDefinition = "CHAR(1)")
-	public String getIsComplete() {
-		return isComplete;
-	}
+	@Column(name = "material_name")
+	private String materialName;
 
-	@Column(name = "material_name", columnDefinition = "varchar(20)")
-	public String getMaterialName() {
-		return materialName;
-	}
+	@Column(name = "memo")
+	private String memo;
 
-	@Column(name = "memo", columnDefinition = "varchar(50)")
-	public String getMemo() {
-		return memo;
-	}
+	@Column(name = "oa_order_num_id")
+	private String oaOrderNumId;
+
+	@Column(name = "total")
+	private Float total;
 
 	@Column(name = "oa_order_id")
-	public Integer getOaOrderId() {
-		return oaOrderId;
-	}
+	private Integer oaOrderId;
 
-	@Column(name = "order_num", columnDefinition = "varchar(1000)")
-	public String getOrderNum() {
-		return orderNum;
-	}
+	@Column(name = "order_num")
+	private String orderNum;
 
-	@Column(name = "total", columnDefinition = "float(10,2)")
-	public Float getTotal() {
-		return total;
+	public Float getAmount() {
+		return amount;
 	}
 
 	public void setAmount(Float amount) {
 		this.amount = amount;
 	}
 
+	public Float getConsume() {
+		return consume;
+	}
+
 	public void setConsume(Float consume) {
 		this.consume = consume;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getIsComplete() {
+		return isComplete;
 	}
 
 	public void setIsComplete(String isComplete) {
 		this.isComplete = isComplete;
 	}
 
+	public String getMaterialName() {
+		return materialName;
+	}
+
 	public void setMaterialName(String materialName) {
 		this.materialName = materialName;
+	}
+
+	public String getMemo() {
+		return memo;
 	}
 
 	public void setMemo(String memo) {
 		this.memo = memo;
 	}
 
-	public void setOaOrderId(Integer oaOrderId) {
-		this.oaOrderId = oaOrderId;
+	public String getOaOrderNumId() {
+		return oaOrderNumId;
 	}
 
-	public void setOrderNum(String orderNum) {
-		this.orderNum = orderNum;
+	public void setOaOrderNumId(String oaOrderNumId) {
+		this.oaOrderNumId = oaOrderNumId;
+	}
+
+	public Float getTotal() {
+		return total;
 	}
 
 	public void setTotal(Float total) {
 		this.total = total;
 	}
 
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((amount == null) ? 0 : amount.hashCode());
-		result = prime * result + ((consume == null) ? 0 : consume.hashCode());
-		result = prime * result + ((isComplete == null) ? 0 : isComplete.hashCode());
-		result = prime * result + ((materialName == null) ? 0 : materialName.hashCode());
-		result = prime * result + ((memo == null) ? 0 : memo.hashCode());
-		result = prime * result + ((oaOrderId == null) ? 0 : oaOrderId.hashCode());
-		result = prime * result + ((orderNum == null) ? 0 : orderNum.hashCode());
-		result = prime * result + ((total == null) ? 0 : total.hashCode());
-		return result;
+	public Integer getOaOrderId() {
+		return oaOrderId;
 	}
 
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
+	public void setOaOrderId(Integer oaOrderId) {
+		this.oaOrderId = oaOrderId;
+	}
+
+	public String getOrderNum() {
+		return orderNum;
+	}
+
+	public void setOrderNum(String orderNum) {
+		this.orderNum = orderNum;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		hash += (this.id != null ? this.id.hashCode() : 0);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		// TODO: Warning - this method won't work in the case the id fields are
+		// not set
+		if (!(object instanceof OaCusMaterialList)) {
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		OaCusMaterialList other = (OaCusMaterialList) obj;
-		if (amount == null) {
-			if (other.amount != null)
-				return false;
-		} else if (!amount.equals(other.amount))
-			return false;
-		if (consume == null) {
-			if (other.consume != null)
-				return false;
-		} else if (!consume.equals(other.consume))
-			return false;
-		if (isComplete == null) {
-			if (other.isComplete != null)
-				return false;
-		} else if (!isComplete.equals(other.isComplete))
-			return false;
-		if (materialName == null) {
-			if (other.materialName != null)
-				return false;
-		} else if (!materialName.equals(other.materialName))
-			return false;
-		if (memo == null) {
-			if (other.memo != null)
-				return false;
-		} else if (!memo.equals(other.memo))
-			return false;
-		if (oaOrderId == null) {
-			if (other.oaOrderId != null)
-				return false;
-		} else if (!oaOrderId.equals(other.oaOrderId))
-			return false;
-		if (orderNum == null) {
-			if (other.orderNum != null)
-				return false;
-		} else if (!orderNum.equals(other.orderNum))
-			return false;
-		if (total == null) {
-			if (other.total != null)
-				return false;
-		} else if (!total.equals(other.total))
+		}
+		OaCusMaterialList other = (OaCusMaterialList) object;
+		if (this.id != other.id
+				&& (this.id == null || !this.id.equals(other.id)))
 			return false;
 		return true;
 	}
 
+	@Override
 	public String toString() {
-		return "OaCusMaterialList [amount=" + amount + ", consume=" + consume + ", isComplete=" + isComplete + ", materialName=" + materialName + ", memo=" + memo + ", total=" + total
-				+ ", oaOrderId=" + oaOrderId + ", orderNum=" + orderNum + ", getId()=" + getId() + "]";
+		return "OaCusMaterialList[id=" + id + "]";
 	}
 }

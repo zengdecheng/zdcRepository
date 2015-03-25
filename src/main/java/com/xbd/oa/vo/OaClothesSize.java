@@ -1,106 +1,91 @@
 package com.xbd.oa.vo;
+import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.xbd.oa.vo.base.CommonBean;
-
-/**
- * 尺寸表
- * 
- * @author fangwei
- * @version 创建时间：2015年3月23日 下午5:14:29
- */
+@SuppressWarnings("serial") 
 @Entity
 @Table(name = "oa_clothes_size")
-public class OaClothesSize extends CommonBean {
-	private static final long serialVersionUID = 1L;
-
-	private Integer oaOrderId; // 订单ID
-	private String sampleSize; // 订单基码
-	private String type; // 款式分类
-	private String unit; // 单位
-
+public class OaClothesSize implements Serializable {
+	@Id
+	@GeneratedValue
+	@Column(name = "id")
+	private Integer id;
+	
 	@Column(name = "oa_order_id")
+	private Integer oaOrderId;
+	
+	@Column(name = "sample_size")
+	private String sampleSize;
+	
+	@Column(name = "type")
+	private String type;
+	
+	@Column(name = "unit")
+	private String unit;
+	
+
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	
 	public Integer getOaOrderId() {
 		return oaOrderId;
 	}
-
-	@Column(name = "sample_size", length = 20)
-	public String getSampleSize() {
-		return sampleSize;
-	}
-
-	@Column(name = "type", length = 20)
-	public String getType() {
-		return type;
-	}
-
-	@Column(name = "unit", length = 20)
-	public String getUnit() {
-		return unit;
-	}
-
 	public void setOaOrderId(Integer oaOrderId) {
 		this.oaOrderId = oaOrderId;
 	}
-
+	
+	public String getSampleSize() {
+		return sampleSize;
+	}
 	public void setSampleSize(String sampleSize) {
 		this.sampleSize = sampleSize;
 	}
-
+	
+	public String getType() {
+		return type;
+	}
 	public void setType(String type) {
 		this.type = type;
 	}
-
+	
+	public String getUnit() {
+		return unit;
+	}
 	public void setUnit(String unit) {
 		this.unit = unit;
 	}
-
+	
+@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((oaOrderId == null) ? 0 : oaOrderId.hashCode());
-		result = prime * result + ((sampleSize == null) ? 0 : sampleSize.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
-		result = prime * result + ((unit == null) ? 0 : unit.hashCode());
-		return result;
+		int hash = 0;
+		hash += (this.id != null ? this.id.hashCode() : 0);
+		return hash;
 	}
 
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
+@Override
+	public boolean equals(Object object) {
+		// TODO: Warning - this method won't work in the case the id fields are not set
+		if (!(object instanceof OaClothesSize)) {
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		OaClothesSize other = (OaClothesSize) obj;
-		if (oaOrderId == null) {
-			if (other.oaOrderId != null)
-				return false;
-		} else if (!oaOrderId.equals(other.oaOrderId))
-			return false;
-		if (sampleSize == null) {
-			if (other.sampleSize != null)
-				return false;
-		} else if (!sampleSize.equals(other.sampleSize))
-			return false;
-		if (type == null) {
-			if (other.type != null)
-				return false;
-		} else if (!type.equals(other.type))
-			return false;
-		if (unit == null) {
-			if (other.unit != null)
-				return false;
-		} else if (!unit.equals(other.unit))
+		}
+		OaClothesSize other = (OaClothesSize) object;
+		if (this.id != other.id
+				&& (this.id == null || !this.id
+						.equals(other.id)))
 			return false;
 		return true;
 	}
-
-	public String toString() {
-		return "OaClothesSize [oaOrderId=" + oaOrderId + ", sampleSize=" + sampleSize + ", type=" + type + ", unit=" + unit + "]";
-	}
-
-}
+@Override
+	 public String toString() {
+        return "OaClothesSize[id=" + id + "]";
+    }
+  }
