@@ -4529,6 +4529,10 @@ public class BxAction extends Action {
 			cycle = BizUtil.culCurToc(workTime, cycle, hourPersent);
 
 			beans.get(i).set("data", cycle);
+			
+			// 计算统计部分
+			count += Double.parseDouble(beans.get(i).get("want_cnt") != null ? beans.get(i).get("want_cnt").toString() : "0");
+						
 			if (orderColor != null && !"".equals(orderColor)) {
 				if ("-1".equals(orderColor)) {
 					if (cycle < 0) {
@@ -4578,8 +4582,6 @@ public class BxAction extends Action {
 					blackNum++;
 				}
 			}
-			// 计算统计部分
-			count += Double.parseDouble(beans.get(i).get("want_cnt") != null ? beans.get(i).get("want_cnt").toString() : "0");
 
 		}
 
