@@ -1,122 +1,101 @@
 package com.xbd.oa.vo;
+import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.xbd.oa.vo.base.CommonBean;
-
-/**
- * 尺寸表详情
- * 
- * @author fangwei
- * @version 创建时间：2015年3月23日 下午5:14:29
- */
+@SuppressWarnings("serial") 
 @Entity
 @Table(name = "oa_clothes_size_detail")
-public class OaClothesSizeDetail extends CommonBean {
-
-	private static final long serialVersionUID = 1L;
-
-	private Integer oaOrder; // 订单ID
-	private String clothSize; // 款式尺寸
-	private String position; // 位置
-	private String samplePageSize; // 基码纸样尺寸
-	private String tolerance; // 公差
-
+public class OaClothesSizeDetail implements Serializable {
+	@Column(name = "cloth_size")
+	private String clothSize;
+	
+	@Id
+	@GeneratedValue
+	@Column(name = "id")
+	private Integer id;
+	
 	@Column(name = "oa_order")
-	public Integer getOaOrder() {
-		return oaOrder;
-	}
+	private Integer oaOrder;
+	
+	@Column(name = "position")
+	private String position;
+	
+	@Column(name = "sample_page_size")
+	private String samplePageSize;
+	
+	@Column(name = "tolerance")
+	private String tolerance;
+	
 
-	@Column(name = "cloth_size", length = 200)
 	public String getClothSize() {
 		return clothSize;
 	}
-
-	@Column(name = "position", length = 50)
-	public String getPosition() {
-		return position;
-	}
-
-	@Column(name = "sample_page_size", length = 20)
-	public String getSamplePageSize() {
-		return samplePageSize;
-	}
-
-	@Column(name = "tolerance", length = 20)
-	public String getTolerance() {
-		return tolerance;
-	}
-
 	public void setClothSize(String clothSize) {
 		this.clothSize = clothSize;
 	}
-
+	
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	
+	public Integer getOaOrder() {
+		return oaOrder;
+	}
 	public void setOaOrder(Integer oaOrder) {
 		this.oaOrder = oaOrder;
 	}
-
+	
+	public String getPosition() {
+		return position;
+	}
 	public void setPosition(String position) {
 		this.position = position;
 	}
-
+	
+	public String getSamplePageSize() {
+		return samplePageSize;
+	}
 	public void setSamplePageSize(String samplePageSize) {
 		this.samplePageSize = samplePageSize;
 	}
-
+	
+	public String getTolerance() {
+		return tolerance;
+	}
 	public void setTolerance(String tolerance) {
 		this.tolerance = tolerance;
 	}
-
+	
+@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((clothSize == null) ? 0 : clothSize.hashCode());
-		result = prime * result + ((oaOrder == null) ? 0 : oaOrder.hashCode());
-		result = prime * result + ((position == null) ? 0 : position.hashCode());
-		result = prime * result + ((samplePageSize == null) ? 0 : samplePageSize.hashCode());
-		result = prime * result + ((tolerance == null) ? 0 : tolerance.hashCode());
-		return result;
+		int hash = 0;
+		hash += (this.id != null ? this.id.hashCode() : 0);
+		return hash;
 	}
 
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
+@Override
+	public boolean equals(Object object) {
+		// TODO: Warning - this method won't work in the case the id fields are not set
+		if (!(object instanceof OaClothesSizeDetail)) {
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		OaClothesSizeDetail other = (OaClothesSizeDetail) obj;
-		if (clothSize == null) {
-			if (other.clothSize != null)
-				return false;
-		} else if (!clothSize.equals(other.clothSize))
-			return false;
-		if (oaOrder == null) {
-			if (other.oaOrder != null)
-				return false;
-		} else if (!oaOrder.equals(other.oaOrder))
-			return false;
-		if (position == null) {
-			if (other.position != null)
-				return false;
-		} else if (!position.equals(other.position))
-			return false;
-		if (samplePageSize == null) {
-			if (other.samplePageSize != null)
-				return false;
-		} else if (!samplePageSize.equals(other.samplePageSize))
-			return false;
-		if (tolerance == null) {
-			if (other.tolerance != null)
-				return false;
-		} else if (!tolerance.equals(other.tolerance))
+		}
+		OaClothesSizeDetail other = (OaClothesSizeDetail) object;
+		if (this.id != other.id
+				&& (this.id == null || !this.id
+						.equals(other.id)))
 			return false;
 		return true;
 	}
-
-	public String toString() {
-		return "OaClothesSizeDetail [oaOrder=" + oaOrder + ", clothSize=" + clothSize + ", position=" + position + ", samplePageSize=" + samplePageSize + ", tolerance=" + tolerance + "]";
-	}
-}
+@Override
+	 public String toString() {
+        return "OaClothesSizeDetail[id=" + id + "]";
+    }
+  }
