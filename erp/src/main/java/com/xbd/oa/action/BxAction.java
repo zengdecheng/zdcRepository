@@ -4601,7 +4601,7 @@ public class BxAction extends Action {
 		} else if (fsp.getMap().get("yxjOrderHid") == null || "".equals(fsp.getMap().get("yxjOrderHid")) || "2".equals(fsp.getMap().get("yxjOrderHid"))) {
 			for (int i = 0; i < beans.size(); i++) {
 				for (int j = i; j < beans.size(); j++) {
-					if (Integer.parseInt(beans.get(i).get("data").toString()) > Integer.parseInt(beans.get(j).get("data").toString())) {
+					if (Float.parseFloat(beans.get(i).get("data").toString()) > Float.parseFloat(beans.get(j).get("data").toString())) {
 						LazyDynaMap temp = beans.get(i);
 						beans.set(i, beans.get(j));
 						beans.set(j, temp);
