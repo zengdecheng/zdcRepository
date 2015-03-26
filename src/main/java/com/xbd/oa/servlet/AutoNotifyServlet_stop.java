@@ -77,7 +77,7 @@ public class AutoNotifyServlet_stop extends HttpServlet {
 	 */
 	public static void workflowNotify2staff()
 			throws UnsupportedEncodingException {
-		long t1 = System.currentTimeMillis();
+		long t1 = System.currentTimeMillis()/1000*1000;
 		FSPBean fsp = new FSPBean();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML,
 				BxDaoImpl.GET_OA_ORDER_DETAIL_FOR_AUTONOTIFY_BY_SQL);
@@ -91,7 +91,7 @@ public class AutoNotifyServlet_stop extends HttpServlet {
 			String operator = remind.get("operator").toString();// 流程操作人
 			String orgId = remind.get("oa_org").toString();
 
-			Timestamp time = new Timestamp(System.currentTimeMillis());
+			Timestamp time = new Timestamp(System.currentTimeMillis()/1000*1000);
 			long duration = (long) remind.get("wf_step_duration"); // 流程所需时间
 			Timestamp start_time = (Timestamp) remind.get("wf_real_start"); // 流程实际开始时间
 			long interval = duration
@@ -127,7 +127,7 @@ public class AutoNotifyServlet_stop extends HttpServlet {
 			}
 		}
 
-		System.out.println("结束时间：" + (System.currentTimeMillis() - t1));
+		System.out.println("结束时间：" + (System.currentTimeMillis()/1000*1000 - t1));
 	}
 
 	/**
