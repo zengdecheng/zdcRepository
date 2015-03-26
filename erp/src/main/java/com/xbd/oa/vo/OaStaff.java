@@ -1,131 +1,173 @@
 package com.xbd.oa.vo;
-import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
-@SuppressWarnings("serial") 
+import com.xbd.oa.vo.base.CommonBean;
+
+/**
+ * 用户表
+ * 
+ * @author fangwei
+ * @version 创建时间：2015年3月26日 下午6:18:25
+ */
 @Entity
 @Table(name = "oa_staff")
-public class OaStaff implements Serializable {
-	@Id
-	@GeneratedValue
-	@Column(name = "id")
-	private Integer id;
-	
-	@Column(name = "linkphone")
-	private String linkphone;
-	
-	@Column(name = "linkww")
-	private String linkww;
-	
-	@Column(name = "login_name")
-	private String loginName;
-	
-	@Column(name = "memo")
-	private String memo;
-	
-	@Column(name = "oa_org")
-	private Integer oaOrg;
-	
-	@Column(name = "oa_role")
-	private Integer oaRole;
-	
-	@Column(name = "password")
-	private String password;
-	
-	@Column(name = "state")
-	private String state;
-	
+public class OaStaff extends CommonBean {
+	private static final long serialVersionUID = 1L;
 
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	
+	private String linkphone;
+	private String linkww;
+	private String loginName;
+	private String memo;
+	private Integer oaOrg;
+	private Integer oaRole;
+	private String password;
+	private String state;
+
+	@Column(name = "linkphone",columnDefinition="varchar(20)")
 	public String getLinkphone() {
 		return linkphone;
 	}
-	public void setLinkphone(String linkphone) {
-		this.linkphone = linkphone;
-	}
-	
+
+	@Column(name = "linkww",columnDefinition="varchar(20)")
 	public String getLinkww() {
 		return linkww;
 	}
-	public void setLinkww(String linkww) {
-		this.linkww = linkww;
-	}
-	
+
+	@Column(name = "login_name",columnDefinition="varchar(50)")
 	public String getLoginName() {
 		return loginName;
 	}
-	public void setLoginName(String loginName) {
-		this.loginName = loginName;
-	}
-	
+
+	@Column(name = "memo",columnDefinition="varchar(200)")
 	public String getMemo() {
 		return memo;
 	}
-	public void setMemo(String memo) {
-		this.memo = memo;
-	}
-	
+
+	@Column(name = "oa_org")
 	public Integer getOaOrg() {
 		return oaOrg;
 	}
-	public void setOaOrg(Integer oaOrg) {
-		this.oaOrg = oaOrg;
-	}
-	
+
+	@Column(name = "oa_role")
 	public Integer getOaRole() {
 		return oaRole;
 	}
-	public void setOaRole(Integer oaRole) {
-		this.oaRole = oaRole;
-	}
-	
+
+	@Column(name = "password",columnDefinition="varchar(50)")
 	public String getPassword() {
 		return password;
 	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	
+
+	@Column(name = "state",columnDefinition="char(1)")
 	public String getState() {
 		return state;
 	}
+
+	public void setLinkphone(String linkphone) {
+		this.linkphone = linkphone;
+	}
+
+	public void setLinkww(String linkww) {
+		this.linkww = linkww;
+	}
+
+	public void setLoginName(String loginName) {
+		this.loginName = loginName;
+	}
+
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+
+	public void setOaOrg(Integer oaOrg) {
+		this.oaOrg = oaOrg;
+	}
+
+	public void setOaRole(Integer oaRole) {
+		this.oaRole = oaRole;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 	public void setState(String state) {
 		this.state = state;
 	}
-	
-@Override
+
+	@Override
 	public int hashCode() {
-		int hash = 0;
-		hash += (this.id != null ? this.id.hashCode() : 0);
-		return hash;
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((linkphone == null) ? 0 : linkphone.hashCode());
+		result = prime * result + ((linkww == null) ? 0 : linkww.hashCode());
+		result = prime * result + ((loginName == null) ? 0 : loginName.hashCode());
+		result = prime * result + ((memo == null) ? 0 : memo.hashCode());
+		result = prime * result + ((oaOrg == null) ? 0 : oaOrg.hashCode());
+		result = prime * result + ((oaRole == null) ? 0 : oaRole.hashCode());
+		result = prime * result + ((password == null) ? 0 : password.hashCode());
+		result = prime * result + ((state == null) ? 0 : state.hashCode());
+		return result;
 	}
 
-@Override
-	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are not set
-		if (!(object instanceof OaStaff)) {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		}
-		OaStaff other = (OaStaff) object;
-		if (this.id != other.id
-				&& (this.id == null || !this.id
-						.equals(other.id)))
+		if (getClass() != obj.getClass())
+			return false;
+		OaStaff other = (OaStaff) obj;
+		if (linkphone == null) {
+			if (other.linkphone != null)
+				return false;
+		} else if (!linkphone.equals(other.linkphone))
+			return false;
+		if (linkww == null) {
+			if (other.linkww != null)
+				return false;
+		} else if (!linkww.equals(other.linkww))
+			return false;
+		if (loginName == null) {
+			if (other.loginName != null)
+				return false;
+		} else if (!loginName.equals(other.loginName))
+			return false;
+		if (memo == null) {
+			if (other.memo != null)
+				return false;
+		} else if (!memo.equals(other.memo))
+			return false;
+		if (oaOrg == null) {
+			if (other.oaOrg != null)
+				return false;
+		} else if (!oaOrg.equals(other.oaOrg))
+			return false;
+		if (oaRole == null) {
+			if (other.oaRole != null)
+				return false;
+		} else if (!oaRole.equals(other.oaRole))
+			return false;
+		if (password == null) {
+			if (other.password != null)
+				return false;
+		} else if (!password.equals(other.password))
+			return false;
+		if (state == null) {
+			if (other.state != null)
+				return false;
+		} else if (!state.equals(other.state))
 			return false;
 		return true;
 	}
-@Override
-	 public String toString() {
-        return "OaStaff[id=" + id + "]";
-    }
-  }
+
+	@Override
+	public String toString() {
+		return "OaStaff [linkphone=" + linkphone + ", linkww=" + linkww + ", loginName=" + loginName + ", memo=" + memo + ", oaOrg=" + oaOrg + ", oaRole=" + oaRole + ", password=" + password + ", state=" + state + ", id=" + id + "]";
+	}
+	
+}
