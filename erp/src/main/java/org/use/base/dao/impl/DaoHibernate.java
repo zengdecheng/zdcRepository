@@ -18,7 +18,9 @@ import org.apache.oro.text.regex.MalformedPatternException;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.service.ServiceRegistry;
+import org.hibernate.service.ServiceRegistryBuilder;
 import org.use.base.FSPBean;
 import org.use.base.annotation.helper.AnnoHelper;
 import org.use.base.daoquery.DaoQueryByXml;
@@ -30,22 +32,20 @@ import org.use.base.utils.exception.TtcException;
 
 public abstract class DaoHibernate extends DaoEjb {
 	private final static String EQL_COUNT_REGULAR = "^\\s*select\\s*(\\w+[\\.\\w+]*)[,\\w+[\\.\\w+]*]*\\s*from(.*)";
-	
+
 	private static final SessionFactory sessionFactory;
 	private static Log log = LogFactory.getLog(DaoHibernate.class);
 
-
 	static {
 		try {
-
-			sessionFactory = new AnnotationConfiguration().configure()
-					.buildSessionFactory();
+			Configuration cfg = new Configuration().configure();
+			ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(cfg.getProperties()).buildServiceRegistry();
+			sessionFactory = cfg.buildSessionFactory(serviceRegistry);
 		} catch (Throwable ex) {
-			// Log exception!
 			throw new ExceptionInInitializerError(ex);
 		}
 	}
-	
+
 	private DataAccessManager dm;
 
 	private static DaoQueryByXml daoXml = new DaoQueryByXml(true);
@@ -57,37 +57,38 @@ public abstract class DaoHibernate extends DaoEjb {
 	public static SessionFactory getSessionFactory() throws HibernateException {
 		return sessionFactory;
 	}
+
 	public void emFlush() {
 		throw new RuntimeException("this method is n't come true");
 	}
+
 	public EntityTransaction getTransaction() {
-		//return getEntityManager().getTransaction();
+		// return getEntityManager().getTransaction();
 		throw new RuntimeException("this method is n't come true");
 	}
-	
 
 	public void commitTransaction() {
 		throw new RuntimeException("this method is n't come true");
 	}
 
 	public void delObject(Object o) {
-		//Object id = AnnoHelper.getAnnoContent(o, Id.class);
-		//Object obj = getSession().get(o.getClass(),(Integer)id);
-		//getEntityManager().remove(obj);
+		// Object id = AnnoHelper.getAnnoContent(o, Id.class);
+		// Object obj = getSession().get(o.getClass(),(Integer)id);
+		// getEntityManager().remove(obj);
 		org.hibernate.Session s = getSession();
-//		s.setFlushMode(FlushMode.MANUAL);
+		// s.setFlushMode(FlushMode.MANUAL);
 		org.hibernate.Transaction t = s.beginTransaction();
 		s.delete(o);
 		t.commit();
-//		s.clear();
-//		s.flush();
+		// s.clear();
+		// s.flush();
 	}
 
 	public Object getObject(Class clazz, Object id) {
-		//有问题
+		// 有问题
 		org.hibernate.Session s = getSession();
 		org.hibernate.Transaction t = s.beginTransaction();
-		Object object = s.get(clazz, (Serializable)id);
+		Object object = s.get(clazz, (Serializable) id);
 		t.commit();
 		return object;
 	}
@@ -105,26 +106,17 @@ public abstract class DaoHibernate extends DaoEjb {
 	}
 
 	public List getObjectsByEql(String eql, int begin, int size, List params) {
-		/*List objs = null;
-		Query query = getEntityManager().createQuery(eql);
-		if (params != null) {
-			for (int i = 0; i < params.size(); i++) {
-				query.setParameter(i + 1, params.get(i));
-			}
-		}
-		if (begin > -1 && size > -1) {
-			query.setMaxResults(size).setFirstResult(begin);
-		}
-		objs = query.getResultList();
-		return objs;*/
+		/*
+		 * List objs = null; Query query = getEntityManager().createQuery(eql); if (params != null) { for (int i = 0; i < params.size(); i++) { query.setParameter(i + 1, params.get(i)); } } if (begin > -1 && size > -1) { query.setMaxResults(size).setFirstResult(begin); } objs = query.getResultList(); return objs;
+		 */
 		List objs = null;
-//		org.hibernate.Query query = getSession().createQuery(eql);
+		// org.hibernate.Query query = getSession().createQuery(eql);
 		org.hibernate.Session s = getSession();
 		org.hibernate.Transaction t = s.beginTransaction();
 		org.hibernate.Query query = s.createQuery(eql);
 		if (params != null) {
 			for (int i = 0; i < params.size(); i++) {
-				//query.setParameter(i+1, params.get(i));
+				// query.setParameter(i+1, params.get(i));
 				query.setParameter(i, params.get(i));
 			}
 		}
@@ -148,11 +140,10 @@ public abstract class DaoHibernate extends DaoEjb {
 		return getObjectsBySql(sql, -1, -1, params, clz);
 	}
 
-	public List getObjectsBySql(String sql, int begin, int size, List params,
-			Class clz) {
+	public List getObjectsBySql(String sql, int begin, int size, List params, Class clz) {
 		List objs = null;
 		Query query = null;
-//		log.debug("fuying sql " + sql);
+		// log.debug("fuying sql " + sql);
 		log.warn("FSP: sql " + sql);
 		if (clz == null) {
 			// 采用自定义的lazydynamap的list发布到前台
@@ -193,15 +184,13 @@ public abstract class DaoHibernate extends DaoEjb {
 		}
 
 		/*
-		 * try { c = Class.forName(getVoName()); } catch (ClassNotFoundException
-		 * e) { e.printStackTrace(); throw new RuntimeException(e); }
+		 * try { c = Class.forName(getVoName()); } catch (ClassNotFoundException e) { e.printStackTrace(); throw new RuntimeException(e); }
 		 */
 		if (fsp.getMap().get(FSPBean.FSP_ORDER) != null) {
 			sql = sql + fsp.getMap().get(FSPBean.FSP_ORDER);
 		}
 		if (fsp.isPagination()) {
-			objs = getObjectsBySql(sql, fsp.getPageFirstResult(), fsp
-					.getPageSize(), params, null);
+			objs = getObjectsBySql(sql, fsp.getPageFirstResult(), fsp.getPageSize(), params, null);
 		} else {
 			objs = getObjectsBySql(sql, params, null);
 		}
@@ -214,34 +203,15 @@ public abstract class DaoHibernate extends DaoEjb {
 	}
 
 	public void saveObject(Object o) {
-		/*Object object = AnnoHelper.getAnnoContent(o, Id.class);
-		if (object != null) {
-			getEntityManager().merge(o);
-		} else {
-			getEntityManager().persist(o);
-		}*/
-		// modify by hongliang on 2009-12-22 下午02:34:26 comments:添加transaction，不然更新操作无效
 		org.hibernate.Session s = getSession();
-//		s.setFlushMode(FlushMode.MANUAL);
 		org.hibernate.Transaction t = s.beginTransaction();
-		
-		Object object = AnnoHelper.getAnnoContent(o, Id.class);
-		if (object != null) {
-			s.update(o);
-		} else {
-			s.save(o);
-		}
+		s.saveOrUpdate(o);
 		t.commit();
-//		s.clear();
-//		s.flush();
-		
 	}
+
 	public void saveObjectFlush(Object o) {
-		
-		// modify by hongliang on 2009-12-23 下午02:50:41 comments:修改为mysql+hibername使用
 		org.hibernate.Session s = getSession();
 		org.hibernate.Transaction t = s.beginTransaction();
-		
 		Object object = AnnoHelper.getAnnoContent(o, Id.class);
 		if (object != null) {
 			s.merge(o);
@@ -250,76 +220,68 @@ public abstract class DaoHibernate extends DaoEjb {
 		}
 		t.commit();
 		s.flush();
-		/*
-		Object object = AnnoHelper.getAnnoContent(o, Id.class);
-		if (object != null) {
-			getEntityManager().merge(o);
-		} else {
-			getEntityManager().persist(o);
-		}
-		getEntityManager().flush();
-		*/
 	}
-	public Object getOnlyObjectByEql(FSPBean fsp){
+
+	public Object getOnlyObjectByEql(FSPBean fsp) {
 		fsp.setPageFlag(FSPBean.ACTIVE_PAGINATION);
 		fsp.setPageNo(1);
 		fsp.setPageSize(1);
 		List list = getObjectsByEql(fsp);
-		if(list!= null && list.size() > 0){
+		if (list != null && list.size() > 0) {
 			return list.get(0);
-		}else{
+		} else {
 			return null;
 		}
 	}
-	public LazyDynaMap getOnlyObjectBySql(FSPBean fsp){
+
+	public LazyDynaMap getOnlyObjectBySql(FSPBean fsp) {
 		fsp.setPageFlag(FSPBean.ACTIVE_PAGINATION);
 		fsp.setPageNo(1);
 		fsp.setPageSize(1);
 		List<LazyDynaMap> list = getObjectsBySql(fsp);
-		if(list!= null && list.size() > 0){
+		if (list != null && list.size() > 0) {
 			return list.get(0);
-		}else{
+		} else {
 			return null;
 		}
-		
+
 	}
+
 	public List getObjectsByEql(FSPBean fsp) {
 		List objs = new ArrayList();
 		List params = new ArrayList();
 		String eql = "";
 		String caseSql = "";
-		
-		if(fsp.get(FSPBean.FSP_QUERY_BY_XML) != null){
-// begin--加入xml配置sql语句
+
+		if (fsp.get(FSPBean.FSP_QUERY_BY_XML) != null) {
+			// begin--加入xml配置sql语句
 			eql = daoXml.queryByXml(fsp, params, this);
-			
-// end--加入xml配置sql语句
-		}
-		else{
-		 eql = "select v from " + getVoName() + " v where 1=1 ";
-		 caseSql = parseFspBean2Eql(fsp, params);
+
+			// end--加入xml配置sql语句
+		} else {
+			eql = "select v from " + getVoName() + " v where 1=1 ";
+			caseSql = parseFspBean2Eql(fsp, params);
 		}
 		if (caseSql == null) {
 			caseSql = "";
 		}
 		eql = eql + caseSql;
-		if(fsp.getMap().get(FSPBean.FSP_ORDER) != null ){
+		if (fsp.getMap().get(FSPBean.FSP_ORDER) != null) {
 			eql = eql + fsp.getMap().get(FSPBean.FSP_ORDER);
-		}else{
+		} else {
 			try {
-				if(fsp.get(FSPBean.FSP_QUERY_BY_XML) == null){
+				if (fsp.get(FSPBean.FSP_QUERY_BY_XML) == null) {
 					Field field = AnnoHelper.getAnnoField(getVoClass().newInstance(), Id.class);
-						if(field != null ){
-							eql = eql + " order by "+field.getName()+" desc";
-						}
+					if (field != null) {
+						eql = eql + " order by " + field.getName() + " desc";
+					}
 				}
 			} catch (Exception e) {
 				throw new TtcException(e);
 			}
 		}
 		if (fsp.isPagination()) {
-			objs = getObjectsByEql(eql, fsp.getPageFirstResult(), fsp
-					.getPageSize(), params);
+			objs = getObjectsByEql(eql, fsp.getPageFirstResult(), fsp.getPageSize(), params);
 		} else {
 			objs = getObjectsByEql(eql, params);
 		}
@@ -337,19 +299,18 @@ public abstract class DaoHibernate extends DaoEjb {
 			String[] ss;
 			try {
 				ss = RegularUtils.getMatcherPart(EQL_COUNT_REGULAR, eql);
-				if(ss.length==3){
-					eql = "select count("+ss[1]+") from "+ss[2];
-				}else{
-					throw new TtcException("eql is not count:"+eql);
+				if (ss.length == 3) {
+					eql = "select count(" + ss[1] + ") from " + ss[2];
+				} else {
+					throw new TtcException("eql is not count:" + eql);
 				}
 			} catch (MalformedPatternException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				throw new TtcException(e);
 			}
-			
-			
-			//eql = "select count(r) from IN ( " + eql + " ) r";
+
+			// eql = "select count(r) from IN ( " + eql + " ) r";
 			// end--加入xml配置sql语句
 
 		} else {
@@ -363,11 +324,11 @@ public abstract class DaoHibernate extends DaoEjb {
 
 		org.hibernate.Session s = getSession();
 		org.hibernate.Transaction t = s.beginTransaction();
-//		org.hibernate.Query query = getSession().createQuery(eql);
+		// org.hibernate.Query query = getSession().createQuery(eql);
 		org.hibernate.Query query = s.createQuery(eql);
 		if (params != null) {
 			for (int i = 0; i < params.size(); i++) {
-				//query.setParameter(i + 1, params.get(i));
+				// query.setParameter(i + 1, params.get(i));
 				query.setParameter(i, params.get(i));
 			}
 		}
@@ -385,7 +346,7 @@ public abstract class DaoHibernate extends DaoEjb {
 			sql = daoXml.queryByXml(fsp, params, this);
 			// end--加入xml配置sql语句
 		} else {
-			sql = "select * from " +getTableName() + " where 1=1 ";
+			sql = "select * from " + getTableName() + " where 1=1 ";
 			caseSql = parseFspBean2Sql(fsp, params);
 			if (caseSql == null) {
 				caseSql = "";
@@ -397,8 +358,8 @@ public abstract class DaoHibernate extends DaoEjb {
 		sql = "select count(*) cnt from ( " + sql + " ) cnt_table_tmp";
 
 		List<LazyDynaMap> list = getDm().queryForList(sql, params, -1, -1);
-		if(list != null && list.size() >0 ){
-			return  (Long)list.get(0).get("cnt");
+		if (list != null && list.size() > 0) {
+			return (Long) list.get(0).get("cnt");
 		}
 		return new Long(0);
 	}
@@ -416,8 +377,7 @@ public abstract class DaoHibernate extends DaoEjb {
 			String value = (String) object;
 			return "%" + value + "%";
 		}
-		throw new RuntimeException(
-				"the value is not String type , is n't allowed use like %%");
+		throw new RuntimeException("the value is not String type , is n't allowed use like %%");
 	}
 
 	/**
@@ -447,8 +407,9 @@ public abstract class DaoHibernate extends DaoEjb {
 			if (valueObj == null || valueObj.equals("")) {
 				return null;
 			}
-			//适用于base类
-			if(getVoClass() == null) return valueObj;
+			// 适用于base类
+			if (getVoClass() == null)
+				return valueObj;
 			// 判断vo里面是否有此属性
 			boolean hasFiled = false;
 			for (Field declaredField : getVoClass().getDeclaredFields()) {
@@ -485,15 +446,13 @@ public abstract class DaoHibernate extends DaoEjb {
 				return valueObj;
 			}
 		} catch (Exception e) {
-			throw new RuntimeException("not convert the value:" + object
-					+ " to type:" + field);
+			throw new RuntimeException("not convert the value:" + object + " to type:" + field);
 		}
 	}
 
 	public DataAccessManager getDm() {
 		if (dm == null) {
-			dm = (DataAccessManager) BeanFactory
-					.getBean(PoolMySqlManager.class);
+			dm = (DataAccessManager) BeanFactory.getBean(PoolMySqlManager.class);
 		}
 		return dm;
 	}
