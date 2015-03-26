@@ -182,7 +182,7 @@ public class AutoStatisticsServlet extends HttpServlet {
 		fsp.set("time", sdf.format(cal.getTime()) );
 		List<LazyDynaMap> beans2 = stMgr.getObjectsBySql(fsp);
 		System.out.println( " order task total : " + beans1.size() + beans2.size());
-		Timestamp now = new Timestamp(System.currentTimeMillis());//当前时间
+		Timestamp now = new Timestamp(System.currentTimeMillis()/1000*1000);//当前时间
 		StringBuffer sb = new StringBuffer();
 		for(LazyDynaMap bean : beans2){//完成订单
 			//计算订单是否超时
@@ -262,7 +262,7 @@ public class AutoStatisticsServlet extends HttpServlet {
 					List<LazyDynaMap> stepList = stMgr.getObjectsBySql(fsp);
 					for( LazyDynaMap stepDetail : stepList){
 						Timestamp start = (Timestamp) stepDetail.get("wf_real_start");// 流程开始时间
-						Timestamp finish = new Timestamp(System.currentTimeMillis());// 流程未结束则使用当前时间
+						Timestamp finish = new Timestamp(System.currentTimeMillis()/1000*1000);// 流程未结束则使用当前时间
 						if (stepDetail.get("wf_real_finish") != null) {
 							finish = (Timestamp) stepDetail.get("wf_real_finish");// 流程结束时间
 						}
@@ -270,7 +270,7 @@ public class AutoStatisticsServlet extends HttpServlet {
 					}
 				}else{
 					Timestamp start = (Timestamp) bean.get("wf_real_start");// 流程开始时间
-					Timestamp finish = new Timestamp(System.currentTimeMillis());// 流程未结束则使用当前时间
+					Timestamp finish = new Timestamp(System.currentTimeMillis()/1000*1000);// 流程未结束则使用当前时间
 					if (bean.get("wf_real_finish") != null) {
 						finish = (Timestamp) bean.get("wf_real_finish");// 流程结束时间
 					}
@@ -312,7 +312,7 @@ public class AutoStatisticsServlet extends HttpServlet {
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, StDaoImpl.GET_OPERATOR_BY_SQL);
 		fsp.set("start", begin);
 		beans = getStMgr().getObjectsBySql(fsp);
-		Timestamp finish = new Timestamp(System.currentTimeMillis());// 流程未结束则使用当前时间
+		Timestamp finish = new Timestamp(System.currentTimeMillis()/1000*1000);// 流程未结束则使用当前时间
 		for(LazyDynaMap operator : beans ){
 			int total = 0;
 			int timeout = 0;
@@ -494,7 +494,7 @@ public class AutoStatisticsServlet extends HttpServlet {
 			dm.excuteStmt(ooSql);
 			dm.excuteStmt(oodSql);
 		}catch(Exception e){
-			System.out.println("大货订单复制失败！！！ copy failed ====" + System.currentTimeMillis() );
+			System.out.println("大货订单复制失败！！！ copy failed ====" + System.currentTimeMillis()/1000*1000 );
 			e.printStackTrace();
 		}
 		System.out.println(" copy complete !");
