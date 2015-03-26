@@ -22,7 +22,7 @@
 </head>
 <body>
 <div class="z_assign_list" id="form_search_div">
-	<form method="post" id="orderList">
+	<form method="post" id="orderList" action="/bx/orderList">
 		<table cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td width="65" height="40"><label class="">订单编号：</label></td>
@@ -90,6 +90,10 @@
             </tr>
 
             <tr>
+            	<%-- <td height="40"><label class="">建议投料日期：</label></td>
+                <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.feeding_time" value="${fsp.map.feeding_time}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.feeding_time1" value="${fsp.map.feeding_time1}" onFocus="WdatePicker({readOnly:true})" /></td>
+            	 --%>
+            
                 <td colspan="8" align="right"><input type="submit" value="查询" style="width: 60px;" />
                     <input id="reset_btn" type="button" value="重置" style="width: 60px;" />
                     
