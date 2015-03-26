@@ -355,9 +355,9 @@ public class POIUtilsEx {
 				debug("创建HSSFWorkbook...", debugMode);
 				wb = new HSSFWorkbook(input);
 			}
-			for(int i=0;i<wb.getNumberOfSheets();i++){
+/*			for(int i=0;i<wb.getNumberOfSheets();i++){
 				wb.setSheetHidden(i, 2);
-			}
+			}*/
 			if(fillInfo!=null && fillInfo.size()>0){
 				String sheetNames = (String) fillInfo.get("sheetNames");
 				if(StringUtils.isNotBlank(sheetNames)){
@@ -365,7 +365,7 @@ public class POIUtilsEx {
 					for(String sheetName: sheets){
 						debug("开始得到目标Sheet"+sheetName+"...",debugMode);
 						Sheet sheet = wb.getSheet(sheetName);
-						wb.setSheetHidden(wb.getSheetIndex(sheetName), 0);
+				/*		wb.setSheetHidden(wb.getSheetIndex(sheetName), 0);*/
 						if(sheet !=null){
 							Map<String,Object> fileInfo = (Map<String, Object>) fillInfo.get(sheetName+"FileInfo");
 							Map<String,Object> dynaRow = (Map<String, Object>) fillInfo.get(sheetName+"DynaRow");
