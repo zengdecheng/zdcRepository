@@ -1,71 +1,77 @@
 package com.xbd.oa.vo;
-import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
-@SuppressWarnings("serial") 
+import com.xbd.oa.vo.base.CommonBean;
+
+/**
+ * 订单数量表
+ * 
+ * @author fangwei
+ * @version 创建时间：2015年3月26日 下午5:48:34
+ */
 @Entity
 @Table(name = "oa_order_num")
-public class OaOrderNum implements Serializable {
-	@Id
-	@GeneratedValue
-	@Column(name = "id")
-	private Integer id;
-	
-	@Column(name = "num_info")
-	private String numInfo;
-	
-	@Column(name = "title")
-	private String title;
-	
+public class OaOrderNum extends CommonBean {
 
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	
+	private static final long serialVersionUID = 1L;
+
+	private String numInfo;
+
+	private String title;
+
+	@Column(name = "num_info",columnDefinition="varchar(1000)")
 	public String getNumInfo() {
 		return numInfo;
 	}
+
 	public void setNumInfo(String numInfo) {
 		this.numInfo = numInfo;
 	}
-	
+
+	@Column(name = "title",columnDefinition="varchar(200)")
 	public String getTitle() {
 		return title;
 	}
+
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	
-@Override
-	public int hashCode() {
-		int hash = 0;
-		hash += (this.id != null ? this.id.hashCode() : 0);
-		return hash;
+
+	public String toString() {
+		return "OaOrderNum [numInfo=" + numInfo + ", title=" + title + ", id=" + id + "]";
 	}
 
-@Override
-	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are not set
-		if (!(object instanceof OaOrderNum)) {
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((numInfo == null) ? 0 : numInfo.hashCode());
+		result = prime * result + ((title == null) ? 0 : title.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		}
-		OaOrderNum other = (OaOrderNum) object;
-		if (this.id != other.id
-				&& (this.id == null || !this.id
-						.equals(other.id)))
+		if (getClass() != obj.getClass())
+			return false;
+		OaOrderNum other = (OaOrderNum) obj;
+		if (numInfo == null) {
+			if (other.numInfo != null)
+				return false;
+		} else if (!numInfo.equals(other.numInfo))
+			return false;
+		if (title == null) {
+			if (other.title != null)
+				return false;
+		} else if (!title.equals(other.title))
 			return false;
 		return true;
 	}
-@Override
-	 public String toString() {
-        return "OaOrderNum[id=" + id + "]";
-    }
-  }
+}

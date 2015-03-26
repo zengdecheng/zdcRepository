@@ -1,281 +1,380 @@
 package com.xbd.oa.vo;
 
-import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
-@SuppressWarnings("serial")
+import com.xbd.oa.vo.base.CommonBean;
+
+/**
+ * 订单详情表
+ * @author fangwei
+ * @version 创建时间：2015年3月26日  下午5:00:01
+ */
 @Entity
 @Table(name = "oa_order_detail")
-public class OaOrderDetail implements Serializable {
-	@Column(name = "attachment")
-	private String attachment;
+public class OaOrderDetail extends CommonBean {
+	private static final long serialVersionUID = 1L;
 
-	@Column(name = "other_file")
-	private String otherFile;
+	private String attachment;				//excel附件
+	private String otherFile;				//其他附件
+	private String discrip;					//附件描述
+	private String content;					//备注
+	private Integer inx;					//顺序号
+	private Integer oaOrder;				//OaOrderId
+	private String operator;				//操作员
+	private String pic;						//图片
+	private String procId;					//流程ID
+	private String taskId;					//任务ID
+	private Timestamp wfPlanStart;			//计划开始时间
+	private Timestamp wfRealFinish;			//实际结束时间
+	private Timestamp wfRealStart;			//实际开始时间
+	private String wfStep;					//节点ID
+	private Long wfStepDuration;			//节点市场
+	private String wfStepName;				//节点name
+	private String smsRemind;				//短信提醒
+	private String smsTimeout;				//短信超时
+	private String worker;					//采购员
+	private Timestamp workTime;				//工作时间
+	private String backFlag;				//
 
-	@Column(name = "discrip")
-	private String discrip;
 
-	@Column(name = "content")
-	private String content;
-
-	@Id
-	@GeneratedValue
-	@Column(name = "id")
-	private Integer id;
-
-	@Column(name = "inx")
-	private Integer inx;
-
-	@Column(name = "oa_order")
-	private Integer oaOrder;
-
-	@Column(name = "operator")
-	private String operator;
-
-	@Column(name = "pic")
-	private String pic;
-
-	@Column(name = "proc_id")
-	private String procId;
-
-	@Column(name = "task_id")
-	private String taskId;
-
-	@Column(name = "wf_plan_start")
-	private java.sql.Timestamp wfPlanStart;
-
-	@Column(insertable = false, name = "wf_real_finish")
-	private java.sql.Timestamp wfRealFinish;
-
-	@Column(name = "wf_real_start")
-	private java.sql.Timestamp wfRealStart;
-
-	@Column(name = "wf_step")
-	private String wfStep;
-
-	@Column(name = "wf_step_duration")
-	private Long wfStepDuration;
-
-	@Column(name = "wf_step_name")
-	private String wfStepName;
-
-	@Column(name = "sms_remind")
-	private String smsRemind;
-
-	@Column(name = "sms_timeout")
-	private String smsTimeout;
-
-	@Column(name = "worker")
-	private String worker;
-
-	@Column(name = "work_time")
-	private java.sql.Timestamp workTime;
-
-	@Column(name = "back_flag")
-	private String backFlag;
-
+	@Column(name = "attachment",columnDefinition="varchar(250)")
 	public String getAttachment() {
 		return attachment;
+	}
+
+	@Column(name = "back_flag", columnDefinition = "CHAR(1)")
+	public String getBackFlag() {
+		return backFlag;
+	}
+
+	@Column(name = "content",columnDefinition="varchar(1000)")
+	public String getContent() {
+		return content;
+	}
+
+	@Column(name = "discrip",columnDefinition="varchar(250)")
+	public String getDiscrip() {
+		return discrip;
+	}
+
+	@Column(name = "inx")
+	public Integer getInx() {
+		return inx;
+	}
+
+	@Column(name = "oa_order")
+	public Integer getOaOrder() {
+		return oaOrder;
+	}
+
+	@Column(name = "operator",columnDefinition="varchar(50)")
+	public String getOperator() {
+		return operator;
+	}
+
+	@Column(name = "other_file",columnDefinition="varchar(200)")
+	public String getOtherFile() {
+		return otherFile;
+	}
+
+	@Column(name = "pic",columnDefinition="varchar(250)")
+	public String getPic() {
+		return pic;
+	}
+
+	@Column(name = "proc_id",columnDefinition="varchar(50)")
+	public String getProcId() {
+		return procId;
+	}
+
+	@Column(name = "sms_remind", columnDefinition = "CHAR(1)")
+	public String getSmsRemind() {
+		return smsRemind;
+	}
+
+	@Column(name = "sms_timeout", columnDefinition = "CHAR(1)")
+	public String getSmsTimeout() {
+		return smsTimeout;
+	}
+
+	@Column(name = "task_id",columnDefinition="varchar(50)")
+	public String getTaskId() {
+		return taskId;
+	}
+
+	@Column(name = "wf_plan_start",columnDefinition="timestamp null default null")
+	public Timestamp getWfPlanStart() {
+		return wfPlanStart;
+	}
+
+	@Column(name = "wf_real_finish",columnDefinition="timestamp null default null")
+	public Timestamp getWfRealFinish() {
+		return wfRealFinish;
+	}
+
+	@Column(name = "wf_real_start",columnDefinition="timestamp null default null")
+	public Timestamp getWfRealStart() {
+		return wfRealStart;
+	}
+
+	@Column(name = "wf_step",columnDefinition="varchar(50)")
+	public String getWfStep() {
+		return wfStep;
+	}
+
+	@Column(name = "wf_step_duration",columnDefinition="bigint")
+	public Long getWfStepDuration() {
+		return wfStepDuration;
+	}
+
+	@Column(name = "wf_step_name",columnDefinition="varchar(50)")
+	public String getWfStepName() {
+		return wfStepName;
+	}
+
+	@Column(name = "worker",columnDefinition="varchar(50)")
+	public String getWorker() {
+		return worker;
+	}
+
+	@Column(name = "work_time",columnDefinition="timestamp null default null")
+	public Timestamp getWorkTime() {
+		return workTime;
 	}
 
 	public void setAttachment(String attachment) {
 		this.attachment = attachment;
 	}
 
-	public String getContent() {
-		return content;
+	public void setBackFlag(String backFlag) {
+		this.backFlag = backFlag;
 	}
 
 	public void setContent(String content) {
 		this.content = content;
 	}
 
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public Integer getInx() {
-		return inx;
+	public void setDiscrip(String discrip) {
+		this.discrip = discrip;
 	}
 
 	public void setInx(Integer inx) {
 		this.inx = inx;
 	}
 
-	public Integer getOaOrder() {
-		return oaOrder;
-	}
-
 	public void setOaOrder(Integer oaOrder) {
 		this.oaOrder = oaOrder;
-	}
-
-	public String getOperator() {
-		return operator;
 	}
 
 	public void setOperator(String operator) {
 		this.operator = operator;
 	}
 
-	public String getPic() {
-		return pic;
+	public void setOtherFile(String otherFile) {
+		this.otherFile = otherFile;
 	}
 
 	public void setPic(String pic) {
 		this.pic = pic;
 	}
 
-	public String getProcId() {
-		return procId;
-	}
-
 	public void setProcId(String procId) {
 		this.procId = procId;
-	}
-
-	public String getTaskId() {
-		return taskId;
-	}
-
-	public void setTaskId(String taskId) {
-		this.taskId = taskId;
-	}
-
-	public java.sql.Timestamp getWfPlanStart() {
-		return wfPlanStart;
-	}
-
-	public void setWfPlanStart(java.sql.Timestamp wfPlanStart) {
-		this.wfPlanStart = wfPlanStart;
-	}
-
-	public java.sql.Timestamp getWfRealFinish() {
-		return wfRealFinish;
-	}
-
-	public void setWfRealFinish(java.sql.Timestamp wfRealFinish) {
-		this.wfRealFinish = wfRealFinish;
-	}
-
-	public String getOtherFile() {
-		return otherFile;
-	}
-
-	public void setOtherFile(String otherFile) {
-		this.otherFile = otherFile;
-	}
-
-	public java.sql.Timestamp getWfRealStart() {
-		return wfRealStart;
-	}
-
-	public void setWfRealStart(java.sql.Timestamp wfRealStart) {
-		this.wfRealStart = wfRealStart;
-	}
-
-	public String getWfStep() {
-		return wfStep;
-	}
-
-	public void setWfStep(String wfStep) {
-		this.wfStep = wfStep;
-	}
-
-	public Long getWfStepDuration() {
-		return wfStepDuration;
-	}
-
-	public void setWfStepDuration(Long wfStepDuration) {
-		this.wfStepDuration = wfStepDuration;
-	}
-
-	public String getWfStepName() {
-		return wfStepName;
-	}
-
-	public void setWfStepName(String wfStepName) {
-		this.wfStepName = wfStepName;
-	}
-
-	public String getSmsRemind() {
-		return smsRemind;
 	}
 
 	public void setSmsRemind(String smsRemind) {
 		this.smsRemind = smsRemind;
 	}
 
-	public String getSmsTimeout() {
-		return smsTimeout;
-	}
-
 	public void setSmsTimeout(String smsTimeout) {
 		this.smsTimeout = smsTimeout;
 	}
 
-	public String getDiscrip() {
-		return discrip;
+	public void setTaskId(String taskId) {
+		this.taskId = taskId;
 	}
 
-	public void setDiscrip(String discrip) {
-		this.discrip = discrip;
+	public void setWfPlanStart(java.sql.Timestamp wfPlanStart) {
+		this.wfPlanStart = wfPlanStart;
 	}
 
-	public String getWorker() {
-		return worker;
+	public void setWfRealFinish(java.sql.Timestamp wfRealFinish) {
+		this.wfRealFinish = wfRealFinish;
+	}
+
+	public void setWfRealStart(java.sql.Timestamp wfRealStart) {
+		this.wfRealStart = wfRealStart;
+	}
+
+	public void setWfStep(String wfStep) {
+		this.wfStep = wfStep;
+	}
+
+	public void setWfStepDuration(Long wfStepDuration) {
+		this.wfStepDuration = wfStepDuration;
+	}
+
+	public void setWfStepName(String wfStepName) {
+		this.wfStepName = wfStepName;
 	}
 
 	public void setWorker(String worker) {
 		this.worker = worker;
 	}
 
-	public java.sql.Timestamp getWorkTime() {
-		return workTime;
-	}
-
 	public void setWorkTime(java.sql.Timestamp workTime) {
 		this.workTime = workTime;
 	}
 
-	public String getBackFlag() {
-		return backFlag;
-	}
-
-	public void setBackFlag(String backFlag) {
-		this.backFlag = backFlag;
-	}
-
-	@Override
 	public int hashCode() {
-		int hash = 0;
-		hash += (this.id != null ? this.id.hashCode() : 0);
-		return hash;
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((attachment == null) ? 0 : attachment.hashCode());
+		result = prime * result + ((backFlag == null) ? 0 : backFlag.hashCode());
+		result = prime * result + ((content == null) ? 0 : content.hashCode());
+		result = prime * result + ((discrip == null) ? 0 : discrip.hashCode());
+		result = prime * result + ((inx == null) ? 0 : inx.hashCode());
+		result = prime * result + ((oaOrder == null) ? 0 : oaOrder.hashCode());
+		result = prime * result + ((operator == null) ? 0 : operator.hashCode());
+		result = prime * result + ((otherFile == null) ? 0 : otherFile.hashCode());
+		result = prime * result + ((pic == null) ? 0 : pic.hashCode());
+		result = prime * result + ((procId == null) ? 0 : procId.hashCode());
+		result = prime * result + ((smsRemind == null) ? 0 : smsRemind.hashCode());
+		result = prime * result + ((smsTimeout == null) ? 0 : smsTimeout.hashCode());
+		result = prime * result + ((taskId == null) ? 0 : taskId.hashCode());
+		result = prime * result + ((wfPlanStart == null) ? 0 : wfPlanStart.hashCode());
+		result = prime * result + ((wfRealFinish == null) ? 0 : wfRealFinish.hashCode());
+		result = prime * result + ((wfRealStart == null) ? 0 : wfRealStart.hashCode());
+		result = prime * result + ((wfStep == null) ? 0 : wfStep.hashCode());
+		result = prime * result + ((wfStepDuration == null) ? 0 : wfStepDuration.hashCode());
+		result = prime * result + ((wfStepName == null) ? 0 : wfStepName.hashCode());
+		result = prime * result + ((workTime == null) ? 0 : workTime.hashCode());
+		result = prime * result + ((worker == null) ? 0 : worker.hashCode());
+		return result;
 	}
 
-	@Override
-	public boolean equals(Object object) {
-		if (!(object instanceof OaOrderDetail)) {
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		}
-		OaOrderDetail other = (OaOrderDetail) object;
-		if (this.id != other.id && (this.id == null || !this.id.equals(other.id)))
+		if (getClass() != obj.getClass())
+			return false;
+		OaOrderDetail other = (OaOrderDetail) obj;
+		if (attachment == null) {
+			if (other.attachment != null)
+				return false;
+		} else if (!attachment.equals(other.attachment))
+			return false;
+		if (backFlag == null) {
+			if (other.backFlag != null)
+				return false;
+		} else if (!backFlag.equals(other.backFlag))
+			return false;
+		if (content == null) {
+			if (other.content != null)
+				return false;
+		} else if (!content.equals(other.content))
+			return false;
+		if (discrip == null) {
+			if (other.discrip != null)
+				return false;
+		} else if (!discrip.equals(other.discrip))
+			return false;
+		if (inx == null) {
+			if (other.inx != null)
+				return false;
+		} else if (!inx.equals(other.inx))
+			return false;
+		if (oaOrder == null) {
+			if (other.oaOrder != null)
+				return false;
+		} else if (!oaOrder.equals(other.oaOrder))
+			return false;
+		if (operator == null) {
+			if (other.operator != null)
+				return false;
+		} else if (!operator.equals(other.operator))
+			return false;
+		if (otherFile == null) {
+			if (other.otherFile != null)
+				return false;
+		} else if (!otherFile.equals(other.otherFile))
+			return false;
+		if (pic == null) {
+			if (other.pic != null)
+				return false;
+		} else if (!pic.equals(other.pic))
+			return false;
+		if (procId == null) {
+			if (other.procId != null)
+				return false;
+		} else if (!procId.equals(other.procId))
+			return false;
+		if (smsRemind == null) {
+			if (other.smsRemind != null)
+				return false;
+		} else if (!smsRemind.equals(other.smsRemind))
+			return false;
+		if (smsTimeout == null) {
+			if (other.smsTimeout != null)
+				return false;
+		} else if (!smsTimeout.equals(other.smsTimeout))
+			return false;
+		if (taskId == null) {
+			if (other.taskId != null)
+				return false;
+		} else if (!taskId.equals(other.taskId))
+			return false;
+		if (wfPlanStart == null) {
+			if (other.wfPlanStart != null)
+				return false;
+		} else if (!wfPlanStart.equals(other.wfPlanStart))
+			return false;
+		if (wfRealFinish == null) {
+			if (other.wfRealFinish != null)
+				return false;
+		} else if (!wfRealFinish.equals(other.wfRealFinish))
+			return false;
+		if (wfRealStart == null) {
+			if (other.wfRealStart != null)
+				return false;
+		} else if (!wfRealStart.equals(other.wfRealStart))
+			return false;
+		if (wfStep == null) {
+			if (other.wfStep != null)
+				return false;
+		} else if (!wfStep.equals(other.wfStep))
+			return false;
+		if (wfStepDuration == null) {
+			if (other.wfStepDuration != null)
+				return false;
+		} else if (!wfStepDuration.equals(other.wfStepDuration))
+			return false;
+		if (wfStepName == null) {
+			if (other.wfStepName != null)
+				return false;
+		} else if (!wfStepName.equals(other.wfStepName))
+			return false;
+		if (workTime == null) {
+			if (other.workTime != null)
+				return false;
+		} else if (!workTime.equals(other.workTime))
+			return false;
+		if (worker == null) {
+			if (other.worker != null)
+				return false;
+		} else if (!worker.equals(other.worker))
 			return false;
 		return true;
 	}
 
-	@Override
 	public String toString() {
-		return "OaOrderDetail[id=" + id + "]";
+		return "OaOrderDetail [attachment=" + attachment + ", otherFile=" + otherFile + ", discrip=" + discrip + ", content=" + content + ", inx=" + inx + ", oaOrder=" + oaOrder + ", operator=" + operator + ", pic=" + pic + ", procId=" + procId + ", taskId=" + taskId + ", wfPlanStart=" + wfPlanStart + ", wfRealFinish=" + wfRealFinish + ", wfRealStart=" + wfRealStart + ", wfStep=" + wfStep + ", wfStepDuration=" + wfStepDuration + ", wfStepName=" + wfStepName + ", smsRemind=" + smsRemind + ", smsTimeout=" + smsTimeout + ", worker=" + worker + ", workTime=" + workTime + ", backFlag=" + backFlag + ", id=" + id + "]";
 	}
+	
 }
