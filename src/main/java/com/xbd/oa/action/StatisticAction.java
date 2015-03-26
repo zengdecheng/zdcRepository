@@ -486,7 +486,7 @@
 //		for(LazyDynaMap bean : beans){
 //			Map m = new HashMap();
 //			Timestamp start = (Timestamp)bean.get("wf_real_start");
-//			Timestamp finish = bean.get("wf_real_finish") == null ? new Timestamp(System.currentTimeMillis()) : (Timestamp)bean.get("wf_real_finish");//完成时间
+//			Timestamp finish = bean.get("wf_real_finish") == null ? new Timestamp(System.currentTimeMillis()/1000*1000) : (Timestamp)bean.get("wf_real_finish");//完成时间
 //			long duration = (long)bean.get("wf_step_duration");
 //			long usedTime = BizUtil.getWorkTimeBetween(finish, start);
 //			long diff = duration - usedTime ;
@@ -529,7 +529,7 @@
 ////		}
 //		
 //		beans = manager.getObjectsBySql(fsp);
-//		Timestamp now = new Timestamp(System.currentTimeMillis());
+//		Timestamp now = new Timestamp(System.currentTimeMillis()/1000*1000);
 //		for(LazyDynaMap bean : beans){
 //			Map m = new HashMap();
 //			Timestamp start = (Timestamp)bean.get("wf_real_start");//节点开始时间
@@ -579,7 +579,7 @@
 ////			tempFsp.set("end_time", sdf1.format(cal.getTime()));
 ////		}
 //		beans = manager.getObjectsBySql(tempFsp);
-//		Timestamp now = new Timestamp(System.currentTimeMillis());
+//		Timestamp now = new Timestamp(System.currentTimeMillis()/1000*1000);
 //		for(LazyDynaMap bean : beans){
 //			Timestamp start = (Timestamp)bean.get("wf_real_start");//节点开始时间
 //			System.out.println(start);

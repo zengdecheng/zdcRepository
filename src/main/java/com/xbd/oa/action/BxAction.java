@@ -408,7 +408,7 @@ public class BxAction extends Action {
 		// 优先级计算
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Timestamp workTime = BizUtil.getOperatingTime(new Timestamp(new Date().getTime())); // 当前工作时间
+		Timestamp workTime = BizUtil.getOperatingTime(new Timestamp(System.currentTimeMillis()/1000*1000)); // 当前工作时间
 		Timestamp curTime = new Timestamp(sdf.parse(df.format(new Date())).getTime());
 		for (LazyDynaMap bean : beans) {
 			counts[0] += (Integer) bean.get("want_cnt");
@@ -484,7 +484,7 @@ public class BxAction extends Action {
 			for (int i = 0; i < superList.size(); i++) {
 				LazyDynaMap bean = superList.get(i);
 				long wsd = (long) bean.get("wf_step_duration");
-				long diff = wsd - BizUtil.getWorkTimeBetween(new Timestamp(System.currentTimeMillis()), (Timestamp) bean.get("wf_real_start"));
+				long diff = wsd - BizUtil.getWorkTimeBetween(new Timestamp(System.currentTimeMillis()/1000*1000), (Timestamp) bean.get("wf_real_start"));
 				if (diff < 0) {
 					// 超时
 					list.add(bean);
@@ -554,7 +554,7 @@ public class BxAction extends Action {
 		int j = 1;
 		for (LazyDynaMap lazyMap : superList) {
 			// bean = superList.get(i);
-			Long nowDate = new Date().getTime();
+			Long nowDate = System.currentTimeMillis()/1000*1000;
 			Long begin_time = ((Date) lazyMap.get("begin_time")).getTime();
 			Long except_finish = ((Date) lazyMap.get("except_finish")).getTime();
 
@@ -868,7 +868,7 @@ public class BxAction extends Action {
 
 			OutputStream os = Struts2Utils.getResponse().getOutputStream();
 			Struts2Utils.getResponse().setContentType("application/msexcel");// x-msdownload
-			Struts2Utils.getResponse().setHeader("Content-Disposition", "attachment;filename=ERP-REPORT-" + (System.currentTimeMillis() + "").substring(6, 13) + ".xlsx");
+			Struts2Utils.getResponse().setHeader("Content-Disposition", "attachment;filename=ERP-REPORT-" + (System.currentTimeMillis()/1000*1000 + "").substring(6, 13) + ".xlsx");
 			POIUtilsEx.processExcel(os, fillInfo);
 
 		} catch (Exception e) {
@@ -904,7 +904,7 @@ public class BxAction extends Action {
 		// 声明excel主体数据Map容器
 		Map<String, Object> sheet1FileInfo = new HashMap<String, Object>();
 
-		long newTime = BizUtil.getWorkTime(new Timestamp(new Date().getTime())).getTime();
+		long newTime = BizUtil.getWorkTime(new Timestamp(System.currentTimeMillis()/1000*1000)).getTime();
 		int cycle = 0;
 
 		List<LazyDynaMap> colorList = new ArrayList<LazyDynaMap>();
@@ -920,7 +920,7 @@ public class BxAction extends Action {
 			// 交期
 			Timestamp goodsTime = (Timestamp) beans.get(i).get("goods_time");
 			// 当前工作时间
-			Timestamp workTime = BizUtil.getOperatingTime(new Timestamp(new Date().getTime()));
+			Timestamp workTime = BizUtil.getOperatingTime(new Timestamp(System.currentTimeMillis()/1000*1000));
 			Integer cycle1 = (int) ((workTime.getTime() - goodsTime.getTime() + orderTime - 60 * 60 * 1000 * 24d) / orderTime * 100);
 
 			beans.get(i).set("data", cycle1);
@@ -979,7 +979,7 @@ public class BxAction extends Action {
 		int j = 1;
 		for (LazyDynaMap lazyMap : superList) {
 			// bean = superList.get(i);
-			// Long nowDate = new Date().getTime();
+			// Long nowDate = System.currentTimeMillis()/1000*1000;
 			// Long begin_time = ((Date) lazyMap.get("begin_time")).getTime();
 			// Long except_finish = ((Date) lazyMap.get("except_finish")).getTime();
 			Date beginTime = (Date) lazyMap.get("begin_time");
@@ -1139,7 +1139,7 @@ public class BxAction extends Action {
 
 			OutputStream os = Struts2Utils.getResponse().getOutputStream();
 			Struts2Utils.getResponse().setContentType("Application/msexcel");
-			Struts2Utils.getResponse().setHeader("Content-Disposition", "attachment;filename=ERP-REPORT-" + (System.currentTimeMillis() + "").substring(6, 13) + ".xlsx");
+			Struts2Utils.getResponse().setHeader("Content-Disposition", "attachment;filename=ERP-REPORT-" + (System.currentTimeMillis()/1000*1000 + "").substring(6, 13) + ".xlsx");
 			POIUtilsEx.processExcel(os, fillInfo);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1416,7 +1416,7 @@ public class BxAction extends Action {
 	 * @author lihouxuan
 	 */
 	public String addOrder() {
-		long t1 = System.currentTimeMillis();
+		long t1 = System.currentTimeMillis()/1000*1000;
 		System.out.println("开始时间：" + t1);
 		if (!"mr".equals(XbdBuffer.getOrgNameById(WebUtil.getCurrentLoginBx().getOaOrg()))) {
 			return "authError";
@@ -1437,7 +1437,7 @@ public class BxAction extends Action {
 			default:
 				throw new RuntimeException("根据订单类型:" + oaOrder.getType() + "没有找到相关工作流程定义");
 			}
-			Timestamp t = BizUtil.getOperatingTime(new Timestamp(System.currentTimeMillis()));
+			Timestamp t = BizUtil.getOperatingTime(new Timestamp(System.currentTimeMillis()/1000*1000));
 			oaOrder.setBeginTime(t);
 			oaOrder.setTimeRate(1.0f);// 不需要计算折算率
 			// oaOrder.setTimeRate(BizUtil.computeTimeRate(oaOrder.getBeginTime(),
@@ -1912,7 +1912,7 @@ public class BxAction extends Action {
 			Timestamp wf_real_finish = (Timestamp) map.get("wf_real_finish");
 			boolean flag = false;
 			if (null == wf_real_finish) {
-				wf_real_finish = new Timestamp(System.currentTimeMillis());
+				wf_real_finish = new Timestamp(System.currentTimeMillis()/1000*1000);
 				flag = true;
 			}
 			Timestamp wf_real_start = (Timestamp) map.get("wf_real_start");// 实际开始时间
@@ -2026,7 +2026,7 @@ public class BxAction extends Action {
 			Timestamp wf_real_finish = (Timestamp) map.get("wf_real_finish");
 			boolean flag = false;
 			if (null == wf_real_finish) {
-				wf_real_finish = new Timestamp(System.currentTimeMillis());
+				wf_real_finish = new Timestamp(System.currentTimeMillis()/1000*1000);
 				flag = true;
 			}
 			Timestamp wf_real_start = (Timestamp) map.get("wf_real_start");// 实际开始时间
@@ -2428,7 +2428,7 @@ public class BxAction extends Action {
 			Struts2Utils.renderText(count + "");
 			// int count = 0;
 			// fsp.set(FSPBean.FSP_QUERY_BY_XML,BxDaoImpl.GET_OA_ORDER_DETAIL_BY_SQL);
-			// fsp.set("time", new java.sql.Timestamp(new Date().getTime()));
+			// fsp.set("time", new java.sql.Timestamp(System.currentTimeMillis()/1000*1000));
 			// fsp.set("staff_name", staff.getLoginName());
 			// beans = getObjectsBySql(fsp);
 			// for( LazyDynaMap temp : beans){
@@ -4162,7 +4162,7 @@ public class BxAction extends Action {
 				/*
 				 * long diff = wsd - BizUtil.getWorkTimeBetween( tamp, (Timestamp)bean.get("wf_real_start"));
 				 */
-				long diff = wsd - BizUtil.getWorkTimeBetween(new Timestamp(System.currentTimeMillis()), (Timestamp) bean.get("wf_real_start"));
+				long diff = wsd - BizUtil.getWorkTimeBetween(new Timestamp(System.currentTimeMillis()/1000*1000), (Timestamp) bean.get("wf_real_start"));
 				if (diff < 0) {
 					// 超时
 					String step = bean.get("wf_step").toString();
@@ -4338,7 +4338,7 @@ public class BxAction extends Action {
 			for (int i = 0; i < beans.size(); i++) {
 				LazyDynaMap bean = beans.get(i);
 				long wsd = (long) bean.get("wf_step_duration");
-				long diff = wsd - BizUtil.getWorkTimeBetween(new Timestamp(System.currentTimeMillis()), (Timestamp) bean.get("wf_real_start"));
+				long diff = wsd - BizUtil.getWorkTimeBetween(new Timestamp(System.currentTimeMillis()/1000*1000), (Timestamp) bean.get("wf_real_start"));
 				if (diff < 0) {
 					// 超时
 					String step = bean.get("wf_step").toString();
@@ -4472,7 +4472,7 @@ public class BxAction extends Action {
 		Map<String, String> statisticsMap = new HashMap<String, String>();
 
 		// toc部分声明变量
-		long newTime = BizUtil.getWorkTime(new Timestamp(new Date().getTime())).getTime();
+		long newTime = BizUtil.getWorkTime(new Timestamp(System.currentTimeMillis()/1000*1000)).getTime();
 		// 统计部分声明变量
 		int count = 0;
 		int beansNums = beans.size();
@@ -4487,7 +4487,7 @@ public class BxAction extends Action {
 		// 当前工作时间
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Timestamp workTime = BizUtil.getOperatingTime(new Timestamp(new Date().getTime()));
+		Timestamp workTime = BizUtil.getOperatingTime(new Timestamp(System.currentTimeMillis()/1000*1000));
 		Timestamp curTime = new Timestamp(sdf.parse(df.format(new Date())).getTime());
 		for (int i = 0; i < beans.size(); i++) {
 			// float data = 0;
@@ -5698,7 +5698,7 @@ public class BxAction extends Action {
 		SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Timestamp goodsTime = oaOrder.getGoodsTime();
-		Timestamp curTime = new Timestamp(new Date().getTime());
+		Timestamp curTime = new Timestamp(System.currentTimeMillis()/1000*1000);
 		// 当前工作时间
 		Timestamp workTime = null;
 		if (("finish_999").equals(oaOrder.getWfStep())) {
@@ -5772,7 +5772,7 @@ public class BxAction extends Action {
 		Long wf_step_duration = (Long) bean.get("wf_step_duration"); //
 		// 此处单位毫秒
 		Timestamp plan_finish_date = BizUtil.culPlanDate(wf_plan_start, wf_step_duration);// 计划完成时间
-		Timestamp now = new Timestamp(System.currentTimeMillis());
+		Timestamp now = new Timestamp(System.currentTimeMillis()/1000*1000);
 		bean.set("wf_plan_finish", df.format(plan_finish_date));//
 		// 计划完成时间存到bean中
 
@@ -7053,7 +7053,7 @@ public class BxAction extends Action {
 				String tampDate = DateUtil.formatDate((Date) wf_real_finish);
 				oaOrderDetail.put("wf_real_finish", tampDate);// 实际完成时间
 			} else {
-				wf_real_finish = new Timestamp(System.currentTimeMillis());
+				wf_real_finish = new Timestamp(System.currentTimeMillis()/1000*1000);
 				oaOrderDetail.put("wf_real_finish", "");// 实际完成时间
 			}
 			String standardTime = DateUtil.longTohhmm(wf_step_duration);
@@ -7995,7 +7995,7 @@ public class BxAction extends Action {
 		String url = null;
 		List<Map<String, Object>> list = processOrder(oaOrder);
 		try {
-			String fileName = "ERP-Order-" + oaOrder.getSellOrderCode() + "-" + (System.currentTimeMillis() + "").substring(6, 13) + ".xlsx";
+			String fileName = "ERP-Order-" + oaOrder.getSellOrderCode() + "-" + (System.currentTimeMillis()/1000*1000 + "").substring(6, 13) + ".xlsx";
 			File file = new File(PathUtil.getOaFileDir());
 			if (!file.exists()) {
 				file.mkdirs();
@@ -8059,7 +8059,7 @@ public class BxAction extends Action {
 			// 通过模板生成excel
 			list = createOrderInfo(oaOrder);
 			Struts2Utils.getResponse().setHeader("Content-Disposition",
-					"attachment;filename=ERP-ORDER-" + oaOrder.getSellOrderCode() + "-" + (System.currentTimeMillis() + "").substring(6, 13) + ".xlsx");
+					"attachment;filename=ERP-ORDER-" + oaOrder.getSellOrderCode() + "-" + (System.currentTimeMillis()/1000*1000 + "").substring(6, 13) + ".xlsx");
 			POIUtils.processExcel(os, baseExcelFile, "2", list.get(0), list.get(1));
 		} else if (node.compareTo(nowNode) < 0) {
 			// 下载之前节点excel
@@ -8097,7 +8097,7 @@ public class BxAction extends Action {
 			baseExcelFile = PathUtil.url2Path(file);
 			list = processOrder(oaOrder);
 			Struts2Utils.getResponse().setHeader("Content-Disposition",
-					"attachment;filename=ERP-ORDER-" + oaOrder.getSellOrderCode() + "-" + (System.currentTimeMillis() + "").substring(6, 13) + ".xlsx");
+					"attachment;filename=ERP-ORDER-" + oaOrder.getSellOrderCode() + "-" + (System.currentTimeMillis()/1000*1000 + "").substring(6, 13) + ".xlsx");
 			// 根据上一个节点来填充excel
 			if ("c_ppc_factoryMsg_5".equals(oaOrder.getWfStep())) {
 				POIUtils.processExcel(os, baseExcelFile, list);
@@ -8693,7 +8693,7 @@ public class BxAction extends Action {
 			new File(uploadPath).mkdirs();
 		}
 		if (file != null) {
-			String fileName = System.currentTimeMillis() + fileFileName.substring(fileFileName.indexOf("."));
+			String fileName = System.currentTimeMillis()/1000*1000 + fileFileName.substring(fileFileName.indexOf("."));
 			FileUtils.copyFile(file, new File(uploadPath, fileName));
 			fileFileName = PathUtil.path2Url(uploadPath.concat(fileName));
 		}
@@ -9520,7 +9520,7 @@ public class BxAction extends Action {
 					oaOrder1.setStatus("1"); // 更改订单状态实现终止订单
 					oaOrder1.setTerminateMemo(oaOrder.getTerminateMemo()); // 终止订单原因
 					oaOrder1.setTerminateUser(WebUtil.getCurrentLoginBx().getLoginName()); // 终止订单操作人
-					oaOrder1.setTerminateTime(new Timestamp(System.currentTimeMillis())); // 终止订单时间
+					oaOrder1.setTerminateTime(new Timestamp(System.currentTimeMillis()/1000*1000)); // 终止订单时间
 					saveObject(oaOrder1);
 					resMap.put("code", 0);
 					resMap.put("msg", "终止订单成功");
@@ -10113,7 +10113,7 @@ public class BxAction extends Action {
 		try {
 			OutputStream os = Struts2Utils.getResponse().getOutputStream();
 			Struts2Utils.getResponse().setContentType("Application/msexcel");
-			Struts2Utils.getResponse().setHeader("Content-Disposition", "attachment;filename=ERP-REPORT-" + (System.currentTimeMillis() + "").substring(6, 13) + ".xlsx");
+			Struts2Utils.getResponse().setHeader("Content-Disposition", "attachment;filename=ERP-REPORT-" + (System.currentTimeMillis()/1000*1000 + "").substring(6, 13) + ".xlsx");
 			POIUtilsEx.processExcel(os, fillInfo);
 		} catch (Exception e) {
 			e.printStackTrace();
