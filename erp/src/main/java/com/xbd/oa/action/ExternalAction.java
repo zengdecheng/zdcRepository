@@ -159,7 +159,7 @@ public class ExternalAction extends Action {
 						Timestamp wf_real_finish = (Timestamp) bean.get("wf_real_finish");// 实际完成时间
 						boolean flag = false;
 						if (null == wf_real_finish) {
-							wf_real_finish = new Timestamp(System.currentTimeMillis());
+							wf_real_finish = new Timestamp(System.currentTimeMillis()/1000*1000);
 							flag = true;
 						}
 						Timestamp wf_real_start = (Timestamp) bean.get("wf_real_start");// 实际开始时间
@@ -336,7 +336,7 @@ public class ExternalAction extends Action {
 					processDifinitionKey = ConstantUtil.WORKFLOW_KEY_PROCESS3;
 					break;
 				}
-				Timestamp t = BizUtil.getOperatingTime(new Timestamp(System.currentTimeMillis()));
+				Timestamp t = BizUtil.getOperatingTime(new Timestamp(System.currentTimeMillis()/1000*1000));
 				oaOrder.setBeginTime(t);
 				oaOrder.setTimeRate(1.0f);
 				// 不需要计算折算率
