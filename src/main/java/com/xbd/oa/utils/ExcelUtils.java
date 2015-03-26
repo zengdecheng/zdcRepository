@@ -250,7 +250,7 @@ public class ExcelUtils {
     public static void main(String[] args ){
     	try {
 	    	ExcelUtils eu = new ExcelUtils();
-	    	File file = new File("c:/srv/upload/" + System.currentTimeMillis() + ".xls");
+	    	File file = new File("c:/srv/upload/" + System.currentTimeMillis()/1000*1000 + ".xls");
 	    	OutputStream os;
 			os = new FileOutputStream(file,true);
 			eu.createExcel(os);

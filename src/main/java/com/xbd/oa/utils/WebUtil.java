@@ -156,7 +156,7 @@ public final class WebUtil {
 		StringBuffer buf = new StringBuffer();
 		long diff = offset
 				- BizUtil.getWorkTimeBetween(
-						new Timestamp(System.currentTimeMillis()), timestamp);
+						new Timestamp(System.currentTimeMillis()/1000*1000), timestamp);
 		if (diff < 0) {
 			buf.append("超时");
 		} else {
@@ -178,7 +178,7 @@ public final class WebUtil {
         StringBuffer buf = new StringBuffer();
         long diff = offset
                 - BizUtil.getWorkTimeBetween(
-                new Timestamp(System.currentTimeMillis()), timestamp);
+                new Timestamp(System.currentTimeMillis()/1000*1000), timestamp);
         if (diff < 0) {
             buf.append("超时");
         } else {
@@ -192,7 +192,7 @@ public final class WebUtil {
 	public static String minusTime(Timestamp timestamp) {
 		StringBuffer buf = new StringBuffer();
 		long diff = BizUtil.getWorkTimeBetween(
-				new Timestamp(System.currentTimeMillis()), timestamp);
+				new Timestamp(System.currentTimeMillis()/1000*1000), timestamp);
 		if (diff > 0) {
 			buf.append("超时");
 		} else {
@@ -232,7 +232,7 @@ public final class WebUtil {
     public static String minusTimeExcel(Timestamp timestamp) {
         StringBuffer buf = new StringBuffer();
         long diff = BizUtil.getWorkTimeBetween(
-                new Timestamp(System.currentTimeMillis()), timestamp);
+                new Timestamp(System.currentTimeMillis()/1000*1000), timestamp);
         if (diff > 0) {
             buf.append("超时");
         } else {

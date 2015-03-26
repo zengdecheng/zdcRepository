@@ -155,7 +155,7 @@ public class BizUtil {
 	 * @param task
 	 */
 	private static void firstEditBizOrderAndDetail(String processInstanceId, String curUser, OaOrder oaOrder, Task task) {
-		Timestamp curTime = getOperatingTime(new Timestamp(System.currentTimeMillis()));// 当前时间
+		Timestamp curTime = getOperatingTime(new Timestamp(System.currentTimeMillis()/1000*1000));// 当前时间
 
 		// 1.加入新的流程详细节点
 		OaOrderDetail newOaOrderDetail = new OaOrderDetail();
@@ -210,7 +210,7 @@ public class BizUtil {
 	public static void editBizOrderAndDetail(Integer id, DelegateTask delegateTask, String assignment, String groupName, String description) {
 		// TODO Auto-generated method stub
 		// 1.上一个节点的完成时间
-		Timestamp curTime = getOperatingTime(new Timestamp(System.currentTimeMillis()));// 当前时间
+		Timestamp curTime = getOperatingTime(new Timestamp(System.currentTimeMillis()/1000*1000));// 当前时间
 		OaOrderDetail lastOaOrderDetail = (OaOrderDetail) getBxMgr().getObject(OaOrderDetail.class, id);// 上一个流程节点的订单详细vo
 		OaOrder oaOrder = (OaOrder) getBxMgr().getObject(OaOrder.class, lastOaOrderDetail.getOaOrder());// 主流程，订单vo
 		lastOaOrderDetail.setWfRealFinish(curTime);
@@ -220,10 +220,10 @@ public class BizUtil {
 			lastOaOrderDetail.setWorkTime(curTime);
 		}
 
-		// update by 张华 2015-03-11
+		// update by 张华 2015-03-11 
 		// 判断如果此流程流转属于退回上一步，那么设置此节点和之前节点back_flag字段为1
 		try {
-			int stepIndex1 = Integer.parseInt(lastOaOrderDetail.getWfStep().substring(lastOaOrderDetail.getWfStep().lastIndexOf("_") + 1, lastOaOrderDetail.getWfStep().length()));
+ 			int stepIndex1 = Integer.parseInt(lastOaOrderDetail.getWfStep().substring(lastOaOrderDetail.getWfStep().lastIndexOf("_") + 1, lastOaOrderDetail.getWfStep().length()));
 			int stepIndex2 = Integer.parseInt(delegateTask.getTaskDefinitionKey().substring(delegateTask.getTaskDefinitionKey().lastIndexOf("_") + 1, delegateTask.getTaskDefinitionKey().length()));
 			if (stepIndex1 > stepIndex2) {
 				lastOaOrderDetail.setBackFlag("1");
@@ -260,7 +260,7 @@ public class BizUtil {
 		// (2)本节点计划开始时间 。 = 订单开始时间+ 累计计划持续时间
 		// Timestamp planStart = new Timestamp(oaOrder.getBeginTime().getTime()
 		// + calculateDuration);
-		Timestamp planStart = culPlanDate(oaOrder.getBeginTime(), calculateDuration); // 本节点计划开始时间 。 = 订单开始时间+ 累计计划持续时间
+  		Timestamp planStart = culPlanDate(oaOrder.getBeginTime(), calculateDuration); // 本节点计划开始时间 。 = 订单开始时间+ 累计计划持续时间
 
 		// 2.加入新的流程详细节点
 		OaOrderDetail newOaOrderDetail = new OaOrderDetail();
@@ -595,7 +595,7 @@ public class BizUtil {
 	public static void lastEditBizOrderAndDetail(Integer id) {
 
 		// 1.上一个节点的完成时间
-		Timestamp curTime = getOperatingTime(new Timestamp(System.currentTimeMillis()));// 当前时间
+		Timestamp curTime = getOperatingTime(new Timestamp(System.currentTimeMillis()/1000*1000));// 当前时间
 		OaOrderDetail myOaOrderDetail = (OaOrderDetail) getBxMgr().getObject(OaOrderDetail.class, id);// 上一个流程节点的订单详细vo
 		OaOrder oaOrder = (OaOrder) getBxMgr().getObject(OaOrder.class, myOaOrderDetail.getOaOrder());// 主流程，订单vo
 		myOaOrderDetail.setWfRealFinish(curTime);
