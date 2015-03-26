@@ -5,7 +5,7 @@
 </head>
 <link rel="stylesheet" type="text/css" href="/css/form3.css" />
 <div class="z_assign_list" id="form_search_div">
-	<form method="post">
+	<form method="post" action="/bx/todo">
 		<input type="hidden" name="orderField" id="orderField"
 			value="${bean.map.orderField}" /> <input type="hidden"
 			name="orderType" id="orderType" value="${bean.map.orderType}" />
