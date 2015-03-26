@@ -1,81 +1,92 @@
 package com.xbd.oa.vo;
-import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
-@SuppressWarnings("serial") 
+import com.xbd.oa.vo.base.CommonBean;
+
+/**
+ * 组织机构表
+ * 
+ * @author fangwei
+ * @version 创建时间：2015年3月26日 下午5:50:51
+ */
 @Entity
 @Table(name = "oa_org")
-public class OaOrg implements Serializable {
-	@Column(name = "admin")
-	private String admin;
-	
-	@Id
-	@GeneratedValue
-	@Column(name = "id")
-	private Integer id;
-	
-	@Column(name = "name")
-	private String name;
-	
-	@Column(name = "pid")
-	private Integer pid;
-	
+public class OaOrg extends CommonBean {
+	private static final long serialVersionUID = 1L;
 
+	private String admin; // 管理员
+	private String name; // 组织名称
+	private Integer pid; // 父ID
+
+	@Column(name = "admin", columnDefinition = "varchar(50)")
 	public String getAdmin() {
 		return admin;
 	}
-	public void setAdmin(String admin) {
-		this.admin = admin;
-	}
-	
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	
+
+	@Column(name = "name", columnDefinition = "varchar(20)")
 	public String getName() {
 		return name;
 	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	
+
+	@Column(name = "pid")
 	public Integer getPid() {
 		return pid;
 	}
+
+	public void setAdmin(String admin) {
+		this.admin = admin;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public void setPid(Integer pid) {
 		this.pid = pid;
 	}
-	
-@Override
-	public int hashCode() {
-		int hash = 0;
-		hash += (this.id != null ? this.id.hashCode() : 0);
-		return hash;
+
+	@Override
+	public String toString() {
+		return "OaOrg [admin=" + admin + ", name=" + name + ", pid=" + pid + ", id=" + id + "]";
 	}
 
-@Override
-	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are not set
-		if (!(object instanceof OaOrg)) {
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((admin == null) ? 0 : admin.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((pid == null) ? 0 : pid.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		}
-		OaOrg other = (OaOrg) object;
-		if (this.id != other.id
-				&& (this.id == null || !this.id
-						.equals(other.id)))
+		if (getClass() != obj.getClass())
+			return false;
+		OaOrg other = (OaOrg) obj;
+		if (admin == null) {
+			if (other.admin != null)
+				return false;
+		} else if (!admin.equals(other.admin))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (pid == null) {
+			if (other.pid != null)
+				return false;
+		} else if (!pid.equals(other.pid))
 			return false;
 		return true;
 	}
-@Override
-	 public String toString() {
-        return "OaOrg[id=" + id + "]";
-    }
-  }
+}
