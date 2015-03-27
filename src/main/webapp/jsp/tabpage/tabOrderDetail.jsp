@@ -8,7 +8,8 @@
 	href="/css/order/processOrder.css" />
 <script type="text/javascript" src="/js/pub/jquery-1.9.0.min.js"></script>
 <script type="text/javascript" src="/js/pub/require_min.js"></script>
-<script language="javascript" type="text/javascript" src="${ctx}/js/pub/My97DatePicker/WdatePicker.js"></script>
+<script language="javascript" type="text/javascript"
+	src="${ctx}/js/pub/My97DatePicker/WdatePicker.js"></script>
 <script type="text/javascript">
 	requirejs.config({
 		baseUrl : "/js/bx/"
@@ -35,7 +36,8 @@
 							<option value="杭州">杭州</option>
 					</select></td>
 					<%-- <td width="260px">订单类型：<span id="orderType"></span></td> --%>
-					<td width="260px" id="t_repeatNum" style="display:none">重复打版次数：<span id="repeatNum"></span></td>
+					<td width="260px" id="t_repeatNum" style="display: none">重复打版次数：<span
+						id="repeatNum"></span></td>
 				</tr>
 				<tr height="28px;">
 					<td width="260px">关联订单： <input type="text" class="z_inp st"
@@ -55,7 +57,8 @@
 					</td>
 					<td width="260px">紧急订单：<input type="checkbox" id="isUrgent"
 						value="0" name="oaOrder.isUrgent">&nbsp;<font color="red">紧急</font></td>
-					<td width="260px" id="t_repeatReason" style="display:none">重复打版原因：<span id="repeatReason"></span></td>
+					<td width="260px" id="t_repeatReason" style="display: none">重复打版原因：<span
+						id="repeatReason"></span></td>
 				</tr>
 			</table>
 		</div>
@@ -71,35 +74,51 @@
 					<td width="260px">男/女款：<span id="styleType"></span></td>
 				</tr>
 				<tr height="28px;">
-					<td width="260px">一级品类：<select id="categorys" class="validate[required]" name="oaOrder.styleClass">
-						</select></td>
-					<td colspan="2">特殊工艺：
-						<input name="oaOrder.styleCraft" type="checkbox" value="印花"><span class="sp_style_craft" style="cursor:pointer">印花</span>&nbsp;&nbsp;
-						<input name="oaOrder.styleCraft" type="checkbox" value="绣花"><span class="sp_style_craft" style="cursor:pointer">绣花</span>&nbsp;&nbsp;
-						<input name="oaOrder.styleCraft" type="checkbox" value="订珠"><span class="sp_style_craft" style="cursor:pointer">订珠</span>&nbsp;&nbsp;
-						<input name="oaOrder.styleCraft" type="checkbox" value="缩折/打条"><span class="sp_style_craft" style="cursor:pointer">缩折/打条</span>&nbsp;&nbsp;
-						<input name="oaOrder.styleCraft" type="checkbox" value="打揽"><span class="sp_style_craft" style="cursor:pointer">打揽</span>&nbsp;&nbsp;
-						<input name="oaOrder.styleCraft" type="checkbox" value="洗水"><span class="sp_style_craft" style="cursor:pointer">洗水</span>&nbsp;&nbsp;&nbsp;&nbsp;
-						<input name="oaOrder.styleCraft" type="checkbox" value="其他"><span class="sp_style_craft" style="cursor:pointer">其他</span>&nbsp;&nbsp;
-						<input id="ck_last" name="oaOrder.styleCraft" type="checkbox" value="无"><span id="sp_none" class="sp_style_craft" style="cursor:pointer">无</span>
+					<td width="260px">建议投料日期：<span id="feeding_time"></span> <input
+						type="hidden" name="oaOrder.feedingTime" id="feeding_time_value" />
+						<input type="hidden" name="oaOrder.sellReadyTime"
+						id="sell_ready_time" /> <input type="hidden"
+						name="oaOrder.standardTime" id="standard_time" /> <input
+						type="hidden" name="oaOrder.craftTime" id="oaOrder_craftTime" />
+						<input type="hidden" name="oaOrder.PreproductDays"
+						id="preProductDays" />
+					</td>
+					<td colspan="2">特殊工艺： <input name="oaOrder.styleCraft"
+						type="checkbox" value="印花"><span class="sp_style_craft"
+						style="cursor: pointer">印花</span>&nbsp;&nbsp; <input
+						name="oaOrder.styleCraft" type="checkbox" value="绣花"><span
+						class="sp_style_craft" style="cursor: pointer">绣花</span>&nbsp;&nbsp;
+						<input name="oaOrder.styleCraft" type="checkbox" value="订珠"><span
+						class="sp_style_craft" style="cursor: pointer">订珠</span>&nbsp;&nbsp;
+						<input name="oaOrder.styleCraft" type="checkbox" value="缩折/打条"><span
+						class="sp_style_craft" style="cursor: pointer">缩折/打条</span>&nbsp;&nbsp;
+						<input name="oaOrder.styleCraft" type="checkbox" value="打揽"><span
+						class="sp_style_craft" style="cursor: pointer">打揽</span>&nbsp;&nbsp;
+						<input name="oaOrder.styleCraft" type="checkbox" value="洗水"><span
+						class="sp_style_craft" style="cursor: pointer">洗水</span>&nbsp;&nbsp;&nbsp;&nbsp;
+						<input name="oaOrder.styleCraft" type="checkbox" value="其他"><span
+						class="sp_style_craft" style="cursor: pointer">其他</span>&nbsp;&nbsp;
+						<input id="ck_last" name="oaOrder.styleCraft" type="checkbox"
+						value="无"><span id="sp_none" class="sp_style_craft"
+						style="cursor: pointer">无</span>
 					</td>
 				</tr>
 				<tr height="28px;">
 					<td width="260px">
-						<div style="padding: 25 0 25 0;">
-							建议投料日期：<span id="feeding_time"></span>
-							<input type="hidden" name="oaOrder.feedingTime" id="feeding_time_value"/>
-							<input type="hidden" name="oaOrder.sellReadyTime" id="sell_ready_time"/>
-							<input type="hidden" name="oaOrder.standardTime" id="standard_time"/>
-							<input type="hidden" name="oaOrder.craftTime" id="oaOrder_craftTime"/>
-							<input type="hidden" name="oaOrder.PreproductDays" id="preProductDays"/>
+						<div style="padding: 16 0 16 0;" id="isPreProductDiv">
+							交货日期：<span id="goods_time"></span>
 						</div>
-						<div style="padding: 25 0 25 0;" id="isPreProductDiv">
-							<span style="color: red;">*</span>产前版完成日期：<input type="text" id="isPreproduct"
-								class="z_inp2 createTime" style="width: 150px;" name="oaOrder.preVersionDate"
+						<div style="padding: 16 0 16 0;" id="isPreProductDiv">
+							<span style="color: red;">*</span>产前版完成日期：<input type="text"
+								id="isPreproduct" class="z_inp2 createTime"
+								style="width: 150px;" name="oaOrder.preVersionDate"
 								onFocus="WdatePicker({readOnly:true,dateFmt: 'yyyy-MM-dd 18:00:00'})" />
 						</div>
-						<div style="padding: 25 0 25 0;">
+						<div style="padding: 16 0 16 0;">
+							<span style="color: red;">*</span>一级品类：<select id="categorys"
+								class="validate[required]" name="oaOrder.styleClass"></select>
+						</div>
+						<div style="padding: 16 0 16 0;">
 							<span style="color: red;">*</span>二级品类：<select id="clothClass"
 								name="oaOrder.clothClass" style="width: 140px;">
 								<s:iterator
@@ -109,11 +128,12 @@
 								</s:iterator>
 							</select>
 						</div>
-						<div style="padding: 25 0 25 0;">
+						<div style="padding: 16 0 16 0;">
 							<span style="color: red;">*</span>样板码数：<input id="sampleSize"
 								type="text" style="width: 140px;" class="validate[required]"
 								name="oaOrder.sampleSize" maxlength="10">
-						</div></td>
+						</div>
+					</td>
 					<td width="260px"><img alt="正面图" src="" id="picFront"
 						width="240" height="240"></td>
 					<td width="260px"><img alt="背面图" src="" id="picBack"
@@ -166,7 +186,7 @@
 									<div
 										style="height: 100px; width: 80%; float: right; border: 1px solid rgb(205, 205, 205);">
 										<p
-											style="padding: 0 0 0 10px; margin: 0; background-color: yellow; line-height: 22px; display:none;"
+											style="padding: 0 0 0 10px; margin: 0; background-color: yellow; line-height: 22px; display: none;"
 											id="detailSchedule">还未流入</p>
 										<ul style="margin: 0; padding: 0 0 0 10px; line-height: 19px;">
 											<li id="detailRealStart">流入时间:</li>
@@ -179,7 +199,7 @@
 												<div id="detailRealFinishColor"
 													style="color: #fff; margin-bottom: 1px; width: 45px; text-align: center; display: inline-block;"></div>
 											</li>
-											<li style="display:none;" id="detailDuration">标准工时:</li>
+											<li style="display: none;" id="detailDuration">标准工时:</li>
 											<li id="detailRealTime">实际耗时:</li>
 										</ul>
 									</div>

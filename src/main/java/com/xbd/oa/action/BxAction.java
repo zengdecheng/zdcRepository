@@ -5619,6 +5619,7 @@ public class BxAction extends Action {
 		bean.set("sell_ready_time", oaOrder.getSellReadyTime());
 		bean.set("craft_time", oaOrder.getCraftTime());
 		bean.set("standard_time", oaOrder.getStandardTime());
+		bean.set("goods_time", oaOrder.getGoodsTime());
 		bean.set("relatedOrderDetailId", "");
 		if (null != oaOrder.getRelatedOrderId() && oaOrder.getRelatedOrderId() > 0) { // 关联订单存在，则查询关联订单最新detail的Id
 			// FSPBean fspBean = new FSPBean();

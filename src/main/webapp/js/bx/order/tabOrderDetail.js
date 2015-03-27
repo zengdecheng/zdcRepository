@@ -193,6 +193,7 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 				$("#standard_time").val($(window.parent.document).find("#standard_time").val());
 				$("#oaOrder_craftTime").val($(window.parent.document).find("#craft_time").val());
 				$("#preProductDays").val($(window.parent.document).find("#preProductDays").val());
+				$("#goods_time").html($(window.parent.document).find("#goods_time").val());
 				
 				//判断订单类型
 				if("样衣打版"==$(window.parent.document).find("#orderType").val()){
