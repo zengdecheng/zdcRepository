@@ -91,6 +91,7 @@
 	<input type="hidden" id="sell_ready_time" value="${bean.map.sell_ready_time }">
 	<input type="hidden" id="craft_time" value="${bean.map.craft_time }">
 	<input type="hidden" id="standard_time" value="${bean.map.standard_time }">
+	<input type="hidden" id="goods_time" value="${bean.map.goods_time }">
 	<input type="hidden" id="orderDetailId"
 		value="${bean.map.orderDetailId }">
 	<input type="hidden" id="wfStepIndex" value="${bean.map.wfStepIndex }">
