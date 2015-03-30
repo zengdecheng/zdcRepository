@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context>
+   	<Resource name="jdbc/mysql" 
+	factory="com.alibaba.druid.pool.DruidDataSourceFactory" 
+	auth="Container" 
+	type="javax.sql.DataSource" 
+	driverClassName="com.mysql.jdbc.Driver" 
+	url="jdbc:mysql://localhost:3306/erp?characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull" 
+	username="root" password="" 
+	maxActive="50" maxWait="10000" 
+	removeabandoned="true" initialSize="1" 
+	minIdle="1" removeabandonedtimeout="60" 
+	logabandoned="false" filters="stat" />
+</Context>

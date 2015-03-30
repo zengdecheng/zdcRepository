@@ -1,0 +1,100 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context" xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:ehcache="http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+  http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+  http://www.springframework.org/schema/aop 
+  http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+  http://www.springframework.org/schema/context 
+  http://www.springframework.org/schema/context/spring-context-4.1.xsd
+  http://www.springframework.org/schema/tx 
+  http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+  http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring   
+  http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring/ehcache-spring-1.1.xsd 
+  http://cxf.apache.org/jaxws   
+  http://cxf.apache.org/schemas/jaxws.xsd">
+
+	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName">
+			<value>java:comp/env/jdbc/mysql</value>
+		</property>
+	</bean>
+	
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.format_sql">false</prop>
+				<prop key="hibernate.enable_lazy_load_no_trans">true</prop>
+			</props>
+		</property>
+		<property name="packagesToScan">
+			<list>
+				<value>com.xbd.oa.vo</value>
+			</list>
+		</property>
+	</bean>
+
+	<context:annotation-config />
+	<context:component-scan base-package="com.xbd.erp,com.xbd.oa" />
+	
+	
+	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<!-- 配置事务异常封装 -->
+	<bean id="persistenceExceptionTranslationPostProcessor" class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+
+	<bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">
+		<property name="dataSource" ref="dataSource" />
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="databaseSchemaUpdate" value="false" />
+		<property name="jobExecutorActivate" value="false" />
+		<property name="mailServerHost" value="mail.my-corp.com"/>
+		<property name="mailServerPort" value="5025"/>
+	</bean>
+	<bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean" destroy-method="destroy">
+		<property name="processEngineConfiguration" ref="processEngineConfiguration" />
+	</bean>
+	
+	<!-- 配置事务传播特性 -->
+	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+           <!--  <tx:method name="insert*" propagation="REQUIRED" read-only="false"/>  
+            <tx:method name="update*" propagation="REQUIRED" read-only="false"/>  
+			<tx:method name="create*" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="save*" propagation="REQUIRED" read-only="false"/>  
+            <tx:method name="add*" propagation="REQUIRED" read-only="false"/>  
+            <tx:method name="new*" propagation="REQUIRED" read-only="false"/>  
+            <tx:method name="put*" propagation="REQUIRED" read-only="false"/>  
+
+			<tx:method name="merge*" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="edit*" propagation="REQUIRED" read-only="false"/>  
+            <tx:method name="change*" propagation="REQUIRED" read-only="false"/>  
+            <tx:method name="set*" propagation="REQUIRED" read-only="false"/>  
+
+            <tx:method name="remove*" propagation="REQUIRED" read-only="false"/>  
+            <tx:method name="del*" propagation="REQUIRED" read-only="false"/>  
+			<tx:method name="drop*" propagation="REQUIRED" read-only="false"/>
+
+            <tx:method name="get*" propagation="REQUIRED" read-only="true" />  
+            <tx:method name="find*" propagation="REQUIRED" read-only="true" />  
+            <tx:method name="count*" propagation="REQUIRED" read-only="true" />  
+            <tx:method name="list*" propagation="REQUIRED" read-only="true" />  
+            <tx:method name="load*" propagation="REQUIRED" read-only="true" />   -->
+            <tx:method name="*"  propagation="REQUIRED" read-only="false" /> 
+		</tx:attributes>
+	</tx:advice>
+
+	<!-- 配置哪些类的哪些方法参与事务 -->
+	<aop:config expose-proxy="true">
+		<aop:advisor pointcut="execution(* com.xbd.erp.base.dao.impl.BaseDaoImpl.*(..))" advice-ref="transactionAdvice" />
+		<aop:advisor pointcut="execution(* com.xbd.erp.*..service.*.*(..))" advice-ref="transactionAdvice" />
+	</aop:config>
+	
+	<aop:aspectj-autoproxy/>
+
+</beans>

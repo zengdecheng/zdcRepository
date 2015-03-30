@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<query>
+	<!-- 查询订单列表 -->
+	<function name="list_oa_order_by_sql" type="sql"
+		sql="select oo.id,ood.id oa_order_detail,oo.cus_code,oo.style_code,oo.is_urgent,oo.wf_step_name,
+			oo.wf_real_start,oo.wf_plan_start,oo.except_finish,oo.type,oo.wf_step_duration,oo.city,oo.operator,
+			oo.wf_step,oo.end_time from oa_order oo ,oa_order_detail ood
+			where oo.id = ood.oa_order and oo.oa_order_detail = ood.id and oo.status = '0' ${case}1">
+		<parser index="1">
+			<param fspname="cus_code" sqlname="oo.cus_code"></param>
+		</parser>
+	</function>
+
+	<!-- 获取订单详情 -->
+	<function name="list_oa_order_detail_by_sql" type="sql"
+		sql="select * from oa_order_detail where 1=1 ${case}1">
+		<parser index="1">
+			<param fspname="oa_order" sqlname="oa_order"></param>
+		</parser>
+	</function>
+	<!--根据crm的订单编号查询oa_order中是否有该订单 by lanyu  -->
+	<function name="get_oa_order_by_sell_order_code" type="sql"
+		sql="select id,sell_order_id,sell_order_code from oa_order where 1=1 ${case}1">
+		<parser index="1">
+			<param fspname="sellOrderId" sqlname="sell_order_id"></param>
+		</parser>
+	</function>
+	<!-- crm获取oa品类 -->
+	<function name="get_category_by_sql" type="sql" sql="select name,code,status from oa_category"></function>
+</query>
