@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 import com.xbd.erp.base.dao.BaseDao;
 import com.xbd.erp.base.service.BaseService;
 
-@SuppressWarnings("unchecked")
 public class BaseServiceImpl<T> implements BaseService<T> {
 
 	public static final Logger logger = Logger.getLogger(BaseServiceImpl.class);
