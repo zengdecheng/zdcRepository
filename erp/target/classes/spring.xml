@@ -17,7 +17,7 @@
 			<value>java:comp/env/jdbc/mysql</value>
 		</property>
 	</bean>
-	
+
 	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="hibernateProperties">
@@ -39,8 +39,17 @@
 
 	<context:annotation-config />
 	<context:component-scan base-package="com.xbd.erp,com.xbd.oa" />
-	
-	
+
+<!-- 	<bean id="springSessionInterceptor" class="com.xbd.oa.interceptor.LoginInterceptor"/>
+	<bean id="autoPorxyFactoryBean" class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+		<property name="interceptorNames">
+			<list>
+				<value>springLoginInterceptor</value>
+			</list>
+		</property>
+	</bean> -->
+
+
 	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
@@ -53,39 +62,19 @@
 		<property name="transactionManager" ref="transactionManager" />
 		<property name="databaseSchemaUpdate" value="false" />
 		<property name="jobExecutorActivate" value="false" />
-		<property name="mailServerHost" value="mail.my-corp.com"/>
-		<property name="mailServerPort" value="5025"/>
+		<property name="mailServerHost" value="mail.my-corp.com" />
+		<property name="mailServerPort" value="5025" />
 	</bean>
 	<bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean" destroy-method="destroy">
 		<property name="processEngineConfiguration" ref="processEngineConfiguration" />
 	</bean>
-	
+
 	<!-- 配置事务传播特性 -->
 	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
 		<tx:attributes>
-           <!--  <tx:method name="insert*" propagation="REQUIRED" read-only="false"/>  
-            <tx:method name="update*" propagation="REQUIRED" read-only="false"/>  
-			<tx:method name="create*" propagation="REQUIRED" read-only="false"/>
-            <tx:method name="save*" propagation="REQUIRED" read-only="false"/>  
-            <tx:method name="add*" propagation="REQUIRED" read-only="false"/>  
-            <tx:method name="new*" propagation="REQUIRED" read-only="false"/>  
-            <tx:method name="put*" propagation="REQUIRED" read-only="false"/>  
-
-			<tx:method name="merge*" propagation="REQUIRED" read-only="false"/>
-            <tx:method name="edit*" propagation="REQUIRED" read-only="false"/>  
-            <tx:method name="change*" propagation="REQUIRED" read-only="false"/>  
-            <tx:method name="set*" propagation="REQUIRED" read-only="false"/>  
-
-            <tx:method name="remove*" propagation="REQUIRED" read-only="false"/>  
-            <tx:method name="del*" propagation="REQUIRED" read-only="false"/>  
-			<tx:method name="drop*" propagation="REQUIRED" read-only="false"/>
-
-            <tx:method name="get*" propagation="REQUIRED" read-only="true" />  
-            <tx:method name="find*" propagation="REQUIRED" read-only="true" />  
-            <tx:method name="count*" propagation="REQUIRED" read-only="true" />  
-            <tx:method name="list*" propagation="REQUIRED" read-only="true" />  
-            <tx:method name="load*" propagation="REQUIRED" read-only="true" />   -->
-            <tx:method name="*"  propagation="REQUIRED" read-only="false" /> 
+			<!-- <tx:method name="insert*" propagation="REQUIRED" read-only="false"/> <tx:method name="update*" propagation="REQUIRED" read-only="false"/> <tx:method name="create*" propagation="REQUIRED" read-only="false"/> <tx:method name="save*" propagation="REQUIRED" read-only="false"/> <tx:method name="add*" propagation="REQUIRED" read-only="false"/> <tx:method name="new*" propagation="REQUIRED" read-only="false"/> <tx:method name="put*" propagation="REQUIRED" read-only="false"/> <tx:method name="merge*" propagation="REQUIRED" read-only="false"/> <tx:method name="edit*" propagation="REQUIRED" read-only="false"/> <tx:method name="change*" propagation="REQUIRED" read-only="false"/> <tx:method name="set*" propagation="REQUIRED" read-only="false"/> <tx:method name="remove*" propagation="REQUIRED" read-only="false"/> <tx:method name="del*" propagation="REQUIRED" read-only="false"/> <tx:method name="drop*" propagation="REQUIRED" read-only="false"/> <tx:method name="get*" propagation="REQUIRED" read-only="true" 
+				/> <tx:method name="find*" propagation="REQUIRED" read-only="true" /> <tx:method name="count*" propagation="REQUIRED" read-only="true" /> <tx:method name="list*" propagation="REQUIRED" read-only="true" /> <tx:method name="load*" propagation="REQUIRED" read-only="true" /> -->
+			<tx:method name="*" propagation="REQUIRED" read-only="false" />
 		</tx:attributes>
 	</tx:advice>
 
@@ -94,7 +83,7 @@
 		<aop:advisor pointcut="execution(* com.xbd.erp.base.dao.impl.BaseDaoImpl.*(..))" advice-ref="transactionAdvice" />
 		<aop:advisor pointcut="execution(* com.xbd.erp.*..service.*.*(..))" advice-ref="transactionAdvice" />
 	</aop:config>
-	
-	<aop:aspectj-autoproxy/>
+
+	<aop:aspectj-autoproxy />
 
 </beans>
