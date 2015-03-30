@@ -15,7 +15,7 @@
 		<jstl.version>1.2.1</jstl.version>
 		<spring.version>4.1.5.RELEASE</spring.version>
 		<aspectj.version>1.8.4</aspectj.version>
-		<hibernate.version>4.1.5.Final</hibernate.version>
+		<hibernate.version>4.3.8.Final</hibernate.version>
 		<druid.version>1.0.13</druid.version>
 		<struts2.version>2.3.16.3</struts2.version>
 		<mysql.version>3.1.11</mysql.version>
@@ -94,18 +94,16 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-<!-- <dependency>
-  <groupId>org.hibernate</groupId>
-  <artifactId>hibernate-core</artifactId>
-  <version>4.1.5.Final</version>
-  <classifier>sources</classifier>
-</dependency> -->
 		<dependency>
 			<groupId>org.apache.struts</groupId>
 			<artifactId>struts2-convention-plugin</artifactId>
 			<version>${struts2.version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.apache.struts</groupId>
+			<artifactId>struts2-spring-plugin</artifactId>
+			<version>${struts2.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.struts</groupId>
 			<artifactId>struts2-config-browser-plugin</artifactId>
@@ -133,6 +131,11 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
@@ -170,6 +173,17 @@
 			<artifactId>spring-tx</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>${aspectj.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>${aspectj.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>com.belerweb</groupId>
 			<artifactId>pinyin4j</artifactId>
@@ -190,6 +204,12 @@
 			<artifactId>activiti-engine</artifactId>
 			<version>${activiti.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-spring</artifactId>
+			<version>${activiti.version}</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>antlr</groupId>
 			<artifactId>antlr</artifactId>
@@ -270,11 +290,11 @@
 			<version>2.3</version>
 		</dependency>
 
-		<dependency>
+<!-- 		<dependency>
 			<groupId>com.xbd</groupId>
 			<artifactId>yutil</artifactId>
 			<version>1.0</version>
-		</dependency>
+		</dependency> -->
 	</dependencies>
 
 	<build>
@@ -309,6 +329,12 @@
 					<source>${java.version}</source>
 					<target>${java.version}</target>
 				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.18</version>
 			</plugin>
 
 			<plugin>

@@ -10,28 +10,36 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.apache.log4j.Logger;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
-import org.use.base.FSPBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.xbd.oa.action.BaseAction;
+import com.xbd.erp.base.action.Action;
+import com.xbd.erp.base.dao.BaseDao;
+import com.xbd.erp.base.pojo.sys.FSPBean;
 import com.xbd.oa.dao.impl.BxDaoImpl;
 import com.xbd.oa.vo.OaCategory;
 import com.xbd.oa.vo.OaOrder;
 import com.xbd.oa.vo.OaOrderDetail;
 
 @Results({ @Result(name = "page4list", type = "redirect", location = "category/list") })
-public class CategoryAction extends BaseAction {
+public class CategoryAction extends Action {
 
 	private static final long serialVersionUID = 1302383805516363265L;
-
 	public static final Logger logger = Logger.getLogger(CategoryAction.class);
 
-	/**
-	 * 品类对象
-	 */
 	private OaCategory oaCategory;
+	private BaseDao<?> baseDao;
+	public BaseDao<?> getBaseDao() {
+		return baseDao;
+	}
+	@Resource(name="baseDaoImpl")
+	public void setBaseDao(BaseDao<?> baseDao) {
+		this.baseDao = baseDao;
+	}
 
 	/**
 	 * 
@@ -45,7 +53,7 @@ public class CategoryAction extends BaseAction {
 	public String list() {
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_CATEGORY_BY_SQL);
 		fsp.setPageFlag(FSPBean.ACTIVE_PAGINATION);
-		beans = manager.getObjectsBySql(fsp);
+		beans = baseDao.getObjectsBySql(fsp);
 		fsp.setRecordCount(getObjectsCountSql(fsp));
 		return "category/page4list";
 	}
@@ -73,7 +81,7 @@ public class CategoryAction extends BaseAction {
 	 */
 	public String add() {
 		if (null != oaCategory) {
-			manager.saveObject(oaCategory);
+			baseDao.saveObject(oaCategory);
 		}
 		return "page4list";
 	}
@@ -114,7 +122,7 @@ public class CategoryAction extends BaseAction {
 	 */
 	public String edit() {
 		if (null != oaCategory) {
-			manager.saveObject(oaCategory);
+			baseDao.saveObject(oaCategory);
 		}
 		return "page4list";
 	}
@@ -128,7 +136,7 @@ public class CategoryAction extends BaseAction {
 	 */
 	private OaCategory findOaCategory(OaCategory oaCategory) {
 		if (null != oaCategory && null != oaCategory.getId()) {
-			oaCategory = (OaCategory) manager.getObject(OaCategory.class, oaCategory.getId());
+			oaCategory = (OaCategory) baseDao.getObject(OaCategory.class, oaCategory.getId());
 		}
 		return oaCategory;
 	}
@@ -283,13 +291,13 @@ public class CategoryAction extends BaseAction {
 
 	public String updateHisDate() {
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_OA_ORDER_BY_EQL);
-		List<OaOrder> beans = manager.getObjectsByEql(fsp);
+		List<OaOrder> beans = baseDao.getObjectsByEql(fsp);
 		for (int i = 0; i < beans.size(); i++) {
 			OaOrder oaOrder = beans.get(i);
 			if (oaOrder.getStyleClass() != null && !"".equals(oaOrder.getStyleClass())) {
 				fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_CATEGORY_ALL_BY_SQL);
 				fsp.set("style_class", oaOrder.getStyleClass());
-				superList = manager.getObjectsBySql(fsp);
+				superList = baseDao.getObjectsBySql(fsp);
 				if (superList.size() > 0) {
 					oaOrder.setSellReadyTime(Long.parseLong(superList.get(0).get("sell_wait").toString())); // 销售准备时间
 					if (oaOrder.getType().equals("2")) { // 标准缓冲时间
@@ -350,7 +358,7 @@ public class CategoryAction extends BaseAction {
 				}
 			}
 
-			manager.saveObject(oaOrder);
+			baseDao.saveObject(oaOrder);
 		}
 
 		return null;
@@ -358,7 +366,7 @@ public class CategoryAction extends BaseAction {
 
 	public String updateHisDate2() {
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_OA_ORDER_BY_EQL);
-		List<OaOrder> beans = manager.getObjectsByEql(fsp);
+		List<OaOrder> beans = baseDao.getObjectsByEql(fsp);
 
 		for (int i = 0; i < beans.size(); i++) {
 			Map<OaOrderDetail, String> stepMap_01 = new HashMap<OaOrderDetail, String>();
@@ -373,7 +381,7 @@ public class CategoryAction extends BaseAction {
 			OaOrder oaOrder = beans.get(i);
 			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_ORDER_BY_EQL);
 			fsp.set("oa_order", oaOrder.getId());
-			List<OaOrderDetail> superList = manager.getObjectsByEql(fsp);
+			List<OaOrderDetail> superList = baseDao.getObjectsByEql(fsp);
 			for (int j = 0; j < superList.size(); j++) {
 				// OaOrderDetail oaOrderDetail = (OaOrderDetail) manager.getObject(OaOrderDetail.class, Integer.parseInt(superList.get(j).get("id").toString()));
 				if (superList.get(j).getWfStep().equals("b_mr_improve_2")) {
@@ -474,7 +482,7 @@ public class CategoryAction extends BaseAction {
 			t++;
 			if (key.getId() != k[k.length - 1]) {
 				key.setBackFlag("1");
-				manager.saveObject(key);
+				baseDao.saveObject(key);
 			}
 		}
 	}

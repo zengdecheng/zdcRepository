@@ -3,7 +3,6 @@ package com.xbd.oa.utils;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -12,20 +11,30 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.task.Task;
 import org.apache.commons.beanutils.LazyDynaMap;
 import org.apache.commons.lang3.StringUtils;
-import org.use.base.FSPBean;
-import org.use.base.utils.base.FileUtils;
 
-import com.xbd.oa.business.BaseManager;
+import com.xbd.erp.base.dao.BaseDao;
+import com.xbd.erp.base.pojo.sys.FSPBean;
 import com.xbd.oa.dao.impl.BxDaoImpl;
 import com.xbd.oa.vo.OaOrder;
 import com.xbd.oa.vo.OaOrderDetail;
 
 public class BizUtil {
-	private static BaseManager bxMgr;
+	private static BaseDao baseDao;
+	
+	public BaseDao getBaseDao() {
+		return baseDao;
+	}
+
+	@Resource(name="bxDaoImpl")
+	public void setBaseDao(BaseDao baseDao) {
+		this.baseDao = baseDao;
+	}
 
 	/**
 	 * 启动工作流,开始节点和第一个用户任务是连起来做完的 . 创建订单算一个usertask节点，在工作开始后自动完成，并新增订单子节点及更新订单主表。在 设计该节点的时候，不扩展activiti:taskListener ，持续时间 step_duration 设置 为零。
@@ -64,14 +73,14 @@ public class BizUtil {
 	 * @param assigner
 	 */
 	public static void assignOther(Integer oaOrderDetailId, String assigner, String groupName) {
-		OaOrderDetail oaOrderDetail = (OaOrderDetail) getBxMgr().getObject(OaOrderDetail.class, oaOrderDetailId);
-		OaOrder oaOrder = (OaOrder) getBxMgr().getObject(OaOrder.class, oaOrderDetail.getOaOrder());
+		OaOrderDetail oaOrderDetail = (OaOrderDetail) baseDao.getObject(OaOrderDetail.class, oaOrderDetailId);
+		OaOrder oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, oaOrderDetail.getOaOrder());
 		WorkFlowUtil.getPe().getTaskService().setAssignee(oaOrderDetail.getTaskId(), assigner);
 		oaOrderDetail.setOperator(assigner);
 		oaOrder.setOperator(assigner);
-		getBxMgr().saveObject(oaOrderDetail);
+		baseDao.saveObject(oaOrderDetail);
 		setOaOrderHisOpt(oaOrder, assigner, groupName);
-		getBxMgr().saveObject(oaOrder);
+		baseDao.saveObject(oaOrder);
 	}
 
 	/**
@@ -128,7 +137,7 @@ public class BizUtil {
 	public static String getAssigneeByGroup(String groupName, String processInstanceId, Integer oaOrderInt) {
 		String adminName = "";
 		// 看此流程是否以前被组内某个成员做过，做了的话就直接分配给组员，不需要组长再分配。
-		OaOrder oaOrder = (OaOrder) getBxMgr().getObject(OaOrder.class, oaOrderInt);
+		OaOrder oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, oaOrderInt);
 		if (oaOrder != null) {
 			String hisOpt = oaOrder.getHisOpt();
 			String[] ss = hisOpt.split(";");
@@ -187,14 +196,14 @@ public class BizUtil {
 		newOaOrderDetail.setWfStepDuration(0l);// 节点持续时间 毫秒数
 		newOaOrderDetail.setSmsRemind(ConstantUtil.NOTIFYSTAFF_STATE_REMIND_NO);
 		newOaOrderDetail.setSmsTimeout(ConstantUtil.NOTIFYSTAFF_STATE_TIMEOUT);
-		getBxMgr().saveObject(newOaOrderDetail); // 保存本节点信息
+		baseDao.saveObject(newOaOrderDetail); // 保存本节点信息
 
 		WorkFlowUtil.getPe().getRuntimeService().setVariable(processInstanceId, "oa_order_detail", newOaOrderDetail.getId());
 		// 2因为直接跳转到第二节点所以此时不更新主表里面工作流的信息
 		oaOrder.setBeginTime(curTime);
 		oaOrder.setOaOrderDetail(newOaOrderDetail.getId());
 		setOaOrderHisOpt(oaOrder, curUser, "sales");// 写死组为mr,因为所有发起者都是mr
-		getBxMgr().saveObject(oaOrder); // 保存本节点信息
+		baseDao.saveObject(oaOrder); // 保存本节点信息
 	}
 
 	/**
@@ -211,8 +220,8 @@ public class BizUtil {
 		// TODO Auto-generated method stub
 		// 1.上一个节点的完成时间
 		Timestamp curTime = getOperatingTime(new Timestamp(System.currentTimeMillis()/1000*1000));// 当前时间
-		OaOrderDetail lastOaOrderDetail = (OaOrderDetail) getBxMgr().getObject(OaOrderDetail.class, id);// 上一个流程节点的订单详细vo
-		OaOrder oaOrder = (OaOrder) getBxMgr().getObject(OaOrder.class, lastOaOrderDetail.getOaOrder());// 主流程，订单vo
+		OaOrderDetail lastOaOrderDetail = (OaOrderDetail) baseDao.getObject(OaOrderDetail.class, id);// 上一个流程节点的订单详细vo
+		OaOrder oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, lastOaOrderDetail.getOaOrder());// 主流程，订单vo
 		lastOaOrderDetail.setWfRealFinish(curTime);
 
 		// update by 张华 2014-12-29
@@ -234,17 +243,17 @@ public class BizUtil {
 			fsp.set("wfStep", delegateTask.getTaskDefinitionKey());
 			// fsp.set("inx", lastOaOrderDetail.getInx().intValue());
 			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_OA_ORDER_DETAIL_BY_EQL);
-			List<OaOrderDetail> list = getBxMgr().getObjectsByEql(fsp);
+			List<OaOrderDetail> list = baseDao.getObjectsByEql(fsp);
 			for (OaOrderDetail oaOrderDetail : list) {
 				oaOrderDetail.setBackFlag("1");
-				getBxMgr().saveObject(oaOrderDetail);
+				baseDao.saveObject(oaOrderDetail);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
 
-		getBxMgr().saveObject(lastOaOrderDetail); // 保存上个节点信息
+		baseDao.saveObject(lastOaOrderDetail); // 保存上个节点信息
 
 		// 2.1 计算三个时间 计划完成时间 ,总剩余时间,实际完成偏差值
 		// (1)本节点持续时长,计划累计时长. (需要乘以时间折算率)
@@ -284,7 +293,7 @@ public class BizUtil {
 			newOaOrderDetail.setSmsTimeout(ConstantUtil.NOTIFYSTAFF_STATE_TIMEOUT);
 		}
 
-		getBxMgr().saveObject(newOaOrderDetail); // 保存本节点信息
+		baseDao.saveObject(newOaOrderDetail); // 保存本节点信息
 
 		// 3修改oa_order 主表信息,包括 流程节点字段step,本节点内计划完成时间
 		// plan_finish,本节点原计划开始时间total_plan_start(算计划偏差值),历史操作人
@@ -296,7 +305,7 @@ public class BizUtil {
 		oaOrder.setOperator(assignment);
 		oaOrder.setOaOrderDetail(newOaOrderDetail.getId());
 		setOaOrderHisOpt(oaOrder, assignment, groupName);
-		getBxMgr().saveObject(oaOrder); // 保存本节点信息
+		baseDao.saveObject(oaOrder); // 保存本节点信息
 	}
 
 	/**
@@ -596,16 +605,16 @@ public class BizUtil {
 
 		// 1.上一个节点的完成时间
 		Timestamp curTime = getOperatingTime(new Timestamp(System.currentTimeMillis()/1000*1000));// 当前时间
-		OaOrderDetail myOaOrderDetail = (OaOrderDetail) getBxMgr().getObject(OaOrderDetail.class, id);// 上一个流程节点的订单详细vo
-		OaOrder oaOrder = (OaOrder) getBxMgr().getObject(OaOrder.class, myOaOrderDetail.getOaOrder());// 主流程，订单vo
+		OaOrderDetail myOaOrderDetail = (OaOrderDetail) baseDao.getObject(OaOrderDetail.class, id);// 上一个流程节点的订单详细vo
+		OaOrder oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, myOaOrderDetail.getOaOrder());// 主流程，订单vo
 		myOaOrderDetail.setWfRealFinish(curTime);
-		getBxMgr().saveObject(myOaOrderDetail); // 保存上个节点信息
+		baseDao.saveObject(myOaOrderDetail); // 保存上个节点信息
 
 		// 2因为直接跳转到第二节点所以此时不更新主表里面工作流的信息
 		oaOrder.setEndTime(curTime);
 		oaOrder.setWfStep("finish_999");
 		oaOrder.setWfStepName("订单完成");
-		getBxMgr().saveObject(oaOrder); // 保存本节点信息
+		baseDao.saveObject(oaOrder); // 保存本节点信息
 	}
 
 	/**
@@ -623,13 +632,13 @@ public class BizUtil {
 		fsp.set("define_key", processDifinitionKey);
 		fsp.set("cloth_class", clothClass);
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_TIMEBASE_BY_SQL);
-		LazyDynaMap timeBase = getBxMgr().getOnlyObjectBySql(fsp);
+		LazyDynaMap timeBase = baseDao.getOnlyObjectBySql(fsp);
 		if (timeBase == null) {// 找不到该品类的时间基准就找基本类的时间基准
 			fsp = new FSPBean();
 			fsp.set("define_key", processDifinitionKey);
 			fsp.set("cloth_class", ConstantUtil.DT_TYPE_CLOTH_CLASS_BASE);
 			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_TIMEBASE_BY_SQL);
-			timeBase = getBxMgr().getOnlyObjectBySql(fsp);
+			timeBase = baseDao.getOnlyObjectBySql(fsp);
 		}
 		if (timeBase == null) {
 			throw new RuntimeException("没有找到流程定义processDifinitionKey:" + processDifinitionKey + "服装品类clothClass:" + clothClass + "的时间基线timebase");
@@ -749,35 +758,4 @@ public class BizUtil {
 		return buf.toString();
 	}
 
-	public static BaseManager getBxMgr() {
-		if (bxMgr == null) {
-			bxMgr = new com.xbd.oa.business.impl.BxManagerImpl();
-		}
-		return bxMgr;
-	}
-
-	public static void test() {
-		OaOrder oaOrder = new OaOrder();
-		oaOrder.setClothClass("1");
-		oaOrder.setTimeRate(1.0f);
-		getBxMgr().saveObject(oaOrder);
-		startOrderWf(ConstantUtil.WORKFLOW_KEY_PROCESS1, "骆冰", oaOrder);
-	}
-
-	public static void main(String[] args) {
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		try {
-			// System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), 9L * 1000 * 60 * 60));
-			// System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), 18L * 1000 * 60 * 60));
-			// System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), 27L * 1000 * 60 * 60));
-			System.out.println(culPlanDate(new Timestamp(df.parse("2015-03-26 18:00:00").getTime()), 33L * 1000 * 60 * 60));
-			// System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), -36L * 1000 * 60 * 60));
-			// System.out.println(culPlanDate(new Timestamp(df.parse("2015-04-03 18:00:00").getTime()), -45L * 1000 * 60 * 60));
-
-			// System.out.println(getWorkTime(new Timestamp(df.parse("2015-03-22 10:00:00").getTime())));
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 }

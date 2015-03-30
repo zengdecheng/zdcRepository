@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" ?>
+<!DOCTYPE databases PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN"
+                           "http://castor.org/mapping.dtd">
+<mapping>
+<description>description</description>
+<class name="com.xbd.erp.base.pojo.query.QueryBean">
+<map-to xml="query" />
+<field name="functions" type="com.xbd.erp.base.pojo.query.FunctionBean" collection="arraylist" >
+          <bind-xml name="function" node="element" />
+ </field>
+</class>
+<class name="com.xbd.erp.base.pojo.query.FunctionBean">
+	<map-to xml="function" />
+   <field name="name"  type="java.lang.String" >
+       <bind-xml name="name" node="attribute"/>
+    </field>
+    <field name="type"  type="java.lang.String" >
+       <bind-xml name="type" node="attribute"/>
+    </field>
+    <field name="sql"  type="java.lang.String" >
+       <bind-xml name="sql" node="attribute"/>
+    </field>
+     <field name="parsers" type="com.xbd.erp.base.pojo.query.ParserBean" collection="arraylist" >
+          <bind-xml name="parser" node="element" />
+     </field>
+ </class>
+<class name="com.xbd.erp.base.pojo.query.ParserBean" >
+    <map-to xml="parser"/>
+     <field name="index"  type="java.lang.String" >
+       <bind-xml name="index" node="attribute"/>
+    </field>
+    <field name="way"  type="java.lang.String" >
+       <bind-xml name="way" node="attribute"/>
+    </field>
+    <field name="params" type="com.xbd.erp.base.pojo.query.ParamBean" collection="arraylist" >
+          <bind-xml name="param" node="element" />
+     </field>
+ </class>
+ <class name="com.xbd.erp.base.pojo.query.ParamBean" >
+    <map-to xml="param"/>
+    <field name="fspname"  type="java.lang.String" >
+       <bind-xml name="fspname" node="attribute"/>
+    </field>
+    <field name="sqlname"  type="java.lang.String" >
+       <bind-xml name="sqlname" node="attribute"/>
+    </field>
+    <field name="op"  type="java.lang.String" >
+       <bind-xml name="op" node="attribute"/>
+    </field>
+    <field name="totype"  type="java.lang.String" >
+       <bind-xml name="totype" node="attribute"/>
+    </field>
+ </class>
+</mapping>

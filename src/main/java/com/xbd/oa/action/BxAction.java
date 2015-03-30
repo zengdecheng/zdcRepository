@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 
 import jxl.write.WriteException;
@@ -34,21 +35,19 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.IndexedColors;
-import org.use.base.FSPBean;
-import org.use.base.action.Action;
-import org.use.base.annotation.EJB;
-import org.use.base.annotation.FSP;
-import org.use.base.annotation.helper.AnnoConst;
-import org.use.base.manager.Manager;
-import org.use.base.utils.base.DateUtils;
+import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.Results;
 
-import com.xbd.oa.business.BaseManager;
+import com.xbd.erp.base.action.Action;
+import com.xbd.erp.base.dao.BaseDao;
+import com.xbd.erp.base.pojo.sys.FSPBean;
 import com.xbd.oa.dao.impl.BxDaoImpl;
 //import com.xbd.oa.servlet.AutoNotifyServlet_stop;
 import com.xbd.oa.utils.BizUtil;
 import com.xbd.oa.utils.CommonSort;
 import com.xbd.oa.utils.ConstantUtil;
 import com.xbd.oa.utils.DateUtil;
+import com.xbd.oa.utils.DateUtils;
 import com.xbd.oa.utils.ExcelUtils;
 import com.xbd.oa.utils.JdbcHelper;
 import com.xbd.oa.utils.MailUtil;
@@ -61,7 +60,6 @@ import com.xbd.oa.utils.Struts2Utils;
 import com.xbd.oa.utils.WebUtil;
 import com.xbd.oa.utils.WorkFlowUtil;
 import com.xbd.oa.utils.XbdBuffer;
-import com.xbd.oa.vo.base.CustomCell;
 import com.xbd.oa.vo.OaClothesSize;
 import com.xbd.oa.vo.OaClothesSizeDetail;
 import com.xbd.oa.vo.OaCost;
@@ -86,13 +84,26 @@ import com.xbd.oa.vo.OaTimebase;
 import com.xbd.oa.vo.OaTimebaseEntry;
 import com.xbd.oa.vo.OaTpe;
 import com.xbd.oa.vo.OaTracke;
+import com.xbd.oa.vo.base.CustomCell;
 
+@Results({ @Result(name = "authError", type = "redirect", location = "/authError.jsp") })
 public class BxAction extends Action {
+	
+	private BaseDao<?> baseDao;
+	
+	public BaseDao<?> getBaseDao() {
+		return baseDao;
+	}
 
+	@Resource(name="bxDaoImpl")
+	public void setBaseDao(BaseDao<?> baseDao) {
+		this.baseDao = baseDao;
+	}
+	
 	public String getWhb() {
 		return whb;
 	}
-
+	
 	public void setWhb(String whb) {
 		this.whb = whb;
 	}
@@ -101,8 +112,7 @@ public class BxAction extends Action {
 	public static final Logger logger = Logger.getLogger(BxAction.class);
 	private static DecimalFormat decimalFormat = new DecimalFormat("0.##");
 	private static DecimalFormat decimalFormat3 = new DecimalFormat("0.###");
-	@EJB(name = "com.xbd.oa.business.impl.BxManagerImpl")
-	private BaseManager manager;
+
 	private String nickName;
 	private OaStaff oaStaff;
 	private String searchName;
@@ -313,11 +323,6 @@ public class BxAction extends Action {
 	private File file;
 	private String fileFileName;
 
-	@Override
-	public Manager getBiz() {
-		return manager;
-	}
-
 	/**
 	 *
 	 * <B>辛巴达员工登录</B><br>
@@ -341,7 +346,7 @@ public class BxAction extends Action {
 			fspTemp.set("loginName", loginName);
 			fspTemp.set("password", password);
 
-			OaStaff oaStaff = (OaStaff) manager.getOnlyObjectByEql(fspTemp);
+			OaStaff oaStaff = (OaStaff) baseDao.getOnlyObjectByEql(fspTemp);
 			if (null == oaStaff) {
 				Struts2Utils.renderText("error");
 				return;
@@ -349,7 +354,7 @@ public class BxAction extends Action {
 			// 判断是否为部门主管
 			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.IF_MANAGER);
 			fsp.set("name", oaStaff.getLoginName());
-			OaOrg oo = (OaOrg) manager.getOnlyObjectByEql(fsp);
+			OaOrg oo = (OaOrg) baseDao.getOnlyObjectByEql(fsp);
 			if (oo != null) {
 				WebUtil.setManager(oo);
 			}
@@ -360,7 +365,6 @@ public class BxAction extends Action {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
-
 	}
 
 	/**
@@ -463,10 +467,9 @@ public class BxAction extends Action {
 		int toIndex = (fromIndex + fsp.getPageSize()) <= beans.size() ? fromIndex + fsp.getPageSize() : fromIndex + (int) fsp.getRecordCount() % fsp.getPageSize();
 		beans = beans.subList(fromIndex, toIndex);
 		processPageInfo(getObjectsCountSql(fsp));
-		return "todo";
+		return "bx/todo";
 	}
 
-	@FSP(hasBack = AnnoConst.HAS_BACK_YES)
 	public String order_list() {
 		fsp.setPageFlag(FSPBean.ACTIVE_PAGINATION);
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_ORDERWF_BY_SQL);
@@ -500,7 +503,7 @@ public class BxAction extends Action {
 			superList = list;// 仅超时订单
 		}
 		processPageInfo(getObjectsCountSql(fsp));
-
+		
 		fsp.set("org_name", XbdBuffer.getOrgNameById(WebUtil.getCurrentLoginBx().getOaOrg()));
 		return "order_list";
 	}
@@ -764,7 +767,7 @@ public class BxAction extends Action {
 			FSPBean dtFsp = new FSPBean();
 			dtFsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_DT_BY_CODE_SQL);
 			dtFsp.set("code", lazyMap.get("cloth_class"));
-			beans = manager.getObjectsBySql(dtFsp);
+			beans = baseDao.getObjectsBySql(dtFsp);
 			for (int n = 0; n < beans.size(); n++) {
 				sheet1FileInfo.put(j + ",28", beans.get(n).get("value") != null ? beans.get(n).get("value") : "");// 二级分类
 			}
@@ -778,7 +781,7 @@ public class BxAction extends Action {
 			FSPBean logFsp = new FSPBean();
 			logFsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_OALOGISTICS_BY_SQL);
 			logFsp.set("oaOrderId", lazyMap.get("id"));
-			beans = manager.getObjectsBySql(logFsp);
+			beans = baseDao.getObjectsBySql(logFsp);
 			int logsCounts = 0;
 			for (int n = 0; n < beans.size(); n++) {
 				logsCounts += Double.parseDouble(beans.get(n).get("delivery_num") != null ? beans.get(n).get("delivery_num").toString() : "0");
@@ -1039,7 +1042,7 @@ public class BxAction extends Action {
 			FSPBean detailFsp = new FSPBean();
 			detailFsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_BY_SQL);
 			detailFsp.set("oa_order", lazyMap.get("id"));
-			beans = manager.getObjectsBySql(detailFsp);
+			beans = baseDao.getObjectsBySql(detailFsp);
 			for (int n = 0; n < beans.size(); n++) {
 				if (beans.get(n).get("wf_step") != null && "c_ppc_confirm_7".equals(beans.get(n).get("wf_step").toString())) {
 					sheet1FileInfo.put(j + ",19", beans.get(n).get("wf_real_finish") != null ? new CustomCell(beans.get(n).get("wf_real_finish"), "Date") : new CustomCell());// QA完成日期
@@ -1153,7 +1156,6 @@ public class BxAction extends Action {
 	 * @return
 	 * @autuor 范蠡
 	 */
-	@FSP(hasBack = AnnoConst.HAS_BACK_YES)
 	public String order_his() {
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_ORDERWF_HIS_BY_SQL);
 		if (!WebUtil.ifAdmin() && !WebUtil.ifManager()) { // 如果不是管理员就要加上查询条件
@@ -1318,7 +1320,6 @@ public class BxAction extends Action {
 	 * @return
 	 * @autuor 范蠡
 	 */
-	@FSP(hasBack = AnnoConst.HAS_BACK_YES)
 	public String order_hisaaaaa() {
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_ORDERWF_HIS_YH_BY_SQL);
 		if (!WebUtil.ifAdmin() && !WebUtil.ifManager()) { // 如果不是管理员就要加上查询条件
@@ -1383,12 +1384,12 @@ public class BxAction extends Action {
 		fsp.set("login_name", searchName);
 		beans = getObjectsBySql(fsp);
 		processPageInfo(getObjectsCountSql(fsp));
-		return "staff_add";
+		return "bx/test";
 	}
 
 	// 修改密码页面
 	public String modify_pwd() {
-		return "modify_pwd";
+		return "bx/modify_pwd";
 	}
 
 	public void modifypwd() {
@@ -1397,7 +1398,7 @@ public class BxAction extends Action {
 		fspTemp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LOGIN);
 		fspTemp.set("loginName", curUser);
 		fspTemp.set("password", oldPwd);
-		OaStaff oaStaff = (OaStaff) manager.getOnlyObjectByEql(fspTemp);
+		OaStaff oaStaff = (OaStaff) baseDao.getOnlyObjectByEql(fspTemp);
 		if (null == oaStaff) {
 			Struts2Utils.renderText("error"); // 旧密码输入不正确
 			return;
@@ -1405,7 +1406,7 @@ public class BxAction extends Action {
 
 		// 修改个人密码并保存
 		oaStaff.setPassword(newPwd);
-		manager.saveObject(oaStaff);
+		baseDao.saveObject(oaStaff);
 		Struts2Utils.renderText("ok");
 	}
 
@@ -1503,7 +1504,7 @@ public class BxAction extends Action {
 		}
 		List<Map<String, String>> cloth_class_list = XbdBuffer.getOaDtList(ConstantUtil.DT_TYPE_CLOTH_CLASS);
 		bean.set("cloth_class_list", cloth_class_list);
-		return "add_baojia";
+		return "bx/add_baojia";
 	}
 
 	public String add_daban() {
@@ -1512,7 +1513,7 @@ public class BxAction extends Action {
 		}
 		List<Map<String, String>> cloth_class_list = XbdBuffer.getOaDtList(ConstantUtil.DT_TYPE_CLOTH_CLASS);
 		bean.set("cloth_class_list", cloth_class_list);
-		return "add_daban";
+		return "bx/add_daban";
 	}
 
 	public String add_dahuo() {
@@ -1566,7 +1567,7 @@ public class BxAction extends Action {
 		} else {
 			fsp.set("oaOrg", 1);
 		}
-		beans = manager.getObjectsBySql(fsp);
+		beans = baseDao.getObjectsBySql(fsp);
 
 		List<OaStaff> oaStaffs = new ArrayList<OaStaff>();
 		for (int i = 0; i < beans.size(); i++) {
@@ -1588,7 +1589,7 @@ public class BxAction extends Action {
 		OaOrg oaOrg = null;
 		String admin = "";
 		if (null != treeNode) {
-			oaOrg = (OaOrg) manager.getObject(OaOrg.class, Integer.parseInt(treeNode));
+			oaOrg = (OaOrg) baseDao.getObject(OaOrg.class, Integer.parseInt(treeNode));
 			if (null != oaOrg && null != oaOrg.getAdmin()) {
 				admin = oaOrg.getAdmin();
 			}
@@ -1611,7 +1612,7 @@ public class BxAction extends Action {
 		// 校验是否有重复登录名
 		fsp.set("loginName", loginName);
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LOGIN);
-		OaStaff loginUser = (OaStaff) manager.getOnlyObjectByEql(fsp);
+		OaStaff loginUser = (OaStaff) baseDao.getOnlyObjectByEql(fsp);
 
 		if (null != loginUser) {
 			result = "loginNameError";
@@ -1626,7 +1627,7 @@ public class BxAction extends Action {
 		oaStaff.setLinkphone(linkphone);
 		oaStaff.setLinkww(linkww);
 		oaStaff.setOaOrg(Integer.parseInt(oaOrgId));
-		manager.saveObject(oaStaff);
+		baseDao.saveObject(oaStaff);
 		result = "ok";
 		XbdBuffer.refreshOaStaffList();
 		Struts2Utils.renderText(result);
@@ -1639,7 +1640,7 @@ public class BxAction extends Action {
 	 */
 	public void jsonDelStaff() {
 		// 以员工id查询到员工对象
-		OaStaff oaStaff = (OaStaff) manager.getObject(OaStaff.class, Integer.parseInt(oaStaffId));
+		OaStaff oaStaff = (OaStaff) baseDao.getObject(OaStaff.class, Integer.parseInt(oaStaffId));
 		if (null != oaStaff && null != oaStaff.getId()) {
 			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_OA_ORG);
 			fsp.set("admin", oaStaff.getLoginName());
@@ -1651,7 +1652,7 @@ public class BxAction extends Action {
 				return;
 			}
 			// 删除该对象
-			manager.delObject(oaStaff);
+			baseDao.delObject(oaStaff);
 			XbdBuffer.refreshOaStaffList();
 		}
 
@@ -1666,7 +1667,7 @@ public class BxAction extends Action {
 	 */
 	public void jsonUpdateStaff() {
 		// 以员工id查询到员工对象
-		OaStaff oaStaff = (OaStaff) manager.getObject(OaStaff.class, Integer.parseInt(oaStaffId));
+		OaStaff oaStaff = (OaStaff) baseDao.getObject(OaStaff.class, Integer.parseInt(oaStaffId));
 
 		// 修改员工信息并保存
 		oaStaff.setLinkww(linkww);
@@ -1674,7 +1675,7 @@ public class BxAction extends Action {
 		if (oaRole != 0) {
 			oaStaff.setOaRole(oaRole);
 		}
-		manager.saveObject(oaStaff);
+		baseDao.saveObject(oaStaff);
 		result = "ok";
 		XbdBuffer.refreshOaStaffList();
 		Struts2Utils.renderText(result);
@@ -1685,11 +1686,11 @@ public class BxAction extends Action {
 	 */
 	public void jsonPwInit() {
 		// 以员工id查询到员工对象
-		OaStaff oaStaff = (OaStaff) manager.getObject(OaStaff.class, Integer.parseInt(oaStaffId));
+		OaStaff oaStaff = (OaStaff) baseDao.getObject(OaStaff.class, Integer.parseInt(oaStaffId));
 
 		// 修改员工密码并保存
 		oaStaff.setPassword(password);
-		manager.saveObject(oaStaff);
+		baseDao.saveObject(oaStaff);
 		result = "ok";
 		Struts2Utils.renderText(result);
 	}
@@ -1700,10 +1701,10 @@ public class BxAction extends Action {
 	public void jsonUpdateAdmin() {
 		// 查询该组织部门的管理员
 		OaOrg oaOrg = null;
-		oaOrg = (OaOrg) manager.getObject(OaOrg.class, Integer.parseInt(oaOrgId));
+		oaOrg = (OaOrg) baseDao.getObject(OaOrg.class, Integer.parseInt(oaOrgId));
 
 		oaOrg.setAdmin(loginName);
-		manager.saveObject(oaOrg);
+		baseDao.saveObject(oaOrg);
 		result = "ok";
 		XbdBuffer.refreshOaOrgList();
 		// AutoNotifyServlet_stop.refreshLeaderPhone();//刷新部门主管手机号
@@ -1719,12 +1720,12 @@ public class BxAction extends Action {
 		}
 
 		// 订单详情查询
-		oaOrderDetail = (OaOrderDetail) manager.getObject(OaOrderDetail.class, this.oaOrderDetail.getId());
+		oaOrderDetail = (OaOrderDetail) baseDao.getObject(OaOrderDetail.class, this.oaOrderDetail.getId());
 		OaOrder oaOrder = null;
 		boolean flag = false;// 由于技术和采购同时上线，临时做处理，之后删掉即可
 
 		if (null != oaOrderDetail && null != oaOrderDetail.getOaOrder()) {
-			oaOrder = (OaOrder) manager.getObject(OaOrder.class, oaOrderDetail.getOaOrder());
+			oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, oaOrderDetail.getOaOrder());
 			if (!oaOrder.getWfStep().equals("c_ppc_factoryMsg_5") && !oaOrder.getWfStep().equals("c_qc_cutting_6") && !oaOrder.getWfStep().equals("c_ppc_confirm_7")
 					&& !oaOrder.getWfStep().equals("c_qc_printing_8") && !oaOrder.getWfStep().equals("c_ppc_confirm_9")) {
 				flag = true;
@@ -1759,10 +1760,10 @@ public class BxAction extends Action {
 		} else { // 旧的流程处理逻辑暂时保存，全部更新后去掉以下代码即可
 			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.PROCESSORDER);
 			fsp.set("id", this.oaOrderDetail.getId());
-			bean = manager.getOnlyObjectBySql(fsp);
+			bean = baseDao.getOnlyObjectBySql(fsp);
 			if (null != bean && null != bean.get("id")) {
 				int oa_order = (Integer) bean.get("oa_order");
-				oaOrder = (OaOrder) manager.getObject(OaOrder.class, oa_order);
+				oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, oa_order);
 			}
 			getOrderDetailOld(oaOrder); // 旧的处理方案
 			// 查询是否能退回
@@ -1787,7 +1788,7 @@ public class BxAction extends Action {
 		if (null == oaOrder || null == oaOrder.getId()) {
 			return "addOrder_list";
 		}
-		oaOrder = (OaOrder) manager.getObject(OaOrder.class, oaOrder.getId());
+		oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, oaOrder.getId());
 		return "editOrder";
 	}
 
@@ -1800,7 +1801,7 @@ public class BxAction extends Action {
 		if (null == oaOrder || null == oaOrder.getId()) {
 			return "addOrder_list";
 		}
-		OaOrder oaOrder1 = (OaOrder) manager.getObject(OaOrder.class, oaOrder.getId());
+		OaOrder oaOrder1 = (OaOrder) baseDao.getObject(OaOrder.class, oaOrder.getId());
 		oaOrder1.setStyleCode(oaOrder.getStyleCode());
 		saveObject(oaOrder1);
 		return "addOrder_list";
@@ -1810,13 +1811,13 @@ public class BxAction extends Action {
 	 * 确认流转订单
 	 */
 	public String confirmOrder() {
-		OaOrderDetail oaOrderDetail = (OaOrderDetail) manager.getObject(OaOrderDetail.class, this.oaOrderDetail.getId());
+		OaOrderDetail oaOrderDetail = (OaOrderDetail) baseDao.getObject(OaOrderDetail.class, this.oaOrderDetail.getId());
 
 		// 修改订单信息并保存
 		oaOrderDetail.setAttachment(this.oaOrderDetail.getAttachment());
 		oaOrderDetail.setPic(this.oaOrderDetail.getPic());
 		oaOrderDetail.setContent(this.oaOrderDetail.getContent());
-		manager.saveObject(oaOrderDetail);
+		baseDao.saveObject(oaOrderDetail);
 
 		if (null != group && !"".equals(group.trim())) {
 			Map map = new HashMap();
@@ -1854,18 +1855,18 @@ public class BxAction extends Action {
 	 * 确认退回订单
 	 */
 	public String backOrder() {
-		OaOrderDetail oaOrderDetail = (OaOrderDetail) manager.getObject(OaOrderDetail.class, this.oaOrderDetail.getId());
+		OaOrderDetail oaOrderDetail = (OaOrderDetail) baseDao.getObject(OaOrderDetail.class, this.oaOrderDetail.getId());
 		BizUtil.backStep(oaOrderDetail);// 订单回退
 
 		OaOrder oaOrder = null;
 		if (null != oaOrderDetail && null != oaOrderDetail.getOaOrder()) {
-			oaOrder = (OaOrder) manager.getObject(OaOrder.class, oaOrderDetail.getOaOrder());
+			oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, oaOrderDetail.getOaOrder());
 		}
 
 		// 如果是大货类型，退回到财务节点，进行判断付款方式是否为3:7或月结，如果是直接退回到上个节点
 		if ("3".equals(oaOrder.getType()) && "c_qc_printing_8".equals(oaOrder.getWfStep())) {
 			if ("3:7".equals(oaOrder.getPayType()) || "月结".equals(oaOrder.getPayType())) {
-				oaOrderDetail = (OaOrderDetail) manager.getObject(OaOrderDetail.class, oaOrder.getOaOrderDetail());
+				oaOrderDetail = (OaOrderDetail) baseDao.getObject(OaOrderDetail.class, oaOrder.getOaOrderDetail());
 				BizUtil.backStep(oaOrderDetail);
 			}
 		}
@@ -1882,7 +1883,7 @@ public class BxAction extends Action {
 		if (null == oaOrder || null == oaOrder.getId()) {
 			return "confirmOrder";
 		}
-		oaOrder = (OaOrder) manager.getObject(OaOrder.class, oaOrder.getId());
+		oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, oaOrder.getId());
 		if (null == oaOrder || null == oaOrder.getId()) {
 			return "confirmOrder";
 		}
@@ -1950,7 +1951,6 @@ public class BxAction extends Action {
 			 */
 
 			map.set("total", DateUtils.getYYYY_MM_DD(except_finish));// 计算出实际偏差存放到map中
-
 			// 获取到上传文件和图片的网络地址
 			String attachment = (String) map.get("attachment") == null ? "" : (String) map.get("attachment");
 			String pic = (String) map.get("pic") == null ? "" : (String) map.get("pic");
@@ -1995,7 +1995,7 @@ public class BxAction extends Action {
 		if (beans.size() <= 0) {
 			return "noOrderNum";
 		} else {
-			oaOrder = (OaOrder) manager.getObject(OaOrder.class, beans.get(0).get("id"));
+			oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, (Integer)beans.get(0).get("id"));
 			if (null == oaOrder || null == oaOrder.getId()) {
 				return "noOrderNum";
 			}
@@ -2087,7 +2087,7 @@ public class BxAction extends Action {
 	public void jsonGetStaff() {
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_OA_ORG);
 		fsp.set("admin", WebUtil.getCurrentLoginBx().getLoginName());
-		bean = manager.getOnlyObjectBySql(fsp);
+		bean = baseDao.getOnlyObjectBySql(fsp);
 		if (null == bean || null == bean.get("id")) {
 			result = "authorityError";
 			Struts2Utils.renderText(result);
@@ -2109,7 +2109,7 @@ public class BxAction extends Action {
 	 */
 	public void jsonAssignOrder() {
 		if (null != oaOrderDetail && null != oaOrderDetail.getId() && null != oaStaffId && !"".equals(oaStaffId)) {
-			oaStaff = (OaStaff) manager.getObject(OaStaff.class, Integer.parseInt(oaStaffId));
+			oaStaff = (OaStaff) baseDao.getObject(OaStaff.class, Integer.parseInt(oaStaffId));
 
 			if (null == oaStaff || null == oaStaff.getId()) {
 				result = "oaStaffError";
@@ -2118,10 +2118,10 @@ public class BxAction extends Action {
 			}
 			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_OA_ORG_BY_SQL);
 			fsp.set("login_name", oaStaff.getLoginName());
-			bean = manager.getOnlyObjectBySql(fsp);
+			bean = baseDao.getOnlyObjectBySql(fsp);
 
 			if ("mr".equals(XbdBuffer.getOrgNameById(oaStaff.getOaOrg()))) { // 如果分配人员为mr，则更新订单信息中的mr跟单
-				oaOrder = (OaOrder) manager.getObject(OaOrder.class, oaOrder.getId());
+				oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, oaOrder.getId());
 				oaOrder.setMrName(oaStaff.getLoginName());
 				saveObject(oaOrder);
 			}
@@ -2140,10 +2140,10 @@ public class BxAction extends Action {
 	 */
 	public String orderFinish() {
 		if (null != oaOrder && null != oaOrder.getId()) {
-			oaOrder = (OaOrder) manager.getObject(OaOrder.class, oaOrder.getId());
+			oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, oaOrder.getId());
 			if (null != oaOrder && null != oaOrder.getId()) {
 				oaOrder.setStatus("1");
-				manager.saveObject(oaOrder);
+				baseDao.saveObject(oaOrder);
 			}
 		}
 		return "confirmOrder";
@@ -2183,7 +2183,7 @@ public class BxAction extends Action {
 	 */
 	public String timebaseConfig1() {
 		if (null != oaTimebase && null != oaTimebase.getId()) {
-			oaTimebase = (OaTimebase) manager.getObject(OaTimebase.class, oaTimebase.getId());
+			oaTimebase = (OaTimebase) baseDao.getObject(OaTimebase.class, oaTimebase.getId());
 		}
 		return "timebaseConfig1";
 	}
@@ -2238,11 +2238,11 @@ public class BxAction extends Action {
 	 */
 	public String saveTimebaseConfig() {
 		if (null != oaTimebase) {
-			manager.saveObject(this.oaTimebase);// 保存基准时间
+			baseDao.saveObject(this.oaTimebase);// 保存基准时间
 			if (null != oaTimebase.getId() && oaTimebase.getId() > 0) {
 				for (OaTimebaseEntry entry : this.oaTimebaseEntries) {
 					entry.setOaTimebase(oaTimebase.getId());
-					manager.saveObject(entry);// 保存基准时间细节
+					baseDao.saveObject(entry);// 保存基准时间细节
 				}
 			}
 		}
@@ -2255,7 +2255,7 @@ public class BxAction extends Action {
 	 * @return
 	 */
 	public String editTimebaseConfig() {
-		oaTimebase = (OaTimebase) manager.getObject(OaTimebase.class, oaTimebase.getId());// 获取基准时间
+		oaTimebase = (OaTimebase) baseDao.getObject(OaTimebase.class, oaTimebase.getId());// 获取基准时间
 		List<LazyDynaMap> tasksDefinitionList = WorkFlowUtil.getTasksDefinitionList(oaTimebase.getDefineKey());// 获取流程节点
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_TIMEBASE_ENTRY_BY_EQL);
 		fsp.set("oaTimebase", oaTimebase.getId());
@@ -2287,7 +2287,7 @@ public class BxAction extends Action {
 	public String updateTimebaseConfig() {
 		if (null != oaTimebase && null != oaTimebase.getId()) {
 			if (oaTimebase.getId() > 0) {
-				manager.saveObject(oaTimebase);
+				baseDao.saveObject(oaTimebase);
 				fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_TIMEBASE_ENTRY_BY_EQL);
 				fsp.set("oaTimebase", oaTimebase.getId());
 				List<OaTimebaseEntry> entries = this.getObjectsByEql(fsp);// 获取基准时间细节
@@ -2296,7 +2296,7 @@ public class BxAction extends Action {
 				}
 				for (OaTimebaseEntry entry : this.oaTimebaseEntries) {
 					entry.setOaTimebase(oaTimebase.getId());
-					manager.saveObject(entry);// 保存基准时间细节
+					baseDao.saveObject(entry);// 保存基准时间细节
 				}
 			}
 		}
@@ -2317,7 +2317,7 @@ public class BxAction extends Action {
 			// sql = new StringBuffer("");
 			// sql.append("delete from oa_timebase where id = ");
 			// sql.append(oaTimebase.getId());
-			oaTimebase = (OaTimebase) manager.getObject(OaTimebase.class, oaTimebase.getId());// 获取基准时间
+			oaTimebase = (OaTimebase) baseDao.getObject(OaTimebase.class, oaTimebase.getId());// 获取基准时间
 			if (null != oaTimebase && null != oaTimebase.getId()) {
 				fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_TIMEBASE_ENTRY_BY_EQL);
 				fsp.set("oaTimebase", oaTimebase.getId());
@@ -2360,7 +2360,7 @@ public class BxAction extends Action {
 	public String saveClothClass() {
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_MAX_INX_OA_DT_BY_SQL);
 		fsp.set("type", ConstantUtil.DT_TYPE_CLOTH_CLASS);
-		bean = manager.getOnlyObjectBySql(fsp);
+		bean = baseDao.getOnlyObjectBySql(fsp);
 		Integer maxInx = 1;
 		if (null != bean && null != bean.get("maxinx")) {
 			maxInx = Integer.parseInt(bean.get("maxinx").toString()) + 1;
@@ -2383,7 +2383,7 @@ public class BxAction extends Action {
 	 * @return
 	 */
 	public String editClothClass() {
-		oaDt = (OaDt) manager.getObject(OaDt.class, oaDt.getId());// 获取品类
+		oaDt = (OaDt) baseDao.getObject(OaDt.class, oaDt.getId());// 获取品类
 		return "addClothClass";
 	}
 
@@ -2406,7 +2406,7 @@ public class BxAction extends Action {
 	 * @return
 	 */
 	public String delClothClass() {
-		oaDt = (OaDt) manager.getObject(OaDt.class, oaDt.getId());// 获取品类
+		oaDt = (OaDt) baseDao.getObject(OaDt.class, oaDt.getId());// 获取品类
 		if (null != oaDt) {
 			delObject(oaDt);
 		}
@@ -2455,12 +2455,12 @@ public class BxAction extends Action {
 	private void sendMail(Integer staff_id) {
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_OA_ORDER_DETAIL_FOR_MAIL);
 		fsp.set("id", staff_id);
-		LazyDynaMap body = manager.getOnlyObjectBySql(fsp);
+		LazyDynaMap body = baseDao.getOnlyObjectBySql(fsp);
 		String name = (String) body.get("operator");
 		// 如果数据库有关联邮箱 则使用关联邮箱 否则使用拼音组合为邮箱
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_STAFF);
 		fsp.set("login_name", name);
-		LazyDynaMap temp = manager.getOnlyObjectBySql(fsp);
+		LazyDynaMap temp = baseDao.getOnlyObjectBySql(fsp);
 		String to = null;
 		if (StringUtils.isEmpty((String) temp.get("email"))) {
 			to = XbdBuffer.hanyu2Pinyin(name) + "@singbada.cn";
@@ -2497,7 +2497,7 @@ public class BxAction extends Action {
 		// 单个大货订单号查询
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_BY_SQL);
 		fsp.set("oa_order", 1656);
-		beans = manager.getObjectsBySql(fsp);
+		beans = baseDao.getObjectsBySql(fsp);
 		List list = new ArrayList();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		String stepName = null;
@@ -2589,38 +2589,38 @@ public class BxAction extends Action {
 		// fsp.set("begin_time", "2014-05-25");
 		// fsp.set("end_time", "2014-06-01");
 
-		List<LazyDynaMap> basic = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> basic = baseDao.getObjectsBySql(fsp);
 
 		fsp.set(FSPBean.FSP_ORDER, " order by oa_order ");
 		// 得到财务提交时间
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_FI_DHTC_BY_SQL);
 
-		List<LazyDynaMap> fi = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> fi = baseDao.getObjectsBySql(fsp);
 
 		// 技术部 时间
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_IT_DHTC_BY_SQL);
 
-		List<LazyDynaMap> it = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> it = baseDao.getObjectsBySql(fsp);
 
 		// 采购部 时间
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_PUR_DHTC_BY_SQL);
 
-		List<LazyDynaMap> pur = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> pur = baseDao.getObjectsBySql(fsp);
 
 		// CQC 时间
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_CQC_DHTC_BY_SQL);
 
-		List<LazyDynaMap> cqc = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> cqc = baseDao.getObjectsBySql(fsp);
 
 		// MQC(QC) 时间
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_QC_DHTC_BY_SQL);
 
-		List<LazyDynaMap> mqc = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> mqc = baseDao.getObjectsBySql(fsp);
 
 		// QA 提交时间
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_QA_DHTC_BY_SQL);
 
-		List<LazyDynaMap> qa = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> qa = baseDao.getObjectsBySql(fsp);
 
 		for (int i = 0; i < basic.size(); i++) {
 			LazyDynaMap map = new LazyDynaMap();
@@ -2703,7 +2703,7 @@ public class BxAction extends Action {
 
 		// fsp.set("orderId", 1658);
 		superList = new ArrayList<LazyDynaMap>();
-		beans = manager.getObjectsBySql(fsp);
+		beans = baseDao.getObjectsBySql(fsp);
 		for (LazyDynaMap bean : beans) {
 			ifOutTime(bean);// 判断是否超时
 			if ((long) bean.get("times") == 1) {
@@ -2729,7 +2729,7 @@ public class BxAction extends Action {
 		String url = BizUtil.generateDownLoadCsv(superList, titles, keys);
 		fsp.set("url", PathUtil.path2Url(url));
 		// Struts2Utils.renderText(PathUtil.path2Url(url));
-		processPageInfo(manager.getObjectsCountSql(fsp));
+		processPageInfo(baseDao.getObjectsCountSql(fsp));
 		return "DHTC";
 	}
 
@@ -2747,48 +2747,48 @@ public class BxAction extends Action {
 		// fsp.set("begin_time", "2014-05-25");
 		// fsp.set("end_time", "2014-06-01");
 
-		List<LazyDynaMap> basic = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> basic = baseDao.getObjectsBySql(fsp);
 
 		fsp.set(FSPBean.FSP_ORDER, " GROUP BY oa_order ORDER BY oa_order ");
 		// 得到财务提交时间
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_FI_DHTC_BY_SQL);
 
-		List<LazyDynaMap> fi = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> fi = baseDao.getObjectsBySql(fsp);
 
 		// 技术部 时间
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_IT_DHTC_BY_SQL);
 
-		List<LazyDynaMap> it = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> it = baseDao.getObjectsBySql(fsp);
 
 		// 采购部 时间
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_PUR_DHTC_BY_SQL);
 
-		List<LazyDynaMap> pur = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> pur = baseDao.getObjectsBySql(fsp);
 
 		// CQC 时间
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_CQC_DHTC_BY_SQL);
 
-		List<LazyDynaMap> cqc = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> cqc = baseDao.getObjectsBySql(fsp);
 
 		// MQC(QC) 时间
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_QC_DHTC_BY_SQL);
 
-		List<LazyDynaMap> mqc = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> mqc = baseDao.getObjectsBySql(fsp);
 
 		// QA 提交时间
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_QA_DHTC_BY_SQL);
 
-		List<LazyDynaMap> qa = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> qa = baseDao.getObjectsBySql(fsp);
 
 		// fi2 确认尾款
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_FI2_DHTC_BY_SQL);
 
-		List<LazyDynaMap> fi2 = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> fi2 = baseDao.getObjectsBySql(fsp);
 
 		// qa2 发货
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_QA2_DHTC_BY_SQL);
 
-		List<LazyDynaMap> qa2 = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> qa2 = baseDao.getObjectsBySql(fsp);
 
 		// times
 		// max(wf_real_finish) wf_real_finish, 最后完成时间
@@ -2843,7 +2843,7 @@ public class BxAction extends Action {
 				f.set(FSPBean.FSP_ORDER, " ORDER BY id ");
 				f.set("step", "c_fi_confirm_2");
 				f.set("order_id", fi.get(i).get("oa_order"));
-				beans = manager.getObjectsBySql(f);
+				beans = baseDao.getObjectsBySql(f);
 				// 找出该订单所有当前步骤，计算时间
 				for (LazyDynaMap bean : beans) {
 					t1 = (Timestamp) bean.get("f_start");
@@ -2881,7 +2881,7 @@ public class BxAction extends Action {
 				f.set(FSPBean.FSP_ORDER, " ORDER BY id ");
 				f.set("step", "c_ppc_assign_3");
 				f.set("order_id", it.get(i).get("oa_order"));
-				beans = manager.getObjectsBySql(f);
+				beans = baseDao.getObjectsBySql(f);
 				// 找出该订单所有当前步骤，计算时间
 				for (LazyDynaMap bean : beans) {
 					t1 = (Timestamp) bean.get("f_start");
@@ -2919,7 +2919,7 @@ public class BxAction extends Action {
 				f.set(FSPBean.FSP_ORDER, " ORDER BY id ");
 				f.set("step", "c_fi_pay_4");
 				f.set("order_id", pur.get(i).get("oa_order"));
-				beans = manager.getObjectsBySql(f);
+				beans = baseDao.getObjectsBySql(f);
 				// 找出该订单所有当前步骤，计算时间
 				for (LazyDynaMap bean : beans) {
 					t1 = (Timestamp) bean.get("f_start");
@@ -2959,7 +2959,7 @@ public class BxAction extends Action {
 				f.set(FSPBean.FSP_ORDER, " ORDER BY id ");
 				f.set("step", "c_ppc_factoryMsg_5");
 				f.set("order_id", cqc.get(i).get("oa_order"));
-				beans = manager.getObjectsBySql(f);
+				beans = baseDao.getObjectsBySql(f);
 				// 找出该订单所有当前步骤，计算时间
 				for (LazyDynaMap bean : beans) {
 					t1 = (Timestamp) bean.get("f_start");
@@ -3000,7 +3000,7 @@ public class BxAction extends Action {
 				f.set(FSPBean.FSP_ORDER, " ORDER BY id ");
 				f.set("step", "c_qc_cutting_6");
 				f.set("order_id", mqc.get(i).get("oa_order"));
-				beans = manager.getObjectsBySql(f);
+				beans = baseDao.getObjectsBySql(f);
 				// 找出该订单所有当前步骤，计算时间
 				for (LazyDynaMap bean : beans) {
 					t1 = (Timestamp) bean.get("f_start");
@@ -3038,7 +3038,7 @@ public class BxAction extends Action {
 				f.set(FSPBean.FSP_ORDER, " ORDER BY id ");
 				f.set("step", "c_ppc_confirm_7");
 				f.set("order_id", qa.get(i).get("oa_order"));
-				beans = manager.getObjectsBySql(f);
+				beans = baseDao.getObjectsBySql(f);
 				// 找出该订单所有当前步骤，计算时间
 				for (LazyDynaMap bean : beans) {
 					t1 = (Timestamp) bean.get("f_start");
@@ -3077,7 +3077,7 @@ public class BxAction extends Action {
 				f.set("order_id", fi2.get(i).get("oa_order"));
 				f.set("step", "c_qc_printing_8");
 				f.set(FSPBean.FSP_ORDER, " ORDER BY id ");
-				beans = manager.getObjectsBySql(f);
+				beans = baseDao.getObjectsBySql(f);
 				// 找出该订单所有当前步骤，计算时间
 				for (LazyDynaMap bean : beans) {
 					t1 = (Timestamp) bean.get("f_start");
@@ -3116,7 +3116,7 @@ public class BxAction extends Action {
 				f.set(FSPBean.FSP_ORDER, " ORDER BY id ");
 				f.set("step", "c_ppc_confirm_9");
 				f.set("order_id", qa2.get(i).get("oa_order"));
-				beans = manager.getObjectsBySql(f);
+				beans = baseDao.getObjectsBySql(f);
 				// 找出该订单所有当前步骤，计算时间
 				for (LazyDynaMap bean : beans) {
 					t1 = (Timestamp) bean.get("f_start");
@@ -3181,7 +3181,7 @@ public class BxAction extends Action {
 		fsp.set(FSPBean.FSP_ORDER, " order by ood.id ");
 		fsp.setPageFlag(FSPBean.ACTIVE_PAGINATION);
 
-		beans = manager.getObjectsBySql(fsp);
+		beans = baseDao.getObjectsBySql(fsp);
 		for (LazyDynaMap bean : beans) {
 			// ifOutTime(bean);//判断是否超时
 			if ((long) bean.get("times") == 1) {
@@ -3267,34 +3267,34 @@ public class BxAction extends Action {
 		Timestamp tamp1 = new Timestamp(date.getTime());
 		// fsp.set("begin_time", tamp1);
 
-		List<LazyDynaMap> basic = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> basic = baseDao.getObjectsBySql(fsp);
 
 		fsp.set(FSPBean.FSP_ORDER, " GROUP BY oa_order ORDER BY oa_order ");
 		// 得到财务提交时间
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_DAHUOTIMELYRATE_BY_SQL);
 		fsp.set("type", "2");
 		fsp.set("wfStep", "b_fi_confirm_2");
-		List<LazyDynaMap> fi = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> fi = baseDao.getObjectsBySql(fsp);
 
 		// 采购部 时间
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_DAHUOTIMELYRATE_BY_SQL);
 		fsp.set("wfStep", "b_ppc_confirm_3");
-		List<LazyDynaMap> pur = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> pur = baseDao.getObjectsBySql(fsp);
 
 		// 技术部 时间
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_DAHUOTIMELYRATE_BY_SQL);
 		fsp.set("wfStep", "b_pur_confirm_4");
-		List<LazyDynaMap> it = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> it = baseDao.getObjectsBySql(fsp);
 
 		// 核价中心 时间
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_DAHUOTIMELYRATE_BY_SQL);
 		fsp.set("wfStep", "b_ppc_confirm_5");
-		List<LazyDynaMap> heJia = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> heJia = baseDao.getObjectsBySql(fsp);
 
 		// MR部门 时间
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_DAHUOTIMELYRATE_BY_SQL);
 		fsp.set("wfStep", "b_qc_confirm_6");
-		List<LazyDynaMap> mr = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> mr = baseDao.getObjectsBySql(fsp);
 		// times
 		// max(wf_real_finish) wf_real_finish, 最后完成时间
 		// min(wf_real_finish) f_finish, 第一次完成时间
@@ -3494,7 +3494,7 @@ public class BxAction extends Action {
 		fsp.set("type", "2");
 		fsp.set("orderBeginTime", tamp1);
 		fsp.set("orderTodayMaxTime", tamp);
-		LazyDynaMap orderToday = (LazyDynaMap) manager.getOnlyObjectBySql(fsp);
+		LazyDynaMap orderToday = (LazyDynaMap) baseDao.getOnlyObjectBySql(fsp);
 		int orderTodayCount = 0;
 		if (orderToday != null) {
 			orderTodayCount = Integer.parseInt(orderToday.get("ordertoday").toString());
@@ -3634,7 +3634,7 @@ public class BxAction extends Action {
 		// fsp.set("begin_time", "2014-07-24");
 		// fsp.set("begin_time", tamp1);
 
-		List<LazyDynaMap> basic = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> basic = baseDao.getObjectsBySql(fsp);
 
 		fsp.set(FSPBean.FSP_ORDER, " GROUP BY oa_order ORDER BY oa_order ");
 		// 得到财务提交时间
@@ -3646,42 +3646,42 @@ public class BxAction extends Action {
 		// fsp.set("f_start", tamp1);不应该只求今天开始的订单
 		// fsp.set("l_start", tamp);
 		fsp.set("wfStep", "c_fi_confirm_2");
-		List<LazyDynaMap> fi = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> fi = baseDao.getObjectsBySql(fsp);
 
 		// 技术部 时间
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_DAHUOTIMELYRATE_BY_SQL);
 		fsp.set("wfStep", "c_ppc_assign_3");
-		List<LazyDynaMap> it = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> it = baseDao.getObjectsBySql(fsp);
 
 		// 采购部 时间
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_DAHUOTIMELYRATE_BY_SQL);
 		fsp.set("wfStep", "c_fi_pay_4");
-		List<LazyDynaMap> pur = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> pur = baseDao.getObjectsBySql(fsp);
 
 		// CQC 时间
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_DAHUOTIMELYRATE_BY_SQL);
 		fsp.set("wfStep", "c_ppc_factoryMsg_5");
-		List<LazyDynaMap> cqc = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> cqc = baseDao.getObjectsBySql(fsp);
 
 		// MQC(QC) 时间
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_DAHUOTIMELYRATE_BY_SQL);
 		fsp.set("wfStep", "c_qc_cutting_6");
-		List<LazyDynaMap> mqc = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> mqc = baseDao.getObjectsBySql(fsp);
 
 		// QA 提交时间
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_DAHUOTIMELYRATE_BY_SQL);
 		fsp.set("wfStep", "c_ppc_confirm_7");
-		List<LazyDynaMap> qa = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> qa = baseDao.getObjectsBySql(fsp);
 
 		// fi2 确认尾款
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_DAHUOTIMELYRATE_BY_SQL);
 		fsp.set("wfStep", "c_qc_printing_8");
-		List<LazyDynaMap> fi2 = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> fi2 = baseDao.getObjectsBySql(fsp);
 
 		// qa2 发货
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_DAHUOTIMELYRATE_BY_SQL);
 		fsp.set("wfStep", "c_ppc_confirm_9");
-		List<LazyDynaMap> qa2 = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> qa2 = baseDao.getObjectsBySql(fsp);
 
 		// times
 		// max(wf_real_finish) wf_real_finish, 最后完成时间
@@ -3968,7 +3968,7 @@ public class BxAction extends Action {
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_NEW_ORDER_ADD_BY_SQL);
 		fsp.set("orderBeginTime", tamp1);
 		fsp.set("orderTodayMaxTime", tamp);
-		LazyDynaMap orderToday = (LazyDynaMap) manager.getOnlyObjectBySql(fsp);
+		LazyDynaMap orderToday = (LazyDynaMap) baseDao.getOnlyObjectBySql(fsp);
 		int orderTodayCount = 0;
 		if (orderToday != null) {
 			orderTodayCount = Integer.parseInt(orderToday.get("ordertoday").toString());
@@ -4230,7 +4230,7 @@ public class BxAction extends Action {
 		fsp = new FSPBean();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_STEP_ORDER_COUNT_BY_SQL);
 		fsp.set("type", 3);
-		stepCount = manager.getObjectsBySql(fsp);
+		stepCount = baseDao.getObjectsBySql(fsp);
 		// 4.计算各个部门的工作及时率
 		float daoZhangTotal = 0;
 		float daoZhangRate = 0;
@@ -4388,7 +4388,7 @@ public class BxAction extends Action {
 		fsp = new FSPBean();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_STEP_ORDER_COUNT_BY_SQL);
 		fsp.set("type", 2);
-		stepCount = manager.getObjectsBySql(fsp);
+		stepCount = baseDao.getObjectsBySql(fsp);
 		float dingJinTotal = 0;
 		float dingJinRate = 0;
 		float mianLiaoTotal = 0;
@@ -5516,11 +5516,11 @@ public class BxAction extends Action {
 		}
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.PROCESSORDER);
 		fsp.set("id", this.oaOrderDetail.getId());
-		bean = manager.getOnlyObjectBySql(fsp);
+		bean = baseDao.getOnlyObjectBySql(fsp);
 		OaOrder oaOrder = null;
 		if (null != bean && null != bean.get("id")) {
 			int oa_order = (Integer) bean.get("oa_order");
-			oaOrder = (OaOrder) manager.getObject(OaOrder.class, oa_order);
+			oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, oa_order);
 		}
 		bean.set("orderDetail", "true");
 		if (null != oaOrder && null != oaOrder.getId()) {
@@ -5629,7 +5629,7 @@ public class BxAction extends Action {
 			// fspBean.set(FSPBean.FSP_ORDER, " order by inx desc");
 			// LazyDynaMap map = manager.getOnlyObjectBySql(fspBean);
 			// bean.set("relatedOrderDetailId", map.get("id"));
-			OaOrder order = (OaOrder) manager.getObject(OaOrder.class, oaOrder.getRelatedOrderId());
+			OaOrder order = (OaOrder) baseDao.getObject(OaOrder.class, oaOrder.getRelatedOrderId());
 			if (null != order) {
 				bean.set("relatedOrderDetailId", order.getOaOrderDetail());
 			}
@@ -5816,7 +5816,7 @@ public class BxAction extends Action {
 		FSPBean fspBean = new FSPBean();
 		fspBean.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_OA_ORG);
 		fspBean.set("admin", WebUtil.getCurrentLoginBx().getLoginName());
-		LazyDynaMap map = manager.getOnlyObjectBySql(fspBean);
+		LazyDynaMap map = baseDao.getOnlyObjectBySql(fspBean);
 		if (null == map || null == map.get("id")) { // 查询不到，则没有，存0
 			bean.set("isAssign", 0);
 		} else {
@@ -5832,7 +5832,7 @@ public class BxAction extends Action {
 
 		// 查询是否有提前中止订单的权限
 		int orgId = WebUtil.getCurrentLoginBx().getOaOrg();
-		OaOrg oaOrg = (OaOrg) manager.getObject(OaOrg.class, orgId);
+		OaOrg oaOrg = (OaOrg) baseDao.getObject(OaOrg.class, orgId);
 		if (null != oaOrg && "ppc".equals(oaOrg.getName())) {
 			bean.set("isFinish", 1);
 		}
@@ -5854,7 +5854,7 @@ public class BxAction extends Action {
 			String isChoose = Struts2Utils.getParameter("isChoose");// 是否为关联订单操作
 			// 关联定的时，查询关联订单详情
 			if (StringUtils.isNotEmpty(isChoose)) {
-				OaOrder order = (OaOrder) manager.getObject(OaOrder.class, Integer.parseInt(orderIdStr));
+				OaOrder order = (OaOrder) baseDao.getObject(OaOrder.class, Integer.parseInt(orderIdStr));
 				resMap.put("chooseOaOrder", order);
 			}
 			getOrderSize(orderSizeIdStr, resMap); // 获取订单尺码数量
@@ -5902,7 +5902,7 @@ public class BxAction extends Action {
 		Long craftTime = Long.parseLong(Struts2Utils.getParameter("craftTime"));
 		Long standardTime = Long.parseLong(Struts2Utils.getParameter("standardTime"));
 		String productTime = Struts2Utils.getParameter("productTime");
-		OaOrder order = (OaOrder) manager.getObject(OaOrder.class, orderId);
+		OaOrder order = (OaOrder) baseDao.getObject(OaOrder.class, orderId);
 		Timestamp feedingTime = null;
 		if (StringUtils.isNotBlank(productTime)) {
 			Timestamp ptime = new Timestamp(DateUtil.parseDate(productTime).getTime() + (order.getPreproductDays() == null ? 0 : order.getPreproductDays()) * 24 * 60 * 60 * 1000);
@@ -5938,7 +5938,7 @@ public class BxAction extends Action {
 				throw e;
 			}
 			// 获取订单基本信息
-			OaOrderNum oaOrderNum = (OaOrderNum) manager.getObject(OaOrderNum.class, orderSizeId);
+			OaOrderNum oaOrderNum = (OaOrderNum) baseDao.getObject(OaOrderNum.class, orderSizeId);
 			if (null != oaOrderNum && null != oaOrderNum.getId()) {
 				String title[] = oaOrderNum.getTitle().split("-");
 				String numInfo[] = oaOrderNum.getNumInfo().split(",");
@@ -6002,7 +6002,7 @@ public class BxAction extends Action {
 		try { // 判断订单Id是否填写正确
 			orderId = Integer.parseInt(orderIdStr);
 			// 获取订单基本信息
-			OaOrder oaOrder1 = (OaOrder) manager.getObject(OaOrder.class, orderId);
+			OaOrder oaOrder1 = (OaOrder) baseDao.getObject(OaOrder.class, orderId);
 			if (null != oaOrder1 && null != oaOrder1.getId()) {
 				// 判断订单在哪一步，然后调用对应的方法
 				boolean res = false;
@@ -6047,7 +6047,7 @@ public class BxAction extends Action {
 				// 处理流程，流转到下一步
 				if (res && "true".equals(processOrder)) {
 					// 查询该订单节点信息
-					OaOrderDetail oaOrderDetail = (OaOrderDetail) manager.getObject(OaOrderDetail.class, oaOrder1.getOaOrderDetail());
+					OaOrderDetail oaOrderDetail = (OaOrderDetail) baseDao.getObject(OaOrderDetail.class, oaOrder1.getOaOrderDetail());
 					// 样衣打版第六个流程节点（MR确认）不写Excel，排除在外
 					if (!"b_qc_confirm_6".equals(oaOrder1.getWfStep()) && !"c_qc_printing_8".equals(oaOrder1.getWfStep()) && !"c_ppc_confirm_9".equals(oaOrder1.getWfStep())) {
 						oaOrderDetail.setAttachment(createExcelByOrderId(oaOrder1.getId()));
@@ -6060,8 +6060,8 @@ public class BxAction extends Action {
 					}
 					if ("c_ppc_confirm_7".equals(oaOrder1.getWfStep())) {// 如果是qa节点确认流转后 如果财务节点的支付方式3:7 或者 月结 是财务节点自动流转到物流节点
 						if ("3:7".equals(oaOrder1.getPayType()) || "月结".equals(oaOrder1.getPayType()) || "月结30天".equals(oaOrder1.getPayType())) {
-							oaOrder1 = (OaOrder) manager.getObject(OaOrder.class, oaOrder1.getId());
-							oaOrderDetail = (OaOrderDetail) manager.getObject(OaOrderDetail.class, oaOrder1.getOaOrderDetail());
+							oaOrder1 = (OaOrder) baseDao.getObject(OaOrder.class, oaOrder1.getId());
+							oaOrderDetail = (OaOrderDetail) baseDao.getObject(OaOrderDetail.class, oaOrder1.getOaOrderDetail());
 							oaOrderDetail.setWorker("");
 							BizUtil.nextStep(oaOrderDetail);
 						}
@@ -6147,9 +6147,9 @@ public class BxAction extends Action {
 
 				// update by 张华 2015-01-16
 				// 查询订单尺码和关联订单尺码是否一样，一样则直接复制关联订单技术节点尺寸表，不一样则不复制
-				OaOrderNum oaOrderNum = (OaOrderNum) manager.getObject(OaOrderNum.class, oaOrder1.getOaOrderNumId());
-				OaOrder relatedOrder = (OaOrder) manager.getObject(OaOrder.class, relatedOrderId);
-				OaOrderNum relatedOrderNum = (OaOrderNum) manager.getObject(OaOrderNum.class, relatedOrder.getOaOrderNumId());
+				OaOrderNum oaOrderNum = (OaOrderNum) baseDao.getObject(OaOrderNum.class, oaOrder1.getOaOrderNumId());
+				OaOrder relatedOrder = (OaOrder) baseDao.getObject(OaOrder.class, relatedOrderId);
+				OaOrderNum relatedOrderNum = (OaOrderNum) baseDao.getObject(OaOrderNum.class, relatedOrder.getOaOrderNumId());
 				boolean ifCopySize = false;
 				String copySize = "'";
 				if (oaOrderNum.getTitle().equals(relatedOrderNum.getTitle())) {
@@ -6320,10 +6320,10 @@ public class BxAction extends Action {
 	 * @param mrMemo
 	 */
 	private void saveOaOrderDetail(Integer oaOrderDetail, String mrMemo) throws Exception {
-		OaOrderDetail oaDetail = (OaOrderDetail) manager.getObject(OaOrderDetail.class, oaOrderDetail);
+		OaOrderDetail oaDetail = (OaOrderDetail) baseDao.getObject(OaOrderDetail.class, oaOrderDetail);
 		oaDetail.setOtherFile(this.oaOrderDetail.getOtherFile()); // 保存上传附件
 		oaDetail.setContent(mrMemo); // 保存mr备注
-		manager.saveObject(oaDetail);
+		baseDao.saveObject(oaDetail);
 	}
 
 	/**
@@ -6377,7 +6377,7 @@ public class BxAction extends Action {
 			for (String materialId : materialIds) {
 				try {
 					int id = Integer.parseInt(materialId);
-					OaMaterialList oaMaterialList = (OaMaterialList) manager.getObject(OaMaterialList.class, id);
+					OaMaterialList oaMaterialList = (OaMaterialList) baseDao.getObject(OaMaterialList.class, id);
 					if (null != oaMaterialList && null != oaMaterialList.getId()) {
 						delObject(oaMaterialList);
 					}
@@ -6404,7 +6404,7 @@ public class BxAction extends Action {
 			for (String cusMaterialId : cusMaterialIds) {
 				try {
 					int id = Integer.parseInt(cusMaterialId);
-					OaCusMaterialList oaCusMaterialList = (OaCusMaterialList) manager.getObject(OaCusMaterialList.class, id);
+					OaCusMaterialList oaCusMaterialList = (OaCusMaterialList) baseDao.getObject(OaCusMaterialList.class, id);
 					if (null != oaCusMaterialList && null != oaCusMaterialList.getId()) {
 						delObject(oaCusMaterialList);
 					}
@@ -6503,9 +6503,9 @@ public class BxAction extends Action {
 	// update by 张华 2015-01-20
 	private void saveClothesSize(OaOrder oaOrder) throws Exception {
 		oaClothesSize.setOaOrderId(oaOrder.getId());
-		manager.saveObject(oaClothesSize);
+		baseDao.saveObject(oaClothesSize);
 		oaOrder.setSampleSize(oaClothesSize.getSampleSize());
-		manager.saveObject(oaOrder);
+		baseDao.saveObject(oaOrder);
 	}
 
 	/**
@@ -6518,7 +6518,7 @@ public class BxAction extends Action {
 	 */
 	// update by 张华 2015-01-20
 	private void saveManegeInfo(int orderDetailId) throws Exception {
-		OaOrderDetail oaOrderDetail = (OaOrderDetail) manager.getObject(OaOrderDetail.class, orderDetailId);
+		OaOrderDetail oaOrderDetail = (OaOrderDetail) baseDao.getObject(OaOrderDetail.class, orderDetailId);
 		if (StringUtils.isNotBlank(this.oaOrderDetail.getOtherFile())) {
 			oaOrderDetail.setOtherFile(this.oaOrderDetail.getOtherFile());
 		}
@@ -6533,7 +6533,7 @@ public class BxAction extends Action {
 		if (null != this.oaOrderDetail.getWorkTime()) {
 			oaOrderDetail.setWorkTime(this.oaOrderDetail.getWorkTime());
 		}
-		manager.saveObject(oaOrderDetail);
+		baseDao.saveObject(oaOrderDetail);
 	}
 
 	/**
@@ -6546,7 +6546,7 @@ public class BxAction extends Action {
 			Timestamp tamp = new Timestamp(now.getTime());
 			oaTracke.setTime(tamp);
 			oaTracke.setUser(WebUtil.getCurrentLoginBx().getLoginName());
-			manager.saveObject(oaTracke);
+			baseDao.saveObject(oaTracke);
 			resMap.put("oaTrackeUser", oaTracke.getUser());
 			resMap.put("oaTrackeTime", DateUtil.formatDate(oaTracke.getTime()));
 			resMap.put("code", 0);
@@ -6570,7 +6570,7 @@ public class BxAction extends Action {
 	// update by 张华 2015-01-20
 	private void saveProcessExplain(int orderId) throws Exception {
 		oaProcessExplain.setOaOrderId(orderId);
-		manager.saveObject(oaProcessExplain);
+		baseDao.saveObject(oaProcessExplain);
 	}
 
 	/**
@@ -6590,7 +6590,7 @@ public class BxAction extends Action {
 				if (StringUtils.isNotEmpty(delId)) {
 					try {
 						int id = Integer.parseInt(delId);
-						OaClothesSizeDetail oaClothesSizeDetail = (OaClothesSizeDetail) manager.getObject(OaClothesSizeDetail.class, id);
+						OaClothesSizeDetail oaClothesSizeDetail = (OaClothesSizeDetail) baseDao.getObject(OaClothesSizeDetail.class, id);
 						if (null != oaClothesSizeDetail && null != oaClothesSizeDetail.getId()) {
 							delObject(oaClothesSizeDetail);
 						}
@@ -6654,20 +6654,20 @@ public class BxAction extends Action {
 					}
 					if (orderNumFlag) {
 						if (null != ml && null != ml.getId()) {
-							OaMaterialList oml = (OaMaterialList) manager.getObject(OaMaterialList.class, ml.getId());
+							OaMaterialList oml = (OaMaterialList) baseDao.getObject(OaMaterialList.class, ml.getId());
 							oml.setMaterialProp(ml.getMaterialProp());
 							oml.setMaterialName(ml.getMaterialName());
 							oml.setType(ml.getType());
 							oml.setColor(ml.getColor());
-							manager.saveObject(oml);
+							baseDao.saveObject(oml);
 						} else {
 							ml.setOaOrderId(orderId);
-							manager.saveObject(ml);
+							baseDao.saveObject(ml);
 						}
 						// 保存大货的用料说明信息
 						OaDaHuoInfo odi = oaDaHuoInfos.get(i);
 						if (null != odi && null != odi.getId()) { // 说明已存在
-							OaDaHuoInfo oaDaHuoInfo = (OaDaHuoInfo) manager.getObject(OaDaHuoInfo.class, odi.getId()); // 先查询
+							OaDaHuoInfo oaDaHuoInfo = (OaDaHuoInfo) baseDao.getObject(OaDaHuoInfo.class, odi.getId()); // 先查询
 							// 设置新的数据到oaDaHuoInfo
 							oaDaHuoInfo.setBuffon(odi.getBuffon()); // 布封
 							oaDaHuoInfo.setUnitNum(odi.getUnitNum()); // 单件用量
@@ -6676,10 +6676,10 @@ public class BxAction extends Action {
 							// if (null == oaDaHuoInfo || null == oaDaHuoInfo.getId()) {
 							// oaDaHuoInfo.setOaMaterialList(ml.getId()); // 用料表Id
 							// }
-							manager.saveObject(oaDaHuoInfo);
+							baseDao.saveObject(oaDaHuoInfo);
 						} else { // 新数据，直接保存
 							odi.setOaMaterialList(ml.getId());
-							manager.saveObject(odi);
+							baseDao.saveObject(odi);
 						}
 					}
 				}
@@ -6702,20 +6702,20 @@ public class BxAction extends Action {
 					}
 					if (orderNumFlag) {
 						if (null != ml && null != ml.getId()) {
-							OaMaterialList oml = (OaMaterialList) manager.getObject(OaMaterialList.class, ml.getId());
+							OaMaterialList oml = (OaMaterialList) baseDao.getObject(OaMaterialList.class, ml.getId());
 							oml.setMaterialProp(ml.getMaterialProp());
 							oml.setMaterialName(ml.getMaterialName());
 							oml.setType(ml.getType());
 							oml.setColor(ml.getColor());
-							manager.saveObject(oml);
+							baseDao.saveObject(oml);
 						} else {
 							ml.setOaOrderId(orderId);
-							manager.saveObject(ml);
+							baseDao.saveObject(ml);
 						}
 						// 保存打板的用料说明信息
 						OaDaBanInfo odi = oaDaBanInfos.get(i);
 						if (null != odi && null != odi.getId()) { // 说明已存在
-							OaDaBanInfo oaDaBanInfo = (OaDaBanInfo) manager.getObject(OaDaBanInfo.class, odi.getId()); // 先查询
+							OaDaBanInfo oaDaBanInfo = (OaDaBanInfo) baseDao.getObject(OaDaBanInfo.class, odi.getId()); // 先查询
 							// 设置新的数据到oaDaHuoInfo
 							oaDaBanInfo.setBuffon(odi.getBuffon()); // 布封
 							oaDaBanInfo.setUnitNum(odi.getUnitNum()); // 单件用量
@@ -6724,10 +6724,10 @@ public class BxAction extends Action {
 							// if (null == oaDaBanInfo || null == oaDaBanInfo.getId()) {
 							// oaDaBanInfo.setOaMaterialList(ml.getId()); // 用料表Id
 							// }
-							manager.saveObject(oaDaBanInfo);
+							baseDao.saveObject(oaDaBanInfo);
 						} else { // 新数据，直接保存
 							odi.setOaMaterialList(ml.getId());
-							manager.saveObject(odi);
+							baseDao.saveObject(odi);
 						}
 					}
 				}
@@ -6749,9 +6749,9 @@ public class BxAction extends Action {
 				if (StringUtils.isNotBlank(delId)) {
 					try {
 						int id = Integer.parseInt(delId);
-						OaDaHuoInfo oaDaHuoInfo = (OaDaHuoInfo) manager.getObject(OaDaHuoInfo.class, id);
+						OaDaHuoInfo oaDaHuoInfo = (OaDaHuoInfo) baseDao.getObject(OaDaHuoInfo.class, id);
 						if (null != oaDaHuoInfo && null != oaDaHuoInfo.getId()) {
-							manager.delObject(oaDaHuoInfo);
+							baseDao.delObject(oaDaHuoInfo);
 						}
 					} catch (NumberFormatException e) {
 						// TODO Auto-generated catch block
@@ -6776,9 +6776,9 @@ public class BxAction extends Action {
 				if (StringUtils.isNotBlank(delId)) {
 					try {
 						int id = Integer.parseInt(delId);
-						OaDaBanInfo oaDaBanInfo = (OaDaBanInfo) manager.getObject(OaDaBanInfo.class, id);
+						OaDaBanInfo oaDaBanInfo = (OaDaBanInfo) baseDao.getObject(OaDaBanInfo.class, id);
 						if (null != oaDaBanInfo && null != oaDaBanInfo.getId()) {
-							manager.delObject(oaDaBanInfo);
+							baseDao.delObject(oaDaBanInfo);
 						}
 					} catch (NumberFormatException e) {
 						// TODO Auto-generated catch block
@@ -6822,7 +6822,7 @@ public class BxAction extends Action {
 							// 保存大货采购清单
 							OaDaHuoInfo odi = oaDaHuoInfos.get(i);
 							if (null != ml && null != ml.getId()) {
-								OaMaterialList oml = (OaMaterialList) manager.getObject(OaMaterialList.class, ml.getId());
+								OaMaterialList oml = (OaMaterialList) baseDao.getObject(OaMaterialList.class, ml.getId());
 								oml.setMaterialProp(ml.getMaterialProp());
 								oml.setMaterialName(ml.getMaterialName());
 								oml.setType(ml.getType());
@@ -6833,13 +6833,13 @@ public class BxAction extends Action {
 								oml.setPosition(ml.getPosition());
 								// 面料需要保存order_num
 								oml.setOrderNum(ml.getOrderNum());
-								manager.saveObject(oml);
+								baseDao.saveObject(oml);
 							} else {
 								ml.setOaOrderId(orderId);
-								manager.saveObject(ml);
+								baseDao.saveObject(ml);
 							}
 							if (null != odi && null != odi.getId()) { // 说明已存在
-								OaDaHuoInfo oaDaHuoInfo = (OaDaHuoInfo) manager.getObject(OaDaHuoInfo.class, odi.getId()); // 先查询
+								OaDaHuoInfo oaDaHuoInfo = (OaDaHuoInfo) baseDao.getObject(OaDaHuoInfo.class, odi.getId()); // 先查询
 								// 设置新的数据到oaDaHuoInfo
 								oaDaHuoInfo.setBuffon(odi.getBuffon()); // 布封
 								oaDaHuoInfo.setUnitNum(odi.getUnitNum()); // 标准单件用量
@@ -6859,10 +6859,10 @@ public class BxAction extends Action {
 								if (null == oaDaHuoInfo || null == oaDaHuoInfo.getId()) {
 									oaDaHuoInfo.setOaMaterialList(ml.getId()); // 用料表Id
 								}
-								manager.saveObject(oaDaHuoInfo);
+								baseDao.saveObject(oaDaHuoInfo);
 							} else { // 新数据，直接保存
 								odi.setOaMaterialList(ml.getId());
-								manager.saveObject(odi);
+								baseDao.saveObject(odi);
 							}
 						}
 					}
@@ -6886,7 +6886,7 @@ public class BxAction extends Action {
 					}
 					if (orderNumFlag) {
 						if (null != ml && null != ml.getId()) {
-							OaMaterialList oml = (OaMaterialList) manager.getObject(OaMaterialList.class, ml.getId());
+							OaMaterialList oml = (OaMaterialList) baseDao.getObject(OaMaterialList.class, ml.getId());
 							oml.setMaterialProp(ml.getMaterialProp());
 							oml.setMaterialName(ml.getMaterialName());
 							oml.setType(ml.getType());
@@ -6895,15 +6895,15 @@ public class BxAction extends Action {
 							oml.setSupplierAddr(ml.getSupplierAddr());
 							oml.setSupplierTel(ml.getSupplierTel());
 							oml.setPosition(ml.getPosition());
-							manager.saveObject(oml);
+							baseDao.saveObject(oml);
 						} else {
 							ml.setOaOrderId(orderId);
-							manager.saveObject(ml);
+							baseDao.saveObject(ml);
 						}
 						// 保存大货采购清单
 						OaDaBanInfo odi = oaDaBanInfos.get(i);
 						if (null != odi && null != odi.getId()) { // 说明已存在
-							OaDaBanInfo oaDaBanInfo = (OaDaBanInfo) manager.getObject(OaDaBanInfo.class, odi.getId()); // 先查询
+							OaDaBanInfo oaDaBanInfo = (OaDaBanInfo) baseDao.getObject(OaDaBanInfo.class, odi.getId()); // 先查询
 							// 设置新的数据到oaDaBanInfo
 							oaDaBanInfo.setWeight(odi.getWeight());// 克重
 							oaDaBanInfo.setComponent(odi.getComponent());// 成分
@@ -6920,10 +6920,10 @@ public class BxAction extends Action {
 							if (null == oaDaBanInfo || null == oaDaBanInfo.getId()) {
 								oaDaBanInfo.setOaMaterialList(ml.getId()); // 用料表Id
 							}
-							manager.saveObject(oaDaBanInfo);
+							baseDao.saveObject(oaDaBanInfo);
 						} else { // 新数据，直接保存
 							odi.setOaMaterialList(ml.getId());
-							manager.saveObject(odi);
+							baseDao.saveObject(odi);
 						}
 					}
 				}
@@ -6986,7 +6986,7 @@ public class BxAction extends Action {
 			fsp.set("oa_order", orderId);
 			fsp.set("wf_step", "4");
 			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_DETAIL_WORKER);
-			bean = manager.getOnlyObjectBySql(fsp);
+			bean = baseDao.getOnlyObjectBySql(fsp);
 			if (bean != null) {
 				resMap.put("worker", bean.get("worker") != null ? bean.get("worker") : "");
 			}
@@ -7019,7 +7019,7 @@ public class BxAction extends Action {
 			fsp.set("orderId", orderId);
 			fsp.set("node", nodeStr);
 			fsp.set(FSPBean.FSP_ORDER, " order by id desc");
-			tampMap = manager.getOnlyObjectBySql(fsp);
+			tampMap = baseDao.getOnlyObjectBySql(fsp);
 		}
 
 		Map oaOrderDetail = new HashMap();
@@ -7076,7 +7076,7 @@ public class BxAction extends Action {
 				oaOrderDetail.put("real_time", "");// 实际耗时
 			}
 			// 计算当前订单流入该节点的耗时= （订单流入日期-下单日期+1）÷（交货日期-下单日期+1）*100%
-			OaOrder oaOrder = (OaOrder) manager.getObject(OaOrder.class, orderId);
+			OaOrder oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, orderId);
 			Date begin_time = oaOrder.getBeginTime();
 			Date except_finish = oaOrder.getExceptFinish();
 			// 查询出最早的订单流入该节点的日期
@@ -7150,7 +7150,7 @@ public class BxAction extends Action {
 		fspBean.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_TRACKE_BY_EQL);
 		fspBean.set("orderId", orderId);
 		fspBean.set("node", node);
-		List<OaTracke> oaTrackes = manager.getObjectsByEql(fspBean);
+		List<OaTracke> oaTrackes = baseDao.getObjectsByEql(fspBean);
 		List<Map> oaTrackeList = new ArrayList<Map>();
 		for (OaTracke tracke : oaTrackes) {
 			Map mapOaTrackes = new HashMap();
@@ -7180,7 +7180,7 @@ public class BxAction extends Action {
 		FSPBean fsp = new FSPBean();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_PROCESS_EXPLAIN_BY_EQL);
 		fsp.set("orderId", orderId);
-		OaProcessExplain processExplain = (OaProcessExplain) manager.getOnlyObjectByEql(fsp);
+		OaProcessExplain processExplain = (OaProcessExplain) baseDao.getOnlyObjectByEql(fsp);
 		resMap.put("processExplain", processExplain);
 	}
 
@@ -7198,7 +7198,7 @@ public class BxAction extends Action {
 		FSPBean fspBean = new FSPBean();
 		fspBean.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_CLOTHES_SIZE_DETAIL_BY_SQL);
 		fspBean.set("orderId", orderId);
-		List<LazyDynaMap> list = manager.getObjectsBySql(fspBean);
+		List<LazyDynaMap> list = baseDao.getObjectsBySql(fspBean);
 		List<OaClothesSizeDetail> oaClothesSizeDetails = copyOaClothesSizeDetailList2Vo(list);
 		resMap.put("oaClothesSizeDetails", oaClothesSizeDetails);
 	}
@@ -7242,7 +7242,7 @@ public class BxAction extends Action {
 		FSPBean fsp = new FSPBean();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_ORDER_NUM_TITLE_BY_EQL);
 		fsp.set("orderNumId", orderNum);
-		OaOrderNum oaOrderNum = (OaOrderNum) manager.getOnlyObjectByEql(fsp);
+		OaOrderNum oaOrderNum = (OaOrderNum) baseDao.getOnlyObjectByEql(fsp);
 		resMap.put("oaOrderNum", oaOrderNum);
 	}
 
@@ -7260,7 +7260,7 @@ public class BxAction extends Action {
 		FSPBean fsp = new FSPBean();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_CLOTHES_SIZE_BY_EQL);
 		fsp.set("orderId", orderId);
-		OaClothesSize oaClothesSize = (OaClothesSize) manager.getOnlyObjectByEql(fsp);
+		OaClothesSize oaClothesSize = (OaClothesSize) baseDao.getOnlyObjectByEql(fsp);
 		resMap.put("oaClothesSize", oaClothesSize);
 	}
 
@@ -7284,7 +7284,7 @@ public class BxAction extends Action {
 			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_DA_HUO_INFO_BY_SQL);
 		}
 		fsp.set("orderId", orderId);
-		List<LazyDynaMap> oaDaBanInfos = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> oaDaBanInfos = baseDao.getObjectsBySql(fsp);
 		for (LazyDynaMap map : oaDaBanInfos) {
 			Map tamp = new HashMap();
 			tamp.put("material_prop", (null == map.get("material_prop")) ? "" : map.get("material_prop"));
@@ -7348,7 +7348,7 @@ public class BxAction extends Action {
 		params.put("31,0", oaOrder.getMemo());
 		params.put("43,1", oaOrder.getSendtype());
 		// 数量信息
-		OaOrderNum oaOrderNum = (OaOrderNum) manager.getObject(OaOrderNum.class, oaOrder.getOaOrderNumId());
+		OaOrderNum oaOrderNum = (OaOrderNum) baseDao.getObject(OaOrderNum.class, oaOrder.getOaOrderNumId());
 		String[] titles = oaOrderNum.getTitle().split("-");
 		if (titles.length > 7)
 			throw new RuntimeException("the oa_order_num info is invalid!");
@@ -7413,7 +7413,7 @@ public class BxAction extends Action {
 		fsp.set("oa_order", oaOrder.getId());
 		fsp.set("wf_step", (Integer.parseInt(node)) + "");
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_DETAIL_EXCEL);
-		bean = manager.getOnlyObjectBySql(fsp);
+		bean = baseDao.getOnlyObjectBySql(fsp);
 		params.put(40 + cusSize + ",1", bean.get("operator") == null ? "" : bean.get("operator").toString());
 
 		int ct = 0;
@@ -7468,7 +7468,7 @@ public class BxAction extends Action {
 		fsp = new FSPBean();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_ORDER_NUM_TITLE_BY_EQL);
 		fsp.set("orderNumId", oaOrder.getOaOrderNumId());
-		OaOrderNum oaOrderNum = (OaOrderNum) manager.getOnlyObjectByEql(fsp);
+		OaOrderNum oaOrderNum = (OaOrderNum) baseDao.getOnlyObjectByEql(fsp);
 		t = 0;
 		for (String title : oaOrderNum.getTitle().split("-")) {
 			params.put("19," + (1 + t++), title);
@@ -7478,7 +7478,7 @@ public class BxAction extends Action {
 		fsp = new FSPBean();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_CLOTHES_SIZE_BY_EQL);
 		fsp.set("orderId", oaOrder.getId());
-		OaClothesSize oaClothesSize = (OaClothesSize) manager.getOnlyObjectByEql(fsp);
+		OaClothesSize oaClothesSize = (OaClothesSize) baseDao.getOnlyObjectByEql(fsp);
 		if (null != oaClothesSize) {
 			params.put("18,5", oaClothesSize.getUnit());
 			params.put("18,8", oaClothesSize.getSampleSize());
@@ -7487,7 +7487,7 @@ public class BxAction extends Action {
 		fsp = new FSPBean();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_CLOTHES_SIZE_DETAIL_BY_SQL);
 		fsp.set("orderId", oaOrder.getId());
-		List<LazyDynaMap> OaClothesSizeDetailList = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> OaClothesSizeDetailList = baseDao.getObjectsBySql(fsp);
 		List<OaClothesSizeDetail> oaClothesSizeDetails = copyOaClothesSizeDetailList2Vo(OaClothesSizeDetailList);
 
 		int size = 12;
@@ -7522,7 +7522,7 @@ public class BxAction extends Action {
 		fsp = new FSPBean();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_PROCESS_EXPLAIN_BY_EQL);
 		fsp.set("orderId", oaOrder.getId());
-		OaProcessExplain oaProcessExplain = (OaProcessExplain) manager.getOnlyObjectByEql(fsp);
+		OaProcessExplain oaProcessExplain = (OaProcessExplain) baseDao.getOnlyObjectByEql(fsp);
 		if (null != oaProcessExplain) {
 			params.put((32 + size - 12) + ",0", "特殊工艺要求：" + oaProcessExplain.getSpecialArt());
 			params.put((33 + size - 12) + ",0", "裁床工艺要求：" + oaProcessExplain.getCutArt());
@@ -7543,7 +7543,7 @@ public class BxAction extends Action {
 		fsp.set("orderId", oaOrder.getId());
 		fsp.set("node", "3");
 		fsp.set(FSPBean.FSP_ORDER, " order by id desc");
-		bean = manager.getOnlyObjectBySql(fsp);
+		bean = baseDao.getOnlyObjectBySql(fsp);
 		params.put((42 + size - 12) + ",0", "备注：" + (bean.get("content") == null ? "" : bean.get("content").toString()));
 
 		String node = oaOrder.getWfStep();
@@ -7552,7 +7552,7 @@ public class BxAction extends Action {
 		fsp.set("oa_order", oaOrder.getId());
 		fsp.set("wf_step", node);
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_DETAIL_EXCEL);
-		bean = manager.getOnlyObjectBySql(fsp);
+		bean = baseDao.getOnlyObjectBySql(fsp);
 		params.put((43 + size - 12) + ",1", bean.get("operator") == null ? "" : bean.get("operator").toString());
 		params.put((43 + size - 12) + ",8", bean.get("wf_real_start") == null ? "" : DateUtil.formatDate((java.sql.Timestamp) bean.get("wf_real_start")));
 		list.add(dynaRow);
@@ -7578,7 +7578,7 @@ public class BxAction extends Action {
 		fsp.set("oa_order", oaOrder.getId());
 		fsp.set("wf_step", node);
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_DETAIL_EXCEL);
-		bean = manager.getOnlyObjectBySql(fsp);
+		bean = baseDao.getOnlyObjectBySql(fsp);
 		params.put("1,12", bean.get("worker") == null ? "" : bean.get("worker").toString());
 		params.put("1,16", bean.get("work_time") == null ? "" : DateUtil.formatDate((java.sql.Timestamp) bean.get("work_time")));
 
@@ -7653,7 +7653,7 @@ public class BxAction extends Action {
 		fsp.set("oa_order", oaOrder.getId());
 		fsp.set("wf_step", node);
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_DETAIL_EXCEL);
-		bean = manager.getOnlyObjectBySql(fsp);
+		bean = baseDao.getOnlyObjectBySql(fsp);
 		// params.put("1,10",(String)bean.get("operator"));
 		params.put("1,12", bean.get("wf_real_start") == null ? "" : DateUtil.formatDate((java.sql.Timestamp) bean.get("wf_real_start")));
 		params.put("27,0,38,4", (String) bean.get("other_file"));
@@ -7682,7 +7682,7 @@ public class BxAction extends Action {
 		fsp = new FSPBean();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_COST_BY_EQL);
 		fsp.set("orderId", oaOrder.getId());
-		OaCost oaCost = (OaCost) manager.getOnlyObjectByEql(fsp);
+		OaCost oaCost = (OaCost) baseDao.getOnlyObjectByEql(fsp);
 		if (oaCost != null) {
 			params.put(22 + ",9", oaCost.getMGoodsPrice() == null ? "" : decimalFormat.format(oaCost.getMGoodsPrice()));
 			params.put(22 + ",10", oaCost.getMShearPrice() == null ? "" : decimalFormat.format(oaCost.getMShearPrice()));
@@ -7835,7 +7835,7 @@ public class BxAction extends Action {
 		FSPBean fspBean = new FSPBean();
 		fspBean.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_SEWING_NUM_INFO_BY_EQL);
 		fspBean.set("oaOrderId", oaOrder.getId());
-		OaTpe oaTpe = (OaTpe) manager.getOnlyObjectByEql(fspBean);
+		OaTpe oaTpe = (OaTpe) baseDao.getOnlyObjectByEql(fspBean);
 		params.put("2,8", oaTpe.getSewingFactory().toString());
 		params.put("12,8", oaTpe.getSewingTotal().toString());
 		String[] infos = oaTpe.getSewingNum().split(",");
@@ -7855,7 +7855,7 @@ public class BxAction extends Action {
 		fsp.set("oa_order", oaOrder.getId());
 		fsp.set("wf_step", "6");
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_DETAIL_EXCEL);
-		bean = manager.getOnlyObjectBySql(fsp);
+		bean = baseDao.getOnlyObjectBySql(fsp);
 		params.put("14,1", bean.get("content") == null ? "" : bean.get("content").toString());
 		params.put("17,1", bean.get("worker") == null ? "" : bean.get("worker").toString());
 		params.put("17,8", bean.get("wf_real_start") == null ? "" : DateUtil.formatDate((java.sql.Timestamp) bean.get("wf_real_start")));
@@ -7875,7 +7875,7 @@ public class BxAction extends Action {
 		fsp = new FSPBean();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_QA_INFO);
 		fsp.set("oaOrderId", oaOrder.getId());
-		bean = manager.getOnlyObjectBySql(fsp);
+		bean = baseDao.getOnlyObjectBySql(fsp);
 
 		if (bean.get("qualified_num_info") != null) {
 			String[] numInfos = bean.get("qualified_num_info").toString().split(",");
@@ -7901,7 +7901,7 @@ public class BxAction extends Action {
 		fsp.set("oa_order", oaOrder.getId());
 		fsp.set("wf_step", "7");
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_DETAIL_EXCEL);
-		bean = manager.getOnlyObjectBySql(fsp);
+		bean = baseDao.getOnlyObjectBySql(fsp);
 		params.put("24,0", bean.get("content") == null ? "" : bean.get("content").toString());
 		params.put("27,1", bean.get("worker") == null ? "" : bean.get("worker").toString());
 		params.put("27,7", bean.get("wf_real_start") == null ? "" : DateUtil.formatDate((java.sql.Timestamp) bean.get("wf_real_start")));
@@ -7989,7 +7989,7 @@ public class BxAction extends Action {
 	 */
 	public String createExcelByOrderId(Integer orderId) {
 		String baseExcelFile = Struts2Utils.getSession().getServletContext().getRealPath(ResourceUtil.getString("baseExcelFile"));
-		oaOrder = (OaOrder) manager.getObject(OaOrder.class, orderId);
+		oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, orderId);
 		if (null == oaOrder || null == oaOrder.getId()) {
 			throw new RuntimeException("the parameter oaOrder.id is null!");
 		}
@@ -8010,7 +8010,7 @@ public class BxAction extends Action {
 				fsp.set("oa_order", oaOrder.getId());
 				fsp.set("wf_step", (Integer.parseInt(node) - 1) + "");
 				fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_DETAIL_EXCEL);
-				bean = manager.getOnlyObjectBySql(fsp);
+				bean = baseDao.getOnlyObjectBySql(fsp);
 				String lastExcelFile = (String) bean.get("attachment");
 				if (StringUtils.isNotBlank(lastExcelFile)) {
 					Struts2Utils.getResponse().setHeader("Content-Disposition", "attachment;filename=" + PathUtil.url2FileName(lastExcelFile));
@@ -8052,7 +8052,7 @@ public class BxAction extends Action {
 		Struts2Utils.getResponse().setContentType("Application/msexcel");
 		List<Map<String, Object>> list = null;
 		String baseExcelFile = Struts2Utils.getSession().getServletContext().getRealPath(ResourceUtil.getString("baseExcelFile"));
-		oaOrder = (OaOrder) manager.getObject(OaOrder.class, oaOrder.getId());
+		oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, oaOrder.getId());
 		// order当前所在节点
 		String nowNode = oaOrder.getWfStep();
 		nowNode = nowNode.substring(nowNode.lastIndexOf("_") + 1, nowNode.length());
@@ -8067,7 +8067,7 @@ public class BxAction extends Action {
 			fsp.set("oa_order", oaOrder.getId());
 			fsp.set("wf_step", node);
 			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_DETAIL_EXCEL);
-			bean = manager.getOnlyObjectBySql(fsp);
+			bean = baseDao.getOnlyObjectBySql(fsp);
 			String file = (String) bean.get("attachment");
 			if (StringUtils.isNotBlank(file)) {
 				Struts2Utils.getResponse().setHeader("Content-Disposition", "attachment;filename=" + PathUtil.url2FileName(file));
@@ -8090,7 +8090,7 @@ public class BxAction extends Action {
 			fsp.set("oa_order", oaOrder.getId());
 			fsp.set("wf_step", (Integer.parseInt(node) - 1) + "");
 			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_DETAIL_EXCEL);
-			bean = manager.getOnlyObjectBySql(fsp);
+			bean = baseDao.getOnlyObjectBySql(fsp);
 			String file = (String) bean.get("attachment");
 			if (StringUtils.isBlank(file)) {
 				throw new RuntimeException("the orderDetail <" + bean.get("id") + "> attachment field is not exists!");
@@ -8161,7 +8161,7 @@ public class BxAction extends Action {
 		if ("2".equals(type)) {
 			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_DA_BAN_MATERIAL_PURCHASE_DESC_BY_SQL);
 			fsp.set("orderId", orderId);
-			List<LazyDynaMap> oaDaBanInfos = manager.getObjectsBySql(fsp);
+			List<LazyDynaMap> oaDaBanInfos = baseDao.getObjectsBySql(fsp);
 			for (LazyDynaMap map : oaDaBanInfos) {
 				Map tamp = new HashMap();
 				tamp.put("marterialListId", (null == map.get("materiallistid")) ? "" : map.get("materiallistid"));
@@ -8193,7 +8193,7 @@ public class BxAction extends Action {
 			// .查询大货采购清单的信息
 			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_DA_HUO_MATERIAL_PURCHASE_DESC_BY_SQL);
 			fsp.set("orderId", orderId);
-			List<LazyDynaMap> oaDaBanInfos = manager.getObjectsBySql(fsp);
+			List<LazyDynaMap> oaDaBanInfos = baseDao.getObjectsBySql(fsp);
 			for (LazyDynaMap map : oaDaBanInfos) {
 				Map tamp = new HashMap();
 				tamp.put("marterialListId", (null == map.get("materiallistid")) ? "" : map.get("materiallistid"));
@@ -8308,7 +8308,7 @@ public class BxAction extends Action {
 		fsp = new FSPBean();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_COUNT_DETAIL);
 		fsp.set("orderId", orderId);
-		LazyDynaMap map = manager.getOnlyObjectBySql(fsp);
+		LazyDynaMap map = baseDao.getOnlyObjectBySql(fsp);
 		if (null != map.get("wf_step_num") && (Long) map.get("wf_step_num") >= 2) {
 			fleg = false;
 		}
@@ -8318,39 +8318,39 @@ public class BxAction extends Action {
 			oaMaterialList.setOaOrderId(orderId);
 			oaMaterialList.setMaterialName("唛头");
 			oaMaterialList.setType("辅料");
-			manager.saveObject(oaMaterialList);
+			baseDao.saveObject(oaMaterialList);
 			OaDaBanInfo oaDaBanInfo = new OaDaBanInfo();
 			oaDaBanInfo.setOaMaterialList(oaMaterialList.getId());
 			oaDaBanInfo.setUnitNum(2.00f);
 			oaDaBanInfo.setCpPrice(0.05f);
 			oaDaBanInfo.setCpTotalPrice(0.10f);
-			manager.saveObject(oaDaBanInfo);
+			baseDao.saveObject(oaDaBanInfo);
 
 			// 保存第二个默认数据
 			OaMaterialList oaMaterialList2 = new OaMaterialList();
 			oaMaterialList2.setOaOrderId(orderId);
 			oaMaterialList2.setMaterialName("包装物料");
 			oaMaterialList2.setType("辅料");
-			manager.saveObject(oaMaterialList2);
+			baseDao.saveObject(oaMaterialList2);
 			OaDaBanInfo oaDaBanInfo2 = new OaDaBanInfo();
 			oaDaBanInfo2.setOaMaterialList(oaMaterialList2.getId());
 			oaDaBanInfo2.setUnitNum(1.00f);
 			oaDaBanInfo2.setCpPrice(0.50f);
 			oaDaBanInfo2.setCpTotalPrice(0.50f);
-			manager.saveObject(oaDaBanInfo2);
+			baseDao.saveObject(oaDaBanInfo2);
 
 			// 保存第三个默认数据
 			OaMaterialList oaMaterialList3 = new OaMaterialList();
 			oaMaterialList3.setOaOrderId(orderId);
 			oaMaterialList3.setMaterialName("车缝线");
 			oaMaterialList3.setType("辅料");
-			manager.saveObject(oaMaterialList3);
+			baseDao.saveObject(oaMaterialList3);
 			OaDaBanInfo oaDaBanInfo3 = new OaDaBanInfo();
 			oaDaBanInfo3.setOaMaterialList(oaMaterialList3.getId());
 			oaDaBanInfo3.setUnitNum(1.00f);
 			oaDaBanInfo3.setCpPrice(0.30f);
 			oaDaBanInfo3.setCpTotalPrice(0.30f);
-			manager.saveObject(oaDaBanInfo3);
+			baseDao.saveObject(oaDaBanInfo3);
 		}
 	}
 
@@ -8380,7 +8380,7 @@ public class BxAction extends Action {
 			// 4.查询异动跟踪信息
 			getTracke(orderId, node, resMap);
 
-			resMap.put("oaOrder", manager.getObject(OaOrder.class, orderId));
+			resMap.put("oaOrder", baseDao.getObject(OaOrder.class, orderId));
 			resMap.put("code", 0);
 			resMap.put("msg", "核价节点-信息查询成功");
 		} catch (Exception e) {
@@ -8406,7 +8406,7 @@ public class BxAction extends Action {
 		FSPBean fsp = new FSPBean();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_COST_BY_EQL);
 		fsp.set("orderId", orderId);
-		OaCost oaCost = (OaCost) manager.getOnlyObjectByEql(fsp);
+		OaCost oaCost = (OaCost) baseDao.getOnlyObjectByEql(fsp);
 		resMap.put("oaCost", oaCost);
 	}
 
@@ -8424,7 +8424,7 @@ public class BxAction extends Action {
 		FSPBean fsp = new FSPBean();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_MATERIAL_COST_BY_SQL);
 		fsp.set("orderId", orderId);
-		List<LazyDynaMap> mcs = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> mcs = baseDao.getObjectsBySql(fsp);
 		List<Map> rList = new ArrayList<Map>();
 		for (LazyDynaMap map : mcs) {
 			Map tamp = new HashMap();
@@ -8490,7 +8490,7 @@ public class BxAction extends Action {
 	private void saveCost(int orderId) throws Exception {
 		if (null != oaCost) {
 			oaCost.setOaOrderId(orderId);
-			manager.saveObject(oaCost);
+			baseDao.saveObject(oaCost);
 		}
 	}
 
@@ -8520,12 +8520,12 @@ public class BxAction extends Action {
 					}
 					if (orderNumFlag && null == ml.getId()) {
 						ml.setOaOrderId(orderId);
-						manager.saveObject(ml);
+						baseDao.saveObject(ml);
 					}
 					// 保存打版采购清单
 					OaDaBanInfo odi = oaDaBanInfos.get(i);
 					if (null != odi && null != odi.getId()) { // 说明已存在
-						OaDaBanInfo oaDaBanInfo = (OaDaBanInfo) manager.getObject(OaDaBanInfo.class, odi.getId()); // 先查询
+						OaDaBanInfo oaDaBanInfo = (OaDaBanInfo) baseDao.getObject(OaDaBanInfo.class, odi.getId()); // 先查询
 						// 设置新的数据到oaDaBanInfo
 						// oaDaBanInfo.setBuffon(odi.getBuffon()); // 布封
 						oaDaBanInfo.setUnitNum(odi.getUnitNum());// 标准单件用量
@@ -8538,10 +8538,10 @@ public class BxAction extends Action {
 						if (null == oaDaBanInfo || null == oaDaBanInfo.getId()) {
 							oaDaBanInfo.setOaMaterialList(ml.getId()); // 用料表Id
 						}
-						manager.saveObject(oaDaBanInfo);
+						baseDao.saveObject(oaDaBanInfo);
 					} else { // 新数据，直接保存
 						odi.setOaMaterialList(ml.getId());
-						manager.saveObject(odi);
+						baseDao.saveObject(odi);
 					}
 				}
 			}
@@ -8594,7 +8594,7 @@ public class BxAction extends Action {
 		FSPBean fsp = new FSPBean();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_MR_CONFIRM_BY_EQL);
 		fsp.set("orderId", orderId);
-		OaMrConfirm oaMrConfirm = (OaMrConfirm) manager.getOnlyObjectByEql(fsp);
+		OaMrConfirm oaMrConfirm = (OaMrConfirm) baseDao.getOnlyObjectByEql(fsp);
 		resMap.put("oaMrConfirm", oaMrConfirm);
 	}
 
@@ -8632,7 +8632,7 @@ public class BxAction extends Action {
 	private void saveMrConfirm(int oaOrderId) throws Exception {
 		if (null != oaMrConfirm) {
 			oaMrConfirm.setOaOrder(oaOrderId);
-			manager.saveObject(oaMrConfirm);
+			baseDao.saveObject(oaMrConfirm);
 		}
 	}
 
@@ -8643,7 +8643,7 @@ public class BxAction extends Action {
 	public String orderRelationList() {
 		fsp.setPageFlag(FSPBean.ACTIVE_PAGINATION);
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_RELATION_ORDER_BY_SQL);
-		relationOrderList = manager.getObjectsBySql(fsp);
+		relationOrderList = baseDao.getObjectsBySql(fsp);
 		processPageInfo(getObjectsCountSql(fsp));
 
 		return "orderRelationList";
@@ -8715,7 +8715,7 @@ public class BxAction extends Action {
 				resMap.put("code", 2102);
 				resMap.put("msg", "订单ID填写错误");
 			}
-			OaOrder oaOrder = oaOrder = (OaOrder) manager.getObject(OaOrder.class, orderId);
+			OaOrder oaOrder = oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, orderId);
 			if (oaOrder != null) {
 				resMap.put("oaOrder", oaOrder); // 订单信息
 				getMaterialList2(orderId, resMap); // 用料清单
@@ -8752,7 +8752,7 @@ public class BxAction extends Action {
 				resMap.put("code", 2102);
 				resMap.put("msg", "订单ID填写错误");
 			}
-			OaOrder oaOrder = oaOrder = (OaOrder) manager.getObject(OaOrder.class, orderId);
+			OaOrder oaOrder = oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, orderId);
 			if (oaOrder != null) {
 				resMap.put("oaOrder", oaOrder); // 订单信息
 				getQAInfo(orderId, resMap);
@@ -8780,7 +8780,7 @@ public class BxAction extends Action {
 			fsp = new FSPBean();
 			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_QA_INFO);
 			fsp.set("oaOrderId", orderId);
-			bean = manager.getOnlyObjectBySql(fsp);
+			bean = baseDao.getOnlyObjectBySql(fsp);
 			if (bean != null) {
 				if (bean.get("title") != null) {
 					String[] title = ((String) bean.get("title")).split("-");
@@ -8827,7 +8827,7 @@ public class BxAction extends Action {
 			FSPBean fspBean = new FSPBean();
 			fspBean.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_SEWING_NUM_INFO_BY_EQL);
 			fspBean.set("oaOrderId", orderId);
-			OaTpe oaTpe = (OaTpe) manager.getOnlyObjectByEql(fspBean);
+			OaTpe oaTpe = (OaTpe) baseDao.getOnlyObjectByEql(fspBean);
 
 			resMap.put("oaTpe", oaTpe);
 			resMap.put("code", 0);
@@ -8862,7 +8862,7 @@ public class BxAction extends Action {
 			FSPBean fsp = new FSPBean();
 			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_DA_HUO_MATERIAL_PURCHASE_DESC_BY_SQL);
 			fsp.set("orderId", orderId + "");
-			List<LazyDynaMap> oaDaBanInfos = manager.getObjectsBySql(fsp);
+			List<LazyDynaMap> oaDaBanInfos = baseDao.getObjectsBySql(fsp);
 			for (LazyDynaMap map : oaDaBanInfos) {
 				Map tamp = new HashMap();
 				tamp.put("marterialListId", (null == map.get("materiallistid")) ? "" : map.get("materiallistid"));
@@ -8940,7 +8940,7 @@ public class BxAction extends Action {
 				FSPBean fsp = new FSPBean();
 				fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_CQC_BY_SQL);
 				fsp.set("oaOrderId", oaMaterialList.get(i).getId());
-				beans = manager.getObjectsBySql(fsp);
+				beans = baseDao.getObjectsBySql(fsp);
 				if (beans != null && beans.size() > 0) {
 					for (int j = 0; j < beans.size(); j++) {
 						OaCqc c = new OaCqc();
@@ -8972,7 +8972,7 @@ public class BxAction extends Action {
 		FSPBean fsp = new FSPBean();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_QITAO_BY_SQL);
 		fsp.set("oaOrderId", orderId);
-		beans = manager.getObjectsBySql(fsp);
+		beans = baseDao.getObjectsBySql(fsp);
 		if (beans != null && beans.size() > 0) {
 			OaQiTao qitao = new OaQiTao();
 			qitao.setId(Integer.parseInt(getNollObject(beans.get(0).get("id"))));
@@ -8991,7 +8991,7 @@ public class BxAction extends Action {
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_QITAODETAIL_BY_SQL);
 		fsp.set("oaQitaoId", qitaoId);
 		List<OaQiTaoDetail> oaQitaoDetailList = new ArrayList<OaQiTaoDetail>();
-		beans = manager.getObjectsBySql(fsp);
+		beans = baseDao.getObjectsBySql(fsp);
 		if (beans != null && beans.size() > 0) {
 			for (int i = 0; i < beans.size(); i++) {
 				OaQiTaoDetail c = new OaQiTaoDetail();
@@ -9134,7 +9134,7 @@ public class BxAction extends Action {
 		FSPBean fspBean = new FSPBean();
 		fspBean.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_SEWING_NUM_INFO_BY_EQL);
 		fspBean.set("oaOrderId", orderId);
-		OaTpe oaTpe = (OaTpe) manager.getOnlyObjectByEql(fspBean);
+		OaTpe oaTpe = (OaTpe) baseDao.getOnlyObjectByEql(fspBean);
 
 		String sewingNum = (null == oaTpe ? "" : oaTpe.getSewingNum()); // 车缝数量
 		if (StringUtils.isBlank(sewingNum)) { // 判断车缝数量是否为空，为空则拼接尺码数量的颜色
@@ -9200,7 +9200,7 @@ public class BxAction extends Action {
 		try {
 			if (oaCqcLists != null && oaCqcLists.size() > 0) {
 				for (int i = 0; i < oaCqcLists.size(); i++) {
-					manager.saveObject(oaCqcLists.get(i));
+					baseDao.saveObject(oaCqcLists.get(i));
 					/*
 					 * if(oaCqcLists.get(i).getId() != null && oaCqcLists.get(i).getId() > 0){ OaCqc cqc = (OaCqc)manager.getObject(OaCqc.class, oaCqcLists.get(i).getId()); if(cqc != null){
 					 * if(oaCqcLists.get(i).getApplyUnitNum() != null && oaCqcLists.get(i).getApplyUnitNum() > 0){ cqc.setApplyUnitNum(oaCqcLists.get(i).getApplyUnitNum()); }
@@ -9235,7 +9235,7 @@ public class BxAction extends Action {
 		boolean flag = true;
 		try {
 			if (oaQa != null) {
-				manager.saveObject(oaQa);
+				baseDao.saveObject(oaQa);
 			}
 			saveOaOrderDetail();
 		} catch (Exception e) {
@@ -9256,9 +9256,9 @@ public class BxAction extends Action {
 		if (delQiTaoDetails != null && !"".equals(delQiTaoDetails)) {
 			String str[] = delQiTaoDetails.split(",");
 			for (String s : str) {
-				OaQiTaoDetail qtd = (OaQiTaoDetail) manager.getObject(OaQiTaoDetail.class, Integer.parseInt(s.trim()));
+				OaQiTaoDetail qtd = (OaQiTaoDetail) baseDao.getObject(OaQiTaoDetail.class, Integer.parseInt(s.trim()));
 				if (qtd != null) {
-					manager.delObject(qtd);
+					baseDao.delObject(qtd);
 				}
 			}
 		}
@@ -9272,13 +9272,13 @@ public class BxAction extends Action {
 	// update by 张华 2015-01-20
 	private void saveOaOrderDetail() throws Exception {
 		if (oaOrderDetail != null && oaOrderDetail_id != null && !"".equals(oaOrderDetail_id)) {
-			OaOrderDetail odetail = (OaOrderDetail) manager.getObject(OaOrderDetail.class, Integer.parseInt(oaOrderDetail_id));
+			OaOrderDetail odetail = (OaOrderDetail) baseDao.getObject(OaOrderDetail.class, Integer.parseInt(oaOrderDetail_id));
 			if (odetail != null) {
 				odetail.setContent(oaOrderDetail.getContent());
 				odetail.setOtherFile(oaOrderDetail.getOtherFile());
 				odetail.setWorker(oaOrderDetail.getWorker());
 				odetail.setWorkTime(this.oaOrderDetail.getWorkTime());
-				manager.saveObject(odetail);
+				baseDao.saveObject(odetail);
 			}
 		}
 	}
@@ -9306,7 +9306,7 @@ public class BxAction extends Action {
 				if (oaQiTaoDetails.get(i) != null) {
 					oaQiTaoDetails.get(i).setOaQiTaoId(qt.getId());
 					oaQiTaoDetails.get(i).setCreateTime(new Date());
-					manager.saveObject(oaQiTaoDetails.get(i));
+					baseDao.saveObject(oaQiTaoDetails.get(i));
 				}
 			}
 		}
@@ -9322,7 +9322,7 @@ public class BxAction extends Action {
 		if (oaDaHuoInfos != null && oaDaHuoInfos.size() > 0) {
 			for (int i = 0; i < oaDaHuoInfos.size(); i++) {
 				if (oaDaHuoInfos.get(i).getId() != null && oaDaHuoInfos.get(i).getId() > 0) {
-					OaDaHuoInfo dahuo = (OaDaHuoInfo) manager.getObject(OaDaHuoInfo.class, oaDaHuoInfos.get(i).getId()); // 获取原始数据
+					OaDaHuoInfo dahuo = (OaDaHuoInfo) baseDao.getObject(OaDaHuoInfo.class, oaDaHuoInfos.get(i).getId()); // 获取原始数据
 					if (dahuo != null) {
 						if (oaDaHuoInfos.get(i).getUnitNum() != null) {
 							dahuo.setUnitNum(oaDaHuoInfos.get(i).getUnitNum()); // 修改单间用量
@@ -9333,7 +9333,7 @@ public class BxAction extends Action {
 						if (oaDaHuoInfos.get(i).getNeedNum() != null) {
 							dahuo.setNeedNum(oaDaHuoInfos.get(i).getNeedNum()); // 修改需求单位
 						}
-						manager.saveObject(dahuo);
+						baseDao.saveObject(dahuo);
 					}
 				}
 			}
@@ -9354,7 +9354,7 @@ public class BxAction extends Action {
 			 * manager.saveObject(oaQiTao); } }else{ manager.saveObject(oaQiTao); }
 			 */
 			// 以上注释代码 页面值非空验证 现在页面可以为空 则注释了 如果需求改了要求非空了 可以放开处理
-			manager.saveObject(oaQiTao);
+			baseDao.saveObject(oaQiTao);
 			saveQitaoDetail(oaQiTao);
 		}
 	}
@@ -9373,7 +9373,7 @@ public class BxAction extends Action {
 			String wfStepIndex = Struts2Utils.getParameter("wfStepIndex");// 获取正在处理的订单节点index
 			String node = "9"; // 当前节点的index，后面查询需要
 			int orderId = Integer.valueOf(orderIds);
-			OaOrder oaOrder = (OaOrder) manager.getObject(OaOrder.class, orderId);
+			OaOrder oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, orderId);
 
 			if (oaOrder != null) {
 				resMap.put("oaOrder", oaOrder);
@@ -9409,7 +9409,7 @@ public class BxAction extends Action {
 		List<OaLogistics> logList = new ArrayList<OaLogistics>();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_OALOGISTICS_BY_SQL);
 		fsp.set("oaOrderId", orderId);
-		beans = manager.getObjectsBySql(fsp);
+		beans = baseDao.getObjectsBySql(fsp);
 		if (beans != null && beans.size() > 0) {
 			for (LazyDynaBean bean : beans) {
 				OaLogistics logistics = new OaLogistics();
@@ -9441,7 +9441,7 @@ public class BxAction extends Action {
 
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_OAQA_BY_SQL);
 		fsp.set("oaOrderId", orderId);
-		beans = manager.getObjectsBySql(fsp);
+		beans = baseDao.getObjectsBySql(fsp);
 		if (beans != null && beans.size() > 0) {
 			for (LazyDynaBean bean : beans) {
 				OaQa oqa = new OaQa();
@@ -9463,7 +9463,7 @@ public class BxAction extends Action {
 		Map resMap = new HashMap();
 		try {
 			if (oaLogistics != null) {
-				manager.saveObject(oaLogistics);
+				baseDao.saveObject(oaLogistics);
 				resMap.put("oaLogistics", oaLogistics);
 			}
 		} catch (Exception e) {
@@ -9494,9 +9494,9 @@ public class BxAction extends Action {
 		if (logCheckBoxVal != null && !"".equals(logCheckBoxVal)) {
 			String str[] = logCheckBoxVal.split(",");
 			for (String s : str) {
-				OaLogistics qtd = (OaLogistics) manager.getObject(OaLogistics.class, Integer.parseInt(s.trim()));
+				OaLogistics qtd = (OaLogistics) baseDao.getObject(OaLogistics.class, Integer.parseInt(s.trim()));
 				if (qtd != null) {
-					manager.delObject(qtd);
+					baseDao.delObject(qtd);
 				}
 			}
 		}
@@ -9516,7 +9516,7 @@ public class BxAction extends Action {
 			if (null != oaOrder || null != oaOrder.getId()) {
 				// 终止订单原因不能为空
 				if (StringUtils.isNotBlank(oaOrder.getTerminateMemo())) {
-					OaOrder oaOrder1 = (OaOrder) manager.getObject(OaOrder.class, oaOrder.getId());
+					OaOrder oaOrder1 = (OaOrder) baseDao.getObject(OaOrder.class, oaOrder.getId());
 
 					oaOrder1.setStatus("1"); // 更改订单状态实现终止订单
 					oaOrder1.setTerminateMemo(oaOrder.getTerminateMemo()); // 终止订单原因
@@ -10485,4 +10485,5 @@ public class BxAction extends Action {
 				+ (timeIndex - 12) + ")/86400,\"[h]小时mm分\"),\"\")", "Expression", "0").setCellColor(color));
 		return color;
 	}
+	
 }

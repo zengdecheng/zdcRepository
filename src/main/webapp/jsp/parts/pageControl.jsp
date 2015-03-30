@@ -15,11 +15,12 @@
 
 	<s:if test="fsp.recordCount > fsp.pageSize">
 		<%
-		int span = 1;
-		org.use.base.FSPBean fsp = (org.use.base.FSPBean) request.getAttribute("fsp");
-		int current = fsp.getPageNo();
-		int count = (int) (fsp.getRecordCount() + fsp.getPageSize() - 1) / fsp.getPageSize();
-		if ((current - span) > 1) {%>
+			int span = 1;
+				com.xbd.erp.base.pojo.sys.FSPBean fsp = (com.xbd.erp.base.pojo.sys.FSPBean) request.getAttribute("fsp");
+				int current = fsp.getPageNo();
+				int count = (int) (fsp.getRecordCount() + fsp.getPageSize() - 1) / fsp.getPageSize();
+				if ((current - span) > 1) {
+		%>
 			<div class="page-item"><a href="javascript:void(0)" pageno='<%=1%>'><%=1%></a></div>
 			<%if ((current - span) > 2) {%>
 				<span class="dot"></span>

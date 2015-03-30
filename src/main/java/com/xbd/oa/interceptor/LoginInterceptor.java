@@ -70,9 +70,6 @@ public class LoginInterceptor extends AbstractInterceptor {
 			}
 			return NEED_LOGIN_BX;
 		}
-		if (action.startsWith("st")) {
-			return invocation.invoke();
-		}
 		if (action.startsWith("ext")) {
 			return invocation.invoke();
 		}

@@ -12,39 +12,43 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import net.sf.json.JSONArray;
 
 import org.apache.commons.beanutils.LazyDynaMap;
 import org.apache.commons.lang.StringUtils;
-import org.use.base.FSPBean;
-import org.use.base.action.Action;
-import org.use.base.annotation.EJB;
-import org.use.base.manager.Manager;
-import org.use.base.utils.base.DateUtils;
 
-import com.xbd.oa.business.BaseManager;
+import com.xbd.erp.base.action.Action;
+import com.xbd.erp.base.dao.BaseDao;
+import com.xbd.erp.base.pojo.sys.FSPBean;
 import com.xbd.oa.dao.impl.ExtDaoImpl;
 import com.xbd.oa.utils.BizUtil;
 import com.xbd.oa.utils.ConstantUtil;
 import com.xbd.oa.utils.DateUtil;
+import com.xbd.oa.utils.DateUtils;
 import com.xbd.oa.utils.Struts2Utils;
 import com.xbd.oa.utils.WebUtil;
 import com.xbd.oa.utils.XbdBuffer;
 import com.xbd.oa.vo.OaOrder;
 import com.xbd.oa.vo.OaOrderNum;
 
+@SuppressWarnings("all")
 public class ExternalAction extends Action {
 	private static final long serialVersionUID = 1L;
+	
+	private BaseDao baseDao;
+	public BaseDao getBaseDao() {
+		return baseDao;
+	}
+	@Resource(name="extDaoImpl")
+	public void setBaseDao(BaseDao baseDao) {
+		this.baseDao = baseDao;
+	}
 
-	@EJB(name = "com.xbd.oa.business.impl.ExtManagerImpl")
-	private BaseManager manager;
 	private OaOrder oaOrder;
 	private OaOrderNum oaOrderNum;
 	private LazyDynaMap bean;
-
-	public Manager getBiz() {
-		return manager;
-	}
 
 	/******************* NPS所需接口开始 ********************/
 	/**
@@ -63,7 +67,7 @@ public class ExternalAction extends Action {
 			fsp.set(FSPBean.FSP_QUERY_BY_XML, ExtDaoImpl.LIST_OA_ORDER_BY_SQL);
 			fsp.set(FSPBean.FSP_ORDER, " order by oo.begin_time desc ");
 			fsp.set("cus_code", cusCode);
-			List<LazyDynaMap> beans = manager.getObjectsBySql(fsp); // 查询order
+			List<LazyDynaMap> beans = baseDao.getObjectsBySql(fsp); // 查询order
 			List list = new ArrayList();
 
 			// 对查询到的order进行解析、计算偏差等
@@ -128,7 +132,7 @@ public class ExternalAction extends Action {
 		} else {
 			try {
 				orderId = Integer.parseInt(orderIdStr);
-				OaOrder oaOrder = (OaOrder) manager.getObject(OaOrder.class, orderId);
+				OaOrder oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, orderId);
 				if (null == oaOrder || null == oaOrder.getId()) {
 					resMap.put("code", 1103);
 					resMap.put("msg", "订单ID不存在");
@@ -249,7 +253,7 @@ public class ExternalAction extends Action {
 		} else {
 			try {
 				orderId = Integer.parseInt(orderIdStr);
-				OaOrder oaOrder = (OaOrder) manager.getObject(OaOrder.class, orderId);
+				OaOrder oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, orderId);
 				if (null == oaOrder || null == oaOrder.getId()) {
 					resMap.put("code", 1203);
 					resMap.put("msg", "订单ID不存在");
@@ -639,7 +643,7 @@ public class ExternalAction extends Action {
 		} else {
 			fsp.set(FSPBean.FSP_QUERY_BY_XML, ExtDaoImpl.GET_OA_ORDER_BY_SELL_ORDER_CODE);
 			fsp.set("sellOrderId", sellOrderId);
-			bean = manager.getOnlyObjectBySql(fsp);
+			bean = baseDao.getOnlyObjectBySql(fsp);
 			if (null != bean) {
 				resMap.put("code", 2002);
 				resMap.put("msg", "该订单已经存在！");
@@ -659,7 +663,7 @@ public class ExternalAction extends Action {
 								processDifinitionKey = ConstantUtil.WORKFLOW_KEY_PROCESS3;
 								break;
 							}
-							manager.saveObject(oaOrderNum);
+							baseDao.saveObject(oaOrderNum);
 							int orderNum = oaOrderNum.getId();
 							oaOrder.setOaOrderNumId(orderNum);
 							// update by 张华 2014-12-24
@@ -700,7 +704,7 @@ public class ExternalAction extends Action {
 							} else {
 								oaOrder.setStandardTime(117 * 60 * 60 * 1000L);
 							}
-							manager.saveObject(oaOrder);
+							baseDao.saveObject(oaOrder);
 
 							// TODO 保存之后会有 orderid 可以提醒下一流程操作人
 							BizUtil.startOrderWf(processDifinitionKey, oaOrder.getSales(), oaOrder);// 启动工作流、
@@ -784,7 +788,7 @@ public class ExternalAction extends Action {
 	 */
 	public void getCategory() {
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, ExtDaoImpl.GET_CATEGORY_BY_SQL);
-		List<LazyDynaMap> beans = manager.getObjectsBySql(fsp);
+		List<LazyDynaMap> beans = baseDao.getObjectsBySql(fsp);
 		String result = "";
 		try {
 			if (null != beans && beans.size() > 0) {
@@ -823,4 +827,6 @@ public class ExternalAction extends Action {
 	public void setBean(LazyDynaMap bean) {
 		this.bean = bean;
 	}
+
+
 }

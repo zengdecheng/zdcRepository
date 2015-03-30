@@ -1,16 +1,12 @@
 package com.xbd.oa.dao.impl;
 
-import java.util.List;
+import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
+import com.xbd.erp.base.dao.impl.BaseDaoImpl;
 
-import org.use.base.FSPBean;
-import org.use.base.dao.impl.DaoHibernate;
-
-import com.xbd.oa.dao.BaseDao;
-
-@SuppressWarnings("serial")
-public class ExtDaoImpl extends DaoHibernate implements BaseDao {
+@SuppressWarnings("all")
+@Repository("extDaoImpl")
+public class ExtDaoImpl extends BaseDaoImpl {
 	/**
 	 * 获取订单列表
 	 */
@@ -23,40 +19,15 @@ public class ExtDaoImpl extends DaoHibernate implements BaseDao {
 	/**
 	 * 根据crm的订单编号查询oa_order中是否有该订单
 	 */
-	public static final String GET_OA_ORDER_BY_SELL_ORDER_CODE="get_oa_order_by_sell_order_code";
+	public static final String GET_OA_ORDER_BY_SELL_ORDER_CODE = "get_oa_order_by_sell_order_code";
 	/**
 	 * cmr获取品类列表
 	 */
-	public static final String GET_CATEGORY_BY_SQL="get_category_by_sql";
+	public static final String GET_CATEGORY_BY_SQL = "get_category_by_sql";
 
-	@Override
-	public String parseFspBean2Eql(FSPBean fsp, List params) {
-		throw new RuntimeException(
-				"this is base dao ,not call parseFspBean2Eql method");
-	}
-
-	@Override
-	public String parseFspBean2Sql(FSPBean fsp, List params) {
-		return null;
-	}
-
-	@Override
-	public EntityManager getEntityManager() {
-		return null;
-	}
-
-	@Override
-	public String getTableName() {
-		return "oa_staff";
-	}
 
 	@Override
 	public String getVoName() {
 		return "Ext";
-	}
-
-	@Override
-	public Class getVoClass() {
-		return null;
 	}
 }

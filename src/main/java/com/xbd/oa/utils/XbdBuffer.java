@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import net.sf.json.JSONArray;
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
@@ -13,9 +15,9 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 
 import org.apache.commons.beanutils.LazyDynaMap;
 import org.apache.commons.lang.StringUtils;
-import org.use.base.FSPBean;
 
-import com.xbd.oa.business.BaseManager;
+import com.xbd.erp.base.dao.BaseDao;
+import com.xbd.erp.base.pojo.sys.FSPBean;
 import com.xbd.oa.dao.impl.BxDaoImpl;
 import com.xbd.oa.vo.OaOrg;
 import com.xbd.oa.vo.OaStaff;
@@ -27,8 +29,16 @@ public class XbdBuffer {
 	private static Map<String, Map<String, List<LazyDynaMap>>> timeLineMap;// map的key
 																			// 组成格式,processDefinitionId+"||"+clothClass+"||"+taskDefinitionKey
 																			// lazyDynaMap<"step_duration","calculate_duration">
+	private static BaseDao baseDao;
+	
+	public BaseDao getBaseDao() {
+		return baseDao;
+	}
 
-	private static BaseManager bxMgr;
+	@Resource(name="bxDaoImpl")
+	public void setBaseDao(BaseDao baseDao) {
+		this.baseDao = baseDao;
+	}
 
 	/**
 	 * 传入数据字典类型得到数据的枚举值
@@ -188,7 +198,7 @@ public class XbdBuffer {
 	public synchronized static void refreshOaOrgList() {
 		FSPBean fsp = new FSPBean();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.List_OA_ORG_BY_EQL);
-		oaOrgList = getBxMgr().getObjectsByEql(fsp);
+		oaOrgList = baseDao.getObjectsByEql(fsp);
 	}
 
 	/**
@@ -197,7 +207,7 @@ public class XbdBuffer {
 	public synchronized static void refreshOaStaffList() {
 		FSPBean fsp = new FSPBean();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_STAFF_BY_EQL);
-		oaStaffList = getBxMgr().getObjectsByEql(fsp);
+		oaStaffList = baseDao.getObjectsByEql(fsp);
 	}
 
 	/**
@@ -207,7 +217,7 @@ public class XbdBuffer {
 		FSPBean fsp = new FSPBean();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML,
 				BxDaoImpl.LIST_OA_TIMEBASE_ENTRY_BY_SQL);
-		List<LazyDynaMap> list = getBxMgr().getObjectsBySql(fsp);
+		List<LazyDynaMap> list = baseDao.getObjectsBySql(fsp);
 		timeLineMap = new HashMap<String, Map<String, List<LazyDynaMap>>>();
 
 		List<LazyDynaMap> wfList = WorkFlowUtil.getProcessDefinitionList();
@@ -236,14 +246,7 @@ public class XbdBuffer {
 	public synchronized static void refreshDt() {
 		FSPBean fsp = new FSPBean();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_DT_BY_SQL);
-		oaDtList = getBxMgr().getObjectsBySql(fsp);
-	}
-
-	public static BaseManager getBxMgr() {
-		if (bxMgr == null) {
-			bxMgr = new com.xbd.oa.business.impl.BxManagerImpl();
-		}
-		return bxMgr;
+		oaDtList = baseDao.getObjectsBySql(fsp);
 	}
 
 	/**

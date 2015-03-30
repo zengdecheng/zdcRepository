@@ -9,16 +9,16 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.annotation.Resource;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 
 import org.apache.commons.beanutils.LazyDynaMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.use.base.FSPBean;
 
-import com.xbd.oa.business.BaseManager;
-import com.xbd.oa.business.impl.BxManagerImpl;
+import com.xbd.erp.base.dao.BaseDao;
+import com.xbd.erp.base.pojo.sys.FSPBean;
 import com.xbd.oa.dao.impl.BxDaoImpl;
 import com.xbd.oa.utils.ConstantUtil;
 import com.xbd.oa.utils.DateUtil;
@@ -34,8 +34,18 @@ import com.xbd.oa.utils.Struts2Utils;
 @WebServlet("/AutoBxServlet")
 public class AutoBxServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static BaseManager bxMgr = getBxMgr();
 	public static final Logger logger = Logger.getLogger(AutoBxServlet.class);
+	
+	private static BaseDao baseDao;
+	
+	public BaseDao getBaseDao() {
+		return baseDao;
+	}
+
+	@Resource(name="bxDaoImpl")
+	public void setBaseDao(BaseDao baseDao) {
+		this.baseDao = baseDao;
+	}
 
 	/**
 	 * 
@@ -46,20 +56,6 @@ public class AutoBxServlet extends HttpServlet {
 		bxEveryDayTask();
 	}
 
-	/**
-	 * 
-	 * @Title: getBxMgr
-	 * @Description: TODO初始化数据查询manager
-	 *
-	 * @author 张华
-	 * @return
-	 */
-	public static BaseManager getBxMgr() {
-		if (bxMgr == null) {
-			bxMgr = new BxManagerImpl();
-		}
-		return bxMgr;
-	}
 
 	/**
 	 * 
@@ -128,7 +124,7 @@ public class AutoBxServlet extends HttpServlet {
 		fspBean.set("date2", date2);
 		fspBean.set("wf_step", "c_ppc_confirm_9");
 		fspBean.set("type", "3");
-		List<LazyDynaMap> beans = bxMgr.getObjectsBySql(fspBean);
+		List<LazyDynaMap> beans = baseDao.getObjectsBySql(fspBean);
 		logger.warn("大货定时发送微信给客户，具体客户数为：" + beans.size() + "。。" + DateUtil.formatDate(new Date(), DateUtil.ALL_24H));
 
 		for (LazyDynaMap lazyDynaMap : beans) {

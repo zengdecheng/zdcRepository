@@ -4,8 +4,6 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.use.base.utils.base.FileUtils;
-
 /**
  * <B>功能简述</B><br>
  * 功能详细描述

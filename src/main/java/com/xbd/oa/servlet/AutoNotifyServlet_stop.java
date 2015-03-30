@@ -12,13 +12,14 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.annotation.Resource;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 
 import org.apache.commons.beanutils.LazyDynaMap;
-import org.use.base.FSPBean;
 
-import com.xbd.oa.business.BaseManager;
+import com.xbd.erp.base.dao.BaseDao;
+import com.xbd.erp.base.pojo.sys.FSPBean;
 import com.xbd.oa.dao.impl.BxDaoImpl;
 import com.xbd.oa.utils.BizUtil;
 import com.xbd.oa.utils.ConstantUtil;
@@ -34,9 +35,19 @@ import com.xbd.oa.vo.OaOrderDetail;
 public class AutoNotifyServlet_stop extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static Map<String, String> leaderPhone = new HashMap<String, String>();
-	private static BaseManager bxMgr = null;
 	private static SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH");
 
+	private static BaseDao baseDao;
+	
+	public BaseDao getBaseDao() {
+		return baseDao;
+	}
+
+	@Resource(name="bxDaoImpl")
+	public void setBaseDao(BaseDao baseDao) {
+		this.baseDao = baseDao;
+	}
+	
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -81,7 +92,7 @@ public class AutoNotifyServlet_stop extends HttpServlet {
 		FSPBean fsp = new FSPBean();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML,
 				BxDaoImpl.GET_OA_ORDER_DETAIL_FOR_AUTONOTIFY_BY_SQL);
-		List<LazyDynaMap> remindList = getBxMgr().getObjectsBySql(fsp);// 当前正在进行的流程
+		List<LazyDynaMap> remindList = baseDao.getObjectsBySql(fsp);// 当前正在进行的流程
 
 		for (LazyDynaMap remind : remindList) {
 			int detail_id = (int) remind.get("detail_id");// 流程id
@@ -139,7 +150,7 @@ public class AutoNotifyServlet_stop extends HttpServlet {
 		FSPBean fsp = new FSPBean();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_OA_ORDER_DETAIL_BY_EQL);
 		fsp.set("id", id);
-		OaOrderDetail ood = (OaOrderDetail) getBxMgr().getOnlyObjectByEql(fsp);
+		OaOrderDetail ood = (OaOrderDetail) baseDao.getOnlyObjectByEql(fsp);
 		if (ConstantUtil.NOTIFY_TYPE_REMIND.equals(type)) {
 			// 设置当前流程已提醒
 			ood.setSmsRemind(ConstantUtil.NOTIFYSTAFF_STATE_REMIND);
@@ -148,7 +159,7 @@ public class AutoNotifyServlet_stop extends HttpServlet {
 			// 设置当前流程超时已提醒
 			ood.setSmsTimeout(ConstantUtil.NOTIFYSTAFF_STATE_TIMEOUT);
 		}
-		bxMgr.saveObject(ood);
+		baseDao.saveObject(ood);
 	}
 
 	/**
@@ -158,7 +169,7 @@ public class AutoNotifyServlet_stop extends HttpServlet {
 		FSPBean fsp = new FSPBean();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML,
 				BxDaoImpl.GET_OA_ORG_LEADER_LINKPHONE_BY_SQL);
-		List<LazyDynaMap> leaders = getBxMgr().getObjectsBySql(fsp);
+		List<LazyDynaMap> leaders = baseDao.getObjectsBySql(fsp);
 		for (LazyDynaMap leader : leaders) {
 			if (leader.get("linkphone") != null) {
 				String orgId = leader.get("id").toString(); // 部门id
@@ -166,13 +177,6 @@ public class AutoNotifyServlet_stop extends HttpServlet {
 				leaderPhone.put(orgId, linkphone);
 			}
 		}
-	}
-
-	public static BaseManager getBxMgr() {
-		if (bxMgr == null) {
-			bxMgr = new com.xbd.oa.business.impl.BxManagerImpl();
-		}
-		return bxMgr;
 	}
 
 	public static boolean ifRunTime() {

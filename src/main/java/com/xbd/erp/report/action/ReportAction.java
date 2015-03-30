@@ -1,17 +1,29 @@
 package com.xbd.erp.report.action;
 
-import com.xbd.oa.action.BaseAction;
-import com.xbd.oa.dao.impl.BxDaoImpl;
-import com.xbd.oa.utils.Struts2Utils;
-import org.apache.commons.beanutils.LazyDynaBean;
-import org.use.base.FSPBean;
-
 import java.util.HashMap;
 import java.util.Map;
 
-public class ReportAction extends BaseAction {
+import javax.annotation.Resource;
+
+import org.apache.commons.beanutils.LazyDynaBean;
+
+import com.xbd.erp.base.action.Action;
+import com.xbd.erp.base.dao.BaseDao;
+import com.xbd.erp.base.pojo.sys.FSPBean;
+import com.xbd.oa.dao.impl.BxDaoImpl;
+import com.xbd.oa.utils.Struts2Utils;
+
+public class ReportAction extends Action {
 
 	private static final long serialVersionUID = 1L;
+	private BaseDao<?> baseDao;
+	public BaseDao<?> getBaseDao() {
+		return baseDao;
+	}
+	@Resource(name="baseDaoImpl")
+	public void setBaseDao(BaseDao<?> baseDao) {
+		this.baseDao = baseDao;
+	}
 
 
     /**
@@ -31,7 +43,7 @@ public class ReportAction extends BaseAction {
         fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_TODAY_REPORT_ORDERDETAIL_BY_SQL);
         fsp.set("type", "3");
         fsp.setStaticSqlPart(" and oa_order in ("+mapCount.get("daHuoIds")+")");
-        beans = manager.getObjectsBySql(fsp);
+        beans = baseDao.getObjectsBySql(fsp);
 
         int mrCount = 0;
 
@@ -51,7 +63,7 @@ public class ReportAction extends BaseAction {
 
     public void getToDayReportAleays(Map<String, String> mapCount){
         fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_TODAY_REPORT_BY_SQL);
-        beans = manager.getObjectsBySql(fsp);
+        beans = baseDao.getObjectsBySql(fsp);
         int orderNums = 0;
         for(LazyDynaBean lazy : beans){
             if(lazy.get("type").toString().equals("2")){
