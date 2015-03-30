@@ -15,13 +15,14 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 
 import org.apache.commons.beanutils.LazyDynaMap;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Component;
 
 import com.xbd.erp.base.dao.BaseDao;
 import com.xbd.erp.base.pojo.sys.FSPBean;
 import com.xbd.oa.dao.impl.BxDaoImpl;
 import com.xbd.oa.vo.OaOrg;
 import com.xbd.oa.vo.OaStaff;
-
+@Component
 public class XbdBuffer {
 	private static List<OaOrg> oaOrgList;
 	private static List<OaStaff> oaStaffList;

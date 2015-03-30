@@ -86,24 +86,30 @@ import com.xbd.oa.vo.OaTpe;
 import com.xbd.oa.vo.OaTracke;
 import com.xbd.oa.vo.base.CustomCell;
 
-@Results({ @Result(name = "authError", type = "redirect", location = "/authError.jsp") })
+@Results({ 
+	@Result(name = "authError", type = "redirect", location = "/authError.jsp"),
+	@Result(name = "logout", type = "redirect", location = "/admin.jsp"),
+	@Result(name = "confirmOrder", type = "redirect", location = "/bx/todo"),
+	@Result(name = "saveTimebaseConfig", type = "redirect", location = "/bx/timebaseConfig"),
+	@Result(name = "saveClothClass", type = "redirect", location = "/bx/clothClass_list")
+})
 public class BxAction extends Action {
-	
+
 	private BaseDao<?> baseDao;
-	
+
 	public BaseDao<?> getBaseDao() {
 		return baseDao;
 	}
 
-	@Resource(name="bxDaoImpl")
+	@Resource(name = "bxDaoImpl")
 	public void setBaseDao(BaseDao<?> baseDao) {
 		this.baseDao = baseDao;
 	}
-	
+
 	public String getWhb() {
 		return whb;
 	}
-	
+
 	public void setWhb(String whb) {
 		this.whb = whb;
 	}
@@ -324,10 +330,10 @@ public class BxAction extends Action {
 	private String fileFileName;
 
 	/**
-	 *
+	 * 
 	 * <B>辛巴达员工登录</B><br>
 	 * 功能详细描述
-	 *
+	 * 
 	 * @author hongliang [返回类型说明]
 	 * @see [相关类或方法]
 	 */
@@ -368,10 +374,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * <B>退出</B><br>
 	 * 功能详细描述
-	 *
+	 * 
 	 * @author hongliang
 	 * @return [返回类型说明]
 	 * @see [相关类或方法]
@@ -412,7 +418,7 @@ public class BxAction extends Action {
 		// 优先级计算
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Timestamp workTime = BizUtil.getOperatingTime(new Timestamp(System.currentTimeMillis()/1000*1000)); // 当前工作时间
+		Timestamp workTime = BizUtil.getOperatingTime(new Timestamp(System.currentTimeMillis() / 1000 * 1000)); // 当前工作时间
 		Timestamp curTime = new Timestamp(sdf.parse(df.format(new Date())).getTime());
 		for (LazyDynaMap bean : beans) {
 			counts[0] += (Integer) bean.get("want_cnt");
@@ -487,7 +493,7 @@ public class BxAction extends Action {
 			for (int i = 0; i < superList.size(); i++) {
 				LazyDynaMap bean = superList.get(i);
 				long wsd = (long) bean.get("wf_step_duration");
-				long diff = wsd - BizUtil.getWorkTimeBetween(new Timestamp(System.currentTimeMillis()/1000*1000), (Timestamp) bean.get("wf_real_start"));
+				long diff = wsd - BizUtil.getWorkTimeBetween(new Timestamp(System.currentTimeMillis() / 1000 * 1000), (Timestamp) bean.get("wf_real_start"));
 				if (diff < 0) {
 					// 超时
 					list.add(bean);
@@ -503,9 +509,9 @@ public class BxAction extends Action {
 			superList = list;// 仅超时订单
 		}
 		processPageInfo(getObjectsCountSql(fsp));
-		
+
 		fsp.set("org_name", XbdBuffer.getOrgNameById(WebUtil.getCurrentLoginBx().getOaOrg()));
-		return "order_list";
+		return "bx/order_list";
 	}
 
 	/**
@@ -557,7 +563,7 @@ public class BxAction extends Action {
 		int j = 1;
 		for (LazyDynaMap lazyMap : superList) {
 			// bean = superList.get(i);
-			Long nowDate = System.currentTimeMillis()/1000*1000;
+			Long nowDate = System.currentTimeMillis() / 1000 * 1000;
 			Long begin_time = ((Date) lazyMap.get("begin_time")).getTime();
 			Long except_finish = ((Date) lazyMap.get("except_finish")).getTime();
 
@@ -602,8 +608,7 @@ public class BxAction extends Action {
 				sheet1FileInfo.put(j + ",23", lazyMap.get("jsdel_operator") != null ? lazyMap.get("jsdel_operator") : "");// 打版技术
 
 				// 计算实际生产周期
-				if (superList.get(i).get("bqcdel_wf_real_finish") != null && !"".equals(superList.get(i).get("bqcdel_wf_real_finish")) && superList.get(i).get("mrdb_wf_real_start") != null
-						&& !"".equals(superList.get(i).get("mrdb_wf_real_start"))) {
+				if (superList.get(i).get("bqcdel_wf_real_finish") != null && !"".equals(superList.get(i).get("bqcdel_wf_real_finish")) && superList.get(i).get("mrdb_wf_real_start") != null && !"".equals(superList.get(i).get("mrdb_wf_real_start"))) {
 
 					Long actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("bqcdel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdb_wf_real_start"));
 					sheet1FileInfo.put(j + ",20", WebUtil.getTimeDisPlayExcel(actualTime));// 实际生产周期
@@ -636,8 +641,7 @@ public class BxAction extends Action {
 				}
 
 				// 计算实际订单周期
-				if (superList.get(i).get("bqcdel_wf_real_finish") != null && !"".equals(superList.get(i).get("bqcdel_wf_real_finish")) && superList.get(i).get("mrdb_wf_real_start") != null
-						&& !"".equals(superList.get(i).get("mrdb_wf_real_start"))) {
+				if (superList.get(i).get("bqcdel_wf_real_finish") != null && !"".equals(superList.get(i).get("bqcdel_wf_real_finish")) && superList.get(i).get("mrdb_wf_real_start") != null && !"".equals(superList.get(i).get("mrdb_wf_real_start"))) {
 
 					Long actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("bqcdel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdb_wf_real_start"));
 					sheet1FileInfo.put(j + ",35", WebUtil.getTimeDisPlayExcel(actualTime));// 实际生产周期
@@ -671,8 +675,7 @@ public class BxAction extends Action {
 
 				sheet1FileInfo.put(j + ",23", lazyMap.get("jshdel_operator") != null ? lazyMap.get("jshdel_operator") : "");// 大货技术
 				// 计算实际生产周期
-				if (superList.get(i).get("qadel_wf_real_finish") != null && !"".equals(superList.get(i).get("qadel_wf_real_finish")) && superList.get(i).get("mrdel_wf_real_start") != null
-						&& !"".equals(superList.get(i).get("mrdel_wf_real_start"))) {
+				if (superList.get(i).get("qadel_wf_real_finish") != null && !"".equals(superList.get(i).get("qadel_wf_real_finish")) && superList.get(i).get("mrdel_wf_real_start") != null && !"".equals(superList.get(i).get("mrdel_wf_real_start"))) {
 
 					Long actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("qadel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdel_wf_real_start"));
 					sheet1FileInfo.put(j + ",20", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 实际生产周期
@@ -704,8 +707,7 @@ public class BxAction extends Action {
 				}
 
 				// 计算实际订单周期
-				if (superList.get(i).get("wldel_wf_real_finish") != null && !"".equals(superList.get(i).get("wldel_wf_real_finish")) && superList.get(i).get("mrdel_wf_real_start") != null
-						&& !"".equals(superList.get(i).get("mrdel_wf_real_start"))) {
+				if (superList.get(i).get("wldel_wf_real_finish") != null && !"".equals(superList.get(i).get("wldel_wf_real_finish")) && superList.get(i).get("mrdel_wf_real_start") != null && !"".equals(superList.get(i).get("mrdel_wf_real_start"))) {
 					Long actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("wldel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdel_wf_real_start"));
 					sheet1FileInfo.put(j + ",35", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 实际生产周期
 				}
@@ -721,8 +723,7 @@ public class BxAction extends Action {
 			sheet1FileInfo.put(j + ",10", lazyMap.get("sewing_factory") != null ? lazyMap.get("sewing_factory") : "");// 工厂
 
 			if (lazyMap.get("sewing_total") != null && !"".equals(lazyMap.get("sewing_total")) && lazyMap.get("qualified_total") != null && !"".equals(lazyMap.get("qualified_total"))) {
-				sheet1FileInfo.put(j + ",15", (int) new BigDecimal((Float.parseFloat(lazyMap.get("qualified_total").toString()) / Float.parseFloat(lazyMap.get("sewing_total").toString())) * 100)
-						.setScale(0, BigDecimal.ROUND_HALF_UP).floatValue() + "%");// 合格率
+				sheet1FileInfo.put(j + ",15", (int) new BigDecimal((Float.parseFloat(lazyMap.get("qualified_total").toString()) / Float.parseFloat(lazyMap.get("sewing_total").toString())) * 100).setScale(0, BigDecimal.ROUND_HALF_UP).floatValue() + "%");// 合格率
 			} else {
 				sheet1FileInfo.put(j + ",15", "");// 合格率
 			}
@@ -789,16 +790,14 @@ public class BxAction extends Action {
 			sheet1FileInfo.put(j + ",34", logsCounts);// 发货数量
 
 			// 合同周期
-			if (superList.get(i).get("except_finish") != null && !"".equals(superList.get(i).get("except_finish")) && superList.get(i).get("begin_time") != null
-					&& !"".equals(superList.get(i).get("begin_time"))) {
+			if (superList.get(i).get("except_finish") != null && !"".equals(superList.get(i).get("except_finish")) && superList.get(i).get("begin_time") != null && !"".equals(superList.get(i).get("begin_time"))) {
 
 				Long actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("except_finish"), (Timestamp) superList.get(i).get("begin_time"));
 				sheet1FileInfo.put(j + ",36", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 合同周期
 			}
 
 			// 与交期差额
-			if (superList.get(i).get("end_time") != null && !"".equals(superList.get(i).get("end_time")) && superList.get(i).get("begin_time") != null
-					&& !"".equals(superList.get(i).get("begin_time"))) {
+			if (superList.get(i).get("end_time") != null && !"".equals(superList.get(i).get("end_time")) && superList.get(i).get("begin_time") != null && !"".equals(superList.get(i).get("begin_time"))) {
 				Long actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("end_time"), (Timestamp) superList.get(i).get("begin_time"));
 				sheet1FileInfo.put(j + ",37", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 与交期差额
 			}
@@ -871,7 +870,7 @@ public class BxAction extends Action {
 
 			OutputStream os = Struts2Utils.getResponse().getOutputStream();
 			Struts2Utils.getResponse().setContentType("application/msexcel");// x-msdownload
-			Struts2Utils.getResponse().setHeader("Content-Disposition", "attachment;filename=ERP-REPORT-" + (System.currentTimeMillis()/1000*1000 + "").substring(6, 13) + ".xlsx");
+			Struts2Utils.getResponse().setHeader("Content-Disposition", "attachment;filename=ERP-REPORT-" + (System.currentTimeMillis() / 1000 * 1000 + "").substring(6, 13) + ".xlsx");
 			POIUtilsEx.processExcel(os, fillInfo);
 
 		} catch (Exception e) {
@@ -907,7 +906,7 @@ public class BxAction extends Action {
 		// 声明excel主体数据Map容器
 		Map<String, Object> sheet1FileInfo = new HashMap<String, Object>();
 
-		long newTime = BizUtil.getWorkTime(new Timestamp(System.currentTimeMillis()/1000*1000)).getTime();
+		long newTime = BizUtil.getWorkTime(new Timestamp(System.currentTimeMillis() / 1000 * 1000)).getTime();
 		int cycle = 0;
 
 		List<LazyDynaMap> colorList = new ArrayList<LazyDynaMap>();
@@ -923,7 +922,7 @@ public class BxAction extends Action {
 			// 交期
 			Timestamp goodsTime = (Timestamp) beans.get(i).get("goods_time");
 			// 当前工作时间
-			Timestamp workTime = BizUtil.getOperatingTime(new Timestamp(System.currentTimeMillis()/1000*1000));
+			Timestamp workTime = BizUtil.getOperatingTime(new Timestamp(System.currentTimeMillis() / 1000 * 1000));
 			Integer cycle1 = (int) ((workTime.getTime() - goodsTime.getTime() + orderTime - 60 * 60 * 1000 * 24d) / orderTime * 100);
 
 			beans.get(i).set("data", cycle1);
@@ -1025,8 +1024,7 @@ public class BxAction extends Action {
 			sheet1FileInfo.put(j + ",16", lazyMap.get("qualified_total") != null ? lazyMap.get("qualified_total") : "");// 合格数量
 			sheet1FileInfo.put(j + ",17", lazyMap.get("unqualified_total") != null ? lazyMap.get("unqualified_total") : "");// 次品数量
 			if (lazyMap.get("sewing_total") != null && !"".equals(lazyMap.get("sewing_total")) && lazyMap.get("qualified_total") != null && !"".equals(lazyMap.get("qualified_total"))) {
-				sheet1FileInfo.put(j + ",18", (int) new BigDecimal((Float.parseFloat(lazyMap.get("qualified_total").toString()) / Float.parseFloat(lazyMap.get("sewing_total").toString())) * 100)
-						.setScale(0, BigDecimal.ROUND_HALF_UP).floatValue() + "%");// 合格率
+				sheet1FileInfo.put(j + ",18", (int) new BigDecimal((Float.parseFloat(lazyMap.get("qualified_total").toString()) / Float.parseFloat(lazyMap.get("sewing_total").toString())) * 100).setScale(0, BigDecimal.ROUND_HALF_UP).floatValue() + "%");// 合格率
 			} else {
 				sheet1FileInfo.put(j + ",18", "");// 合格率
 			}
@@ -1142,7 +1140,7 @@ public class BxAction extends Action {
 
 			OutputStream os = Struts2Utils.getResponse().getOutputStream();
 			Struts2Utils.getResponse().setContentType("Application/msexcel");
-			Struts2Utils.getResponse().setHeader("Content-Disposition", "attachment;filename=ERP-REPORT-" + (System.currentTimeMillis()/1000*1000 + "").substring(6, 13) + ".xlsx");
+			Struts2Utils.getResponse().setHeader("Content-Disposition", "attachment;filename=ERP-REPORT-" + (System.currentTimeMillis() / 1000 * 1000 + "").substring(6, 13) + ".xlsx");
 			POIUtilsEx.processExcel(os, fillInfo);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1296,22 +1294,20 @@ public class BxAction extends Action {
 
 		for (int i = 0; i < superList.size(); i++) {
 			if (superList.get(i).get("type") != null && "2".equals(superList.get(i).get("type").toString())) { // 打版
-				if (superList.get(i).get("bqcdel_wf_real_finish") != null && !"".equals(superList.get(i).get("bqcdel_wf_real_finish")) && superList.get(i).get("mrdb_wf_real_start") != null
-						&& !"".equals(superList.get(i).get("mrdb_wf_real_start"))) {
+				if (superList.get(i).get("bqcdel_wf_real_finish") != null && !"".equals(superList.get(i).get("bqcdel_wf_real_finish")) && superList.get(i).get("mrdb_wf_real_start") != null && !"".equals(superList.get(i).get("mrdb_wf_real_start"))) {
 
 					Long actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("bqcdel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdb_wf_real_start"));
 					superList.get(i).set("actualDay", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 实际生产周期
 				}
 			} else if (superList.get(i).get("type") != null && "3".equals(superList.get(i).get("type").toString())) { // 大货
-				if (superList.get(i).get("qadel_wf_real_finish") != null && !"".equals(superList.get(i).get("qadel_wf_real_finish")) && superList.get(i).get("mrdel_wf_real_start") != null
-						&& !"".equals(superList.get(i).get("mrdel_wf_real_start"))) {
+				if (superList.get(i).get("qadel_wf_real_finish") != null && !"".equals(superList.get(i).get("qadel_wf_real_finish")) && superList.get(i).get("mrdel_wf_real_start") != null && !"".equals(superList.get(i).get("mrdel_wf_real_start"))) {
 					Long actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("qadel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdel_wf_real_start"));
 					superList.get(i).set("actualDay", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 实际生产周期
 				}
 			}
 		}
 		processPageInfo(getObjectsCountSql(fsp));
-		return "order_his";
+		return "bx/order_his";
 	}
 
 	/**
@@ -1369,7 +1365,7 @@ public class BxAction extends Action {
 		// LIST_ORDER_HIS_DETAIL_BY_SQL
 
 		processPageInfo(getObjectsCountSql(fsp));
-		return "order_his";
+		return "bx/order_his";
 	}
 
 	public String staff_add() {
@@ -1413,11 +1409,11 @@ public class BxAction extends Action {
 	/**
 	 * <B>辛巴达OA新增订单页面</B><br>
 	 * 详细功能描述 四种订单类型：模拟报价、样衣打版、大货生产、售后服务
-	 *
+	 * 
 	 * @author lihouxuan
 	 */
 	public String addOrder() {
-		long t1 = System.currentTimeMillis()/1000*1000;
+		long t1 = System.currentTimeMillis() / 1000 * 1000;
 		System.out.println("开始时间：" + t1);
 		if (!"mr".equals(XbdBuffer.getOrgNameById(WebUtil.getCurrentLoginBx().getOaOrg()))) {
 			return "authError";
@@ -1438,7 +1434,7 @@ public class BxAction extends Action {
 			default:
 				throw new RuntimeException("根据订单类型:" + oaOrder.getType() + "没有找到相关工作流程定义");
 			}
-			Timestamp t = BizUtil.getOperatingTime(new Timestamp(System.currentTimeMillis()/1000*1000));
+			Timestamp t = BizUtil.getOperatingTime(new Timestamp(System.currentTimeMillis() / 1000 * 1000));
 			oaOrder.setBeginTime(t);
 			oaOrder.setTimeRate(1.0f);// 不需要计算折算率
 			// oaOrder.setTimeRate(BizUtil.computeTimeRate(oaOrder.getBeginTime(),
@@ -1455,23 +1451,23 @@ public class BxAction extends Action {
 		switch (oaOrder.getType()) {
 		case "1":
 			if (getWhb().equals("1")) {
-				redirect = "addOrder_list";
+				redirect = "bx/addOrder_list";
 			} else if (getWhb().equals("0")) {
-				redirect = "addOrderBaojia";
+				redirect = "bx/addOrderBaojia";
 			}
 			break;
 		case "2":
 			if (getWhb().equals("1")) {
-				redirect = "addOrder_list";
+				redirect = "bx/addOrder_list";
 			} else if (getWhb().equals("0")) {
-				redirect = "addOrderDaban";
+				redirect = "bx/addOrderDaban";
 			}
 			break;
 		case "3":
-			redirect = "addOrder_list";
+			redirect = "bx/addOrder_list";
 			break;
 		case "4":
-			redirect = "addOrder_list";
+			redirect = "bx/addOrder_list";
 			break;
 		}
 		return redirect;
@@ -1522,19 +1518,19 @@ public class BxAction extends Action {
 		}
 		List<Map<String, String>> cloth_class_list = XbdBuffer.getOaDtList(ConstantUtil.DT_TYPE_CLOTH_CLASS);
 		bean.set("cloth_class_list", cloth_class_list);
-		return "add_dahuo";
+		return "bx/add_dahuo";
 	}
 
 	public String add_shouhou() {
 		if (!"mr".equals(XbdBuffer.getOrgNameById(WebUtil.getCurrentLoginBx().getOaOrg()))) {
 			return "authError";
 		}
-		return "add_shouhou";
+		return "bx/add_shouhou";
 	}
 
 	/**
 	 * 查询组织单位列表
-	 *
+	 * 
 	 * @return
 	 */
 	public String getSysOrg() {
@@ -1542,7 +1538,7 @@ public class BxAction extends Action {
 		beans = getObjectsBySql(fsp);
 		// 封装json数据
 		result = JSONArray.fromObject(beans).toString();
-		return "getSysOrg";
+		return "bx/getSysOrg";
 	}
 
 	/**
@@ -1605,7 +1601,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 创建用户
-	 *
+	 * 
 	 * @return
 	 */
 	public void jsonCreateStaff() {
@@ -1635,7 +1631,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 删除用户
-	 *
+	 * 
 	 * @return
 	 */
 	public void jsonDelStaff() {
@@ -1662,7 +1658,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 修改用户
-	 *
+	 * 
 	 * @return
 	 */
 	public void jsonUpdateStaff() {
@@ -1726,8 +1722,7 @@ public class BxAction extends Action {
 
 		if (null != oaOrderDetail && null != oaOrderDetail.getOaOrder()) {
 			oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, oaOrderDetail.getOaOrder());
-			if (!oaOrder.getWfStep().equals("c_ppc_factoryMsg_5") && !oaOrder.getWfStep().equals("c_qc_cutting_6") && !oaOrder.getWfStep().equals("c_ppc_confirm_7")
-					&& !oaOrder.getWfStep().equals("c_qc_printing_8") && !oaOrder.getWfStep().equals("c_ppc_confirm_9")) {
+			if (!oaOrder.getWfStep().equals("c_ppc_factoryMsg_5") && !oaOrder.getWfStep().equals("c_qc_cutting_6") && !oaOrder.getWfStep().equals("c_ppc_confirm_7") && !oaOrder.getWfStep().equals("c_qc_printing_8") && !oaOrder.getWfStep().equals("c_ppc_confirm_9")) {
 				flag = true;
 			} else {
 				int iFlag = DateUtil.compare_date("2015-01-14 00:00:01", DateUtil.formatDate(oaOrder.getBeginTime()));
@@ -1776,35 +1771,35 @@ public class BxAction extends Action {
 			}
 		}
 
-		return "processOrder";
+		return "bx/processOrder";
 	}
 
 	/**
 	 * 编辑订单
-	 *
+	 * 
 	 * @return
 	 */
 	public String editOrder() {
 		if (null == oaOrder || null == oaOrder.getId()) {
-			return "addOrder_list";
+			return "bx/addOrder_list";
 		}
 		oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, oaOrder.getId());
-		return "editOrder";
+		return "bx/editOrder";
 	}
 
 	/**
 	 * 编辑订单保存
-	 *
+	 * 
 	 * @return
 	 */
 	public String updateOrder() {
 		if (null == oaOrder || null == oaOrder.getId()) {
-			return "addOrder_list";
+			return "bx/addOrder_list";
 		}
 		OaOrder oaOrder1 = (OaOrder) baseDao.getObject(OaOrder.class, oaOrder.getId());
 		oaOrder1.setStyleCode(oaOrder.getStyleCode());
 		saveObject(oaOrder1);
-		return "addOrder_list";
+		return "bx/addOrder_list";
 	}
 
 	/**
@@ -1834,21 +1829,14 @@ public class BxAction extends Action {
 
 	/**
 	 * 流程流转时，提醒客户及下一流程操作人
-	 *
+	 * 
 	 * @param orderId
 	 */
 	/*
-	 * public void notifyNextWorkflow(int orderId){ if( !AutoNotifyServlet_stop.ifRunTime() ){ return; } //TODO 客户发送短信提醒 1 每个流程只发送一次 2 有客户手机号则发送 //判断下一流程的操作时间是否大于3小时 小于3小时直接提醒操作人 try { fsp = new
-	 * FSPBean(); fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_OA_ORDER_DETAIL_TIME_FOR_NOTIFY_STAFF_BY_SQL); fsp.set(FSPBean.FSP_ORDER, " order by id desc "); fsp.set("oaOrder", orderId); beans =
-	 * manager.getObjectsBySql(fsp); if(beans != null && beans.size()>0 ){ LazyDynaMap map = beans.get(0); int detail_id = (int)map.get("id"); String style_code = map.get("style_code").toString();//款号
-	 * String inx = map.get("inx").toString();//第几步 String type = map.get("type").toString();//订单类型 String step_name = ifLastWrokflow(inx, type, map.get("wf_step_name").toString());//当前流程名称
+	 * public void notifyNextWorkflow(int orderId){ if( !AutoNotifyServlet_stop.ifRunTime() ){ return; } //TODO 客户发送短信提醒 1 每个流程只发送一次 2 有客户手机号则发送 //判断下一流程的操作时间是否大于3小时 小于3小时直接提醒操作人 try { fsp = new FSPBean(); fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_OA_ORDER_DETAIL_TIME_FOR_NOTIFY_STAFF_BY_SQL); fsp.set(FSPBean.FSP_ORDER, " order by id desc "); fsp.set("oaOrder", orderId); beans = manager.getObjectsBySql(fsp); if(beans != null && beans.size()>0 ){ LazyDynaMap map = beans.get(0); int detail_id = (int)map.get("id"); String style_code = map.get("style_code").toString();//款号 String inx = map.get("inx").toString();//第几步 String type = map.get("type").toString();//订单类型 String step_name = ifLastWrokflow(inx, type, map.get("wf_step_name").toString());//当前流程名称
 	 * 
-	 * long duration = (long) map.get("wf_step_duration");//流程所需时间 String params;//短信模板参数 if( duration < ConstantUtil.NOTIFYSTAFF_BEFORE3HOURS && map.get("linkphone") != null ){ //流程所需时间少于3小时 直接提醒
-	 * String linkphone = map.get("linkphone").toString();//员工联系电话 params = "{\"style_code\":\"" + style_code + "\"}"; System.out.println("流程不足3小时直接提醒===" + step_name+ "===流程时长:" + duration/60/1000);
-	 * SMSUtils.sendTempletMessage(linkphone, ConstantUtil.TEMPLET_NOFIFY_OPERATOR, params); AutoNotifyServlet_stop.changeState(detail_id, ConstantUtil.NOTIFY_TYPE_REMIND); } if( "1".equals(
-	 * map.get("times").toString() ) && map.get("tel") != null ){ //TODO 流程最后一步 修改提醒步骤为 订单完成 String customerphone = map.get("tel").toString(); params = "{\"style_code\":\"" + style_code +
-	 * "\",\"step_name\":\"" + URLEncoder.encode(step_name,"UTF-8") + "\"}"; System.out.println("提醒客户流程流转"); SMSUtils.sendTempletMessage(customerphone, ConstantUtil.TEMPLET_NOTIFY_CUSTOMER, params); }
-	 * } } catch (UnsupportedEncodingException e) { // TODO Auto-generated catch block e.printStackTrace(); } }
+	 * long duration = (long) map.get("wf_step_duration");//流程所需时间 String params;//短信模板参数 if( duration < ConstantUtil.NOTIFYSTAFF_BEFORE3HOURS && map.get("linkphone") != null ){ //流程所需时间少于3小时 直接提醒 String linkphone = map.get("linkphone").toString();//员工联系电话 params = "{\"style_code\":\"" + style_code + "\"}"; System.out.println("流程不足3小时直接提醒===" + step_name+ "===流程时长:" + duration/60/1000); SMSUtils.sendTempletMessage(linkphone, ConstantUtil.TEMPLET_NOFIFY_OPERATOR, params); AutoNotifyServlet_stop.changeState(detail_id, ConstantUtil.NOTIFY_TYPE_REMIND); } if( "1".equals( map.get("times").toString() ) && map.get("tel") != null ){ //TODO 流程最后一步 修改提醒步骤为 订单完成 String customerphone = map.get("tel").toString(); params = "{\"style_code\":\"" + style_code + "\",\"step_name\":\"" + URLEncoder.encode(step_name,"UTF-8") + "\"}"; System.out.println("提醒客户流程流转"); SMSUtils.sendTempletMessage(customerphone, ConstantUtil.TEMPLET_NOTIFY_CUSTOMER, params); } } } catch (UnsupportedEncodingException e) { //
+	 * TODO Auto-generated catch block e.printStackTrace(); } }
 	 */
 
 	/**
@@ -1876,7 +1864,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 查看订单整个流程详情
-	 *
+	 * 
 	 * @return
 	 */
 	public String viewOrderDetail() {
@@ -1913,7 +1901,7 @@ public class BxAction extends Action {
 			Timestamp wf_real_finish = (Timestamp) map.get("wf_real_finish");
 			boolean flag = false;
 			if (null == wf_real_finish) {
-				wf_real_finish = new Timestamp(System.currentTimeMillis()/1000*1000);
+				wf_real_finish = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
 				flag = true;
 			}
 			Timestamp wf_real_start = (Timestamp) map.get("wf_real_start");// 实际开始时间
@@ -1946,8 +1934,7 @@ public class BxAction extends Action {
 			map.set("offset", offset.toString());// 计算出实际偏差存放到map中
 
 			/*
-			 * // 计算总剩余时间 between = BizUtil.getWorkTimeBetween(wf_real_finish, except_finish); offset = new StringBuffer(between < 0 ? "剩余" : "超期"); between = Math.abs(between);
-			 * offset.append(WebUtil.getTimeDisPlay(between));
+			 * // 计算总剩余时间 between = BizUtil.getWorkTimeBetween(wf_real_finish, except_finish); offset = new StringBuffer(between < 0 ? "剩余" : "超期"); between = Math.abs(between); offset.append(WebUtil.getTimeDisPlay(between));
 			 */
 
 			map.set("total", DateUtils.getYYYY_MM_DD(except_finish));// 计算出实际偏差存放到map中
@@ -1963,22 +1950,21 @@ public class BxAction extends Action {
 			list.add(map);
 		}
 		beans = list;
-		return "viewOrderDetail";
+		return "bx/viewOrderDetail";
 	}
 
 	/**
 	 * 在手机上 输入订单号
 	 */
 	public String putOrderNumOnPhone() {
-
-		return "putOrderNumOnPhone";
+		return "bx/putOrderNumOnPhone";
 	}
 
 	/**
 	 * 查无此订单号
 	 */
 	public String noOrderNum() {
-		return "noOrderNum";
+		return "bx/noOrderNum";
 	}
 
 	/**
@@ -1995,7 +1981,7 @@ public class BxAction extends Action {
 		if (beans.size() <= 0) {
 			return "noOrderNum";
 		} else {
-			oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, (Integer)beans.get(0).get("id"));
+			oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, (Integer) beans.get(0).get("id"));
 			if (null == oaOrder || null == oaOrder.getId()) {
 				return "noOrderNum";
 			}
@@ -2026,7 +2012,7 @@ public class BxAction extends Action {
 			Timestamp wf_real_finish = (Timestamp) map.get("wf_real_finish");
 			boolean flag = false;
 			if (null == wf_real_finish) {
-				wf_real_finish = new Timestamp(System.currentTimeMillis()/1000*1000);
+				wf_real_finish = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
 				flag = true;
 			}
 			Timestamp wf_real_start = (Timestamp) map.get("wf_real_start");// 实际开始时间
@@ -2059,8 +2045,7 @@ public class BxAction extends Action {
 			map.set("offset", offset.toString());// 计算出实际偏差存放到map中
 
 			/*
-			 * // 计算总剩余时间 between = BizUtil.getWorkTimeBetween(wf_real_finish, except_finish); offset = new StringBuffer(between < 0 ? "剩余" : "超期"); between = Math.abs(between);
-			 * offset.append(WebUtil.getTimeDisPlay(between));
+			 * // 计算总剩余时间 between = BizUtil.getWorkTimeBetween(wf_real_finish, except_finish); offset = new StringBuffer(between < 0 ? "剩余" : "超期"); between = Math.abs(between); offset.append(WebUtil.getTimeDisPlay(between));
 			 */
 
 			map.set("total", DateUtils.getYYYY_MM_DD(except_finish));// 计算出实际偏差存放到map中
@@ -2078,7 +2063,7 @@ public class BxAction extends Action {
 		}
 		beans = list;
 
-		return "viewOrderDetailOnPhone";
+		return "bx/viewOrderDetailOnPhone";
 	}
 
 	/**
@@ -2151,7 +2136,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 基准时间设置第一页
-	 *
+	 * 
 	 * @return
 	 */
 	public String timebaseConfig() {
@@ -2173,24 +2158,24 @@ public class BxAction extends Action {
 				}
 			}
 		}
-		return "timebaseConfig";
+		return "bx/timebaseConfig";
 	}
 
 	/**
 	 * 添加基准时间设置
-	 *
+	 * 
 	 * @return
 	 */
 	public String timebaseConfig1() {
 		if (null != oaTimebase && null != oaTimebase.getId()) {
 			oaTimebase = (OaTimebase) baseDao.getObject(OaTimebase.class, oaTimebase.getId());
 		}
-		return "timebaseConfig1";
+		return "bx/timebaseConfig1";
 	}
 
 	/**
 	 * 添加基准时间设置细节
-	 *
+	 * 
 	 * @return
 	 */
 	public String timebaseConfig2() {
@@ -2228,12 +2213,12 @@ public class BxAction extends Action {
 			}
 		}
 
-		return "timebaseConfig2";
+		return "bx/timebaseConfig2";
 	}
 
 	/**
 	 * 保存基准时间设置
-	 *
+	 * 
 	 * @return
 	 */
 	public String saveTimebaseConfig() {
@@ -2251,7 +2236,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 编辑基准时间设置
-	 *
+	 * 
 	 * @return
 	 */
 	public String editTimebaseConfig() {
@@ -2281,7 +2266,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 编辑基准时间设置保存
-	 *
+	 * 
 	 * @return
 	 */
 	public String updateTimebaseConfig() {
@@ -2305,7 +2290,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 删除基准时间设置
-	 *
+	 * 
 	 * @return
 	 */
 	public String delTimebaseConfig() {
@@ -2333,28 +2318,28 @@ public class BxAction extends Action {
 
 	/**
 	 * 品类列表
-	 *
+	 * 
 	 * @return
 	 */
 	public String clothClass_list() {
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_DT_ENTRY_BY_EQL);
 		fsp.set("type", ConstantUtil.DT_TYPE_CLOTH_CLASS);
 		oaDts = this.getObjectsByEql(fsp);// 获取基准时间细节
-		return "clothClass_list";
+		return "bx/clothClass_list";
 	}
 
 	/**
 	 * 添加品类
-	 *
+	 * 
 	 * @return
 	 */
 	public String addClothClass() {
-		return "addClothClass";
+		return "bx/addClothClass";
 	}
 
 	/**
 	 * 保存品类
-	 *
+	 * 
 	 * @return
 	 */
 	public String saveClothClass() {
@@ -2379,7 +2364,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 编辑品类
-	 *
+	 * 
 	 * @return
 	 */
 	public String editClothClass() {
@@ -2389,7 +2374,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 编辑品类保存
-	 *
+	 * 
 	 * @return
 	 */
 	public String updateClothClass() {
@@ -2402,7 +2387,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 删除品类
-	 *
+	 * 
 	 * @return
 	 */
 	public String delClothClass() {
@@ -2416,7 +2401,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 推送信息
-	 *
+	 * 
 	 * @return
 	 */
 	public void notification() {
@@ -2445,7 +2430,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 发送邮件，通知下一工作流人员
-	 *
+	 * 
 	 * @param body
 	 *            邮件内容
 	 * @param login_name
@@ -2469,10 +2454,7 @@ public class BxAction extends Action {
 		}
 		String wf_plan_finish = BizUtil.culPlanDate((Timestamp) body.get("wf_real_start"), (Long) body.get("wf_step_duration")).toString().substring(0, 16);
 		String subject = (String) body.get("style_code") + (String) body.get("wf_step_name") + "需要您在" + wf_plan_finish + "内完成";
-		String content = "尊敬的" + (String) body.get("operator") + ":</br>" + "您好，款号为【<span style='color:#5fa207;font-weight:bold';>" + (String) body.get("style_code")
-				+ "</span>】的订单已由【<span style='color:#5fa207;font-weight:bold';>" + WebUtil.getCurrentLoginBx().getLoginName() + "</span>】流转到您这边，请于【<span style='color:#5fa207;font-weight:bold';>"
-				+ wf_plan_finish + "</span>】内完成【<span style='color:#5fa207;font-weight:bold';>" + (String) body.get("wf_step_name")
-				+ "</span>】，<a style='color:blue;' href='http://oa.singbada.cn/bx/todo'>点击处理</a>。谢谢！</br>让世界因为传统供应链的改变而发生改变！" + to + "</br>&nbsp;&nbsp;&nbsp;&nbsp;顺颂</br>商祺</br>互联网研发中心致上！";
+		String content = "尊敬的" + (String) body.get("operator") + ":</br>" + "您好，款号为【<span style='color:#5fa207;font-weight:bold';>" + (String) body.get("style_code") + "</span>】的订单已由【<span style='color:#5fa207;font-weight:bold';>" + WebUtil.getCurrentLoginBx().getLoginName() + "</span>】流转到您这边，请于【<span style='color:#5fa207;font-weight:bold';>" + wf_plan_finish + "</span>】内完成【<span style='color:#5fa207;font-weight:bold';>" + (String) body.get("wf_step_name") + "</span>】，<a style='color:blue;' href='http://oa.singbada.cn/bx/todo'>点击处理</a>。谢谢！</br>让世界因为传统供应链的改变而发生改变！" + to + "</br>&nbsp;&nbsp;&nbsp;&nbsp;顺颂</br>商祺</br>互联网研发中心致上！";
 		MailUtil.sendBySmtp(to, "", "", WebUtil.getCurrentLoginBx().getLoginName(), subject, content, "changyuchun@singbada.cn", "smtp.qq.com", "lingdong");
 	}
 
@@ -2489,7 +2471,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 获取大货时间控制表
-	 *
+	 * 
 	 * @see 如果改变大货流程则本功能须修改
 	 */
 	// FIXME
@@ -2570,13 +2552,13 @@ public class BxAction extends Action {
 
 	/**
 	 * 获取大货时间控制表
-	 *
+	 * 
 	 * @return
 	 * @param fsp
 	 *            .map.start
 	 * @param fsp
 	 *            .map.end 第一次开始时间 f_start 第一次结束时间 f_finish 最后开始时间 l_start 最后结束时间 wf_real_finish
-	 *
+	 * 
 	 *            group by orderid
 	 */
 	public void getDHTC2() {
@@ -2692,7 +2674,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 生产时间导出功能（所有订单）
-	 *
+	 * 
 	 */
 	public String getDepartmentTime() {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -2730,7 +2712,7 @@ public class BxAction extends Action {
 		fsp.set("url", PathUtil.path2Url(url));
 		// Struts2Utils.renderText(PathUtil.path2Url(url));
 		processPageInfo(baseDao.getObjectsCountSql(fsp));
-		return "DHTC";
+		return "bx/DHTC";
 	}
 
 	/**
@@ -3151,7 +3133,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 判断是否超时
-	 *
+	 * 
 	 * @param use_time
 	 * @param plan_time
 	 * @return HashMap
@@ -3243,7 +3225,7 @@ public class BxAction extends Action {
 
 	/**
 	 * lanyu 大货每天及时率统计
-	 *
+	 * 
 	 * @throws ParseException
 	 */
 	public void getDaBanTimelyRate() {
@@ -3607,7 +3589,7 @@ public class BxAction extends Action {
 
 	/**
 	 * lanyu 大货每天及时率统计
-	 *
+	 * 
 	 * @throws ParseException
 	 */
 	public void getDaHuoTimelyRate() {
@@ -4119,7 +4101,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 对订单的及时率进行统计
-	 *
+	 * 
 	 * @author lanyu
 	 * @return
 	 * @throws ParseException
@@ -4162,7 +4144,7 @@ public class BxAction extends Action {
 				/*
 				 * long diff = wsd - BizUtil.getWorkTimeBetween( tamp, (Timestamp)bean.get("wf_real_start"));
 				 */
-				long diff = wsd - BizUtil.getWorkTimeBetween(new Timestamp(System.currentTimeMillis()/1000*1000), (Timestamp) bean.get("wf_real_start"));
+				long diff = wsd - BizUtil.getWorkTimeBetween(new Timestamp(System.currentTimeMillis() / 1000 * 1000), (Timestamp) bean.get("wf_real_start"));
 				if (diff < 0) {
 					// 超时
 					String step = bean.get("wf_step").toString();
@@ -4311,7 +4293,7 @@ public class BxAction extends Action {
 		fsp.set("timelyTotal", daHuoYiDong);
 		float timelyRate = (daHuoOrderTotal - daHuoYiDong) / daHuoOrderTotal;
 		fsp.set("timelyRate", df.format(timelyRate * 100));
-		return "timelyRateCount";
+		return "bx/timelyRateCount";
 	}
 
 	/**
@@ -4338,7 +4320,7 @@ public class BxAction extends Action {
 			for (int i = 0; i < beans.size(); i++) {
 				LazyDynaMap bean = beans.get(i);
 				long wsd = (long) bean.get("wf_step_duration");
-				long diff = wsd - BizUtil.getWorkTimeBetween(new Timestamp(System.currentTimeMillis()/1000*1000), (Timestamp) bean.get("wf_real_start"));
+				long diff = wsd - BizUtil.getWorkTimeBetween(new Timestamp(System.currentTimeMillis() / 1000 * 1000), (Timestamp) bean.get("wf_real_start"));
 				if (diff < 0) {
 					// 超时
 					String step = bean.get("wf_step").toString();
@@ -4443,7 +4425,7 @@ public class BxAction extends Action {
 		float timelyRate = (daBanOrderTotal - daBanYiDong) / daBanOrderTotal;
 		fsp.set("timelyRate", df.format(timelyRate * 100));
 
-		return "daBanTimelyRateCount";
+		return "bx/daBanTimelyRateCount";
 	}
 
 	// 订单管理-订单列表 update by 范蠡 2015-01-30
@@ -4472,7 +4454,7 @@ public class BxAction extends Action {
 		Map<String, String> statisticsMap = new HashMap<String, String>();
 
 		// toc部分声明变量
-		long newTime = BizUtil.getWorkTime(new Timestamp(System.currentTimeMillis()/1000*1000)).getTime();
+		long newTime = BizUtil.getWorkTime(new Timestamp(System.currentTimeMillis() / 1000 * 1000)).getTime();
 		// 统计部分声明变量
 		int count = 0;
 		int beansNums = beans.size();
@@ -4487,7 +4469,7 @@ public class BxAction extends Action {
 		// 当前工作时间
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Timestamp workTime = BizUtil.getOperatingTime(new Timestamp(System.currentTimeMillis()/1000*1000));
+		Timestamp workTime = BizUtil.getOperatingTime(new Timestamp(System.currentTimeMillis() / 1000 * 1000));
 		Timestamp curTime = new Timestamp(sdf.parse(df.format(new Date())).getTime());
 		for (int i = 0; i < beans.size(); i++) {
 			// float data = 0;
@@ -4529,10 +4511,10 @@ public class BxAction extends Action {
 			cycle = BizUtil.culCurToc(workTime, cycle, hourPersent);
 
 			beans.get(i).set("data", cycle);
-			
+
 			// 计算统计部分
 			count += Double.parseDouble(beans.get(i).get("want_cnt") != null ? beans.get(i).get("want_cnt").toString() : "0");
-						
+
 			if (orderColor != null && !"".equals(orderColor)) {
 				if ("-1".equals(orderColor)) {
 					if (cycle < 0) {
@@ -4643,7 +4625,7 @@ public class BxAction extends Action {
 			beans = beans.subList((fsp.getPageNo() - 1) * fsp.getPageSize(), beans.size());
 		}
 
-		return "orderList";
+		return "bx/order/orderList";
 	}
 
 	/**
@@ -4700,47 +4682,37 @@ public class BxAction extends Action {
 				fsp.setStaticSqlPart(" and jshdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' and jshdel_operator = '" + fsp.getMap().get("operator").toString() + "'");
 				break;
 			case "c_fi_pay_4":
-				fsp.setStaticSqlPart(" and fidel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(fidel_worker) then fidel_operator = '"
-						+ fsp.getMap().get("operator").toString() + "' else fidel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
+				fsp.setStaticSqlPart(" and fidel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(fidel_worker) then fidel_operator = '" + fsp.getMap().get("operator").toString() + "' else fidel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
 				break;
 			case "c_ppc_factoryMsg_5":
-				fsp.setStaticSqlPart(" and cqcdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(cqcdel_worker) then cqcdel_operator = '"
-						+ fsp.getMap().get("operator").toString() + "' else cqcdel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
+				fsp.setStaticSqlPart(" and cqcdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(cqcdel_worker) then cqcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cqcdel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
 				break;
 			case "c_qc_cutting_6":
-				fsp.setStaticSqlPart(" and tpedel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(tpedel_worker) then tpedel_operator = '"
-						+ fsp.getMap().get("operator").toString() + "' else tpedel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
+				fsp.setStaticSqlPart(" and tpedel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(tpedel_worker) then tpedel_operator = '" + fsp.getMap().get("operator").toString() + "' else tpedel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
 				break;
 			case "c_ppc_confirm_7":
-				fsp.setStaticSqlPart(" and qadel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(qadel_worker) then qadel_operator = '"
-						+ fsp.getMap().get("operator").toString() + "' else qadel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
+				fsp.setStaticSqlPart(" and qadel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(qadel_worker) then qadel_operator = '" + fsp.getMap().get("operator").toString() + "' else qadel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
 				break;
 			case "c_qc_printing_8":
-				fsp.setStaticSqlPart(" and cwdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(cwdel_worker) then cwdel_operator = '"
-						+ fsp.getMap().get("operator").toString() + "' else cwdel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
+				fsp.setStaticSqlPart(" and cwdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(cwdel_worker) then cwdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cwdel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
 				break;
 			case "c_ppc_confirm_9":
-				fsp.setStaticSqlPart(" and wldel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(wldel_worker) then wldel_operator = '"
-						+ fsp.getMap().get("operator").toString() + "' else wldel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
+				fsp.setStaticSqlPart(" and wldel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(wldel_worker) then wldel_operator = '" + fsp.getMap().get("operator").toString() + "' else wldel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
 				break;
 			case "b_mr_improve_2":
 				fsp.setStaticSqlPart(" and mrdb_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' and mrdel_operator = '" + fsp.getMap().get("operator").toString() + "'");
 				break;
 			case "b_ppc_confirm_3":
-				fsp.setStaticSqlPart(" and ppcdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(ppcdel_worker) then ppcdel_operator = '"
-						+ fsp.getMap().get("operator").toString() + "' else ppcdel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
+				fsp.setStaticSqlPart(" and ppcdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(ppcdel_worker) then ppcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else ppcdel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
 				break;
 			case "b_pur_confirm_4":
-				fsp.setStaticSqlPart(" and jsdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(jsdel_worker) then jsdel_operator = '"
-						+ fsp.getMap().get("operator").toString() + "' else jsdel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
+				fsp.setStaticSqlPart(" and jsdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(jsdel_worker) then jsdel_operator = '" + fsp.getMap().get("operator").toString() + "' else jsdel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
 				break;
 			case "b_ppc_confirm_5":
-				fsp.setStaticSqlPart(" and cqdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(cqdel_worker) then cqdel_operator = '"
-						+ fsp.getMap().get("operator").toString() + "' else cqdel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
+				fsp.setStaticSqlPart(" and cqdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(cqdel_worker) then cqdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cqdel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
 				break;
 			case "b_qc_confirm_6":
-				fsp.setStaticSqlPart(" and bqcdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(bqcdel_worker) then bqcdel_operator = '"
-						+ fsp.getMap().get("operator").toString() + "' else bqcdel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
+				fsp.setStaticSqlPart(" and bqcdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(bqcdel_worker) then bqcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else bqcdel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
 				break;
 			default:
 				break;
@@ -4844,8 +4816,7 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and fidel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(fidel_worker) then fidel_operator = '" + fsp.getMap().get("operator").toString() + "' else fidel_worker = '"
-							+ fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(fidel_worker) then fidel_operator = '" + fsp.getMap().get("operator").toString() + "' else fidel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "fidel_wf_real_start", "fidel_wf_real_finish");
@@ -4855,8 +4826,7 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and cqcdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(cqcdel_worker) then cqcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cqcdel_worker = '"
-							+ fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(cqcdel_worker) then cqcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cqcdel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "cqc_wf_real_start", "cqc_wf_real_finish");
@@ -4866,8 +4836,7 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and tpedel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(tpedel_worker) then tpedel_operator = '" + fsp.getMap().get("operator").toString() + "' else tpedel_worker = '"
-							+ fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(tpedel_worker) then tpedel_operator = '" + fsp.getMap().get("operator").toString() + "' else tpedel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "tpedel_wf_real_start", "tpedel_wf_real_finish");
@@ -4877,8 +4846,7 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and qadel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(qadel_worker) then qadel_operator = '" + fsp.getMap().get("operator").toString() + "' else qadel_worker = '"
-							+ fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(qadel_worker) then qadel_operator = '" + fsp.getMap().get("operator").toString() + "' else qadel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "qadel_wf_real_start", "qadel_wf_real_finish");
@@ -4888,8 +4856,7 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and cwdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(cwdel_worker) then cwdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cwdel_worker = '"
-							+ fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(cwdel_worker) then cwdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cwdel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "cwdel_wf_real_start", "cwdel_wf_real_finish");
@@ -4899,8 +4866,7 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and wldel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(wldel_worker) then wldel_operator = '" + fsp.getMap().get("operator").toString() + "' else wldel_worker = '"
-							+ fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(wldel_worker) then wldel_operator = '" + fsp.getMap().get("operator").toString() + "' else wldel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "wldel_wf_real_start", "wldel_wf_real_finish");
@@ -4920,8 +4886,7 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and ppcdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(ppcdel_worker) then ppcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else ppcdel_worker = '"
-							+ fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(ppcdel_worker) then ppcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else ppcdel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "ppcdel_wf_real_start", "ppcdel_wf_real_finish");
@@ -4931,8 +4896,7 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and jsdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(jsdel_worker) then jsdel_operator = '" + fsp.getMap().get("operator").toString() + "' else jsdel_worker = '"
-							+ fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(jsdel_worker) then jsdel_operator = '" + fsp.getMap().get("operator").toString() + "' else jsdel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "jsdel_wf_real_start", "jsdel_wf_real_finish");
@@ -4942,8 +4906,7 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and cqdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(cqdel_worker) then cqdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cqdel_worker = '"
-							+ fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(cqdel_worker) then cqdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cqdel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "cqdel_wf_real_start", "cqdel_wf_real_finish");
@@ -4953,8 +4916,7 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and bqcdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(bqcdel_worker) then bqcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else bqcdel_worker = '"
-							+ fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(bqcdel_worker) then bqcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else bqcdel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "bqcdel_wf_real_start", "bqcdel_wf_real_finish");
@@ -4982,8 +4944,7 @@ public class BxAction extends Action {
 				isBack = false;
 				haoshi = 0;
 				if (beans.get(i).get("mrdel_wf_step_duration") != null && (long) beans.get(i).get("mrdel_wf_step_duration") > 0) { // 大货详情
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("mrdel_wf_real_finish"), (Date) beans.get(i).get("mrdel_wf_real_start"),
-							(long) beans.get(i).get("mrdel_wf_step_duration"), 0, null);
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("mrdel_wf_real_finish"), (Date) beans.get(i).get("mrdel_wf_real_start"), (long) beans.get(i).get("mrdel_wf_step_duration"), 0, null);
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -4997,8 +4958,7 @@ public class BxAction extends Action {
 
 				if (beans.get(i).get("jshdel_wf_step_duration") != null && (long) beans.get(i).get("jshdel_wf_step_duration") > 0) { // 技术
 
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("jshdel_wf_real_finish"), (Date) beans.get(i).get("jshdel_wf_real_start"),
-							(long) beans.get(i).get("jshdel_wf_step_duration"), 0, null);
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("jshdel_wf_real_finish"), (Date) beans.get(i).get("jshdel_wf_real_start"), (long) beans.get(i).get("jshdel_wf_step_duration"), 0, null);
 
 					if (isBack) {
 						haoshi = 0;
@@ -5012,8 +4972,7 @@ public class BxAction extends Action {
 				}
 
 				if (beans.get(i).get("fidel_wf_step_duration") != null && (long) beans.get(i).get("fidel_wf_step_duration") > 0) { // 采购
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("fidel_wf_real_finish"), (Date) beans.get(i).get("fidel_wf_real_start"),
-							(long) beans.get(i).get("fidel_wf_step_duration"), 0, null);
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("fidel_wf_real_finish"), (Date) beans.get(i).get("fidel_wf_real_start"), (long) beans.get(i).get("fidel_wf_step_duration"), 0, null);
 
 					if (isBack) {
 						haoshi = 0;
@@ -5029,8 +4988,7 @@ public class BxAction extends Action {
 
 				if (beans.get(i).get("cqc_wf_step_duration") != null && (long) beans.get(i).get("cqc_wf_step_duration") > 0) { // CQC
 
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("cqc_wf_real_finish"), (Date) beans.get(i).get("cqc_wf_real_start"),
-							(long) beans.get(i).get("cqc_wf_step_duration"), 0, null);
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("cqc_wf_real_finish"), (Date) beans.get(i).get("cqc_wf_real_start"), (long) beans.get(i).get("cqc_wf_step_duration"), 0, null);
 
 					if (isBack) {
 						haoshi = 0;
@@ -5045,8 +5003,7 @@ public class BxAction extends Action {
 
 				if (beans.get(i).get("tpedel_wf_step_duration") != null && (long) beans.get(i).get("tpedel_wf_step_duration") > 0) { // tpe
 
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("tpedel_wf_real_finish"), (Date) beans.get(i).get("tpedel_wf_real_start"),
-							(long) beans.get(i).get("tpedel_wf_step_duration"), 0, null);
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("tpedel_wf_real_finish"), (Date) beans.get(i).get("tpedel_wf_real_start"), (long) beans.get(i).get("tpedel_wf_step_duration"), 0, null);
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5059,8 +5016,7 @@ public class BxAction extends Action {
 				}
 
 				if (beans.get(i).get("qadel_wf_step_duration") != null && (long) beans.get(i).get("qadel_wf_step_duration") > 0) { // QA
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("qadel_wf_real_finish"), (Date) beans.get(i).get("qadel_wf_real_start"),
-							(long) beans.get(i).get("qadel_wf_step_duration"), 0, null);
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("qadel_wf_real_finish"), (Date) beans.get(i).get("qadel_wf_real_start"), (long) beans.get(i).get("qadel_wf_step_duration"), 0, null);
 
 					if (isBack) {
 						haoshi = 0;
@@ -5075,8 +5031,7 @@ public class BxAction extends Action {
 
 				if (beans.get(i).get("cwdel_wf_step_duration") != null && (long) beans.get(i).get("cwdel_wf_step_duration") > 0) { // 采购
 
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("cwdel_wf_real_finish"), (Date) beans.get(i).get("cwdel_wf_real_start"),
-							(long) beans.get(i).get("cwdel_wf_step_duration"), 0, null);
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("cwdel_wf_real_finish"), (Date) beans.get(i).get("cwdel_wf_real_start"), (long) beans.get(i).get("cwdel_wf_step_duration"), 0, null);
 
 					if (isBack) {
 						haoshi = 0;
@@ -5092,8 +5047,7 @@ public class BxAction extends Action {
 
 				if (beans.get(i).get("wldel_wf_step_duration") != null && (long) beans.get(i).get("wldel_wf_step_duration") > 0) { // 发货
 
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("wldel_wf_real_finish"), (Date) beans.get(i).get("wldel_wf_real_start"),
-							(long) beans.get(i).get("wldel_wf_step_duration"), 0, null);
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("wldel_wf_real_finish"), (Date) beans.get(i).get("wldel_wf_real_start"), (long) beans.get(i).get("wldel_wf_step_duration"), 0, null);
 
 					if (isBack) {
 						haoshi = 0;
@@ -5111,8 +5065,7 @@ public class BxAction extends Action {
 				isBack = false;
 				if (beans.get(i).get("mrdb_wf_step_duration") != null && (long) beans.get(i).get("mrdb_wf_step_duration") > 0) { // MR用时
 
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("mrdb_wf_real_finish"), (Date) beans.get(i).get("mrdb_wf_real_start"),
-							(long) beans.get(i).get("mrdb_wf_step_duration"), 0, null);
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("mrdb_wf_real_finish"), (Date) beans.get(i).get("mrdb_wf_real_start"), (long) beans.get(i).get("mrdb_wf_step_duration"), 0, null);
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5126,8 +5079,7 @@ public class BxAction extends Action {
 
 				if (beans.get(i).get("ppcdel_wf_step_duration") != null && (long) beans.get(i).get("ppcdel_wf_step_duration") > 0) { // 采购用时
 
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("ppcdel_wf_real_finish"), (Date) beans.get(i).get("ppcdel_wf_real_start"),
-							(long) beans.get(i).get("ppcdel_wf_step_duration"), 0, null);
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("ppcdel_wf_real_finish"), (Date) beans.get(i).get("ppcdel_wf_real_start"), (long) beans.get(i).get("ppcdel_wf_step_duration"), 0, null);
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5141,8 +5093,7 @@ public class BxAction extends Action {
 
 				if (beans.get(i).get("jsdel_wf_step_duration") != null && (long) beans.get(i).get("jsdel_wf_step_duration") > 0) { // 技术用时
 
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("jsdel_wf_real_finish"), (Date) beans.get(i).get("jsdel_wf_real_start"),
-							(long) beans.get(i).get("jsdel_wf_step_duration"), 0, null);
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("jsdel_wf_real_finish"), (Date) beans.get(i).get("jsdel_wf_real_start"), (long) beans.get(i).get("jsdel_wf_step_duration"), 0, null);
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5156,8 +5107,7 @@ public class BxAction extends Action {
 
 				if (beans.get(i).get("cqdel_wf_step_duration") != null && (long) beans.get(i).get("cqdel_wf_step_duration") > 0) { // 核价用时
 
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("cqdel_wf_real_finish"), (Date) beans.get(i).get("cqdel_wf_real_start"),
-							(long) beans.get(i).get("cqdel_wf_step_duration"), 0, null);
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("cqdel_wf_real_finish"), (Date) beans.get(i).get("cqdel_wf_real_start"), (long) beans.get(i).get("cqdel_wf_step_duration"), 0, null);
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5170,8 +5120,7 @@ public class BxAction extends Action {
 				}
 				if (beans.get(i).get("bqcdel_wf_step_duration") != null && (long) beans.get(i).get("bqcdel_wf_step_duration") > 0) { // MR确认用时
 
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("bqcdel_wf_real_finish"), (Date) beans.get(i).get("bqcdel_wf_real_start"),
-							(long) beans.get(i).get("bqcdel_wf_step_duration"), 0, null);
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("bqcdel_wf_real_finish"), (Date) beans.get(i).get("bqcdel_wf_real_start"), (long) beans.get(i).get("bqcdel_wf_step_duration"), 0, null);
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5196,8 +5145,7 @@ public class BxAction extends Action {
 		mapCount.put("avgTechnologyDB", WebUtil.getTimeDisPlayExcel(avgTechnologyDB > 0 ? avgTechnologyDB / arrayDB[2] : 0));
 		mapCount.put("avgHeJiaDB", WebUtil.getTimeDisPlayExcel(avgHeJiaDB > 0 ? avgHeJiaDB / arrayDB[3] : 0));
 		mapCount.put("avgMrCheckDB", WebUtil.getTimeDisPlayExcel(avgMrCheckDB > 0 ? avgMrCheckDB / arrayDB[4] : 0));
-		long avgOrderSumDB = (avgMRDB > 0 ? avgMRDB / arrayDB[0] : 0) + (avgPurDB > 0 ? avgPurDB / arrayDB[1] : 0) + (avgTechnologyDB > 0 ? avgTechnologyDB / arrayDB[2] : 0)
-				+ (avgHeJiaDB > 0 ? avgHeJiaDB / arrayDB[3] : 0) + (avgMrCheckDB > 0 ? avgMrCheckDB / arrayDB[4] : 0);
+		long avgOrderSumDB = (avgMRDB > 0 ? avgMRDB / arrayDB[0] : 0) + (avgPurDB > 0 ? avgPurDB / arrayDB[1] : 0) + (avgTechnologyDB > 0 ? avgTechnologyDB / arrayDB[2] : 0) + (avgHeJiaDB > 0 ? avgHeJiaDB / arrayDB[3] : 0) + (avgMrCheckDB > 0 ? avgMrCheckDB / arrayDB[4] : 0);
 		mapCount.put("avgOrderSumDB", WebUtil.getTimeDisPlayExcel(avgOrderSumDB));
 		mapCount.put("orderNumSumDB", count > 0 ? count + "" : "");
 
@@ -5209,9 +5157,7 @@ public class BxAction extends Action {
 		mapCount.put("avgQADH", WebUtil.getTimeDisPlayExcel(avgQADH > 0 ? avgQADH / arrayDH[5] : 0));
 		mapCount.put("avgFinanceDH", WebUtil.getTimeDisPlayExcel(avgFinanceDH > 0 ? avgFinanceDH / arrayDH[6] : 0));
 		mapCount.put("avgLogisticsDH", WebUtil.getTimeDisPlayExcel(avgLogisticsDH > 0 ? avgLogisticsDH / arrayDH[7] : 0));
-		long avgOrderSumDH = (avgMRDH > 0 ? avgMRDH / arrayDH[0] : 0) + (avgTechnologyDH > 0 ? avgTechnologyDH / arrayDH[1] : 0) + (avgPurDH > 0 ? avgPurDH / arrayDH[2] : 0)
-				+ (avgCQCDH > 0 ? avgCQCDH / arrayDH[3] : 0) + (avgTPEDH > 0 ? avgTPEDH / arrayDH[4] : 0) + (avgQADH > 0 ? avgQADH / arrayDH[5] : 0)
-				+ (avgFinanceDH > 0 ? avgFinanceDH / arrayDH[6] : 0) + (avgLogisticsDH > 0 ? avgLogisticsDH / arrayDH[7] : 0);
+		long avgOrderSumDH = (avgMRDH > 0 ? avgMRDH / arrayDH[0] : 0) + (avgTechnologyDH > 0 ? avgTechnologyDH / arrayDH[1] : 0) + (avgPurDH > 0 ? avgPurDH / arrayDH[2] : 0) + (avgCQCDH > 0 ? avgCQCDH / arrayDH[3] : 0) + (avgTPEDH > 0 ? avgTPEDH / arrayDH[4] : 0) + (avgQADH > 0 ? avgQADH / arrayDH[5] : 0) + (avgFinanceDH > 0 ? avgFinanceDH / arrayDH[6] : 0) + (avgLogisticsDH > 0 ? avgLogisticsDH / arrayDH[7] : 0);
 		mapCount.put("avgOrderSumDH", WebUtil.getTimeDisPlayExcel(avgOrderSumDH));
 		mapCount.put("orderNumSumDH", count > 0 ? count + "" : "");
 		mapCount.put("sewingNumSumDH", tpeCount > 0 ? tpeCount + "" : "");
@@ -5231,8 +5177,7 @@ public class BxAction extends Action {
 				long huizong = 0;
 				long huizong_duration = 0;
 				if (beans.get(i).get("mrdel_wf_step_duration") != null && (long) beans.get(i).get("mrdel_wf_step_duration") > 0) { // 大货详情
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("mrdel_wf_real_finish"), (Date) beans.get(i).get("mrdel_wf_real_start"),
-							(long) beans.get(i).get("mrdel_wf_step_duration"), 1, "c_mr_improve_2_color");
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("mrdel_wf_real_finish"), (Date) beans.get(i).get("mrdel_wf_real_start"), (long) beans.get(i).get("mrdel_wf_step_duration"), 1, "c_mr_improve_2_color");
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5246,8 +5191,7 @@ public class BxAction extends Action {
 				}
 
 				if (beans.get(i).get("jshdel_wf_step_duration") != null && (long) beans.get(i).get("jshdel_wf_step_duration") > 0) { // 技术
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("jshdel_wf_real_finish"), (Date) beans.get(i).get("jshdel_wf_real_start"),
-							(long) beans.get(i).get("jshdel_wf_step_duration"), 1, "c_ppc_assign_3_color");
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("jshdel_wf_real_finish"), (Date) beans.get(i).get("jshdel_wf_real_start"), (long) beans.get(i).get("jshdel_wf_step_duration"), 1, "c_ppc_assign_3_color");
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5261,8 +5205,7 @@ public class BxAction extends Action {
 				}
 
 				if (beans.get(i).get("fidel_wf_step_duration") != null && (long) beans.get(i).get("fidel_wf_step_duration") > 0) { // 采购
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("fidel_wf_real_finish"), (Date) beans.get(i).get("fidel_wf_real_start"),
-							(long) beans.get(i).get("fidel_wf_step_duration"), 1, "c_fi_pay_4_color");
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("fidel_wf_real_finish"), (Date) beans.get(i).get("fidel_wf_real_start"), (long) beans.get(i).get("fidel_wf_step_duration"), 1, "c_fi_pay_4_color");
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5276,8 +5219,7 @@ public class BxAction extends Action {
 				}
 
 				if (beans.get(i).get("cqc_wf_step_duration") != null && (long) beans.get(i).get("cqc_wf_step_duration") > 0) { // CQC
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("cqc_wf_real_finish"), (Date) beans.get(i).get("cqc_wf_real_start"),
-							(long) beans.get(i).get("cqc_wf_step_duration"), 1, "c_ppc_factoryMsg_5_color");
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("cqc_wf_real_finish"), (Date) beans.get(i).get("cqc_wf_real_start"), (long) beans.get(i).get("cqc_wf_step_duration"), 1, "c_ppc_factoryMsg_5_color");
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5291,8 +5233,7 @@ public class BxAction extends Action {
 				}
 
 				if (beans.get(i).get("tpedel_wf_step_duration") != null && (long) beans.get(i).get("tpedel_wf_step_duration") > 0) { // tpe
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("tpedel_wf_real_finish"), (Date) beans.get(i).get("tpedel_wf_real_start"),
-							(long) beans.get(i).get("tpedel_wf_step_duration"), 1, "c_qc_cutting_6_color");
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("tpedel_wf_real_finish"), (Date) beans.get(i).get("tpedel_wf_real_start"), (long) beans.get(i).get("tpedel_wf_step_duration"), 1, "c_qc_cutting_6_color");
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5306,8 +5247,7 @@ public class BxAction extends Action {
 				}
 
 				if (beans.get(i).get("qadel_wf_step_duration") != null && (long) beans.get(i).get("qadel_wf_step_duration") > 0) { // QA
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("qadel_wf_real_finish"), (Date) beans.get(i).get("qadel_wf_real_start"),
-							(long) beans.get(i).get("qadel_wf_step_duration"), 1, "c_ppc_confirm_7_color");
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("qadel_wf_real_finish"), (Date) beans.get(i).get("qadel_wf_real_start"), (long) beans.get(i).get("qadel_wf_step_duration"), 1, "c_ppc_confirm_7_color");
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5321,8 +5261,7 @@ public class BxAction extends Action {
 				}
 
 				if (beans.get(i).get("cwdel_wf_step_duration") != null && (long) beans.get(i).get("cwdel_wf_step_duration") > 0) { // 财务
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("cwdel_wf_real_finish"), (Date) beans.get(i).get("cwdel_wf_real_start"),
-							(long) beans.get(i).get("cwdel_wf_step_duration"), 1, "c_qc_printing_8_color");
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("cwdel_wf_real_finish"), (Date) beans.get(i).get("cwdel_wf_real_start"), (long) beans.get(i).get("cwdel_wf_step_duration"), 1, "c_qc_printing_8_color");
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5336,8 +5275,7 @@ public class BxAction extends Action {
 				}
 
 				if (beans.get(i).get("wldel_wf_step_duration") != null && (long) beans.get(i).get("wldel_wf_step_duration") > 0) { // 发货
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("wldel_wf_real_finish"), (Date) beans.get(i).get("wldel_wf_real_start"),
-							(long) beans.get(i).get("wldel_wf_step_duration"), 1, "c_ppc_confirm_9_color");
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("wldel_wf_real_finish"), (Date) beans.get(i).get("wldel_wf_real_start"), (long) beans.get(i).get("wldel_wf_step_duration"), 1, "c_ppc_confirm_9_color");
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5364,8 +5302,7 @@ public class BxAction extends Action {
 				long huizong_duration = 0;
 				isBack = false;
 				if (beans.get(i).get("mrdb_wf_step_duration") != null && (long) beans.get(i).get("mrdb_wf_step_duration") > 0) { // MR用时
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("mrdb_wf_real_finish"), (Date) beans.get(i).get("mrdb_wf_real_start"),
-							(long) beans.get(i).get("mrdb_wf_step_duration"), 1, "b_mr_improve_2_color");
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("mrdb_wf_real_finish"), (Date) beans.get(i).get("mrdb_wf_real_start"), (long) beans.get(i).get("mrdb_wf_step_duration"), 1, "b_mr_improve_2_color");
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5379,8 +5316,7 @@ public class BxAction extends Action {
 				}
 
 				if (beans.get(i).get("ppcdel_wf_step_duration") != null && (long) beans.get(i).get("ppcdel_wf_step_duration") > 0) { // 采购用时
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("ppcdel_wf_real_finish"), (Date) beans.get(i).get("ppcdel_wf_real_start"),
-							(long) beans.get(i).get("ppcdel_wf_step_duration"), 1, "b_ppc_confirm_3_color");
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("ppcdel_wf_real_finish"), (Date) beans.get(i).get("ppcdel_wf_real_start"), (long) beans.get(i).get("ppcdel_wf_step_duration"), 1, "b_ppc_confirm_3_color");
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5394,8 +5330,7 @@ public class BxAction extends Action {
 				}
 
 				if (beans.get(i).get("jsdel_wf_step_duration") != null && (long) beans.get(i).get("jsdel_wf_step_duration") > 0) { // 技术用时
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("jsdel_wf_real_finish"), (Date) beans.get(i).get("jsdel_wf_real_start"),
-							(long) beans.get(i).get("jsdel_wf_step_duration"), 1, "b_pur_confirm_4_color");
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("jsdel_wf_real_finish"), (Date) beans.get(i).get("jsdel_wf_real_start"), (long) beans.get(i).get("jsdel_wf_step_duration"), 1, "b_pur_confirm_4_color");
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5409,8 +5344,7 @@ public class BxAction extends Action {
 				}
 
 				if (beans.get(i).get("cqdel_wf_step_duration") != null && (long) beans.get(i).get("cqdel_wf_step_duration") > 0) { // 核价用时
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("cqdel_wf_real_finish"), (Date) beans.get(i).get("cqdel_wf_real_start"),
-							(long) beans.get(i).get("cqdel_wf_step_duration"), 1, "b_ppc_confirm_5_color");
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("cqdel_wf_real_finish"), (Date) beans.get(i).get("cqdel_wf_real_start"), (long) beans.get(i).get("cqdel_wf_step_duration"), 1, "b_ppc_confirm_5_color");
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5423,8 +5357,7 @@ public class BxAction extends Action {
 					}
 				}
 				if (beans.get(i).get("bqcdel_wf_step_duration") != null && (long) beans.get(i).get("bqcdel_wf_step_duration") > 0) { // MR确认用时
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("bqcdel_wf_real_finish"), (Date) beans.get(i).get("bqcdel_wf_real_start"),
-							(long) beans.get(i).get("bqcdel_wf_step_duration"), 1, "b_qc_confirm_6_color");
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("bqcdel_wf_real_finish"), (Date) beans.get(i).get("bqcdel_wf_real_start"), (long) beans.get(i).get("bqcdel_wf_step_duration"), 1, "b_qc_confirm_6_color");
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5457,7 +5390,7 @@ public class BxAction extends Action {
 		}
 
 		processPageInfo(getObjectsCountSql(fsp));
-		return "orderProgressReport";
+		return "bx/order/orderProgressReport";
 	}
 
 	/**
@@ -5503,16 +5436,16 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: orderDetail
 	 * @Description: TODO订单详情查看
-	 *
+	 * 
 	 * @author 张华
 	 * @return
 	 */
 	public String orderDetail() {
 		if (null == this.oaOrderDetail || null == this.oaOrderDetail.getId()) {
-			return "orderDetail";
+			return null;
 		}
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.PROCESSORDER);
 		fsp.set("id", this.oaOrderDetail.getId());
@@ -5538,22 +5471,22 @@ public class BxAction extends Action {
 				String oaSec = ExternalAction.getMD5Str(miyaoString + oaOrder.getSellOrderCode());
 				bean.set("oaSec", oaSec);
 				bean.set("sellOrderId", oaOrder.getSellOrderId());
-				return "toTerminateOrder";
+				return "bx/order/toTerminateOrder";
 			} else if ("2".equals(oaOrder.getType())) { // 样衣打版
-				return "processDaban";
+				return "bx/order/processDabanOrder";
 			} else if ("3".equals(oaOrder.getType())) { // 大货生产
-				return "processDahuo";
+				return "bx/order/processDahuoOrder";
 			}
 		}
 
-		return "orderDetail";
+		return null;
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: getOrderDetail
 	 * @Description: TODO获取订单信息
-	 *
+	 * 
 	 * @author 张华
 	 * @return
 	 */
@@ -5699,7 +5632,7 @@ public class BxAction extends Action {
 		SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Timestamp goodsTime = oaOrder.getGoodsTime();
-		Timestamp curTime = new Timestamp(System.currentTimeMillis()/1000*1000);
+		Timestamp curTime = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
 		// 当前工作时间
 		Timestamp workTime = null;
 		if (("finish_999").equals(oaOrder.getWfStep())) {
@@ -5725,10 +5658,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: getOrderDetailOld
 	 * @Description: TODO旧流程获取订单信息方法，暂时使用，流程改造完成可删除
-	 *
+	 * 
 	 * @author 张华
 	 * @param oaOrder
 	 */
@@ -5773,7 +5706,7 @@ public class BxAction extends Action {
 		Long wf_step_duration = (Long) bean.get("wf_step_duration"); //
 		// 此处单位毫秒
 		Timestamp plan_finish_date = BizUtil.culPlanDate(wf_plan_start, wf_step_duration);// 计划完成时间
-		Timestamp now = new Timestamp(System.currentTimeMillis()/1000*1000);
+		Timestamp now = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
 		bean.set("wf_plan_finish", df.format(plan_finish_date));//
 		// 计划完成时间存到bean中
 
@@ -5839,10 +5772,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: jsonGetSecondNode
 	 * @Description: TODO流程改造第二节点，获取第二个节点页面信息
-	 *
+	 * 
 	 * @author 张华
 	 */
 	public void jsonGetSecondNode() {
@@ -5918,10 +5851,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: getOrderSize
 	 * @Description: TODO获取订单尺码数量
-	 *
+	 * 
 	 * @author 张华
 	 * @param orderSizeIdStr
 	 * @param resMap
@@ -5952,10 +5885,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: getMaterialList
 	 * @Description: TODO获取用料搭配信息、客供料信息
-	 *
+	 * 
 	 * @author 张华
 	 * @param orderIdStr
 	 * @param resMap
@@ -5987,10 +5920,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: jsonProcessOrder
 	 * @Description: TODO处理订单，走流程
-	 *
+	 * 
 	 * @author 张华
 	 */
 	public void jsonProcessOrder() {
@@ -6086,10 +6019,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: saveOrderSecond
 	 * @Description: TODO订单第二步操作，Mr补全订单
-	 *
+	 * 
 	 * @author 张华
 	 * @param oaOrder1
 	 * @return
@@ -6187,7 +6120,7 @@ public class BxAction extends Action {
 	 * @Description 复制保存采购信息表
 	 * @author ZQ
 	 * @Date 2014-12-22
-	 *
+	 * 
 	 * @param orderId
 	 *            订单ID
 	 * @param relatedOrderId
@@ -6311,10 +6244,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: saveOaOrderDetail
 	 * @Description: TODO保存订单详情页中上传的文件及备注
-	 *
+	 * 
 	 * @author 张华
 	 * @param oaOrderDetail
 	 * @param mrMemo
@@ -6327,10 +6260,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: saveOaMaterialList
 	 * @Description: TODO保存用料搭配信息
-	 *
+	 * 
 	 * @author 张华
 	 * @param orderId
 	 */
@@ -6345,10 +6278,7 @@ public class BxAction extends Action {
 			// 循环存储用料搭配信息
 			for (OaMaterialList oaMaterialList : oaMaterialLists) {
 				// 判断只要其中一个属性存在值，即存储到数据库中
-				if (StringUtils.isNotEmpty(oaMaterialList.getMaterialProp()) || StringUtils.isNotEmpty(oaMaterialList.getMaterialName()) || "辅料".equals(oaMaterialList.getType())
-						|| StringUtils.isNotEmpty(oaMaterialList.getColor()) || StringUtils.isNotEmpty(oaMaterialList.getSupplierName()) || StringUtils.isNotEmpty(oaMaterialList.getSupplierAddr())
-						|| StringUtils.isNotEmpty(oaMaterialList.getSupplierTel()) || (null != oaMaterialList.getOrderNum() && oaMaterialList.getOrderNum() > 0)
-						|| StringUtils.isNotEmpty(oaMaterialList.getPosition())) {
+				if (StringUtils.isNotEmpty(oaMaterialList.getMaterialProp()) || StringUtils.isNotEmpty(oaMaterialList.getMaterialName()) || "辅料".equals(oaMaterialList.getType()) || StringUtils.isNotEmpty(oaMaterialList.getColor()) || StringUtils.isNotEmpty(oaMaterialList.getSupplierName()) || StringUtils.isNotEmpty(oaMaterialList.getSupplierAddr()) || StringUtils.isNotEmpty(oaMaterialList.getSupplierTel()) || (null != oaMaterialList.getOrderNum() && oaMaterialList.getOrderNum() > 0) || StringUtils.isNotEmpty(oaMaterialList.getPosition())) {
 					if (null == oaMaterialList.getOrderNum()) {
 						oaMaterialList.setOrderNum(0f);
 					}
@@ -6365,10 +6295,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: delOaMaterialList
 	 * @Description: TODO删除用料搭配信息
-	 *
+	 * 
 	 * @author 张华
 	 */
 	private void delOaMaterialList() {
@@ -6390,10 +6320,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: saveOaCusMaterialList
 	 * @Description: TODO保存客供料信息
-	 *
+	 * 
 	 * @author 张华
 	 * @param orderId
 	 */
@@ -6426,9 +6356,7 @@ public class BxAction extends Action {
 						break;
 					}
 				}
-				if (orderNumFlag || StringUtils.isNotEmpty(oaCusMaterialList.getMaterialName()) || (null != oaCusMaterialList.getAmount() && oaCusMaterialList.getAmount() > 0)
-						|| (null != oaCusMaterialList.getConsume() && oaCusMaterialList.getConsume() > 0) || (null != oaCusMaterialList.getTotal() && oaCusMaterialList.getTotal() > 0)
-						|| "否".equals(oaCusMaterialList.getIsComplete()) || StringUtils.isNotEmpty(oaCusMaterialList.getMemo())) {
+				if (orderNumFlag || StringUtils.isNotEmpty(oaCusMaterialList.getMaterialName()) || (null != oaCusMaterialList.getAmount() && oaCusMaterialList.getAmount() > 0) || (null != oaCusMaterialList.getConsume() && oaCusMaterialList.getConsume() > 0) || (null != oaCusMaterialList.getTotal() && oaCusMaterialList.getTotal() > 0) || "否".equals(oaCusMaterialList.getIsComplete()) || StringUtils.isNotEmpty(oaCusMaterialList.getMemo())) {
 					if (null == oaCusMaterialList.getAmount()) {
 						oaCusMaterialList.setAmount(0f);
 					}
@@ -6447,7 +6375,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 保存第三个节点的信息
-	 *
+	 * 
 	 * @author yunpeng
 	 * @return
 	 */
@@ -6478,7 +6406,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 保存第8个节点(财务)的信息
-	 *
+	 * 
 	 * @author yunpeng
 	 * @return
 	 */
@@ -6497,7 +6425,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 保存尺寸表表头和order表中的样板基码
-	 *
+	 * 
 	 * @param orderId
 	 */
 	// update by 张华 2015-01-20
@@ -6509,10 +6437,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: saveManegeInfo
 	 * @Description: TODO保存管理信息
-	 *
+	 * 
 	 * @param orderDetailId
 	 * @throws Exception
 	 */
@@ -6560,10 +6488,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: saveProcessExplain
 	 * @Description: TODO技术节点保存加工说明
-	 *
+	 * 
 	 * @param orderId
 	 * @throws Exception
 	 */
@@ -6574,10 +6502,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: saveClothesSizeDetail
 	 * @Description: TODO保存尺寸详情列表
-	 *
+	 * 
 	 * @param orderId
 	 * @throws Exception
 	 */
@@ -6612,8 +6540,7 @@ public class BxAction extends Action {
 						break;
 					}
 				}
-				if (orderNumFlag || StringUtils.isNotEmpty(oaClothesSizeDetail.getPosition()) || StringUtils.isNotEmpty(oaClothesSizeDetail.getSamplePageSize())
-						|| StringUtils.isNotEmpty(oaClothesSizeDetail.getTolerance())) {
+				if (orderNumFlag || StringUtils.isNotEmpty(oaClothesSizeDetail.getPosition()) || StringUtils.isNotEmpty(oaClothesSizeDetail.getSamplePageSize()) || StringUtils.isNotEmpty(oaClothesSizeDetail.getTolerance())) {
 					oaClothesSizeDetail.setOaOrder(orderId);
 					saveObject(oaClothesSizeDetail);
 				}
@@ -6622,10 +6549,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: saveMaterialInfo
 	 * @Description: TODO保存技术节点用料说明信息
-	 *
+	 * 
 	 * @param type
 	 * @param orderId
 	 * @throws Exception
@@ -6648,8 +6575,7 @@ public class BxAction extends Action {
 					OaDaHuoInfo dhi = oaDaHuoInfos.get(i);
 					// 判断只要其中一个属性存在值，即存储到数据库中
 					boolean orderNumFlag = false;
-					if (StringUtils.isNotBlank(ml.getMaterialName()) || StringUtils.isNotBlank(ml.getMaterialProp()) || StringUtils.isNotBlank(ml.getColor()) || null != dhi.getBuffon()
-							|| null != dhi.getUnitNum() || StringUtils.isNotBlank(dhi.getPosition()) || StringUtils.isNotBlank(dhi.getItMemo())) {
+					if (StringUtils.isNotBlank(ml.getMaterialName()) || StringUtils.isNotBlank(ml.getMaterialProp()) || StringUtils.isNotBlank(ml.getColor()) || null != dhi.getBuffon() || null != dhi.getUnitNum() || StringUtils.isNotBlank(dhi.getPosition()) || StringUtils.isNotBlank(dhi.getItMemo())) {
 						orderNumFlag = true;
 					}
 					if (orderNumFlag) {
@@ -6696,8 +6622,7 @@ public class BxAction extends Action {
 					OaDaBanInfo dbi = oaDaBanInfos.get(i);
 					// 判断只要其中一个属性存在值，即存储到数据库中
 					boolean orderNumFlag = false;
-					if (StringUtils.isNotBlank(ml.getMaterialName()) || StringUtils.isNotBlank(ml.getMaterialProp()) || StringUtils.isNotBlank(ml.getColor()) || null != dbi.getBuffon()
-							|| null != dbi.getUnitNum() || StringUtils.isNotBlank(dbi.getPosition()) || StringUtils.isNotBlank(dbi.getItMemo())) {
+					if (StringUtils.isNotBlank(ml.getMaterialName()) || StringUtils.isNotBlank(ml.getMaterialProp()) || StringUtils.isNotBlank(ml.getColor()) || null != dbi.getBuffon() || null != dbi.getUnitNum() || StringUtils.isNotBlank(dbi.getPosition()) || StringUtils.isNotBlank(dbi.getItMemo())) {
 						orderNumFlag = true;
 					}
 					if (orderNumFlag) {
@@ -6736,10 +6661,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: delOaDaHuoInfo
 	 * @Description: TODO删除大货清单数据
-	 *
+	 * 
 	 * @author 张华
 	 */
 	private void delOaDaHuoInfo() {
@@ -6763,10 +6688,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: delOaDaBanInfo
 	 * @Description: TODO删除打版清单数据
-	 *
+	 * 
 	 * @author 张华
 	 */
 	private void delOaDaBanInfo() {
@@ -6791,7 +6716,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 保存面辅料采购清单
-	 *
+	 * 
 	 * @param type
 	 * @param orderId
 	 */
@@ -6813,9 +6738,7 @@ public class BxAction extends Action {
 					// 判断只要其中一个属性存在值，即存储到数据库中
 					boolean orderNumFlag = false;
 					if (null != ml) {
-						if (StringUtils.isNotBlank(ml.getMaterialName()) || StringUtils.isNotBlank(ml.getMaterialProp()) || StringUtils.isNotBlank(ml.getColor())
-								|| StringUtils.isNotBlank(ml.getSupplierName()) || StringUtils.isNotBlank(ml.getSupplierAddr()) || StringUtils.isNotBlank(ml.getSupplierTel())
-								|| StringUtils.isNotBlank(ml.getPosition())) {
+						if (StringUtils.isNotBlank(ml.getMaterialName()) || StringUtils.isNotBlank(ml.getMaterialProp()) || StringUtils.isNotBlank(ml.getColor()) || StringUtils.isNotBlank(ml.getSupplierName()) || StringUtils.isNotBlank(ml.getSupplierAddr()) || StringUtils.isNotBlank(ml.getSupplierTel()) || StringUtils.isNotBlank(ml.getPosition())) {
 							orderNumFlag = true;
 						}
 						if (orderNumFlag) {
@@ -6879,9 +6802,7 @@ public class BxAction extends Action {
 					OaMaterialList ml = oaMaterialLists.get(i);
 					// 判断只要其中一个属性存在值，即存储到数据库中
 					boolean orderNumFlag = false;
-					if (StringUtils.isNotBlank(ml.getMaterialName()) || StringUtils.isNotBlank(ml.getMaterialProp()) || StringUtils.isNotBlank(ml.getColor())
-							|| StringUtils.isNotBlank(ml.getSupplierName()) || StringUtils.isNotBlank(ml.getSupplierAddr()) || StringUtils.isNotBlank(ml.getSupplierTel())
-							|| StringUtils.isNotBlank(ml.getPosition())) {
+					if (StringUtils.isNotBlank(ml.getMaterialName()) || StringUtils.isNotBlank(ml.getMaterialProp()) || StringUtils.isNotBlank(ml.getColor()) || StringUtils.isNotBlank(ml.getSupplierName()) || StringUtils.isNotBlank(ml.getSupplierAddr()) || StringUtils.isNotBlank(ml.getSupplierTel()) || StringUtils.isNotBlank(ml.getPosition())) {
 						orderNumFlag = true;
 					}
 					if (orderNumFlag) {
@@ -6932,10 +6853,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: jsonGetThirdNode
 	 * @Description: TODO流程改造第三节点，获取第三个节点页面信息
-	 *
+	 * 
 	 * @author 张华
 	 */
 	public void jsonGetThirdNode() {
@@ -6997,10 +6918,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: getManagerInfo
 	 * @Description: TODO查询管理信息 update 2015-1-8
-	 *
+	 * 
 	 * @author 张华
 	 * @param orderId
 	 * @param node
@@ -7054,7 +6975,7 @@ public class BxAction extends Action {
 				String tampDate = DateUtil.formatDate((Date) wf_real_finish);
 				oaOrderDetail.put("wf_real_finish", tampDate);// 实际完成时间
 			} else {
-				wf_real_finish = new Timestamp(System.currentTimeMillis()/1000*1000);
+				wf_real_finish = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
 				oaOrderDetail.put("wf_real_finish", "");// 实际完成时间
 			}
 			String standardTime = DateUtil.longTohhmm(wf_step_duration);
@@ -7135,10 +7056,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: getTracke
 	 * @Description: TODO查询订单异动信息
-	 *
+	 * 
 	 * @param orderId
 	 * @param node
 	 * @param resMap
@@ -7167,10 +7088,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: getProcessExplain
 	 * @Description: TODO流程改造第三节点，获取加工说明
-	 *
+	 * 
 	 * @param orderId
 	 * @param resMap
 	 * @throws Exception
@@ -7185,10 +7106,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: getClothesSizeDetail
 	 * @Description: TODO流程改造第三节点，获取尺寸表信息列表
-	 *
+	 * 
 	 * @param orderId
 	 * @param resMap
 	 * @throws Exception
@@ -7204,10 +7125,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: copyOaClothesSizeDetailList2Vo
 	 * @Description: TODO尺寸详情表，由List<LazyDynaMap>转为List<OaClothesSizeDetail>
-	 *
+	 * 
 	 * @author 张华
 	 * @param list
 	 * @return
@@ -7229,10 +7150,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: getOaOrderNum
 	 * @Description: TODO流程改造第三节点，获取尺码表内容表头
-	 *
+	 * 
 	 * @param orderNum
 	 * @param resMap
 	 * @throws Exception
@@ -7247,10 +7168,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: getClothesSize
 	 * @Description: TODO流程改造第三节点，获取尺寸表头信息
-	 *
+	 * 
 	 * @param orderId
 	 * @param resMap
 	 * @throws Exception
@@ -7265,10 +7186,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: getMaterialDesc
 	 * @Description: TODO流程改造第三节点，获取用料说明列表
-	 *
+	 * 
 	 * @author 张华
 	 * @param orderId
 	 * @param type
@@ -7996,7 +7917,7 @@ public class BxAction extends Action {
 		String url = null;
 		List<Map<String, Object>> list = processOrder(oaOrder);
 		try {
-			String fileName = "ERP-Order-" + oaOrder.getSellOrderCode() + "-" + (System.currentTimeMillis()/1000*1000 + "").substring(6, 13) + ".xlsx";
+			String fileName = "ERP-Order-" + oaOrder.getSellOrderCode() + "-" + (System.currentTimeMillis() / 1000 * 1000 + "").substring(6, 13) + ".xlsx";
 			File file = new File(PathUtil.getOaFileDir());
 			if (!file.exists()) {
 				file.mkdirs();
@@ -8059,8 +7980,7 @@ public class BxAction extends Action {
 		if (nowNode.equals("2")) {
 			// 通过模板生成excel
 			list = createOrderInfo(oaOrder);
-			Struts2Utils.getResponse().setHeader("Content-Disposition",
-					"attachment;filename=ERP-ORDER-" + oaOrder.getSellOrderCode() + "-" + (System.currentTimeMillis()/1000*1000 + "").substring(6, 13) + ".xlsx");
+			Struts2Utils.getResponse().setHeader("Content-Disposition", "attachment;filename=ERP-ORDER-" + oaOrder.getSellOrderCode() + "-" + (System.currentTimeMillis() / 1000 * 1000 + "").substring(6, 13) + ".xlsx");
 			POIUtils.processExcel(os, baseExcelFile, "2", list.get(0), list.get(1));
 		} else if (node.compareTo(nowNode) < 0) {
 			// 下载之前节点excel
@@ -8097,8 +8017,7 @@ public class BxAction extends Action {
 			}
 			baseExcelFile = PathUtil.url2Path(file);
 			list = processOrder(oaOrder);
-			Struts2Utils.getResponse().setHeader("Content-Disposition",
-					"attachment;filename=ERP-ORDER-" + oaOrder.getSellOrderCode() + "-" + (System.currentTimeMillis()/1000*1000 + "").substring(6, 13) + ".xlsx");
+			Struts2Utils.getResponse().setHeader("Content-Disposition", "attachment;filename=ERP-ORDER-" + oaOrder.getSellOrderCode() + "-" + (System.currentTimeMillis() / 1000 * 1000 + "").substring(6, 13) + ".xlsx");
 			// 根据上一个节点来填充excel
 			if ("c_ppc_factoryMsg_5".equals(oaOrder.getWfStep())) {
 				POIUtils.processExcel(os, baseExcelFile, list);
@@ -8145,10 +8064,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: getMaterialPurchaseDesc
 	 * @Description: TODO获得面辅料采购清单
-	 *
+	 * 
 	 * @param orderId
 	 * @param type
 	 * @param resMap
@@ -8212,8 +8131,7 @@ public class BxAction extends Action {
 				tamp.put("order_num", (null == map.get("order_num") ? "" : map.get("order_num")));
 				if (StringUtils.isBlank(map.get("need_num").toString()) || (Float) map.get("need_num") == 0) {
 					// 如果需求数量为空时，重新计算need_num的值//需求数量=单件用量*订单数量
-					if (StringUtils.isNotBlank(map.get("order_num").toString()) && StringUtils.isNotBlank(map.get("unit_num").toString()) && null != map.get("unit_num")
-							&& null != map.get("order_num")) {
+					if (StringUtils.isNotBlank(map.get("order_num").toString()) && StringUtils.isNotBlank(map.get("unit_num").toString()) && null != map.get("unit_num") && null != map.get("order_num")) {
 						tamp.put("need_num", Float.parseFloat(map.get("unit_num").toString()) * Float.parseFloat(map.get("order_num").toString()));
 					} else {
 						tamp.put("need_num", "");
@@ -8243,10 +8161,7 @@ public class BxAction extends Action {
 					// 如果总金额为空时，进行重新计算
 					// 合计=总金额+验布费用+运费
 					if (null != map.get("num") && null != map.get("price") && null != map.get("test_price") && null != map.get("freight")) {
-						tamp.put(
-								"total",
-								Float.parseFloat(map.get("price").toString()) * Float.parseFloat(map.get("num").toString()) + Float.parseFloat(map.get("test_price").toString())
-										+ Float.parseFloat(map.get("freight").toString()));
+						tamp.put("total", Float.parseFloat(map.get("price").toString()) * Float.parseFloat(map.get("num").toString()) + Float.parseFloat(map.get("test_price").toString()) + Float.parseFloat(map.get("freight").toString()));
 					} else if (null != map.get("num") && null != map.get("price") && null != map.get("test_price")) {
 						tamp.put("total", Float.parseFloat(map.get("num").toString()) * Float.parseFloat(map.get("price").toString()) + Float.parseFloat(map.get("test_price").toString()));
 					} else if (null != map.get("num") && null != map.get("price") && null != map.get("freight") && StringUtils.isBlank(map.get("total").toString())) {
@@ -8273,7 +8188,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 保存第四个节点（采购）
-	 *
+	 * 
 	 * @author yunpeng
 	 */
 	private boolean saveOrderFour(OaOrder oaOrder) {
@@ -8298,7 +8213,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 保存物料成本中默认的三条数据
-	 *
+	 * 
 	 * @param orderId
 	 * @author yunpeng
 	 */
@@ -8355,10 +8270,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: jsonGetDaBanFiveNode
 	 * @Description: TODO查询打板第五个节点的数据（核价）
-	 *
+	 * 
 	 */
 	// update by 张华 2015-1-9
 	public void jsonGetDaBanFiveNode() {
@@ -8393,10 +8308,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: getCost
 	 * @Description: TODO查询外协成本加工成本
-	 *
+	 * 
 	 * @param orderId
 	 * @param resMap
 	 * @throws Exception
@@ -8411,10 +8326,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: getMaterialCost
 	 * @Description: TODO查询物料成本表格
-	 *
+	 * 
 	 * @param orderId
 	 * @param resMap
 	 * @throws Exception
@@ -8457,7 +8372,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 保存打版第5个节点（核价）
-	 *
+	 * 
 	 * @author yunpeng
 	 */
 	private boolean saveOrderDaBanFive(OaOrder oaOrder) {
@@ -8483,7 +8398,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 保存外协成本以及加工成本
-	 *
+	 * 
 	 * @param orderId
 	 */
 	// update by 张华 2015-01-20
@@ -8496,7 +8411,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 保存物料成本表格的内容
-	 *
+	 * 
 	 * @param orderId
 	 */
 	private void saveMaterialCost(int orderId) throws Exception {
@@ -8551,10 +8466,10 @@ public class BxAction extends Action {
 	/******* 蓝玉方法结束 ****************/
 
 	/**
-	 *
+	 * 
 	 * @Title: jsonGetDaBanSixNode
 	 * @Description: TODO流程改造样衣打版第六节点，获取第六个节点页面信息（MR确认）
-	 *
+	 * 
 	 * @author 张华
 	 */
 	public void jsonGetDaBanSixNode() {
@@ -8581,10 +8496,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: getMrConfirmInfo
 	 * @Description: TODO获取MR确认信息
-	 *
+	 * 
 	 * @author 张华
 	 * @param orderId
 	 * @param resMap
@@ -8599,10 +8514,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: saveOrderDaBanSix
 	 * @Description: TODO样衣打版保存第六个节点信息（MR确认）
-	 *
+	 * 
 	 * @author 张华
 	 * @param oaOrder
 	 * @return
@@ -8621,10 +8536,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: saveMrConfirm
 	 * @Description: TODO保存MR确认信息
-	 *
+	 * 
 	 * @author 张华
 	 * @param oaOrderId
 	 * @throws Exception
@@ -8638,7 +8553,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 查询关联订单的列表数据
-	 *
+	 * 
 	 */
 	public String orderRelationList() {
 		fsp.setPageFlag(FSPBean.ACTIVE_PAGINATION);
@@ -8646,14 +8561,14 @@ public class BxAction extends Action {
 		relationOrderList = baseDao.getObjectsBySql(fsp);
 		processPageInfo(getObjectsCountSql(fsp));
 
-		return "orderRelationList";
+		return "bx/tabpage/orderRelationList";
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: fillOrderDate
 	 * @Description: TODO从关联订单导入用料说明 客供料信息
-	 *
+	 * 
 	 */
 	// update by 张华 2015-1-9
 	// public void fillOrderDate() {
@@ -8681,10 +8596,10 @@ public class BxAction extends Action {
 	// }
 
 	/**
-	 *
+	 * 
 	 * @Title: jsonUploadPic
 	 * @Description: TODO图片上传json方式
-	 *
+	 * 
 	 * @author 张华
 	 * @throws IOException
 	 */
@@ -8694,7 +8609,7 @@ public class BxAction extends Action {
 			new File(uploadPath).mkdirs();
 		}
 		if (file != null) {
-			String fileName = System.currentTimeMillis()/1000*1000 + fileFileName.substring(fileFileName.indexOf("."));
+			String fileName = System.currentTimeMillis() / 1000 * 1000 + fileFileName.substring(fileFileName.indexOf("."));
 			FileUtils.copyFile(file, new File(uploadPath, fileName));
 			fileFileName = PathUtil.path2Url(uploadPath.concat(fileName));
 		}
@@ -8893,10 +8808,7 @@ public class BxAction extends Action {
 				tamp.put("freight", (null == map.get("freight") ? "" : map.get("freight")));// 运费
 				// 合计=总金额+验布费用+运费
 				if (null != map.get("num") && null != map.get("price") && null != map.get("test_price") && null != map.get("freight")) {
-					tamp.put(
-							"total",
-							Float.parseFloat(map.get("price").toString()) * Float.parseFloat(map.get("num").toString()) + Float.parseFloat(map.get("test_price").toString())
-									+ Float.parseFloat(map.get("freight").toString()));
+					tamp.put("total", Float.parseFloat(map.get("price").toString()) * Float.parseFloat(map.get("num").toString()) + Float.parseFloat(map.get("test_price").toString()) + Float.parseFloat(map.get("freight").toString()));
 				} else if (null != map.get("num") && null != map.get("price") && null != map.get("test_price")) {
 					tamp.put("total", Float.parseFloat(map.get("num").toString()) * Float.parseFloat(map.get("price").toString()) + Float.parseFloat(map.get("test_price").toString()));
 				} else if (null != map.get("num") && null != map.get("price") && null != map.get("freight")) {
@@ -9010,10 +8922,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: jsonGetDaHuoSixNode
 	 * @Description: TODO改造第六个流程节点，大货类型（TPE）
-	 *
+	 * 
 	 * @author 张华
 	 */
 	public void jsonGetDaHuoSixNode() {
@@ -9057,10 +8969,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: jsonGetDaHuoEightNode
 	 * @Description: TODO改造第8个流程节点，大货类型（财务）
-	 *
+	 * 
 	 * @author 蓝玉
 	 */
 	public void jsonGetDaHuoEightNode() {
@@ -9086,10 +8998,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: getShearNum
 	 * @Description: TODO获取CQC节点的裁减数量信息
-	 *
+	 * 
 	 * @author 张华
 	 * @param orderId
 	 * @param resMap
@@ -9121,10 +9033,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: getSewingNumInfo
 	 * @Description: TODO获取TPE车缝数量信息
-	 *
+	 * 
 	 * @author 张华
 	 * @param orderId
 	 * @param resMap
@@ -9163,10 +9075,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: saveOrderDaHuoSix
 	 * @Description: TODO保存tpe流程节点
-	 *
+	 * 
 	 * @author 张华
 	 * @param oaOrder
 	 */
@@ -9191,7 +9103,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 保存cqc结点所有数据
-	 *
+	 * 
 	 * @return
 	 * @author 范蠡
 	 */
@@ -9202,18 +9114,8 @@ public class BxAction extends Action {
 				for (int i = 0; i < oaCqcLists.size(); i++) {
 					baseDao.saveObject(oaCqcLists.get(i));
 					/*
-					 * if(oaCqcLists.get(i).getId() != null && oaCqcLists.get(i).getId() > 0){ OaCqc cqc = (OaCqc)manager.getObject(OaCqc.class, oaCqcLists.get(i).getId()); if(cqc != null){
-					 * if(oaCqcLists.get(i).getApplyUnitNum() != null && oaCqcLists.get(i).getApplyUnitNum() > 0){ cqc.setApplyUnitNum(oaCqcLists.get(i).getApplyUnitNum()); }
-					 * if(oaCqcLists.get(i).getReceiveTime() != null){ cqc.setReceiveTime(oaCqcLists.get(i).getReceiveTime()); } if(oaCqcLists.get(i).getReceiveNum() != null &&
-					 * oaCqcLists.get(i).getReceiveNum() > 0){ cqc.setReceiveNum(oaCqcLists.get(i).getReceiveNum()); } if(oaCqcLists.get(i).getReceiveRate() != null){
-					 * cqc.setReceiveRate(oaCqcLists.get(i).getReceiveRate()); } if(oaCqcLists.get(i).getReceiveMemo() != null){ cqc.setReceiveMemo(oaCqcLists.get(i).getReceiveMemo()); }
-					 * if(oaCqcLists.get(i).getLossBundles() != null && oaCqcLists.get(i).getLossBundles() > 0){ cqc.setLossBundles(oaCqcLists.get(i).getLossBundles()); }
-					 * if(oaCqcLists.get(i).getLossOther() != null && oaCqcLists.get(i).getLossOther() > 0){ cqc.setLossOther(oaCqcLists.get(i).getLossOther()); }
-					 * if(oaCqcLists.get(i).getLossOddments() != null && oaCqcLists.get(i).getLossOddments() > 0){ cqc.setLossOddments(oaCqcLists.get(i).getLossOddments()); }
-					 * if(oaCqcLists.get(i).getLossMemo() != null){ cqc.setLossMemo(oaCqcLists.get(i).getLossMemo()); } if(oaCqcLists.get(i).getShearNumInfo() != null){
-					 * cqc.setShearNumInfo(oaCqcLists.get(i).getShearNumInfo()); } if(oaCqcLists.get(i).getLossCompany() != null){ cqc.setLossCompany(oaCqcLists.get(i).getLossCompany()); }
-					 * if(oaCqcLists.get(i).getLossYiyou() != null){ cqc.setLossYiyou(oaCqcLists.get(i).getLossYiyou()); } manager.saveObject(cqc); }else{ manager.saveObject(oaCqcLists.get(i)); }
-					 * }else{ manager.saveObject(oaCqcLists.get(i)); }
+					 * if(oaCqcLists.get(i).getId() != null && oaCqcLists.get(i).getId() > 0){ OaCqc cqc = (OaCqc)manager.getObject(OaCqc.class, oaCqcLists.get(i).getId()); if(cqc != null){ if(oaCqcLists.get(i).getApplyUnitNum() != null && oaCqcLists.get(i).getApplyUnitNum() > 0){ cqc.setApplyUnitNum(oaCqcLists.get(i).getApplyUnitNum()); } if(oaCqcLists.get(i).getReceiveTime() != null){ cqc.setReceiveTime(oaCqcLists.get(i).getReceiveTime()); } if(oaCqcLists.get(i).getReceiveNum() != null && oaCqcLists.get(i).getReceiveNum() > 0){ cqc.setReceiveNum(oaCqcLists.get(i).getReceiveNum()); } if(oaCqcLists.get(i).getReceiveRate() != null){ cqc.setReceiveRate(oaCqcLists.get(i).getReceiveRate()); } if(oaCqcLists.get(i).getReceiveMemo() != null){ cqc.setReceiveMemo(oaCqcLists.get(i).getReceiveMemo()); } if(oaCqcLists.get(i).getLossBundles() != null && oaCqcLists.get(i).getLossBundles() > 0){ cqc.setLossBundles(oaCqcLists.get(i).getLossBundles()); } if(oaCqcLists.get(i).getLossOther() != null &&
+					 * oaCqcLists.get(i).getLossOther() > 0){ cqc.setLossOther(oaCqcLists.get(i).getLossOther()); } if(oaCqcLists.get(i).getLossOddments() != null && oaCqcLists.get(i).getLossOddments() > 0){ cqc.setLossOddments(oaCqcLists.get(i).getLossOddments()); } if(oaCqcLists.get(i).getLossMemo() != null){ cqc.setLossMemo(oaCqcLists.get(i).getLossMemo()); } if(oaCqcLists.get(i).getShearNumInfo() != null){ cqc.setShearNumInfo(oaCqcLists.get(i).getShearNumInfo()); } if(oaCqcLists.get(i).getLossCompany() != null){ cqc.setLossCompany(oaCqcLists.get(i).getLossCompany()); } if(oaCqcLists.get(i).getLossYiyou() != null){ cqc.setLossYiyou(oaCqcLists.get(i).getLossYiyou()); } manager.saveObject(cqc); }else{ manager.saveObject(oaCqcLists.get(i)); } }else{ manager.saveObject(oaCqcLists.get(i)); }
 					 */
 					// 以上注释代码 页面值非空验证 现在页面可以为空 则注释了 如果需求改了要求非空了 可以放开处理
 				}
@@ -9247,7 +9149,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 删除齐套detail数据
-	 *
+	 * 
 	 * @param delQiTaoDetails
 	 * @author 范蠡
 	 */
@@ -9266,7 +9168,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 在cqc结点保存orderDetail数据
-	 *
+	 * 
 	 * @author 范蠡
 	 */
 	// update by 张华 2015-01-20
@@ -9285,7 +9187,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 添加齐套detail信息
-	 *
+	 * 
 	 * @param qt
 	 * @author 范蠡
 	 */
@@ -9294,13 +9196,8 @@ public class BxAction extends Action {
 		if (oaQiTaoDetails != null && oaQiTaoDetails.size() > 0) {
 			for (int i = 0; i < oaQiTaoDetails.size(); i++) {
 				/*
-				 * if(oaQiTaoDetails.get(i).getId() != null && oaQiTaoDetails.get(i).getId() > 0){ OaQiTaoDetail oadetail = (OaQiTaoDetail)manager.getObject(OaQiTaoDetail.class,
-				 * oaQiTaoDetails.get(i).getId()); if(oaQiTaoDetails.get(i).getDepartment() != null && !"".equals(oaQiTaoDetails.get(i).getDepartment())){
-				 * oadetail.setDepartment(oaQiTaoDetails.get(i).getDepartment()); } if(oaQiTaoDetails.get(i).getOperator() != null && !"".equals(oaQiTaoDetails.get(i).getOperator())){
-				 * oadetail.setOperator(oaQiTaoDetails.get(i).getOperator()); } if(oaQiTaoDetails.get(i).getProject() != null && !"".equals(oaQiTaoDetails.get(i).getProject())){
-				 * oadetail.setProject(oaQiTaoDetails.get(i).getProject()); } if(oaQiTaoDetails.get(i).getTracke() != null && !"".equals(oaQiTaoDetails.get(i).getTracke())){
-				 * oadetail.setTracke(oaQiTaoDetails.get(i).getTracke()); } manager.saveObject(oadetail); }else{ oaQiTaoDetails.get(i).setOaQiTaoId(qt.getId()); oaQiTaoDetails.get(i).setCreateTime(new
-				 * Date()); manager.saveObject(oaQiTaoDetails.get(i)); }
+				 * if(oaQiTaoDetails.get(i).getId() != null && oaQiTaoDetails.get(i).getId() > 0){ OaQiTaoDetail oadetail = (OaQiTaoDetail)manager.getObject(OaQiTaoDetail.class, oaQiTaoDetails.get(i).getId()); if(oaQiTaoDetails.get(i).getDepartment() != null && !"".equals(oaQiTaoDetails.get(i).getDepartment())){ oadetail.setDepartment(oaQiTaoDetails.get(i).getDepartment()); } if(oaQiTaoDetails.get(i).getOperator() != null && !"".equals(oaQiTaoDetails.get(i).getOperator())){ oadetail.setOperator(oaQiTaoDetails.get(i).getOperator()); } if(oaQiTaoDetails.get(i).getProject() != null && !"".equals(oaQiTaoDetails.get(i).getProject())){ oadetail.setProject(oaQiTaoDetails.get(i).getProject()); } if(oaQiTaoDetails.get(i).getTracke() != null && !"".equals(oaQiTaoDetails.get(i).getTracke())){ oadetail.setTracke(oaQiTaoDetails.get(i).getTracke()); } manager.saveObject(oadetail); }else{ oaQiTaoDetails.get(i).setOaQiTaoId(qt.getId()); oaQiTaoDetails.get(i).setCreateTime(new Date());
+				 * manager.saveObject(oaQiTaoDetails.get(i)); }
 				 */
 				// 以上注释代码 页面值非空验证 现在页面可以为空 则注释了 如果需求改了要求非空了 可以放开处理
 				if (oaQiTaoDetails.get(i) != null) {
@@ -9314,7 +9211,7 @@ public class BxAction extends Action {
 
 	/**
 	 * 修改大货信息
-	 *
+	 * 
 	 * @author 范蠡
 	 * */
 	// update by 张华 2015-01-20
@@ -9349,9 +9246,7 @@ public class BxAction extends Action {
 	private void saveQiTao() throws Exception {
 		if (oaQiTao != null) {
 			/*
-			 * if(oaQiTao.getId() != null && oaQiTao.getId() > 0){ OaQiTao tao = (OaQiTao)manager.getObject(OaQiTao.class, oaQiTao.getId()); if(tao != null){ if(oaQiTao.getQitaoReceiveTime() != null)
-			 * { tao.setQitaoReceiveTime(oaQiTao.getQitaoReceiveTime()); } if(oaQiTao.getQitaoSendTime() != null) { tao.setQitaoSendTime(oaQiTao.getQitaoSendTime()); } manager.saveObject(tao); }else{
-			 * manager.saveObject(oaQiTao); } }else{ manager.saveObject(oaQiTao); }
+			 * if(oaQiTao.getId() != null && oaQiTao.getId() > 0){ OaQiTao tao = (OaQiTao)manager.getObject(OaQiTao.class, oaQiTao.getId()); if(tao != null){ if(oaQiTao.getQitaoReceiveTime() != null) { tao.setQitaoReceiveTime(oaQiTao.getQitaoReceiveTime()); } if(oaQiTao.getQitaoSendTime() != null) { tao.setQitaoSendTime(oaQiTao.getQitaoSendTime()); } manager.saveObject(tao); }else{ manager.saveObject(oaQiTao); } }else{ manager.saveObject(oaQiTao); }
 			 */
 			// 以上注释代码 页面值非空验证 现在页面可以为空 则注释了 如果需求改了要求非空了 可以放开处理
 			baseDao.saveObject(oaQiTao);
@@ -9360,10 +9255,10 @@ public class BxAction extends Action {
 	}
 
 	/**
-	 *
+	 * 
 	 * @Title: jsonGetDaHuoSixNode
 	 * @Description: TODO改造第六个流程节点，大货类型（TPE）
-	 *
+	 * 
 	 * @author 张华
 	 */
 	public void jsonGetDaHuoNineNode() {
@@ -9506,7 +9401,7 @@ public class BxAction extends Action {
 	 * 
 	 * @Title: terminateOrder
 	 * @Description: TODO提前终止订单
-	 *
+	 * 
 	 * @author 张华
 	 */
 	public void terminateOrder() {
@@ -9521,7 +9416,7 @@ public class BxAction extends Action {
 					oaOrder1.setStatus("1"); // 更改订单状态实现终止订单
 					oaOrder1.setTerminateMemo(oaOrder.getTerminateMemo()); // 终止订单原因
 					oaOrder1.setTerminateUser(WebUtil.getCurrentLoginBx().getLoginName()); // 终止订单操作人
-					oaOrder1.setTerminateTime(new Timestamp(System.currentTimeMillis()/1000*1000)); // 终止订单时间
+					oaOrder1.setTerminateTime(new Timestamp(System.currentTimeMillis() / 1000 * 1000)); // 终止订单时间
 					saveObject(oaOrder1);
 					resMap.put("code", 0);
 					resMap.put("msg", "终止订单成功");
@@ -10114,7 +10009,7 @@ public class BxAction extends Action {
 		try {
 			OutputStream os = Struts2Utils.getResponse().getOutputStream();
 			Struts2Utils.getResponse().setContentType("Application/msexcel");
-			Struts2Utils.getResponse().setHeader("Content-Disposition", "attachment;filename=ERP-REPORT-" + (System.currentTimeMillis()/1000*1000 + "").substring(6, 13) + ".xlsx");
+			Struts2Utils.getResponse().setHeader("Content-Disposition", "attachment;filename=ERP-REPORT-" + (System.currentTimeMillis() / 1000 * 1000 + "").substring(6, 13) + ".xlsx");
 			POIUtilsEx.processExcel(os, fillInfo);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -10240,8 +10135,7 @@ public class BxAction extends Action {
 		sheetFileInfo.put(t + ",12", new CustomCell("IF(AND(INDEX(AV:AZ,ROW(),3)<>\"\",INDEX(AV:AZ,ROW(),3)<>0),TEXT(INDEX(AV:AZ,ROW(),3)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
 		sheetFileInfo.put(t + ",13", new CustomCell("IF(AND(INDEX(AV:AZ,ROW(),4)<>\"\",INDEX(AV:AZ,ROW(),4)<>0),TEXT(INDEX(AV:AZ,ROW(),4)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
 		sheetFileInfo.put(t + ",14", new CustomCell("IF(AND(INDEX(AV:AZ,ROW(),5)<>\"\",INDEX(AV:AZ,ROW(),5)<>0),TEXT(INDEX(AV:AZ,ROW(),5)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
-		sheetFileInfo.put(t + ",15", new CustomCell("IF(AND(SUM(AV" + (t + 1) + ":AZ" + (t + 1) + ")<>\"\",SUM(AV" + (t + 1) + ":AZ" + (t + 1) + ")<>0),TEXT(SUM(AV" + (t + 1) + ":AZ" + (t + 1)
-				+ ")/86400,\"[h]小时mm分\"),\"\")", "Expression"));
+		sheetFileInfo.put(t + ",15", new CustomCell("IF(AND(SUM(AV" + (t + 1) + ":AZ" + (t + 1) + ")<>\"\",SUM(AV" + (t + 1) + ":AZ" + (t + 1) + ")<>0),TEXT(SUM(AV" + (t + 1) + ":AZ" + (t + 1) + ")/86400,\"[h]小时mm分\"),\"\")", "Expression"));
 
 		sheetFileInfo.put(t + ",16", new CustomCell("IF(ISERR(AVERAGE(Q2:Q" + t + ")),\"\",AVERAGE(Q2:Q" + t + "))", "Expression", "0.#%"));
 		sheetFileInfo.put(t + ",17", new CustomCell("IF(ISERR(AVERAGE(R2:R" + t + ")),\"\",AVERAGE(R2:R" + t + "))", "Expression", "0.#%"));
@@ -10384,8 +10278,7 @@ public class BxAction extends Action {
 		sheetFileInfo.put(t + ",18", new CustomCell("IF(AND(INDEX(AY:BF,ROW(),6)<>\"\",INDEX(AY:BF,ROW(),6)<>0),TEXT(INDEX(AY:BF,ROW(),6)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
 		sheetFileInfo.put(t + ",19", new CustomCell("IF(AND(INDEX(AY:BF,ROW(),7)<>\"\",INDEX(AY:BF,ROW(),7)<>0),TEXT(INDEX(AY:BF,ROW(),7)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
 		sheetFileInfo.put(t + ",20", new CustomCell("IF(AND(INDEX(AY:BF,ROW(),8)<>\"\",INDEX(AY:BF,ROW(),8)<>0),TEXT(INDEX(AY:BF,ROW(),8)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
-		sheetFileInfo.put(t + ",21", new CustomCell("IF(AND(SUM(AY" + (t + 1) + ":BF" + (t + 1) + ")<>\"\",SUM(AY" + (t + 1) + ":BF" + (t + 1) + ")<>0),TEXT(SUM(AY" + (t + 1) + ":BF" + (t + 1)
-				+ ")/86400,\"[h]小时mm分\"),\"\")", "Expression"));
+		sheetFileInfo.put(t + ",21", new CustomCell("IF(AND(SUM(AY" + (t + 1) + ":BF" + (t + 1) + ")<>\"\",SUM(AY" + (t + 1) + ":BF" + (t + 1) + ")<>0),TEXT(SUM(AY" + (t + 1) + ":BF" + (t + 1) + ")/86400,\"[h]小时mm分\"),\"\")", "Expression"));
 
 		sheetFileInfo.put(t + ",22", new CustomCell("IF(ISERR(AVERAGE(W2:W" + t + ")),\"\",AVERAGE(W2:W" + t + "))", "Expression", "0.#%"));
 		sheetFileInfo.put(t + ",23", new CustomCell("IF(ISERR(AVERAGE(X2:X" + t + ")),\"\",AVERAGE(X2:X" + t + "))", "Expression", "0.#%"));
@@ -10400,8 +10293,7 @@ public class BxAction extends Action {
 		fillInfo.put(sheetNames + "MergeCell", sheetMergeCell);
 	}
 
-	private static Short getColorIndex2(Long real_time, Long plan_time, Map<String, Object> sheetFileInfo, LazyDynaMap map, Integer index, String operator, Integer opratorIndex, Integer dataIndex,
-			Integer timeIndex) {
+	private static Short getColorIndex2(Long real_time, Long plan_time, Map<String, Object> sheetFileInfo, LazyDynaMap map, Integer index, String operator, Integer opratorIndex, Integer dataIndex, Integer timeIndex) {
 		String op = "";
 		if (map.get(operator) != null) {
 			op = (String) map.get(operator);
@@ -10417,8 +10309,7 @@ public class BxAction extends Action {
 			}
 		}
 		sheetFileInfo.put(index + "," + opratorIndex, "".equals(op) ? new CustomCell() : op);
-		sheetFileInfo.put(index + "," + dataIndex, new CustomCell("IF(AND(INDIRECT(\"AZ\"&ROW())<>\"\",INDIRECT(\"AZ\"&ROW())<>0),ROUND(INDEX(AV:AZ,ROW()," + (dataIndex - 15) + ")/BA" + (index + 1)
-				+ ",3),\"\")", "Expression", "0.#%"));
+		sheetFileInfo.put(index + "," + dataIndex, new CustomCell("IF(AND(INDIRECT(\"AZ\"&ROW())<>\"\",INDIRECT(\"AZ\"&ROW())<>0),ROUND(INDEX(AV:AZ,ROW()," + (dataIndex - 15) + ")/BA" + (index + 1) + ",3),\"\")", "Expression", "0.#%"));
 
 		Short color;
 		if (plan_time > real_time) {
@@ -10430,21 +10321,18 @@ public class BxAction extends Action {
 		}
 		if (real_time > 0) {
 			if (timeIndex > 10) {
-				sheetFileInfo.put(index + "," + (timeIndex + 37), new CustomCell("IF(AND(INDIRECT(ADDRESS(ROW(),COLUMN()-1))<>\"\",INDIRECT(ADDRESS(ROW(),COLUMN()-1))<>0)," + real_time / 1000
-						+ ",\"\")", "Expression", "0"));
+				sheetFileInfo.put(index + "," + (timeIndex + 37), new CustomCell("IF(AND(INDIRECT(ADDRESS(ROW(),COLUMN()-1))<>\"\",INDIRECT(ADDRESS(ROW(),COLUMN()-1))<>0)," + real_time / 1000 + ",\"\")", "Expression", "0"));
 			} else {
 				sheetFileInfo.put(index + "," + (timeIndex + 37) + ",Integer", real_time / 1000);
 			}
 		} else if (real_time == 0) {
 			sheetFileInfo.put(index + "," + (timeIndex + 37), "");
 		}
-		sheetFileInfo.put(index + "," + timeIndex, new CustomCell("IF(AND(INDEX(AV:AZ,ROW()," + (timeIndex - 9) + ")<>\"\",INDEX(AV:AZ,ROW()," + (timeIndex - 9) + ")<>0),TEXT(INDEX(AV:AZ,ROW(),"
-				+ (timeIndex - 9) + ")/86400,\"[h]小时mm分\"),\"\")", "Expression").setCellColor(color));
+		sheetFileInfo.put(index + "," + timeIndex, new CustomCell("IF(AND(INDEX(AV:AZ,ROW()," + (timeIndex - 9) + ")<>\"\",INDEX(AV:AZ,ROW()," + (timeIndex - 9) + ")<>0),TEXT(INDEX(AV:AZ,ROW()," + (timeIndex - 9) + ")/86400,\"[h]小时mm分\"),\"\")", "Expression").setCellColor(color));
 		return color;
 	}
 
-	private static Short getColorIndex(Long real_time, Long plan_time, Map<String, Object> sheetFileInfo, LazyDynaMap map, Integer index, String operator, Integer opratorIndex, Integer dataIndex,
-			Integer timeIndex) {
+	private static Short getColorIndex(Long real_time, Long plan_time, Map<String, Object> sheetFileInfo, LazyDynaMap map, Integer index, String operator, Integer opratorIndex, Integer dataIndex, Integer timeIndex) {
 		String op = "";
 		if (map.get(operator) != null) {
 			op = (String) map.get(operator);
@@ -10460,8 +10348,7 @@ public class BxAction extends Action {
 			}
 		}
 		sheetFileInfo.put(index + "," + opratorIndex, "".equals(op) ? new CustomCell() : op);
-		sheetFileInfo.put(index + "," + dataIndex, new CustomCell("IF(AND(INDIRECT(\"BF\"&ROW())<>\"\",INDIRECT(\"BF\"&ROW())<>0),ROUND(INDEX(AY:BG,ROW()," + (dataIndex - 21) + ")/BG" + (index + 1)
-				+ ",3),\"\")", "Expression", "0.#%"));
+		sheetFileInfo.put(index + "," + dataIndex, new CustomCell("IF(AND(INDIRECT(\"BF\"&ROW())<>\"\",INDIRECT(\"BF\"&ROW())<>0),ROUND(INDEX(AY:BG,ROW()," + (dataIndex - 21) + ")/BG" + (index + 1) + ",3),\"\")", "Expression", "0.#%"));
 		Short color;
 		if (plan_time > real_time) {
 			color = IndexedColors.GREEN.index;
@@ -10473,17 +10360,15 @@ public class BxAction extends Action {
 
 		if (real_time > 0) {
 			if (timeIndex > 13) {
-				sheetFileInfo.put(index + "," + (timeIndex + 37), new CustomCell("IF(AND(INDIRECT(ADDRESS(ROW(),COLUMN()-1))<>\"\",INDIRECT(ADDRESS(ROW(),COLUMN()-1))<>0)," + real_time / 1000
-						+ ",\"\")", "Expression", "0"));
+				sheetFileInfo.put(index + "," + (timeIndex + 37), new CustomCell("IF(AND(INDIRECT(ADDRESS(ROW(),COLUMN()-1))<>\"\",INDIRECT(ADDRESS(ROW(),COLUMN()-1))<>0)," + real_time / 1000 + ",\"\")", "Expression", "0"));
 			} else {
 				sheetFileInfo.put(index + "," + (timeIndex + 37) + ",Integer", real_time / 1000);
 			}
 		} else if (real_time == 0) {
 			sheetFileInfo.put(index + "," + (timeIndex + 37), "");
 		}
-		sheetFileInfo.put(index + "," + timeIndex, new CustomCell("IF(AND(INDEX(AY:BF,ROW()," + (timeIndex - 12) + ")<>\"\",INDEX(AY:BF,ROW()," + (timeIndex - 12) + ")<>0),TEXT(INDEX(AY:BF,ROW(),"
-				+ (timeIndex - 12) + ")/86400,\"[h]小时mm分\"),\"\")", "Expression", "0").setCellColor(color));
+		sheetFileInfo.put(index + "," + timeIndex, new CustomCell("IF(AND(INDEX(AY:BF,ROW()," + (timeIndex - 12) + ")<>\"\",INDEX(AY:BF,ROW()," + (timeIndex - 12) + ")<>0),TEXT(INDEX(AY:BF,ROW()," + (timeIndex - 12) + ")/86400,\"[h]小时mm分\"),\"\")", "Expression", "0").setCellColor(color));
 		return color;
 	}
-	
+
 }
