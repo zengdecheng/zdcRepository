@@ -1978,11 +1978,11 @@ public class BxAction extends Action {
 		beans = getObjectsBySql(fspTemp);
 		System.out.println("beans.size:" + beans.size());
 		if (beans.size() <= 0) {
-			return "noOrderNum";
+			return "bx/noOrderNum";
 		} else {
 			oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, (Integer) beans.get(0).get("id"));
 			if (null == oaOrder || null == oaOrder.getId()) {
-				return "noOrderNum";
+				return "bx/noOrderNum";
 			}
 		}
 
