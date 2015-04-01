@@ -17,6 +17,7 @@ import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.task.Task;
 import org.apache.commons.beanutils.LazyDynaMap;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
 
 import com.xbd.erp.base.dao.BaseDao;
 import com.xbd.erp.base.pojo.sys.FSPBean;
@@ -24,6 +25,7 @@ import com.xbd.oa.dao.impl.BxDaoImpl;
 import com.xbd.oa.vo.OaOrder;
 import com.xbd.oa.vo.OaOrderDetail;
 
+@Service
 public class BizUtil {
 	private static BaseDao baseDao;
 	
@@ -49,7 +51,7 @@ public class BizUtil {
 	public static void startOrderWf(String processInstanceByKey, String curUser, OaOrder oaOrder) {
 
 		String processInstanceId = WorkFlowUtil.startWf(processInstanceByKey);
-		WorkFlowUtil.getPe().getRuntimeService().setVariable(processInstanceId, "oa_order", oaOrder.getId());
+		WorkFlowUtil.runtimeService.setVariable(processInstanceId, "oa_order", oaOrder.getId());
 
 		// 开始节点和第一步是连起来做的，每个流程的第一个节点不扩展createHandle
 		Task task = WorkFlowUtil.getOnlyCurTaskByProcessInstanceId(processInstanceId);
@@ -75,7 +77,7 @@ public class BizUtil {
 	public static void assignOther(Integer oaOrderDetailId, String assigner, String groupName) {
 		OaOrderDetail oaOrderDetail = (OaOrderDetail) baseDao.getObject(OaOrderDetail.class, oaOrderDetailId);
 		OaOrder oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, oaOrderDetail.getOaOrder());
-		WorkFlowUtil.getPe().getTaskService().setAssignee(oaOrderDetail.getTaskId(), assigner);
+		WorkFlowUtil.taskService.setAssignee(oaOrderDetail.getTaskId(), assigner);
 		oaOrderDetail.setOperator(assigner);
 		oaOrder.setOperator(assigner);
 		baseDao.saveObject(oaOrderDetail);
@@ -92,7 +94,7 @@ public class BizUtil {
 	 */
 	public static void nextStep(OaOrderDetail oaOrderDetail) {
 		// 1向流程传入OaOrderDetailId作为流程变量
-		WorkFlowUtil.getPe().getRuntimeService().setVariable(oaOrderDetail.getProcId(), "oa_order_detail", oaOrderDetail.getId());
+		WorkFlowUtil.runtimeService.setVariable(oaOrderDetail.getProcId(), "oa_order_detail", oaOrderDetail.getId());
 		// 2完成此流程
 		WorkFlowUtil.completeTask(oaOrderDetail.getTaskId());
 	}
@@ -106,7 +108,7 @@ public class BizUtil {
 	 */
 	public static void backStep(OaOrderDetail oaOrderDetail) {
 		// 1向流程传入OaOrderDetailId作为流程变量
-		WorkFlowUtil.getPe().getRuntimeService().setVariable(oaOrderDetail.getProcId(), "oa_order_detail", oaOrderDetail.getId());
+		WorkFlowUtil.runtimeService.setVariable(oaOrderDetail.getProcId(), "oa_order_detail", oaOrderDetail.getId());
 		// 2完成此流程
 		WorkFlowUtil.turnTransitionBack(oaOrderDetail.getTaskId(), null);
 	}
@@ -118,12 +120,12 @@ public class BizUtil {
 	 */
 	public static void nextStepWithCase(OaOrderDetail oaOrderDetail, Map<String, String> params) {
 		// 1向流程传入OaOrderDetailId作为流程变量
-		WorkFlowUtil.getPe().getRuntimeService().setVariable(oaOrderDetail.getProcId(), "oa_order_detail", oaOrderDetail.getId());
+		WorkFlowUtil.runtimeService.setVariable(oaOrderDetail.getProcId(), "oa_order_detail", oaOrderDetail.getId());
 		// 2传入条件变量
 		// params
 		for (Iterator iterator = params.keySet().iterator(); iterator.hasNext();) {
 			String key = (String) iterator.next();
-			WorkFlowUtil.getPe().getRuntimeService().setVariable(oaOrderDetail.getProcId(), key, params.get(key));
+			WorkFlowUtil.runtimeService.setVariable(oaOrderDetail.getProcId(), key, params.get(key));
 		}
 		// 3完成此流程
 		WorkFlowUtil.completeTask(oaOrderDetail.getTaskId());
@@ -198,7 +200,7 @@ public class BizUtil {
 		newOaOrderDetail.setSmsTimeout(ConstantUtil.NOTIFYSTAFF_STATE_TIMEOUT);
 		baseDao.saveObject(newOaOrderDetail); // 保存本节点信息
 
-		WorkFlowUtil.getPe().getRuntimeService().setVariable(processInstanceId, "oa_order_detail", newOaOrderDetail.getId());
+		WorkFlowUtil.runtimeService.setVariable(processInstanceId, "oa_order_detail", newOaOrderDetail.getId());
 		// 2因为直接跳转到第二节点所以此时不更新主表里面工作流的信息
 		oaOrder.setBeginTime(curTime);
 		oaOrder.setOaOrderDetail(newOaOrderDetail.getId());
