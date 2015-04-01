@@ -13,26 +13,6 @@
 	<constant name="struts.action.extension" value="action" />
 	<constant name="struts.convention.result.path" value="/jsp/" />
 	<constant name="struts.convention.action.name.separator" value="_" />
-	<!-- <constant name="struts.convention.package.locators" value="action"/> -->
-	<!-- <constant name="struts.convention.package.locators.basePackage" value="com.xbd.erp" /> -->
-
-	<!-- <constant name="struts.convention.default.parent.package" value="basePackage" /> -->
 	<constant name="struts.allowed.action.names" value="[a-zA-Z0-9._!/\-]*" />
-
-	<!-- 	<package name="basePackage" extends="struts-default">
-		<interceptors>
-		<interceptor name="login" class="com.xbd.oa.interceptor.LoginInterceptor" />
-			<interceptor-stack name="baseStack">
-				<interceptor-ref name="login" />
-				<interceptor-ref name="defaultStack" />
-			</interceptor-stack>
-		</interceptors>
-		<default-interceptor-ref name="baseStack" />
-
-		<global-results>
-			<result name="adminLogin" type="redirect">/admin?err=login</result>
-			<result name="authError">/authError.jsp</result>
-		</global-results>
-	</package> -->
 
 </struts>
