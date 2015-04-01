@@ -166,7 +166,7 @@ public class DaoQueryByXml {
 		buf.append("||").append(fsp.get(FSPBean.FSP_QUERY_BY_XML));
 		for (Object key : fsp.getMap().keySet()) {
 			if (!key.equals(FSPBean.FSP_QUERY_BY_XML)) {
-				if (dealFspEql(fsp, (String) key,baseDao) != null) {
+ 				if (dealFspEql(fsp, (String) key,baseDao) != null) {
 					buf.append("||").append(key);
 				}
 			}
