@@ -41,6 +41,8 @@ public class LoginFilter extends HttpServlet implements Filter {
 		HttpSession session = request.getSession();
 		String url = request.getServletPath();
 		String contextPath = request.getContextPath();
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		
 		if(url.contains(".") || isFilter(url)){
 			chain.doFilter(sRequest, sResponse);
 		}else{

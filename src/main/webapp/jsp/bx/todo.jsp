@@ -106,9 +106,15 @@
 			<td>${map.wf_step_name}</td>
 			<td>${map.operator}</td>
 			<s:if
-				test="#session.is_manager != null && #session.is_manager.admin != map.operator">
+				test="#session.is_manager != null && #session.is_manager.admin != map.operator && '补充订单信息' != map.wf_step_name">
 				<td class="z_title_sty1" colspan="3">${map.operator}
 			</s:if>
+			<s:elseif
+				test="#session.is_manager != null && #session.is_manager.admin != map.operator && '补充订单信息' == map.wf_step_name">
+				<td class="z_title_sty1" colspan="3"><a class="assign_btn z_title_sty5"
+					oaOrderDetailId="${map.oa_order_detail}" oaOrderId="${map.id}"
+					href="javascript:void(0)">分配</a> ${map.operator}
+			</s:elseif>
 			<s:elseif
 				test="#session.is_manager != null && #session.is_manager.admin == map.operator">
 				<td class="z_title_sty5" colspan="3"><a class="assign_btn"
