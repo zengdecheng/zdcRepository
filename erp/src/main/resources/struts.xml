@@ -19,9 +19,9 @@
 	<!-- <constant name="struts.convention.default.parent.package" value="basePackage" /> -->
 	<constant name="struts.allowed.action.names" value="[a-zA-Z0-9._!/\-]*" />
 
-	<package name="basePackage" extends="struts-default">
+	<!-- 	<package name="basePackage" extends="struts-default">
 		<interceptors>
-			<interceptor name="login" class="com.xbd.oa.interceptor.LoginInterceptor" />
+		<interceptor name="login" class="com.xbd.oa.interceptor.LoginInterceptor" />
 			<interceptor-stack name="baseStack">
 				<interceptor-ref name="login" />
 				<interceptor-ref name="defaultStack" />
@@ -33,6 +33,6 @@
 			<result name="adminLogin" type="redirect">/admin?err=login</result>
 			<result name="authError">/authError.jsp</result>
 		</global-results>
-	</package>
+	</package> -->
 
 </struts>
