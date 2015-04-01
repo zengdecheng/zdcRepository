@@ -103,19 +103,20 @@ public abstract class StringUtils {
 	}
 
 	/**
-	 * Check if a String has text. More specifically, returns <code>true</code>
-	 * if the string not <code>null<code>, it's <code>length is > 0</code>, and
-	 * it has at least one non-whitespace character.
-	 * <p><pre>
+	 * Check if a String has text. More specifically, returns <code>true</code> if the string not <code>null<code>, it's <code>length is > 0</code>, and it has at least one non-whitespace character.
+	 * <p>
+	 * 
+	 * <pre>
 	 *   StringUtils.hasText(null) = false
 	 *   StringUtils.hasText(&quot;&quot;) = false
 	 *   StringUtils.hasText(&quot; &quot;) = false
 	 *   StringUtils.hasText(&quot;12345&quot;) = true
 	 *   StringUtils.hasText(&quot; 12345 &quot;) = true
 	 * </pre>
-	 * @param str the String to check, may be null
-	 * @return <code>true</code> if the String is not null, length > 0,
-	 *         and not whitespace only
+	 * 
+	 * @param str
+	 *            the String to check, may be null
+	 * @return <code>true</code> if the String is not null, length > 0, and not whitespace only
 	 * @see java.lang.Character#isWhitespace
 	 */
 	public static boolean hasText(String str) {
@@ -163,16 +164,14 @@ public abstract class StringUtils {
 			return str;
 		}
 		StringBuffer buf = new StringBuffer(str);
-		while (buf.length() > 0
-				&& Character.isWhitespace(buf.charAt(buf.length() - 1))) {
+		while (buf.length() > 0 && Character.isWhitespace(buf.charAt(buf.length() - 1))) {
 			buf.deleteCharAt(buf.length() - 1);
 		}
 		return buf.toString();
 	}
 
 	/**
-	 * Test if the given String starts with the specified prefix, ignoring
-	 * upper/lower case.
+	 * Test if the given String starts with the specified prefix, ignoring upper/lower case.
 	 * 
 	 * @param str
 	 *            the String to check
@@ -329,15 +328,13 @@ public abstract class StringUtils {
 		if (!hasText(propertyName)) {
 			return null;
 		} else {
-			return prefix + propertyName.substring(0, 1).toUpperCase()
-					+ propertyName.substring(1);
+			return prefix + propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
 		}
 	}
 
 	public static String getMyDate(String strdate) {
 		String ret = "";
-		if (strdate != null && !strdate.equals("") && strdate.length() > 0
-				&& !strdate.startsWith("1900-01-01"))
+		if (strdate != null && !strdate.equals("") && strdate.length() > 0 && !strdate.startsWith("1900-01-01"))
 			ret = strdate.substring(0, 10);
 		return ret;
 	}
@@ -345,8 +342,7 @@ public abstract class StringUtils {
 	// for example:yy-mm-dd hh:mi
 	public static String getMyDate2(String strdate) {
 		String ret = "";
-		if (strdate != null && !strdate.equals("") && strdate.length() > 0
-				&& !strdate.startsWith("1900-01-01"))
+		if (strdate != null && !strdate.equals("") && strdate.length() > 0 && !strdate.startsWith("1900-01-01"))
 			ret = strdate.substring(0, 16);
 		return ret;
 	}
@@ -475,8 +471,9 @@ public abstract class StringUtils {
 	 * @comment 提高并发性能的inputStream 转化为String
 	 */
 	public static String inputStream2StringBuf(InputStream in) {
-		return inputStream2StringBuf(in,"utf-8");
+		return inputStream2StringBuf(in, "utf-8");
 	}
+
 	/**
 	 * 
 	 * @param in
@@ -485,7 +482,7 @@ public abstract class StringUtils {
 	 * @date 2009-3-19 下午12:11:34
 	 * @comment 提高并发性能的inputStream 转化为String
 	 */
-	public static String inputStream2StringBuf(InputStream in,String encode) {
+	public static String inputStream2StringBuf(InputStream in, String encode) {
 		BufferedReader reader = null;
 		StringBuffer buffer = new StringBuffer();
 		try {
@@ -500,10 +497,12 @@ public abstract class StringUtils {
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		}finally{
+		} finally {
 			try {
-				if(reader != null)reader.close();
-				if(in != null)in.close();
+				if (reader != null)
+					reader.close();
+				if (in != null)
+					in.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -588,11 +587,8 @@ public abstract class StringUtils {
 		// System.out.println(b);
 
 		/*
-		 * String str = ""; System.out.println(isEmpty(str)); BASE64Decoder
-		 * base64Decoder = new BASE64Decoder(); try { System.out.println(new
-		 * String(base64Decoder.decodeBuffer("MDEwMjg3DQoNCg=="))); } catch
-		 * (IOException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); }
+		 * String str = ""; System.out.println(isEmpty(str)); BASE64Decoder base64Decoder = new BASE64Decoder(); try { System.out.println(new String(base64Decoder.decodeBuffer("MDEwMjg3DQoNCg=="))); }
+		 * catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
 		 */
 		// String str =
 		// "�������п�ҵ�㼪£��������ϣ���Դ���Ĺ���֮�⡣�����ڵ��̻���ҵ�Ŀ�ҵ���ʣ��Ա������߶����Ѽ���ҵ��֧����ף����"
@@ -600,26 +596,23 @@ public abstract class StringUtils {
 		String str = "商品";
 		// "康乃馨，大部分代表了爱，魅力和尊敬之情，多表现为比较清淡和温馨的情感，适于亲情之爱。有一个爱，一生一世不求回报──母爱"
 		// +"您常说，子女的幸福快乐就是最好的的礼物，今天我把所有的幸福和快乐用彩信包裹送给您，祝身体健康，笑口常开!踏歌鲜花店荣誉出品"
-		//String str = "ä½ çä»è¹ ç±ä½ çç±³å¼æåºç½";
+		// String str = "ä½ çä»è¹ ç±ä½ çç±³å¼æåºç½";
 		try {
-		str = URLEncoder.encode(str,"utf-8");
-		System.out.println(GBK2UTF(str));
-		System.out.println(GBK2ISO(str));
-		System.out.println(UTF2GBK(str));
-		System.out.println(UTF2ISO(str));
-		System.out.println(ISO2GBK(str));
-		System.out.println(ISO2UTF(str));
+			str = URLEncoder.encode(str, "utf-8");
+			System.out.println(GBK2UTF(str));
+			System.out.println(GBK2ISO(str));
+			System.out.println(UTF2GBK(str));
+			System.out.println(UTF2ISO(str));
+			System.out.println(ISO2GBK(str));
+			System.out.println(ISO2UTF(str));
 
-		
-			System.out.println( new String("付莹".getBytes(), "UTF-8"));
+			System.out.println(new String("付莹".getBytes(), "UTF-8"));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		/*
-		 * try { //System.out.println(new String(str.getBytes("UTF-8"))); }
-		 * catch (UnsupportedEncodingException e) { // TODO Auto-generated catch
-		 * block e.printStackTrace(); }
+		 * try { //System.out.println(new String(str.getBytes("UTF-8"))); } catch (UnsupportedEncodingException e) { // TODO Auto-generated catch block e.printStackTrace(); }
 		 */
 	}
 }

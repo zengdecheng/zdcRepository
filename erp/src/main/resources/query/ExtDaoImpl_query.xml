@@ -27,4 +27,13 @@
 	</function>
 	<!-- crm获取oa品类 -->
 	<function name="get_category_by_sql" type="sql" sql="select name,code,status from oa_category"></function>
+	<!-- 获取品类对象 -->
+	<function name="get_category_by_eql" type="eql"
+		sql="select vo from OaCategory vo where 1=1 ${case}1">
+		<parser index="1">
+			<param fspname="id" sqlname="id"></param>
+			<param fspname="name" sqlname="name"></param>
+			<param fspname="code" sqlname="code"></param>
+		</parser>
+	</function>
 </query>

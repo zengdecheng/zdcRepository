@@ -14,8 +14,9 @@ public final class WebUtil {
 	 * session当前辛巴达员工
 	 */
 	public static final String SESSION_LOGIN_BX = "session_login_bx";
-	
+
 	public static final String SESSION_IS_MANAGER = "is_manager";
+
 	/**
 	 * 
 	 * <B>设置当前登录的员工VO</B><br>
@@ -39,8 +40,7 @@ public final class WebUtil {
 	 * @see [相关类或方法]
 	 */
 	public static OaStaff getCurrentLoginBx() {
-		OaStaff oaStaff = (OaStaff) Struts2Utils.getSession().getAttribute(
-				SESSION_LOGIN_BX);
+		OaStaff oaStaff = (OaStaff) Struts2Utils.getSession().getAttribute(SESSION_LOGIN_BX);
 		return oaStaff;
 	}
 
@@ -54,11 +54,13 @@ public final class WebUtil {
 	 * @see [相关类或方法]
 	 */
 	public static boolean ifAdmin() {
-		if(!isBxLogined()) return false;
-		if(getCurrentLoginBx().getLoginName() == null)return false;
+		if (!isBxLogined())
+			return false;
+		if (getCurrentLoginBx().getLoginName() == null)
+			return false;
 		if (getCurrentLoginBx().getLoginName().equals("admin")) {
 			return true;
-		}else if((getCurrentLoginBx() != null) && (getCurrentLoginBx().getOaRole() != null) && (getCurrentLoginBx().getOaRole()==9)){
+		} else if ((getCurrentLoginBx() != null) && (getCurrentLoginBx().getOaRole() != null) && (getCurrentLoginBx().getOaRole() == 9)) {
 			return true;
 		} else {
 			return false;
@@ -87,24 +89,22 @@ public final class WebUtil {
 		return null != getCurrentLoginBx();
 	}
 
-	
-	public static void setManager(OaOrg oo){
-		Struts2Utils.getSession().setAttribute(SESSION_IS_MANAGER,oo);
+	public static void setManager(OaOrg oo) {
+		Struts2Utils.getSession().setAttribute(SESSION_IS_MANAGER, oo);
 	}
-	
+
 	/**
 	 * <B>判断是否是部门主管</B><br>
 	 * 
 	 */
-	public static boolean ifManager(){
-		if( Struts2Utils.getSession().getAttribute(SESSION_IS_MANAGER)!= null ){
+	public static boolean ifManager() {
+		if (Struts2Utils.getSession().getAttribute(SESSION_IS_MANAGER) != null) {
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
-	
-	
+
 	/**
 	 * 
 	 * <B>判断是否ajax请求</B><br>
@@ -132,8 +132,7 @@ public final class WebUtil {
 	public static String getUUID() {
 		String s = UUID.randomUUID().toString();
 		// 去掉“-”符号
-		return s.substring(0, 8) + s.substring(9, 13) + s.substring(14, 18)
-				+ s.substring(19, 23) + s.substring(24);
+		return s.substring(0, 8) + s.substring(9, 13) + s.substring(14, 18) + s.substring(19, 23) + s.substring(24);
 	}
 
 	public static String price2String(double d) {
@@ -154,9 +153,7 @@ public final class WebUtil {
 
 	public static String minusTimeAndOffset(Timestamp timestamp, long offset) {
 		StringBuffer buf = new StringBuffer();
-		long diff = offset
-				- BizUtil.getWorkTimeBetween(
-						new Timestamp(System.currentTimeMillis()/1000*1000), timestamp);
+		long diff = offset - BizUtil.getWorkTimeBetween(new Timestamp(System.currentTimeMillis() / 1000 * 1000), timestamp);
 		if (diff < 0) {
 			buf.append("超时");
 		} else {
@@ -167,32 +164,30 @@ public final class WebUtil {
 		return buf.toString();
 	}
 
-    /**
-     * 用户excel导出计算
-     * @param timestamp
-     * @param offset
-     * @return
-     * @author 范蠡
-     */
-    public static String minusTimeAndOffsetExcel(Timestamp timestamp, long offset) {
-        StringBuffer buf = new StringBuffer();
-        long diff = offset
-                - BizUtil.getWorkTimeBetween(
-                new Timestamp(System.currentTimeMillis()/1000*1000), timestamp);
-        if (diff < 0) {
-            buf.append("超时");
-        } else {
-            buf.append("剩余");
-        }
-        long l = Math.abs(diff);
-        buf.append(getTimeDisPlayExcel(l));
-        return buf.toString();
-    }
+	/**
+	 * 用户excel导出计算
+	 * 
+	 * @param timestamp
+	 * @param offset
+	 * @return
+	 * @author 范蠡
+	 */
+	public static String minusTimeAndOffsetExcel(Timestamp timestamp, long offset) {
+		StringBuffer buf = new StringBuffer();
+		long diff = offset - BizUtil.getWorkTimeBetween(new Timestamp(System.currentTimeMillis() / 1000 * 1000), timestamp);
+		if (diff < 0) {
+			buf.append("超时");
+		} else {
+			buf.append("剩余");
+		}
+		long l = Math.abs(diff);
+		buf.append(getTimeDisPlayExcel(l));
+		return buf.toString();
+	}
 
 	public static String minusTime(Timestamp timestamp) {
 		StringBuffer buf = new StringBuffer();
-		long diff = BizUtil.getWorkTimeBetween(
-				new Timestamp(System.currentTimeMillis()/1000*1000), timestamp);
+		long diff = BizUtil.getWorkTimeBetween(new Timestamp(System.currentTimeMillis() / 1000 * 1000), timestamp);
 		if (diff > 0) {
 			buf.append("超时");
 		} else {
@@ -229,60 +224,59 @@ public final class WebUtil {
 		return buf.toString();
 	}
 
-    public static String minusTimeExcel(Timestamp timestamp) {
-        StringBuffer buf = new StringBuffer();
-        long diff = BizUtil.getWorkTimeBetween(
-                new Timestamp(System.currentTimeMillis()/1000*1000), timestamp);
-        if (diff > 0) {
-            buf.append("超时");
-        } else {
-            buf.append("剩余");
-        }
-        long l = Math.abs(diff);
-        buf.append(getTimeDisPlayExcel(l));
-        return buf.toString();
-    }
+	public static String minusTimeExcel(Timestamp timestamp) {
+		StringBuffer buf = new StringBuffer();
+		long diff = BizUtil.getWorkTimeBetween(new Timestamp(System.currentTimeMillis() / 1000 * 1000), timestamp);
+		if (diff > 0) {
+			buf.append("超时");
+		} else {
+			buf.append("剩余");
+		}
+		long l = Math.abs(diff);
+		buf.append(getTimeDisPlayExcel(l));
+		return buf.toString();
+	}
 
-    public static String getTimeDisPlayExcel(long l) {
-        StringBuffer buf = new StringBuffer();
-        //long day = l / (24 * 60 * 60 * 1000);
-        long hour = (l / (60 * 60 * 1000));
-        long min = ((l / (60 * 1000)) - hour * 60);
-//        long s = (l / 1000 - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60);
+	public static String getTimeDisPlayExcel(long l) {
+		StringBuffer buf = new StringBuffer();
+		// long day = l / (24 * 60 * 60 * 1000);
+		long hour = (l / (60 * 60 * 1000));
+		long min = ((l / (60 * 1000)) - hour * 60);
+		// long s = (l / 1000 - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60);
 
-//        if (day > 0) {
-//            buf.append(day + "天");
-//            buf.append(hour + "小时");
-//            buf.append(min + "分");
-//        } else
-        if (hour > 0) {
-            //buf.append("0天");
-            buf.append(hour + "小时");
-            if(min < 10){
-                buf.append("0"+min + "分");
-            }else{
-                buf.append(min + "分");
-            }
+		// if (day > 0) {
+		// buf.append(day + "天");
+		// buf.append(hour + "小时");
+		// buf.append(min + "分");
+		// } else
+		if (hour > 0) {
+			// buf.append("0天");
+			buf.append(hour + "小时");
+			if (min < 10) {
+				buf.append("0" + min + "分");
+			} else {
+				buf.append(min + "分");
+			}
 
-        } else if (min > 0) {
-           // buf.append("0天");
-            buf.append("0小时");
-            if(min < 10){
-                buf.append("0"+min + "分");
-            }else{
-                buf.append(min + "分");
-            }
-        }
-//        else if (s > 0) {
-//            buf.append("0分");
-//            buf.append(s + "秒");
-//        } else {
-//            buf.append("0分");
-//            buf.append("0秒");
-//        }
-        return buf.toString();
-    }
-	
+		} else if (min > 0) {
+			// buf.append("0天");
+			buf.append("0小时");
+			if (min < 10) {
+				buf.append("0" + min + "分");
+			} else {
+				buf.append(min + "分");
+			}
+		}
+		// else if (s > 0) {
+		// buf.append("0分");
+		// buf.append(s + "秒");
+		// } else {
+		// buf.append("0分");
+		// buf.append("0秒");
+		// }
+		return buf.toString();
+	}
+
 	public static String getTimeDisPlay4DH(long l) {
 		StringBuffer buf = new StringBuffer();
 		long hour = (l / (60 * 60 * 1000));
@@ -328,10 +322,11 @@ public final class WebUtil {
 			return "未知类型";
 		}
 	}
-	public static String getWfIndx(String wfStep){
+
+	public static String getWfIndx(String wfStep) {
 		String inx = "";
-		if(wfStep != null ){
-			inx = wfStep.substring(wfStep.lastIndexOf("_")+1);
+		if (wfStep != null) {
+			inx = wfStep.substring(wfStep.lastIndexOf("_") + 1);
 		}
 		return inx;
 	}
@@ -342,6 +337,40 @@ public final class WebUtil {
 		}
 		return "";
 	}
+
+	/**
+	 * 
+	 * @Title: getWfStepIndex
+	 * @Description: TODO获取节点末尾的数字（例：ppc_confirm_10）返回10
+	 *
+	 * @author 张华
+	 * @param wfStep节点id
+	 * @return
+	 */
+	public static int getWfStepIndex(String wfStep) {
+		try {
+			return Integer.parseInt(indexOfStr(wfStep, "_"));
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return -1;
+	}
+
+	/**
+	 * 
+	 * @Title: indexOfStr
+	 * @Description: TODO返回以查找到字符串ch在str字符串最后相符的位置到str字符串的末尾
+	 *
+	 * @author 张华
+	 * @param str被查找的字符串
+	 * @param ch要查找的字符串
+	 * @return
+	 */
+	public static String indexOfStr(String str, String ch) {
+		return str.substring(str.lastIndexOf(ch) + 1);
+	}
+
 	public static void main(String[] args) {
 		System.out.println(getWfIndx("b_dfdfd_1"));
 	}
