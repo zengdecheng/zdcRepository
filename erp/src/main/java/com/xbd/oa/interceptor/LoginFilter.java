@@ -42,7 +42,7 @@ public class LoginFilter extends HttpServlet implements Filter {
 		String url = request.getServletPath();
 		String contextPath = request.getContextPath();
 		
-		if(url.contains(".") || IGNORE_METHOD.contains(url)){
+		if(url.contains(".") || isFilter(url)){
 			chain.doFilter(sRequest, sResponse);
 		}else{
 			OaStaff sysStaff = (OaStaff) session.getAttribute("session_login_bx");
@@ -54,4 +54,14 @@ public class LoginFilter extends HttpServlet implements Filter {
 			}
 		}
 	}
+	
+	public Boolean isFilter(String url){
+		for(String str:IGNORE_METHOD){
+			if(url.startsWith(str)){
+				return true;
+			}
+		}
+		return false;
+	}
 }
+
