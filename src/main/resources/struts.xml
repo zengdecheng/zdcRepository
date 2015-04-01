@@ -14,5 +14,4 @@
 	<constant name="struts.convention.result.path" value="/jsp/" />
 	<constant name="struts.convention.action.name.separator" value="_" />
 	<constant name="struts.allowed.action.names" value="[a-zA-Z0-9._!/\-]*" />
-
 </struts>
