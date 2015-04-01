@@ -43,7 +43,23 @@ public class FSPBean implements Serializable {
 	private Map map = new HashMap();
 
 	public Map getMap() {
+		if(map!= null){
+			for ( Object key : map.keySet()) {
+				map.put(key, dealp(map.get(key)));
+			}
+		}
 		return map;
+	}
+	private static String dealp(Object object) {
+		if (object instanceof String[]) {
+			String[] ss = (String[]) object;
+			if (ss[0] != null) {
+				return ss[0];
+			}
+		} else if (object instanceof String) {
+			return (String) object;
+		}
+		return null;
 	}
 
 	public void setMap(Map map) {
