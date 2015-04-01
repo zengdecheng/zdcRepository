@@ -94,14 +94,16 @@ define([ "v","vl" ], function(u,up) {
 					for(var i=0;i<fMap.length;i++){
 						if(fMap[i].state=="1"){//表示待确认
 							var div="<div ><table style='width:80%;margin:5px 5px 5px 10px;font-size:12px;background-color:#FDE4EE'><tr height='28px'><td width='8%'>到账通知：</td>";
-								div+="<td>"+fMap[i].money+"("+fMap[i].method+"%)&nbsp;&nbsp;提交时间："+fMap[i].apply_time+"</td><tr>";
+								//div+="<td>"+fMap[i].money+"("+fMap[i].method+"%)&nbsp;&nbsp;提交时间："+fMap[i].apply_time+"</td><tr>";
+								div+="<td>"+fMap[i].method+"%&nbsp;&nbsp;提交时间："+fMap[i].apply_time+"</td><tr>";
 								div+="<tr height='28px'><td>财务审核：</td><td>待确认</td></tr>";
 								div+="<tr height='28px'><td>财务备注：</td><td>"+fMap[i].memo+"</td></tr></table></div>";
 								$("#checkRedord").append(div);
 						}else if(fMap[i].state=="2"){//表示已确认
 							var div="<div ><table style='width:80%;margin:5px 5px 5px 10px;font-size:12px;background-color:#E1EEEE'><tr height='28px'><td width='8%'>到账通知：</td>";
 							daoZhangMoney+=fMap[i].money;
-							div+="<td>"+fMap[i].money+"("+fMap[i].method+"%)&nbsp;&nbsp;提交时间："+fMap[i].apply_time+"</td><tr>";
+//							div+="<td>"+fMap[i].money+"("+fMap[i].method+"%)&nbsp;&nbsp;提交时间："+fMap[i].apply_time+"</td><tr>";
+							div+="<td>"+fMap[i].method+"%&nbsp;&nbsp;提交时间："+fMap[i].apply_time+"</td><tr>";
 							div+="<tr height='28px'><td>财务审核：</td><td>已确认&nbsp;&nbsp;审核时间："+fMap[i].confirm_time+"</td></tr>";
 							div+="<tr height='28px'><td>审核人：</td><td>"+fMap[i].confirm_staff+"</td></tr>";
 							$("#operator").val(fMap[i].confirm_staff);//在订单跟踪报表中要使用
