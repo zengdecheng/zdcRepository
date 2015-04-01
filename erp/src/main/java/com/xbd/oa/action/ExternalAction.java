@@ -743,7 +743,7 @@ public class ExternalAction extends Action {
 			}
 		}
 
-		Struts2Utils.renderJson(resMap);
+		Struts2Utils.writeJson(resMap);
 	}
 
 	/**

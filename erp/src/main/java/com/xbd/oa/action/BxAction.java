@@ -469,7 +469,7 @@ public class BxAction extends Action {
 		bean.set("orderField", orderField);
 		fsp.setRecordCount(beans.size());
 		int fromIndex = (fsp.getPageNo() - 1) * fsp.getPageSize();
-		int toIndex = (fromIndex + fsp.getPageSize()) <= beans.size() ? fromIndex + fsp.getPageSize() : fromIndex + (int) fsp.getRecordCount() % fsp.getPageSize();
+		int toIndex = (fromIndex + fsp.getPageSize()) <= beans.size() ? fromIndex + fsp.getPageSize() : fromIndex + beans.size() % fsp.getPageSize();
 		beans = beans.subList(fromIndex, toIndex);
 		processPageInfo(getObjectsCountSql(fsp));
 		return "bx/todo";
