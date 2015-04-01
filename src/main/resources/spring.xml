@@ -37,18 +37,7 @@
 		</property>
 	</bean>
 
-	<context:annotation-config />
 	<context:component-scan base-package="com.xbd.erp,com.xbd.oa" />
-
-<!-- 	<bean id="springSessionInterceptor" class="com.xbd.oa.interceptor.LoginInterceptor"/>
-	<bean id="autoPorxyFactoryBean" class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
-		<property name="interceptorNames">
-			<list>
-				<value>springLoginInterceptor</value>
-			</list>
-		</property>
-	</bean> -->
-
 
 	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
@@ -68,6 +57,14 @@
 	<bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean" destroy-method="destroy">
 		<property name="processEngineConfiguration" ref="processEngineConfiguration" />
 	</bean>
+	<bean id="formService" factory-bean="processEngine" factory-method="getFormService" />
+	<bean id="repositoryService" factory-bean="processEngine" factory-method="getRepositoryService" />
+	<bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService" />
+	<bean id="taskService" factory-bean="processEngine" factory-method="getTaskService" />
+	<bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService" />
+	<bean id="managementService" factory-bean="processEngine" factory-method="getManagementService" />
+	<bean id="identityService" factory-bean="processEngine" factory-method="getIdentityService" />
+	
 
 	<!-- 配置事务传播特性 -->
 	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
