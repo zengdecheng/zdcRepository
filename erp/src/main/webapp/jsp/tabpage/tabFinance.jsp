@@ -28,9 +28,9 @@
 		<div style="width: 100%;">
 			<table style="width: 98%; margin: 5px 5px 5px 10px; font-size: 12px;">
 				<tr height="28px" width="100%">
-					<td width="12%">订单金额：<span id="order_fee"></span></td>
+					<%-- <td width="12%">订单金额：<span id="order_fee"></span></td>
 					<td width="12%">已到账金额：<span id="daoZhangMoney"></span></td>
-					<td width="12%">未到账金额：<span id="weiDaoZhangMoney"></span></td>
+					<td width="12%">未到账金额：<span id="weiDaoZhangMoney"></span></td> --%>
 					<td width="33%">付款方式：<span id="payType"></span>
 					</td>
 				</tr>
