@@ -27,7 +27,6 @@ import javax.servlet.http.Cookie;
 
 import jxl.write.WriteException;
 import net.sf.json.JSONArray;
-
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.LazyDynaBean;
 import org.apache.commons.beanutils.LazyDynaMap;
@@ -1747,9 +1746,9 @@ public class BxAction extends Action {
 			bean.set("attachmentName", PathUtil.url2FileName(attachment));
 			if (null != oaOrder && null != oaOrder.getId()) {
 				if ("2".equals(oaOrder.getType())) { // 样衣打版
-					return "processDaban";
+					return "bx/order/processDabanOrder";
 				} else if ("3".equals(oaOrder.getType())) { // 大货生产
-					return "processDahuo";
+					return "bx/order/processDahuoOrder";
 				}
 			}
 		} else { // 旧的流程处理逻辑暂时保存，全部更新后去掉以下代码即可
