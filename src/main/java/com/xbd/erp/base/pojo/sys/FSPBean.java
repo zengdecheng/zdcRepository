@@ -50,7 +50,7 @@ public class FSPBean implements Serializable {
 		}
 		return map;
 	}
-	private static String dealp(Object object) {
+	private static Object dealp(Object object) {
 		if (object instanceof String[]) {
 			String[] ss = (String[]) object;
 			if (ss[0] != null) {
@@ -58,7 +58,9 @@ public class FSPBean implements Serializable {
 			}
 		} else if (object instanceof String) {
 			return (String) object;
-		}
+		} else if (object instanceof Integer) {
+			return (Integer) object;
+		} 
 		return null;
 	}
 
