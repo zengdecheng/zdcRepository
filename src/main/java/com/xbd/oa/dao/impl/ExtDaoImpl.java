@@ -25,6 +25,10 @@ public class ExtDaoImpl extends BaseDaoImpl {
 	 */
 	public static final String GET_CATEGORY_BY_SQL = "get_category_by_sql";
 
+	/**
+	 * 获取品类对象
+	 */
+	public static final String GET_CATEGORY_BY_EQL = "get_category_by_eql";
 
 	@Override
 	public String getVoName() {

@@ -30,18 +30,21 @@ import com.xbd.oa.utils.DateUtils;
 import com.xbd.oa.utils.Struts2Utils;
 import com.xbd.oa.utils.WebUtil;
 import com.xbd.oa.utils.XbdBuffer;
+import com.xbd.oa.vo.OaCategory;
 import com.xbd.oa.vo.OaOrder;
 import com.xbd.oa.vo.OaOrderNum;
 
 @SuppressWarnings("all")
 public class ExternalAction extends Action {
 	private static final long serialVersionUID = 1L;
-	
+
 	private BaseDao baseDao;
+
 	public BaseDao getBaseDao() {
 		return baseDao;
 	}
-	@Resource(name="extDaoImpl")
+
+	@Resource(name = "extDaoImpl")
 	public void setBaseDao(BaseDao baseDao) {
 		this.baseDao = baseDao;
 	}
@@ -163,7 +166,7 @@ public class ExternalAction extends Action {
 						Timestamp wf_real_finish = (Timestamp) bean.get("wf_real_finish");// 实际完成时间
 						boolean flag = false;
 						if (null == wf_real_finish) {
-							wf_real_finish = new Timestamp(System.currentTimeMillis()/1000*1000);
+							wf_real_finish = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
 							flag = true;
 						}
 						Timestamp wf_real_start = (Timestamp) bean.get("wf_real_start");// 实际开始时间
@@ -340,7 +343,7 @@ public class ExternalAction extends Action {
 					processDifinitionKey = ConstantUtil.WORKFLOW_KEY_PROCESS3;
 					break;
 				}
-				Timestamp t = BizUtil.getOperatingTime(new Timestamp(System.currentTimeMillis()/1000*1000));
+				Timestamp t = BizUtil.getOperatingTime(new Timestamp(System.currentTimeMillis() / 1000 * 1000));
 				oaOrder.setBeginTime(t);
 				oaOrder.setTimeRate(1.0f);
 				// 不需要计算折算率
@@ -632,6 +635,7 @@ public class ExternalAction extends Action {
 	 * @author yunpeng 保存crm中的数据到order表和orderNumber表中
 	 */
 	public void saveOaOrderAndOaOrderNumber() {
+//		Struts2Utils.getResponse().setHeader("Access-Control-Allow-Origin", "*");
 		String md5 = Struts2Utils.getParameter("md5");// 获得订单的密文
 		String sellOrderCode = Struts2Utils.getParameter("oaOrder.sellOrderCode");// 获得订单的编号
 		String sellOrderId = Struts2Utils.getParameter("oaOrder.sellOrderId");// 获得订单的ID
@@ -680,14 +684,37 @@ public class ExternalAction extends Action {
 							oaOrder.setTimeRate(1.0f);// 不需要计算折算率
 
 							// update by 张华 2015-03-13
-							// 设置默认销售准备时间9小时，标准缓冲时间（打版默认缓冲时间：38小时，大货默认缓冲时间：117小时），特殊工艺时间0。此处时间都指为工作时间
-							// 暂时设置品类（原一级分类）为空，crm同步一级分类后再进行同步
-							oaOrder.setStyleClass(null);
+							// update by 张华 2015-03-27
+							// 设置一级品类（原一级分类）为空，crm同步一级品类，根据品类查询到缓冲时间、销售准备时间、特殊工艺时间，设置到order中
+							// oaOrder.setStyleClass(null);
 							SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 18:00:00");
 							SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 							oaOrder.setGoodsTime(new Timestamp(sdf.parse(df.format(oaOrder.getExceptFinish())).getTime()));
-							oaOrder.setSellReadyTime(9 * 60 * 60 * 1000L);
+							// 设置默认的时间
+							oaOrder.setSellReadyTime(0L);
 							oaOrder.setCraftTime(0L);
+							if ("2".equals(oaOrder.getType())) {
+								oaOrder.setStandardTime(38 * 60 * 60 * 1000L);
+							} else {
+								oaOrder.setStandardTime(117 * 60 * 60 * 1000L);
+							}
+							// 品类不为空，则查询品类数据，更新时间到order中
+							if (StringUtils.isNotBlank(oaOrder.getStyleClass())) {
+								FSPBean fspBean = new FSPBean();
+								fspBean.set(FSPBean.FSP_QUERY_BY_XML, ExtDaoImpl.GET_CATEGORY_BY_EQL);
+								fspBean.set("code", oaOrder.getStyleClass());
+								OaCategory oaCategory = (OaCategory) baseDao.getOnlyObjectByEql(fspBean);
+								// 查询到品类后，更新order中生产相关的时间
+								if (null != oaCategory) {
+									oaOrder.setStyleClass(oaCategory.getName());
+									oaOrder.setSellReadyTime(oaCategory.getSellWait());
+									if ("2".equals(oaOrder.getType())) {
+										oaOrder.setStandardTime(oaCategory.getDabanCyc());
+									} else {
+										oaOrder.setStandardTime(oaCategory.getDahuoCyc());
+									}
+								}
+							}
 
 							// 判断产前版是否存在，并进行数据格式化
 							if ("1".equals(oaOrder.getIsPreproduct())) { // 需要产前版
@@ -698,12 +725,8 @@ public class ExternalAction extends Action {
 								oaOrder.setPreVersionDate(null);
 								oaOrder.setPreproductDays(null);
 							}
-							
-							if ("2".equals(oaOrder.getType())) {
-								oaOrder.setStandardTime(38 * 60 * 60 * 1000L);
-							} else {
-								oaOrder.setStandardTime(117 * 60 * 60 * 1000L);
-							}
+							Timestamp feedingTime = BizUtil.culPlanDate(oaOrder.getGoodsTime(), 0L - oaOrder.getStandardTime() - oaOrder.getCraftTime());
+							oaOrder.setFeedingTime(feedingTime);
 							baseDao.saveObject(oaOrder);
 
 							// TODO 保存之后会有 orderid 可以提醒下一流程操作人
@@ -827,6 +850,5 @@ public class ExternalAction extends Action {
 	public void setBean(LazyDynaMap bean) {
 		this.bean = bean;
 	}
-
 
 }
