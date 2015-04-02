@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import org.apache.commons.beanutils.LazyDynaMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
 
 import com.xbd.erp.base.dao.BaseDao;
 import com.xbd.erp.base.pojo.sys.FSPBean;
@@ -32,17 +33,19 @@ import com.xbd.oa.utils.Struts2Utils;
  *
  */
 @WebServlet("/AutoBxServlet")
+@Controller
+@SuppressWarnings("all")
 public class AutoBxServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	public static final Logger logger = Logger.getLogger(AutoBxServlet.class);
-	
+
 	private static BaseDao baseDao;
-	
+
 	public BaseDao getBaseDao() {
 		return baseDao;
 	}
 
-	@Resource(name="bxDaoImpl")
+	@Resource(name = "bxDaoImpl")
 	public void setBaseDao(BaseDao baseDao) {
 		this.baseDao = baseDao;
 	}
@@ -55,7 +58,6 @@ public class AutoBxServlet extends HttpServlet {
 	public AutoBxServlet() {
 		bxEveryDayTask();
 	}
-
 
 	/**
 	 * 
