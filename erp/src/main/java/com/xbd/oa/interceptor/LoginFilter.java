@@ -29,6 +29,10 @@ public class LoginFilter extends HttpServlet implements Filter {
 		IGNORE_METHOD.add("/bx/viewOrderDetailOnPhone");
 		IGNORE_METHOD.add("/bx/noOrderNum");
 		IGNORE_METHOD.add("/bx/notification");
+		IGNORE_METHOD.add("/oaOrderFileDownload");
+		IGNORE_METHOD.add("/oaOrderFileUpload");
+		IGNORE_METHOD.add("/oaOrderImgUpload");
+		IGNORE_METHOD.add("/autoBx");
 	}
 	
 	public void init(FilterConfig filterConfig) throws ServletException {
