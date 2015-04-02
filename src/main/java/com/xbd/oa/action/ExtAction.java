@@ -35,7 +35,7 @@ import com.xbd.oa.vo.OaOrder;
 import com.xbd.oa.vo.OaOrderNum;
 
 @SuppressWarnings("all")
-public class ExternalAction extends Action {
+public class ExtAction extends Action {
 	private static final long serialVersionUID = 1L;
 
 	private BaseDao baseDao;
@@ -626,7 +626,7 @@ public class ExternalAction extends Action {
 		resMap.put("code", "0");
 		resMap.put("msg", "获取mr成功");
 		resMap.put("resList", reList);
-		Struts2Utils.renderJson(resMap);
+		Struts2Utils.writeJson(resMap);
 	}
 
 	/***

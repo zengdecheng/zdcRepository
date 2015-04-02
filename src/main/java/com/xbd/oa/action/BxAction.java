@@ -5467,7 +5467,7 @@ public class BxAction extends Action {
 			String terminate = Struts2Utils.getParameter("terminate");
 			if ("true".equals(terminate)) {
 				// 需要同步CRM中订单的状态
-				String oaSec = ExternalAction.getMD5Str(miyaoString + oaOrder.getSellOrderCode());
+				String oaSec = ExtAction.getMD5Str(miyaoString + oaOrder.getSellOrderCode());
 				bean.set("oaSec", oaSec);
 				bean.set("sellOrderId", oaOrder.getSellOrderId());
 				return "bx/order/toTerminateOrder";
