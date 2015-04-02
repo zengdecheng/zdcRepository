@@ -69,17 +69,48 @@
 	<!-- 配置事务传播特性 -->
 	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
 		<tx:attributes>
-			<!-- <tx:method name="insert*" propagation="REQUIRED" read-only="false"/> <tx:method name="update*" propagation="REQUIRED" read-only="false"/> <tx:method name="create*" propagation="REQUIRED" read-only="false"/> <tx:method name="save*" propagation="REQUIRED" read-only="false"/> <tx:method name="add*" propagation="REQUIRED" read-only="false"/> <tx:method name="new*" propagation="REQUIRED" read-only="false"/> <tx:method name="put*" propagation="REQUIRED" read-only="false"/> <tx:method name="merge*" propagation="REQUIRED" read-only="false"/> <tx:method name="edit*" propagation="REQUIRED" read-only="false"/> <tx:method name="change*" propagation="REQUIRED" read-only="false"/> <tx:method name="set*" propagation="REQUIRED" read-only="false"/> <tx:method name="remove*" propagation="REQUIRED" read-only="false"/> <tx:method name="del*" propagation="REQUIRED" read-only="false"/> <tx:method name="drop*" propagation="REQUIRED" read-only="false"/> <tx:method name="get*" propagation="REQUIRED" read-only="true" 
-				/> <tx:method name="find*" propagation="REQUIRED" read-only="true" /> <tx:method name="count*" propagation="REQUIRED" read-only="true" /> <tx:method name="list*" propagation="REQUIRED" read-only="true" /> <tx:method name="load*" propagation="REQUIRED" read-only="true" /> -->
+<!-- 			<tx:method name="insert*" propagation="REQUIRED" read-only="false" />
+			<tx:method name="update*" propagation="REQUIRED" read-only="false" />
+			<tx:method name="create*" propagation="REQUIRED" read-only="false" />
+			<tx:method name="save*" propagation="REQUIRED" read-only="false" />
+			<tx:method name="add*" propagation="REQUIRED" read-only="false" />
+			<tx:method name="new*" propagation="REQUIRED" read-only="false" />
+			<tx:method name="put*" propagation="REQUIRED" read-only="false" />
+			<tx:method name="merge*" propagation="REQUIRED" read-only="false" />
+			<tx:method name="edit*" propagation="REQUIRED" read-only="false" />
+			<tx:method name="change*" propagation="REQUIRED" read-only="false" />
+			<tx:method name="set*" propagation="REQUIRED" read-only="false" />
+			<tx:method name="remove*" propagation="REQUIRED" read-only="false" />
+			<tx:method name="del*" propagation="REQUIRED" read-only="false" />
+			<tx:method name="drop*" propagation="REQUIRED" read-only="false" />
+			<tx:method name="get*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="find*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="count*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="list*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="load*" propagation="REQUIRED" read-only="true" /> -->
+			
 			<tx:method name="*" propagation="REQUIRED" read-only="false" />
 		</tx:attributes>
 	</tx:advice>
 
 	<!-- 配置哪些类的哪些方法参与事务 -->
 	<aop:config expose-proxy="true">
+		<aop:advisor advice-ref="druid-stat-interceptor" pointcut-ref="druid-stat-pointcut" />
 		<aop:advisor pointcut="execution(* com.xbd.erp.base.dao.impl.BaseDaoImpl.*(..))" advice-ref="transactionAdvice" />
 		<aop:advisor pointcut="execution(* com.xbd.erp.*..service.*.*(..))" advice-ref="transactionAdvice" />
 	</aop:config>
+	
+	<bean id="druid-stat-interceptor"
+		class="com.alibaba.druid.support.spring.stat.DruidStatInterceptor">
+	</bean>
+	<bean id="druid-stat-pointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut"
+		scope="prototype">
+		<property name="patterns">
+			<list>
+				<value>com.xbd.erp.*.service.*</value>
+			</list>
+		</property>
+	</bean>
 
 	<aop:aspectj-autoproxy />
 
