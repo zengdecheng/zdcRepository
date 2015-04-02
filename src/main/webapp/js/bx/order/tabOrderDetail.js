@@ -613,7 +613,7 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 				}
 			},
 			cusMaterialAdd : function() { //客供料增加行按钮操作
-				if(biz.event.ifAllowAdd("cusMaterialTable", 15)) {
+				if(biz.event.ifAllowAdd("cusMaterialTable", 99)) {
 					$("#cusMaterialTable").append(cusMaterialTr);
 //					biz.event.addIframeHeight();
     				parent.iFrameHeight("iframeDetail");
@@ -654,7 +654,7 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 				});
 			},
 			materialAdd : function() { //用料明细增加行按钮操作
-				if(biz.event.ifAllowAdd("materialTable", 15)) {
+				if(biz.event.ifAllowAdd("materialTable", 99)) {
 					$("#materialTable").append(materialTr);
 //					biz.event.addIframeHeight();
     				parent.iFrameHeight("iframeDetail");
