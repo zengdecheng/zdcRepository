@@ -33,6 +33,7 @@ public class LoginFilter extends HttpServlet implements Filter {
 		IGNORE_METHOD.add("/oaOrderFileUpload");
 		IGNORE_METHOD.add("/oaOrderImgUpload");
 		IGNORE_METHOD.add("/autoBx");
+		IGNORE_METHOD.add("/ext");
 	}
 	
 	public void init(FilterConfig filterConfig) throws ServletException {
