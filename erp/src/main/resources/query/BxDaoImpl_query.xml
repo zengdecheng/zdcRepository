@@ -159,20 +159,20 @@ ote.oa_timebase = ot.id ${case}1">
 		</parser>
 	</function>
 
-	<!-- 查询 历史订单 -->
-	<function name="list_orderwf_his_by_sql" type="sql" sql="select mian.*, del_oa_order, del_wf_step, del_operator,
+    <!-- 查询 历史订单 -->
+    <function name="list_orderwf_his_by_sql" type="sql" sql="select mian.*, del_oa_order, del_wf_step, del_operator,
 																	cqdel_oa_order, cqdel_wf_step, cqdel_operator,
 																	jsdel_oa_order, jsdel_wf_step, jsdel_operator,
-																	jshdel_oa_order, jshdel_wf_step, jshdel_operator,
+																	jshdel_oa_order, jshdel_wf_step, jshdel_operator, jshdel_wf_real_finish,
 																	cqcdel_oa_order, cqcdel_wf_step, cqcdel_operator,
 																	mr_oa_order, mr_if_repeat, mr_if_qualified,
 																	wldel_oa_order, wldel_wf_step, wldel_wf_plan_start, wldel_wf_step_duration, wldel_wf_real_finish,
-																	mrdel_oa_order, mrdel_wf_step, mrdel_wf_real_start, mrdel_operator,
-																	mrdb_oa_order, mrdb_wf_step, mrdb_wf_real_start, mrdb_operator,
-																	odel_wf_step, odel_operator, odel_oa_order,
+																	mrdel_oa_order, mrdel_wf_step, mrdel_wf_real_start, mrdel_wf_real_finish, mrdel_operator,
+																	mrdb_oa_order, mrdb_wf_step, mrdb_wf_real_start, mrdb_wf_real_finish, mrdb_operator,
 																	fidel_oa_order, fidel_wf_step, fidel_wf_real_start, fidel_operator,
 																	tpedel_oa_order, tpedel_wf_step, tpedel_wf_real_start, tpedel_operator,
-																	bqcdel_oa_order, bqcdel_wf_step, bqcdel_wf_plan_start, bqcdel_wf_real_finish, bqcdel_wf_step_duration, bqcdel_operator
+																	bqcdel_oa_order, bqcdel_wf_step, bqcdel_wf_plan_start, bqcdel_wf_real_finish, bqcdel_wf_step_duration, bqcdel_operator,
+																	odel_wf_step, odel_operator, odel_wf_real_start, odel_wf_real_finish, odel_oa_order
 																from
 																(
 																SELECT
@@ -207,7 +207,7 @@ ote.oa_timebase = ot.id ${case}1">
 																	on mian.id = cqdel_oa_order
                                                                 LEFT JOIN (select oa_order as jsdel_oa_order, wf_step as jsdel_wf_step, operator as jsdel_operator  from oa_order_detail where 1=1 and wf_step = 'b_pur_confirm_4' order by id desc) jsdel
 																	on mian.id = jsdel_oa_order
-                                                                LEFT JOIN (select oa_order as jshdel_oa_order, wf_step as jshdel_wf_step, operator as jshdel_operator  from oa_order_detail where 1=1 and wf_step = 'c_ppc_assign_3' order by id desc) jshdel
+                                                                LEFT JOIN (select oa_order as jshdel_oa_order, wf_step as jshdel_wf_step, operator as jshdel_operator, wf_real_finish AS jshdel_wf_real_finish  from oa_order_detail where 1=1 and wf_step = 'c_ppc_assign_3' order by id desc) jshdel
 																	on mian.id = jshdel_oa_order
 																LEFT JOIN (select oa_order as cqcdel_oa_order, wf_step as cqcdel_wf_step, operator as cqcdel_operator  from oa_order_detail where 1=1 and wf_step = 'c_ppc_factoryMsg_5' order by id desc) cqcdel
 																	on mian.id = cqcdel_oa_order
@@ -215,13 +215,14 @@ ote.oa_timebase = ot.id ${case}1">
 																	on mian.id = mr_oa_order
 																LEFT JOIN (select oa_order as wldel_oa_order, wf_step as wldel_wf_step, wf_plan_start as wldel_wf_plan_start, wf_real_finish as wldel_wf_real_finish, wf_step_duration as wldel_wf_step_duration  from oa_order_detail where 1=1 and wf_step = 'c_ppc_confirm_9' order by id desc) wldel
 																	on mian.id = wldel_oa_order
-																LEFT JOIN (select oa_order as mrdel_oa_order, wf_step as mrdel_wf_step, wf_real_start as mrdel_wf_real_start, operator as mrdel_operator from oa_order_detail where 1=1 and wf_step = 'c_mr_improve_2' order by id desc) mrdel
+																LEFT JOIN (select oa_order as mrdel_oa_order, wf_step as mrdel_wf_step, wf_real_start as mrdel_wf_real_start, wf_real_finish as mrdel_wf_real_finish, operator as mrdel_operator from oa_order_detail where 1=1 and wf_step = 'c_mr_improve_2' order by id desc) mrdel
 																	on mian.id = mrdel_oa_order
-                                                                LEFT JOIN( select oa_order AS mrdb_oa_order, wf_step AS mrdb_wf_step, wf_real_start AS mrdb_wf_real_start, operator AS mrdb_operator from oa_order_detail where 1 = 1 and wf_step = 'b_mr_improve_2' order by id desc) mrdb
+                                                                LEFT JOIN( select oa_order AS mrdb_oa_order, wf_step AS mrdb_wf_step, wf_real_start AS mrdb_wf_real_start, wf_real_finish as mrdb_wf_real_finish, operator AS mrdb_operator from oa_order_detail where 1 = 1 and wf_step = 'b_mr_improve_2' order by id desc) mrdb
 	                                                                ON mian.id = mrdb_oa_order
 	                                                            LEFT JOIN(
 																	SELECT
-																		wf_step AS odel_wf_step, operator AS odel_operator, oa_order AS odel_oa_order
+																		wf_step AS odel_wf_step, operator AS odel_operator, wf_real_start AS odel_wf_real_start, wf_real_finish AS odel_wf_real_finish,
+																		oa_order AS odel_oa_order
 																	FROM
 																		oa_order_detail
 																	WHERE
@@ -238,35 +239,39 @@ ote.oa_timebase = ot.id ${case}1">
 																LEFT JOIN(SELECT oa_order AS bqcdel_oa_order, wf_step AS bqcdel_wf_step, wf_plan_start as bqcdel_wf_plan_start, wf_real_finish AS bqcdel_wf_real_finish, wf_step_duration as bqcdel_wf_step_duration, operator AS bqcdel_operator FROM oa_order_detail WHERE 1 = 1 AND wf_step = 'b_qc_confirm_6' order by id desc) bqcdel
 	                                                                ON mian.id = bqcdel_oa_order
 																where 1 = 1  ${case}1  GROUP BY mian.id  ORDER BY mian.end_time desc">
-		<parser index="1">
+        <parser index="1">
             <param fspname="his_opt" sqlname="mian.his_opt" op="like"></param>
-			<param fspname="cus_name" sqlname="mian.cus_name"  op="like"></param>
-			<param fspname="style_code" sqlname="mian.style_code" op="like"></param>
-			<param fspname="sell_order_code" sqlname="mian.sell_order_code" op="like"></param>
-			<param fspname="type" sqlname="mian.type"></param>
-			<param fspname="city" sqlname="mian.city"></param>
-			<param fspname="order_code" sqlname="mian.order_code" op="like"></param>
-			<param fspname="sales" sqlname="mian.sales"></param>
-			<param fspname="mr_name" sqlname="odel_operator"></param>
-			<param fspname="tpe_name" sqlname="tpedel_operator"></param>
-			<param fspname="sewing_factory" sqlname="mian.sewing_factory" op="like"></param>
-			<param fspname="status" sqlname="mian.status"></param>
-			<param fspname="wf_step" sqlname="mian.wf_step"></param>
-			<param fspname="if_all" sqlname=" and (wf_step=? or status='1') " op="sp"></param>
-			<param fspname="start_time1" sqlname="mian.begin_time" op="&gt;="></param>
-			<param fspname="start_time2" sqlname="mian.begin_time" op="&lt;"></param>
-			<param fspname="qadel_wf_real_finish1" sqlname="mian.qadel_wf_real_finish" op="&gt;="></param>
-			<param fspname="qadel_wf_real_finish2" sqlname="mian.qadel_wf_real_finish" op="&lt;"></param>
-			<param fspname="wldel_wf_real_finish1" sqlname="wldel_wf_real_finish" op="&gt;="></param>
-			<param fspname="wldel_wf_real_finish2" sqlname="wldel_wf_real_finish" op="&lt;"></param>
-			<param fspname="del_operator" sqlname="del_operator" ></param>
-			<param fspname="cqdel_operator" sqlname="cqdel_operator"></param>
-			<param fspname="cqcdel_operator" sqlname="cqcdel_operator"></param>
-			<param fspname="qadel_operator" sqlname="mian.qadel_operator"></param>
-			<param fspname="if_qualified" sqlname="mr_if_qualified"></param>
-			<param fspname="if_repeat" sqlname="mr_if_repeat"></param>
-		</parser>
-	</function>
+            <param fspname="cus_name" sqlname="mian.cus_name"  op="like"></param>
+            <param fspname="style_code" sqlname="mian.style_code" op="like"></param>
+            <param fspname="sell_order_code" sqlname="mian.sell_order_code" op="like"></param>
+            <param fspname="type" sqlname="mian.type"></param>
+            <param fspname="city" sqlname="mian.city"></param>
+            <param fspname="order_code" sqlname="mian.order_code" op="like"></param>
+            <param fspname="sales" sqlname="mian.sales"></param>
+            <param fspname="mr_name" sqlname="odel_operator"></param>
+            <param fspname="tpe_name" sqlname="tpedel_operator"></param>
+            <param fspname="sewing_factory" sqlname="mian.sewing_factory" op="like"></param>
+            <param fspname="status" sqlname="mian.status"></param>
+            <param fspname="wf_step" sqlname="mian.wf_step"></param>
+            <param fspname="if_all" sqlname=" and (wf_step=? or status='1') " op="sp"></param>
+            <param fspname="start_time1" sqlname="mian.begin_time" op="&gt;="></param>
+            <param fspname="start_time2" sqlname="mian.begin_time" op="&lt;"></param>
+            <param fspname="qadel_wf_real_finish1" sqlname="mian.qadel_wf_real_finish" op="&gt;="></param>
+            <param fspname="qadel_wf_real_finish2" sqlname="mian.qadel_wf_real_finish" op="&lt;"></param>
+            <param fspname="wldel_wf_real_finish1" sqlname="wldel_wf_real_finish" op="&gt;="></param>
+            <param fspname="wldel_wf_real_finish2" sqlname="wldel_wf_real_finish" op="&lt;"></param>
+            <param fspname="del_operator" sqlname="del_operator" ></param>
+            <param fspname="cqdel_operator" sqlname="cqdel_operator"></param>
+            <param fspname="cqcdel_operator" sqlname="cqcdel_operator"></param>
+            <param fspname="qadel_operator" sqlname="mian.qadel_operator"></param>
+            <param fspname="if_qualified" sqlname="mr_if_qualified"></param>
+            <param fspname="if_repeat" sqlname="mr_if_repeat"></param>
+            <param fspname="odel_wf_real_finish" sqlname="odel_wf_real_finish" op="&gt;="></param>
+            <param fspname="odel_wf_real_finish1" sqlname="odel_wf_real_finish" op="&lt;"></param>
+            <param fspname="ppc_wf_real_finish" sqlname="jshdel_wf_real_finish" op="&gt;="></param>
+            <param fspname="ppc_wf_real_finish1" sqlname="jshdel_wf_real_finish" op="&lt;"></param>
+        </parser>
+    </function>
 
 
     <!-- 查询 历史订单 -->
@@ -566,7 +571,7 @@ ote.oa_timebase = ot.id ${case}1">
 															oa_category
 													)cg ON oder.style_class = cg.name
 	 -->
-	<function name="get_order_list" type="sql" sql="SELECT * FROM
+    <function name="get_order_list" type="sql" sql="SELECT * FROM
 														(
 															SELECT
 																o.sell_order_id, o.sell_order_code, o.oa_order_detail, o.his_opt, o.id,
@@ -655,36 +660,38 @@ ote.oa_timebase = ot.id ${case}1">
 														 and ISNULL(back_flag)
 													)odelqa ON oder.id = odelqa_oa_order
 														where oder.STATUS = '0' and oder.wf_step != 'finish_999' ${case}1 GROUP BY oder.id ">
-		<parser index="1">
-			<param fspname="sell_order_code" sqlname="oder.sell_order_code" op="like"></param>
-			<param fspname="style_type" sqlname="oder.style_type"></param>
-			<param fspname="style_craft" sqlname="oder.style_craft" op="like"></param>
-			<param fspname="style_code" sqlname="oder.style_code" op="like"></param>
-			<param fspname="style_class" sqlname="oder.style_class" op="like"></param>
-			<param fspname="his_opt" sqlname="oder.his_opt" op="like"></param>
-			<param fspname="cus_name" sqlname="oder.cus_name" op="like"></param>
-			<param fspname="sales" sqlname="oder.sales"></param>
-			<param fspname="mr_name" sqlname="odel_operator"></param>
-			<param fspname="tpe_name" sqlname="tpedel_operator"></param>
-			<param fspname="type" sqlname="oder.type"></param>
-			<param fspname="city" sqlname="oder.city"></param>
-			<param fspname="wf_step" sqlname="oder.wf_step"></param>
-			<param fspname="is_urgent" sqlname="oder.is_urgent"></param>
-			<param fspname="start_time1" sqlname="oder.begin_time" op="&gt;="></param>
-			<param fspname="start_time2" sqlname="oder.begin_time" op="&lt;"></param>
-			<param fspname="sewing_factory" sqlname="tpe.sewing_factory" op="like"></param>
-			<param fspname="odel_wf_step" sqlname="odel_wf_step"></param>
-			<param fspname="odelqa_wf_step" sqlname="odelqa_wf_step"></param>
-			<param fspname="odel_wf_real_start" sqlname="odel_wf_real_start" op="&gt;="></param>
-			<param fspname="odel_wf_real_start1" sqlname="odel_wf_real_start" op="&lt;"></param>
+        <parser index="1">
+            <param fspname="sell_order_code" sqlname="oder.sell_order_code" op="like"></param>
+            <param fspname="style_type" sqlname="oder.style_type"></param>
+            <param fspname="style_craft" sqlname="oder.style_craft" op="like"></param>
+            <param fspname="style_code" sqlname="oder.style_code" op="like"></param>
+            <param fspname="style_class" sqlname="oder.style_class" op="like"></param>
+            <param fspname="his_opt" sqlname="oder.his_opt" op="like"></param>
+            <param fspname="cus_name" sqlname="oder.cus_name" op="like"></param>
+            <param fspname="sales" sqlname="oder.sales"></param>
+            <param fspname="mr_name" sqlname="odel_operator"></param>
+            <param fspname="tpe_name" sqlname="tpedel_operator"></param>
+            <param fspname="type" sqlname="oder.type"></param>
+            <param fspname="city" sqlname="oder.city"></param>
+            <param fspname="wf_step" sqlname="oder.wf_step"></param>
+            <param fspname="is_urgent" sqlname="oder.is_urgent"></param>
+            <param fspname="start_time1" sqlname="oder.begin_time" op="&gt;="></param>
+            <param fspname="start_time2" sqlname="oder.begin_time" op="&lt;"></param>
+            <param fspname="sewing_factory" sqlname="tpe.sewing_factory" op="like"></param>
+            <param fspname="odel_wf_step" sqlname="odel_wf_step"></param>
+            <param fspname="odelqa_wf_step" sqlname="odelqa_wf_step"></param>
+            <param fspname="odel_wf_real_start" sqlname="odel_wf_real_start" op="&gt;="></param>
+            <param fspname="odel_wf_real_start1" sqlname="odel_wf_real_start" op="&lt;"></param>
             <param fspname="odel_wf_real_finish" sqlname="odel_wf_real_finish" op="&gt;="></param>
             <param fspname="odel_wf_real_finish1" sqlname="odel_wf_real_finish" op="&lt;"></param>
-			<param fspname="odelqa_wf_real_finish" sqlname="odelqa_wf_real_finish" op="&gt;="></param>
-			<param fspname="odelqa_wf_real_finish1" sqlname="odelqa_wf_real_finish" op="&lt;"></param>
+            <param fspname="odelqa_wf_real_finish" sqlname="odelqa_wf_real_finish" op="&gt;="></param>
+            <param fspname="odelqa_wf_real_finish1" sqlname="odelqa_wf_real_finish" op="&lt;"></param>
             <param fspname="ppc_wf_real_finish" sqlname="ppc_wf_real_finish" op="&gt;="></param>
-			<param fspname="ppc_wf_real_finish1" sqlname="ppc_wf_real_finish" op="&lt;"></param>
-		</parser>
-	</function>
+            <param fspname="ppc_wf_real_finish1" sqlname="ppc_wf_real_finish" op="&lt;"></param>
+            <param fspname="feeding_time" sqlname="oder.feeding_time" op="&gt;="></param>
+            <param fspname="feeding_time1" sqlname="oder.feeding_time" op="&lt;"></param>
+        </parser>
+    </function>
 
 	<!--订单详情附件查询 -->
 	<!-- update by fangwei 2014.12.15 -->
