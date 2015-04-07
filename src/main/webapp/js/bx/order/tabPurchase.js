@@ -276,8 +276,8 @@ define([ "v","vl" ], function(v,vl) {
 				parent.iFrameHeight("iframePurchase");
 			},
 			materialAdd : function() {
-				if($("#materialTable>tbody tr").length>15){
-					alert("最多添加十五行");
+				if($("#materialTable>tbody tr").length>99){
+					alert("最多添加九十九行");
 				 	return;
 				}
 				var temp;
