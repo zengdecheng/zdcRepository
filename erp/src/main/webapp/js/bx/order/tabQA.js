@@ -32,7 +32,6 @@ define([ "v","vl" ], function(v,vl) {
 			$("#processBtn").on("click", biz.event.processOrder); //保存并提交
 			$("#saveBtn").on("click", biz.event.saveOrder); //保存草稿
 			$(".download").on("click", biz.event.download); //下载文件
-			$("#exportBtn").on("click", biz.event.exportExcel); //导出订单Excel
 			biz.event.initSewingTotal();
 			biz.event.initQualified();
 			if(!isEdit){
@@ -386,15 +385,6 @@ define([ "v","vl" ], function(v,vl) {
 				} else {
 					alert("发布异动信息不能为空");
 				}
-			},
-			exportExcel : function() { //导出excel操作
-				$("#exportBtn").attr("disabled", "true");
-				$("#exportBtn").val("30秒后再次点击");
-				top.location.href = "/bx/downOAOrder?oaOrder.id=" + orderId + "&node=7";
-				setTimeout(function(){
-					$("#exportBtn").removeAttr("disabled");
-					$("#exportBtn").val("导出Excel");
-				},30000);
 			},
 			download : function() { //下载文件
 				window.location.href = "/oaOrderFileDownload?fileUrl=" + encodeURI($(this).attr("downloadUrl"));

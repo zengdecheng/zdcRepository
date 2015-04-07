@@ -28,7 +28,6 @@ define([ "v","vl" ], function(u,up) {
 		},
 		bind : function() {
 			$("#yidongBtn").on("click", biz.event.jsonSaveTracke);
-			$("#exportBtn").on("click", biz.event.exportExcel); //导出订单Excel
 			$("#processBtn").on("click", biz.event.processOrder); //保存并提交
 			$("#saveBtn").on("click", biz.event.saveOrder); //保存草稿
 			$(".download").on("click", biz.event.download); //下载文件
@@ -73,9 +72,6 @@ define([ "v","vl" ], function(u,up) {
 					$("form input,textarea").prop("disabled", true);
 					// update by 张华 2015-01-20
 					$("#workerTd").html("制单:"+"<span elementFillName='oaOrderDetail.worker'/>");
-				}
-				if(parseInt(wfStepIndex) < 6) {
-					$("#exportBtn").remove();
 				}
 				parent.iFrameHeight("iframeTPE");
 				opt = {
@@ -265,15 +261,6 @@ define([ "v","vl" ], function(u,up) {
 				var tr = "<tr><td width='53px' height='22px'></td><td width='573px'>" + td1 + "</td><td>" + td2 + "/" + td3 + "</td></tr>";
 				$("#oaTrackesTable").append(tr);
 				parent.iFrameHeight("iframeTPE");
-			},
-			exportExcel : function() { //导出excel操作
-				$("#exportBtn").attr("disabled", "true");
-				$("#exportBtn").val("30秒后再次点击");
-				top.location.href = "/bx/downOAOrder?oaOrder.id=" + orderId + "&node=6";
-				setTimeout(function(){
-					$("#exportBtn").removeAttr("disabled");
-					$("#exportBtn").val("导出Excel");
-				},30000);
 			},
 			download : function() { //下载文件
 				window.location.href = "/oaOrderFileDownload?fileUrl=" + encodeURI($(this).attr("downloadUrl"));

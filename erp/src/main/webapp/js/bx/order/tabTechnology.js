@@ -213,7 +213,7 @@ define([ "u","up","v","vl"  ], function(u,up) {
 				}
 			},
 			sizeDetailAdd : function() { //成品尺寸表增加行按钮操作
-				if(biz.event.ifAllowAdd("clothesSizeTable", 15)) {
+				if(biz.event.ifAllowAdd("clothesSizeTable", 99)) {
 					$("#clothesSizeTable").append(sizeDetailTr);
 					parent.iFrameHeight("iframeTechnology");
 				}
@@ -239,7 +239,7 @@ define([ "u","up","v","vl"  ], function(u,up) {
 				}
 			},
 			materialDescAdd : function() { //用料说明增加行按钮操作
-				if(biz.event.ifAllowAdd("materialDescTable", 15)) {
+				if(biz.event.ifAllowAdd("materialDescTable", 99)) {
 					$("#materialDescTable").append(materialDescTr);
 					parent.iFrameHeight("iframeTechnology");
 				}
