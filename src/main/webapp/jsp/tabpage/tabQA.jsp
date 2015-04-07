@@ -123,7 +123,6 @@
 		<input onclick="javascript:if(confirm('确认要放弃吗？')) {history.go(-1);}" type="button" value="放弃" class="process_button">
 	</div>
 	<div style="width: 98%; height: 40px; line-height: 40px; text-align: center;" id="orderDetailDive">
-		<input type="button" value="导出Excel" class="process_button" id="exportBtn">
 		<input onclick="javascript:history.go(-1);" type="button" value="返回列表" class="process_button">
 	</div>
 	<div>&nbsp;</div>
