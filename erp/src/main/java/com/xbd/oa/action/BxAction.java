@@ -21,18 +21,21 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 
 import jxl.write.WriteException;
 import net.sf.json.JSONArray;
+
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.LazyDynaBean;
 import org.apache.commons.beanutils.LazyDynaMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -41,7 +44,6 @@ import com.xbd.erp.base.action.Action;
 import com.xbd.erp.base.dao.BaseDao;
 import com.xbd.erp.base.pojo.sys.FSPBean;
 import com.xbd.oa.dao.impl.BxDaoImpl;
-//import com.xbd.oa.servlet.AutoNotifyServlet_stop;
 import com.xbd.oa.utils.BizUtil;
 import com.xbd.oa.utils.CommonSort;
 import com.xbd.oa.utils.ConstantUtil;
@@ -50,7 +52,6 @@ import com.xbd.oa.utils.DateUtils;
 import com.xbd.oa.utils.ExcelUtils;
 import com.xbd.oa.utils.JdbcHelper;
 import com.xbd.oa.utils.MailUtil;
-import com.xbd.oa.utils.POIUtils;
 import com.xbd.oa.utils.POIUtilsEx;
 import com.xbd.oa.utils.PathUtil;
 import com.xbd.oa.utils.ResourceUtil;
@@ -568,7 +569,7 @@ public class BxAction extends Action {
         int j = 1;
         for (LazyDynaMap lazyMap : superList) {
             // bean = superList.get(i);
-            Long nowDate = new Date().getTime();
+            Long nowDate = new Date().getTime()/1000*1000;
             Long begin_time = ((Date) lazyMap.get("begin_time")).getTime();
             Long except_finish = ((Date) lazyMap.get("except_finish")).getTime();
 
@@ -615,7 +616,6 @@ public class BxAction extends Action {
 
                 sheet1FileInfo.put(j + ",18", lazyMap.get("mrdb_wf_real_start") != null ? new CustomCell(lazyMap.get("mrdb_wf_real_start"), "Date") : new CustomCell());// MR补录订单日期
 
-
                 //修改位置
                 sheet1FileInfo.put(j + ",19", lazyMap.get("mrdb_wf_real_finish") != null ? new CustomCell(lazyMap.get("mrdb_wf_real_finish"), "Date") : new CustomCell());// MR补录订单日期
 
@@ -649,7 +649,7 @@ public class BxAction extends Action {
                 if (lazyMap.get("bqcdel_wf_real_finish") != null && !"".equals(lazyMap.get("bqcdel_wf_real_finish"))) {
 
                     Date now = (Date) lazyMap.get("bqcdel_wf_real_finish");
-                    Timestamp tamp = new Timestamp(now.getTime());
+                    Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
                     Date beginTime = (Date) lazyMap.get("begin_time");
                     Date exceptFinish = (Date) lazyMap.get("except_finish");
                     double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
@@ -668,7 +668,6 @@ public class BxAction extends Action {
                     } else {
                         sheet1FileInfo.put(j + ",35", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
                     }
-
                     // sheet1FileInfo.put(j+",34", time_consume+"%");
                 }
 
@@ -738,7 +737,7 @@ public class BxAction extends Action {
                 if (lazyMap.get("wldel_wf_real_finish") != null && !"".equals(lazyMap.get("wldel_wf_real_finish"))) {
 
                     Date now = (Date) lazyMap.get("wldel_wf_real_finish");
-                    Timestamp tamp = new Timestamp(now.getTime());
+                    Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
                     Date beginTime = (Date) lazyMap.get("begin_time");
                     Date exceptFinish = (Date) lazyMap.get("except_finish");
                     double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
@@ -791,7 +790,7 @@ public class BxAction extends Action {
 
             if (lazyMap.get("qadel_wf_real_finish") != null) {
                 Date now = (Date) lazyMap.get("qadel_wf_real_finish");
-                Timestamp tamp = new Timestamp(now.getTime());
+                Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
                 Date beginTime = (Date) lazyMap.get("begin_time");
                 Date exceptFinish = (Date) lazyMap.get("except_finish");
                 double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
@@ -1103,28 +1102,27 @@ public class BxAction extends Action {
             Date qaTime = null;
             Date mrTime = null;
 
-            /**
-             * 从oa_dt表中查询二级分类数据
-             */
-            FSPBean detailFsp = new FSPBean();
-            detailFsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_BY_SQL);
-            detailFsp.set("oa_order", lazyMap.get("id"));
-            beans = getObjectsBySql(detailFsp);
-            for (int n = 0; n < beans.size(); n++) {
-                if (beans.get(n).get("wf_step") != null && "c_ppc_confirm_7".equals(beans.get(n).get("wf_step").toString())) {
-                    sheet1FileInfo.put(j + ",19", beans.get(n).get("wf_real_finish") != null ? new CustomCell(beans.get(n).get("wf_real_finish"), "Date") : new CustomCell());// QA完成日期
-                    // QA完成时TOC百分比
-                    Date now = (Date) beans.get(n).get("wf_real_finish");
-                    if (now != null) {
-                        Timestamp tamp = new Timestamp(now.getTime());
-                        double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
-                        DecimalFormat df = new DecimalFormat("#");
-                        String time_consume = df.format(time);
-                        sheet1FileInfo.put(j + ",20", time_consume + "%");
-                    } else {
-                        sheet1FileInfo.put(j + ",20", "");
-                    }
-
+			/**
+			 * 从oa_dt表中查询二级分类数据
+			 */
+			FSPBean detailFsp = new FSPBean();
+			detailFsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_ORDER_DETAIL_BY_SQL);
+			detailFsp.set("oa_order", lazyMap.get("id"));
+			beans = baseDao.getObjectsBySql(detailFsp);
+			for (int n = 0; n < beans.size(); n++) {
+				if (beans.get(n).get("wf_step") != null && "c_ppc_confirm_7".equals(beans.get(n).get("wf_step").toString())) {
+					sheet1FileInfo.put(j + ",19", beans.get(n).get("wf_real_finish") != null ? new CustomCell(beans.get(n).get("wf_real_finish"), "Date") : new CustomCell());// QA完成日期
+					// QA完成时TOC百分比
+					Date now = (Date) beans.get(n).get("wf_real_finish");
+					if (now != null) {
+						Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
+						double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
+						DecimalFormat df = new DecimalFormat("#");
+						String time_consume = df.format(time);
+						sheet1FileInfo.put(j + ",20", time_consume + "%");
+					} else {
+						sheet1FileInfo.put(j + ",20", "");
+					}
 //					qaTime = now;
                 }
 
@@ -1299,16 +1297,16 @@ public class BxAction extends Action {
 
                     if (superList.get(i).get("bqcdel_wf_real_finish") != null && !"".equals(superList.get(i).get("bqcdel_wf_real_finish"))) {
 
-                        Date now = (Date) superList.get(i).get("bqcdel_wf_real_finish");
-                        Timestamp tamp = new Timestamp(now.getTime());
-                        Date beginTime = (Date) superList.get(i).get("begin_time");
-                        Date exceptFinish = (Date) superList.get(i).get("except_finish");
-                        double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
-                        // DecimalFormat dbtoc = new DecimalFormat("#");
-                        String time_consume = df.format(time);
-                        // 订单完成时TOC百分比
-                        int data = Integer.parseInt(time_consume);
-                        toc += data;
+						Date now = (Date) superList.get(i).get("bqcdel_wf_real_finish");
+						Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
+						Date beginTime = (Date) superList.get(i).get("begin_time");
+						Date exceptFinish = (Date) superList.get(i).get("except_finish");
+						double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
+						// DecimalFormat dbtoc = new DecimalFormat("#");
+						String time_consume = df.format(time);
+						// 订单完成时TOC百分比
+						int data = Integer.parseInt(time_consume);
+						toc += data;
 
                         // sheet1FileInfo.put(j+",34", time_consume+"%");
                     }
@@ -1320,22 +1318,22 @@ public class BxAction extends Action {
 
                     if (superList.get(i).get("wldel_wf_real_finish") != null && !"".equals(superList.get(i).get("wldel_wf_real_finish"))) {
 
-                        Date now = (Date) superList.get(i).get("wldel_wf_real_finish");
-                        Timestamp tamp = new Timestamp(now.getTime());
-                        Date beginTime = (Date) superList.get(i).get("begin_time");
-                        Date exceptFinish = (Date) superList.get(i).get("except_finish");
-                        double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
-                        String time_consume = df.format(time);
-                        // 订单完成时TOC百分比
-                        int data = Integer.parseInt(time_consume);
-                        toc += data;
-                    }
-                }
-            }
+						Date now = (Date) superList.get(i).get("wldel_wf_real_finish");
+						Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
+						Date beginTime = (Date) superList.get(i).get("begin_time");
+						Date exceptFinish = (Date) superList.get(i).get("except_finish");
+						double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
+						String time_consume = df.format(time);
+						// 订单完成时TOC百分比
+						int data = Integer.parseInt(time_consume);
+						toc += data;
+					}
+				}
+			}
 
             if (superList.get(i).get("wf_step") != null && "finish_999".equals(superList.get(i).get("wf_step"))) {
                 bean = superList.get(i);
-                Long nowDate = date.getTime();
+                Long nowDate = date.getTime()/1000*1000;
                 Long begin_time = ((Date) superList.get(i).get("begin_time")).getTime();
                 Long except_finish = ((Date) superList.get(i).get("except_finish")).getTime();
 
@@ -3269,7 +3267,7 @@ public class BxAction extends Action {
 		fsp.set(FSPBean.FSP_ORDER, " order by id ");
 		Date date = new Date();
 		// Date date=sdf.parse("2014-09-22 17:06:16");
-		Timestamp tamp = new Timestamp(date.getTime());
+		Timestamp tamp = new Timestamp(date.getTime()/1000*1000);
 		// fsp.set("end_time",tamp);
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(tamp);
@@ -3278,7 +3276,7 @@ public class BxAction extends Action {
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.MILLISECOND, 0);
 		date = cal.getTime();
-		Timestamp tamp1 = new Timestamp(date.getTime());
+		Timestamp tamp1 = new Timestamp(date.getTime()/1000*1000);
 		// fsp.set("begin_time", tamp1);
 
 		List<LazyDynaMap> basic = baseDao.getObjectsBySql(fsp);
@@ -3633,7 +3631,7 @@ public class BxAction extends Action {
 		Date date = new Date();
 		// Test
 		// Date date=sdf.parse("2014-09-22 23:06:16");
-		Timestamp tamp = new Timestamp(date.getTime());
+		Timestamp tamp = new Timestamp(date.getTime()/1000*1000);
 		// fsp.set("end_time","2014-07-24 23:07:45");
 		// fsp.set("end_time",tamp);
 		Calendar cal = Calendar.getInstance();
@@ -3643,7 +3641,7 @@ public class BxAction extends Action {
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.MILLISECOND, 0);
 		date = cal.getTime();
-		Timestamp tamp1 = new Timestamp(date.getTime());
+		Timestamp tamp1 = new Timestamp(date.getTime()/1000*1000);
 		// Test
 		// fsp.set("begin_time", "2014-07-24");
 		// fsp.set("begin_time", tamp1);
@@ -5649,7 +5647,7 @@ public class BxAction extends Action {
 		}
 		Date now = new Date();
 		DecimalFormat df = new DecimalFormat("0");
-		Timestamp tamp = new Timestamp(now.getTime());
+		Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
 		if ("finish_999".equals(wfStepIndex)) {
 			tamp = oaOrder.getEndTime();
 		}
@@ -6503,7 +6501,7 @@ public class BxAction extends Action {
 		Map resMap = new HashMap();
 		try {
 			Date now = new Date();
-			Timestamp tamp = new Timestamp(now.getTime());
+			Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
 			oaTracke.setTime(tamp);
 			oaTracke.setUser(WebUtil.getCurrentLoginBx().getLoginName());
 			baseDao.saveObject(oaTracke);
@@ -7279,86 +7277,92 @@ public class BxAction extends Action {
 	// 订单节点 Excel
 	// by fangwei 2014-12-17
 	@SuppressWarnings("unchecked")
-	public List<Map<String, Object>> createOrderInfo(OaOrder oaOrder) {
-		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		Map<String, Object> params = new HashMap<String, Object>();
-		Map<String, Object> dynaRow = new HashMap<String, Object>();
-		params.put("1,1", oaOrder.getCusCode());
-		params.put("1,6", oaOrder.getSellOrderCode());
-		params.put("1,12", DateUtil.formatDate(oaOrder.getBeginTime()));
-		params.put("2,1", oaOrder.getOrderCode());
-		params.put("2,6,", oaOrder.getStyleDesc());
-		params.put("2,12", DateUtil.formatDate(oaOrder.getExceptFinish()));
-		params.put("3,1", oaOrder.getSales());
-		params.put("3,6", oaOrder.getTpeName());
-		params.put("3,12", oaOrder.getType().equals("2") ? "样衣打版" : "大货生产");
-		params.put("4,1", oaOrder.getMrName());
-		params.put("4,6", oaOrder.getConfirmStaff());
-		params.put("6,10,12,12", oaOrder.getPictureFront());
-		params.put("6,12,12,14", oaOrder.getPictureBack());
-		params.put("12,1", oaOrder.getStyleCraft());
-		params.put("12,12", oaOrder.getSampleSize());
-		params.put("31,0", oaOrder.getMemo());
-		params.put("43,1", oaOrder.getSendtype());
-		// 数量信息
+	public Map<String, Object> createOrderInfo(OaOrder oaOrder) {
+		Map<String,Object> fillInfo = new HashMap<String,Object>();
+		String baseExcelFile = Struts2Utils.getSession().getServletContext().getRealPath(ResourceUtil.getString("baseExcelFile"));
+		fillInfo.put("fileUrl", baseExcelFile);
+		fillInfo.put("sheetNames", "订单");
+		Map<String,Object> sheet1FileInfo = new HashMap<String,Object>();
+		Map<String,Object> sheet1DynaRow = new TreeMap<String,Object>();
+		fillInfo.put("订单FileInfo", sheet1FileInfo);
+		fillInfo.put("订单DynaRow", sheet1DynaRow);
+		
+		sheet1FileInfo.put("1,1", oaOrder.getCusCode());
+		sheet1FileInfo.put("1,7", oaOrder.getSellOrderCode());
+		sheet1FileInfo.put("1,16", DateUtil.formatDate(oaOrder.getBeginTime(),DateUtil.YMD));
+		sheet1FileInfo.put("2,1", oaOrder.getOrderCode());
+		sheet1FileInfo.put("2,7,", oaOrder.getStyleDesc());
+		sheet1FileInfo.put("2,16", DateUtil.formatDate(oaOrder.getExceptFinish(),DateUtil.YMD));
+		sheet1FileInfo.put("3,1", oaOrder.getSales());
+		sheet1FileInfo.put("3,7", oaOrder.getTpeName());
+		sheet1FileInfo.put("3,16", oaOrder.getType().equals("2") ? "样衣打版" : "大货生产");
+		sheet1FileInfo.put("4,1", oaOrder.getMrName());
+		sheet1FileInfo.put("4,7", oaOrder.getConfirmStaff());
+		sheet1FileInfo.put("6,14,12,16", oaOrder.getPictureFront());
+		sheet1FileInfo.put("6,16,12,18", oaOrder.getPictureBack());
+		
 		OaOrderNum oaOrderNum = (OaOrderNum) baseDao.getObject(OaOrderNum.class, oaOrder.getOaOrderNumId());
+		//标题
 		String[] titles = oaOrderNum.getTitle().split("-");
-		if (titles.length > 7)
-			throw new RuntimeException("the oa_order_num info is invalid!");
-		for (int i = 0; i < titles.length; i++) {
-			params.put("6," + (i + 1), titles[i]);
-			params.put("38," + (i + 3), titles[i]);
-		}
+		//尺码行
 		String[] infos = oaOrderNum.getNumInfo().split(",");
-		int[] totals = new int[titles.length + 1];
-		for (int i = 0; i < infos.length; i++) {
-			String[] nums = infos[i].split("-");
-			int sum = 0;
-			for (int j = 0; j < nums.length; j++) {
-				params.put(i + 7 + "," + j, nums[j]);
-				if (j == 0)
-					continue;
-				totals[j - 1] += Integer.parseInt(nums[j]);
-				sum += Integer.parseInt(nums[j]);
-			}
-			totals[totals.length - 1] += sum;
-			params.put(i + 7 + ",9", sum + "");
-		}
-		for (int i = 0; i < totals.length - 1; i++) {
-			params.put("11," + (i + 1), totals[i] + "");
-		}
-		params.put("11,9", totals[totals.length - 1] + "");
-
-		// 材料清单
+		//尺码动态添加的行
+		Integer oaOrderNumAddRows = infos.length>4?infos.length-4:0; 
+		sheet1DynaRow.put("07", oaOrderNumAddRows);
+		
+		sheet1FileInfo.put(11+oaOrderNumAddRows+oaOrderNumAddRows+",1", new CustomCell("SUM(N8:INDIRECT(\"N\"&(ROW()-1)))", "Expression").setAlignment(CellStyle.ALIGN_RIGHT));
+		sheet1FileInfo.put(12+oaOrderNumAddRows+",1", oaOrder.getStyleCraft());
+		sheet1FileInfo.put(12+oaOrderNumAddRows+",16", oaOrder.getSampleSize());
+		fsp = new FSPBean();
 		fsp.set("oa_order_id", oaOrder.getId());
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_OA_MATERIAL_LIST);
 		beans = getObjectsBySql(fsp);
-		int t = 0;
+		//面料动态添加的行
+		Integer oaMaterialListAddRows = beans.size()>15?beans.size()-15:0; 
+		sheet1DynaRow.put(15 + oaOrderNumAddRows +"", oaMaterialListAddRows);
+		
+		if (titles.length > 12)
+			throw new RuntimeException("the oa_order_num info is invalid!");
+		for (int i = 0; i < titles.length; i++) {
+			sheet1FileInfo.put("6," + (i + 1), titles[i]);
+			sheet1FileInfo.put(38+oaOrderNumAddRows+oaMaterialListAddRows+"," + (i + 3), titles[i]);
+		}
+		for (int i = 0; i < infos.length; i++) {
+			String[] nums = infos[i].split("-");
+			for (int j = 0; j < nums.length; j++) {
+				if(j==0) {
+					sheet1FileInfo.put(i + 7 + "," + j, nums[j]);
+				}else{
+					sheet1FileInfo.put(i + 7 + "," + j+",Integer", nums[j]);
+				}
+			}
+			sheet1FileInfo.put(i + 7 + ",13", new CustomCell("IF(INDIRECT(\"A\"&ROW())<>\"\",SUM(INDIRECT(\"B\"&ROW()):INDIRECT(\"M\"&ROW())),\"\")", "Expression"));
+		}
+		sheet1FileInfo.put(31+oaOrderNumAddRows+oaMaterialListAddRows+",0", new CustomCell(oaOrder.getMemo(),"String").setAlignment(CellStyle.ALIGN_LEFT).setVerticalAlignment(CellStyle.VERTICAL_TOP));
+		
+		// 材料清单
+		int t = oaOrderNumAddRows;
 		for (DynaBean bean : beans) {
-			params.put((15 + t) + ",0", bean.get("material_prop") == null ? "" : bean.get("material_prop").toString());
-			params.put((15 + t) + ",1", bean.get("material_name") == null ? "" : bean.get("material_name").toString());
-			params.put((15 + t) + ",3", bean.get("type") == null ? "" : bean.get("type").toString());
-			params.put((15 + t) + ",4", bean.get("color") == null ? "" : bean.get("color").toString());
-			params.put((15 + t) + ",5", bean.get("supplier_name") == null ? "" : bean.get("supplier_name").toString());
-			params.put((15 + t) + ",6", bean.get("supplier_addr") == null ? "" : bean.get("supplier_addr").toString());
-			params.put((15 + t) + ",10", bean.get("supplier_tel") == null ? "" : bean.get("supplier_tel").toString());
-			params.put((15 + t) + ",11", bean.get("order_num") == null ? "" : bean.get("order_num").toString());
-			params.put((15 + t++) + ",12", bean.get("position") == null ? "" : bean.get("position").toString());
+			sheet1FileInfo.put(15 + t + ",0", bean.get("material_prop") == null ? "" : bean.get("material_prop").toString());
+			sheet1FileInfo.put(15 + t + ",1", bean.get("material_name") == null ? "" : bean.get("material_name").toString());
+			sheet1FileInfo.put(15 + t + ",3", bean.get("type") == null ? "" : bean.get("type").toString());
+			sheet1FileInfo.put(15 + t + ",4", bean.get("color") == null ? "" : bean.get("color").toString());
+			sheet1FileInfo.put(15 + t + ",5", bean.get("supplier_name") == null ? "" : bean.get("supplier_name").toString());
+			sheet1FileInfo.put(15 + t + ",6", bean.get("supplier_addr") == null ? "" : bean.get("supplier_addr").toString());
+			sheet1FileInfo.put(15 + t + ",10", bean.get("supplier_tel") == null ? "" : bean.get("supplier_tel").toString());
+			sheet1FileInfo.put(15 + t + ",11,Double", bean.get("order_num") == null ? "" : bean.get("order_num").toString());
+			sheet1FileInfo.put(15 + t++ + ",12", bean.get("position") == null ? "" : bean.get("position").toString());
 		}
 
 		// 客供料明细
+		fsp = new FSPBean();
 		fsp.set("oa_order_id", oaOrder.getId());
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_OA_CUS_MATERIAL_LIST);
 		beans = getObjectsBySql(fsp);
-
-		// beans.size() >4 则需要动态增行
-		int cusSize = beans.size();
-		if (cusSize > 4) {
-			dynaRow.put("40", (cusSize - 4) + "");
-		} else {
-			cusSize = 4;
-		}
-		params.put(39 + cusSize + ",1", oaOrder.getSendtype());
+		
+		Integer OaCusMaterialListAddRows = beans.size()>4?beans.size()-4:0; 
+		sheet1DynaRow.put(39+oaOrderNumAddRows+oaMaterialListAddRows+"", OaCusMaterialListAddRows);
+		sheet1FileInfo.put(43+oaOrderNumAddRows+oaMaterialListAddRows+OaCusMaterialListAddRows+",1", new CustomCell(oaOrder.getSendtype(),"String").setAlignment(CellStyle.ALIGN_LEFT));
 
 		String node = oaOrder.getWfStep();
 		node = node.substring(node.lastIndexOf("_") + 1, node.length());
@@ -7367,163 +7371,279 @@ public class BxAction extends Action {
 		fsp.set("wf_step", (Integer.parseInt(node)) + "");
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_DETAIL_EXCEL);
 		bean = baseDao.getOnlyObjectBySql(fsp);
-		params.put(40 + cusSize + ",1", bean.get("operator") == null ? "" : bean.get("operator").toString());
+		sheet1FileInfo.put(44+ oaOrderNumAddRows+oaMaterialListAddRows+OaCusMaterialListAddRows + ",1", bean.get("operator") == null ? "" : bean.get("operator").toString());
 
-		int ct = 0;
+		int ct = oaOrderNumAddRows+oaMaterialListAddRows;
 		for (DynaBean bean : beans) {
-			params.put((39 + ct) + ",0", bean.get("material_name") == null ? "" : bean.get("material_name").toString());
-			params.put((39 + ct) + ",1", bean.get("amount") == null ? "" : bean.get("amount").toString());
-			params.put((39 + ct) + ",2", bean.get("consume") == null ? "" : bean.get("consume").toString() + "%");
-			params.put((39 + ct) + ",11", bean.get("total") == null ? "" : bean.get("total").toString());
-			params.put((39 + ct) + ",12", bean.get("is_complete") == null ? "" : bean.get("is_complete").toString());
+			sheet1FileInfo.put((39 + ct) + ",0", bean.get("material_name") == null ? "" : bean.get("material_name").toString());
+			sheet1FileInfo.put((39 + ct) + ",1,Double", bean.get("amount") == null ? "" : bean.get("amount").toString());
+			sheet1FileInfo.put((39 + ct) + ",2,Double-0.0%", bean.get("consume") == null ? "" : (((Float)bean.get("consume"))/100));
+			sheet1FileInfo.put((39 + ct) + ",15,Double", bean.get("total") == null ? "" : bean.get("total").toString());
+			sheet1FileInfo.put((39 + ct) + ",16", bean.get("is_complete") == null ? "" : bean.get("is_complete").toString());
 			String[] nums = ((String) bean.get("order_num")).split("-");
 			for (int j = 0; j < nums.length; j++) {
-				params.put((39 + ct) + "," + (3 + j), nums[j]);
+				sheet1FileInfo.put((39 + ct) + "," + (3 + j), nums[j]);
 			}
-			params.put((39 + ct++) + ",13", bean.get("memo") == null ? "" : bean.get("memo").toString());
+			sheet1FileInfo.put((39 + ct++) + ",17", bean.get("memo") == null ? "" : bean.get("memo").toString());
 		}
-		list.add(dynaRow);
-		list.add(params);
-		return list;
+		return fillInfo;
 	}
 
 	// 技术节点 Excel
 	// by fangwei 2014-12-17
-	public List<Map<String, Object>> getTechnologyInfo(OaOrder oaOrder) {
-		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		Map<String, Object> params = new HashMap<String, Object>();
-		Map<String, Object> dynaRow = new HashMap<String, Object>();
-		params.put("1,1", oaOrder.getSellOrderCode());
-		params.put("1,3,", oaOrder.getStyleDesc());
-		params.put("1,8", oaOrder.getType().equals("2") ? "样衣打版" : "大货生产");
-
-		// 材料清单
-		fsp = new FSPBean();
-		fsp.set("orderId", oaOrder.getId());
-		if ("2".equals(oaOrder.getType())) {
-			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_DA_BAN_INFO_BY_SQL);
-		} else if ("3".equals(oaOrder.getType())) {
-			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_DA_HUO_INFO_BY_SQL);
-		}
-		beans = getObjectsBySql(fsp);
-		int t = 0;
-		for (DynaBean bean : beans) {
-			params.put((3 + t) + ",0", bean.get("material_prop") == null ? "" : bean.get("material_prop").toString());
-			params.put((3 + t) + ",1", bean.get("material_name") == null ? "" : bean.get("material_name").toString());
-			params.put((3 + t) + ",2", bean.get("type") == null ? "" : bean.get("type").toString());
-			params.put((3 + t) + ",3", bean.get("color") == null ? "" : bean.get("color").toString());
-			params.put((3 + t) + ",4", bean.get("buffon") == null ? "" : bean.get("buffon").toString());
-			params.put((3 + t) + ",5", bean.get("unit_num") == null || "".equals(bean.get("unit_num").toString()) ? "" : decimalFormat.format(Float.parseFloat(bean.get("unit_num").toString())));
-			params.put((3 + t++) + ",6", bean.get("position") == null ? "" : bean.get("position").toString());
-		}
-
-		// 查询尺寸表表头
-		fsp = new FSPBean();
-		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_ORDER_NUM_TITLE_BY_EQL);
-		fsp.set("orderNumId", oaOrder.getOaOrderNumId());
-		OaOrderNum oaOrderNum = (OaOrderNum) baseDao.getOnlyObjectByEql(fsp);
-		t = 0;
-		for (String title : oaOrderNum.getTitle().split("-")) {
-			params.put("19," + (1 + t++), title);
-		}
-
-		// 查询尺寸表
-		fsp = new FSPBean();
-		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_CLOTHES_SIZE_BY_EQL);
-		fsp.set("orderId", oaOrder.getId());
-		OaClothesSize oaClothesSize = (OaClothesSize) baseDao.getOnlyObjectByEql(fsp);
-		if (null != oaClothesSize) {
-			params.put("18,5", oaClothesSize.getUnit());
-			params.put("18,8", oaClothesSize.getSampleSize());
-		}
-
-		fsp = new FSPBean();
-		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_CLOTHES_SIZE_DETAIL_BY_SQL);
-		fsp.set("orderId", oaOrder.getId());
-		List<LazyDynaMap> OaClothesSizeDetailList = baseDao.getObjectsBySql(fsp);
-		List<OaClothesSizeDetail> oaClothesSizeDetails = copyOaClothesSizeDetailList2Vo(OaClothesSizeDetailList);
-
-		int size = 12;
-		if (oaClothesSizeDetails.size() > 0) {
-			// size >12 则需要动态增行
-			size = oaClothesSizeDetails.size();
-			if (size > 12) {
-				dynaRow.put("31", (size - 12) + "");
-			} else {
-				size = 12;
+	public Map<String, Object> getTechnologyInfo(OaOrder oaOrder) {
+		//时间判断，
+		String erp209 = "2015-4-7 12:00:00";
+		Map<String,Object> fillInfo = new HashMap<String,Object>();
+		fillInfo.put("sheetNames", "技术");
+		Map<String,Object> sheet1FileInfo = new HashMap<String,Object>();
+		Map<String,Object> sheet1DynaRow = new TreeMap<String,Object>();
+		fillInfo.put("技术FileInfo", sheet1FileInfo);
+		fillInfo.put("技术DynaRow", sheet1DynaRow);
+		if(oaOrder.getBeginTime().compareTo(DateUtil.parseDate(erp209))>0){
+			//新
+			sheet1FileInfo.put("1,1", oaOrder.getSellOrderCode());
+			sheet1FileInfo.put("1,5,", oaOrder.getStyleDesc());
+			sheet1FileInfo.put("1,12", oaOrder.getType().equals("2") ? "样衣打版" : "大货生产");
+			
+			// 材料清单
+			fsp = new FSPBean();
+			fsp.set("orderId", oaOrder.getId());
+			if ("2".equals(oaOrder.getType())) {
+				fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_DA_BAN_INFO_BY_SQL);
+			} else if ("3".equals(oaOrder.getType())) {
+				fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_DA_HUO_INFO_BY_SQL);
 			}
+			beans = getObjectsBySql(fsp);
+			Integer oaMaterialListAddRows =beans.size()>15?beans.size()-15:0;
+			sheet1DynaRow.put("3", oaMaterialListAddRows);
+			int t = 0;
+			for (DynaBean bean : beans) {
+				sheet1FileInfo.put((3 + t) + ",0", bean.get("material_prop") == null ? "" : bean.get("material_prop").toString());
+				sheet1FileInfo.put((3 + t) + ",1", bean.get("material_name") == null ? "" : bean.get("material_name").toString());
+				sheet1FileInfo.put((3 + t) + ",4", bean.get("type") == null ? "" : bean.get("type").toString());
+				sheet1FileInfo.put((3 + t) + ",5", bean.get("color") == null ? "" : bean.get("color").toString());
+				sheet1FileInfo.put((3 + t) + ",6,Double", bean.get("buffon") == null ? "" : bean.get("buffon"));
+				sheet1FileInfo.put((3 + t) + ",7,Double", bean.get("unit_num") == null || "".equals(bean.get("unit_num").toString()) ? "" : bean.get("unit_num"));
+				sheet1FileInfo.put((3 + t++) + ",9", bean.get("position") == null ? "" : bean.get("position").toString());
+			}
+			
+			// 查询尺寸表表头
+			fsp = new FSPBean();
+			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_ORDER_NUM_TITLE_BY_EQL);
+			fsp.set("orderNumId", oaOrder.getOaOrderNumId());
+			OaOrderNum oaOrderNum = (OaOrderNum) baseDao.getOnlyObjectByEql(fsp);
 			t = 0;
-			for (OaClothesSizeDetail oaClothesSizeDetail : oaClothesSizeDetails) {
-				params.put((20 + t) + ",0", oaClothesSizeDetail.getPosition());
-				String nums = oaClothesSizeDetail.getClothSize();
-				int m = 0;
-				for (String num : nums.split("-")) {
-					if (StringUtils.isNotBlank(num)) {
-						try {
-							params.put((20 + t) + "," + (1 + m++), decimalFormat.format(Float.parseFloat(num)));
-						} catch (Exception e) {
-							params.put((20 + t) + "," + (1 + m++), "");
+			for (String title : oaOrderNum.getTitle().split("-")) {
+				sheet1FileInfo.put(19+oaMaterialListAddRows+"," + (1 + t++), title);
+			}
+			
+			// 查询尺寸表
+			fsp = new FSPBean();
+			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_CLOTHES_SIZE_BY_EQL);
+			fsp.set("orderId", oaOrder.getId());
+			OaClothesSize oaClothesSize = (OaClothesSize) baseDao.getOnlyObjectByEql(fsp);
+			if (null != oaClothesSize) {
+				sheet1FileInfo.put(18+oaMaterialListAddRows+",7", oaClothesSize.getUnit());
+				sheet1FileInfo.put(18+oaMaterialListAddRows+",13", oaClothesSize.getSampleSize());
+			}
+			fsp = new FSPBean();
+			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_CLOTHES_SIZE_DETAIL_BY_SQL);
+			fsp.set("orderId", oaOrder.getId());
+			List<LazyDynaMap> OaClothesSizeDetailList = baseDao.getObjectsBySql(fsp);
+			List<OaClothesSizeDetail> oaClothesSizeDetails = copyOaClothesSizeDetailList2Vo(OaClothesSizeDetailList);
+			
+			Integer oaClothesAddRows = oaClothesSizeDetails.size()>12?oaClothesSizeDetails.size()-12:0;
+			sheet1DynaRow.put(20+ oaMaterialListAddRows +"", oaClothesAddRows);
+			if (oaClothesSizeDetails.size() > 0) {
+				t = 0;
+				for (OaClothesSizeDetail oaClothesSizeDetail : oaClothesSizeDetails) {
+					sheet1FileInfo.put((20+ oaMaterialListAddRows + t) + ",0", oaClothesSizeDetail.getPosition());
+					String nums = oaClothesSizeDetail.getClothSize();
+					int m = 0;
+					for (String num : nums.split("-")) {
+						if (StringUtils.isNotBlank(num)) {
+							try {
+								sheet1FileInfo.put((20+ oaMaterialListAddRows + t) + "," + (1 + m++)+",Double", Float.parseFloat(num));
+							} catch (Exception e) {
+								sheet1FileInfo.put((20+ oaMaterialListAddRows + t) + "," + (1 + m++), "");
+							}
 						}
 					}
+					sheet1FileInfo.put((20+ oaMaterialListAddRows + t) + ",13", oaClothesSizeDetail.getSamplePageSize());
+					sheet1FileInfo.put((20+ oaMaterialListAddRows + t++) + ",14,Double", oaClothesSizeDetail.getTolerance());
 				}
-				params.put((20 + t) + ",8", oaClothesSizeDetail.getSamplePageSize());
-				params.put((20 + t++) + ",9", oaClothesSizeDetail.getTolerance());
 			}
+			
+			// 工艺要求
+			fsp = new FSPBean();
+			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_PROCESS_EXPLAIN_BY_EQL);
+			fsp.set("orderId", oaOrder.getId());
+			OaProcessExplain oaProcessExplain = (OaProcessExplain) baseDao.getOnlyObjectByEql(fsp);
+			if (null != oaProcessExplain) {
+				sheet1FileInfo.put((32 + oaMaterialListAddRows + oaClothesAddRows) + ",0", new CustomCell("特殊工艺要求：" + oaProcessExplain.getSpecialArt(), "String").setAlignment(CellStyle.ALIGN_LEFT).setVerticalAlignment(CellStyle.VERTICAL_TOP));
+				sheet1FileInfo.put((33 + oaMaterialListAddRows + oaClothesAddRows) + ",0", new CustomCell("裁床工艺要求：" + oaProcessExplain.getCutArt(), "String").setAlignment(CellStyle.ALIGN_LEFT).setVerticalAlignment(CellStyle.VERTICAL_TOP));
+				sheet1FileInfo.put((32 + oaMaterialListAddRows + oaClothesAddRows) + ",7," + (34 + oaMaterialListAddRows + oaClothesAddRows) + ",14", oaProcessExplain.getMeasurePic());
+				
+				sheet1FileInfo.put((34 + oaMaterialListAddRows + oaClothesAddRows) + ",0", new CustomCell("车缝工艺要求：" + oaProcessExplain.getSewing(), "String").setAlignment(CellStyle.ALIGN_LEFT).setVerticalAlignment(CellStyle.VERTICAL_TOP));
+				sheet1FileInfo.put((35 + oaMaterialListAddRows + oaClothesAddRows) + ",0," + (37 + oaMaterialListAddRows + oaClothesAddRows) + ",14", oaProcessExplain.getSewingPic());
+				
+				sheet1FileInfo.put((38 + oaMaterialListAddRows + oaClothesAddRows) + ",1", new CustomCell(oaProcessExplain.getTailButton(), "String").setAlignment(CellStyle.ALIGN_LEFT).setVerticalAlignment(CellStyle.VERTICAL_TOP));
+				sheet1FileInfo.put((39 + oaMaterialListAddRows + oaClothesAddRows) + ",1", new CustomCell(oaProcessExplain.getTailIroning(), "String").setAlignment(CellStyle.ALIGN_LEFT).setVerticalAlignment(CellStyle.VERTICAL_TOP));
+				sheet1FileInfo.put((40 + oaMaterialListAddRows + oaClothesAddRows) + ",1", new CustomCell(oaProcessExplain.getTailCard(), "String").setAlignment(CellStyle.ALIGN_LEFT).setVerticalAlignment(CellStyle.VERTICAL_TOP));
+				sheet1FileInfo.put((41 + oaMaterialListAddRows + oaClothesAddRows) + ",1", new CustomCell(oaProcessExplain.getTailPackaging(), "String").setAlignment(CellStyle.ALIGN_LEFT).setVerticalAlignment(CellStyle.VERTICAL_TOP));
+			}
+			fsp = new FSPBean();
+			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_MANAGER_INFO_BY_SQL);
+			fsp.set("orderId", oaOrder.getId());
+			fsp.set("node", "3");
+			fsp.set(FSPBean.FSP_ORDER, " order by id desc");
+			bean = baseDao.getOnlyObjectBySql(fsp);
+			sheet1FileInfo.put((42 + oaMaterialListAddRows + oaClothesAddRows) + ",0", new CustomCell("备注：" + (bean.get("content") == null ? "" : bean.get("content").toString()), "String").setAlignment(CellStyle.ALIGN_LEFT).setVerticalAlignment(CellStyle.VERTICAL_TOP));
+			
+			String node = oaOrder.getWfStep();
+			node = node.substring(node.lastIndexOf("_") + 1, node.length());
+			fsp = new FSPBean();
+			fsp.set("oa_order", oaOrder.getId());
+			fsp.set("wf_step", node);
+			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_DETAIL_EXCEL);
+			bean = baseDao.getOnlyObjectBySql(fsp);
+			sheet1FileInfo.put((43 + oaMaterialListAddRows + oaClothesAddRows) + ",1", bean.get("operator") == null ? "" : bean.get("operator").toString());
+			sheet1FileInfo.put((43 + oaMaterialListAddRows + oaClothesAddRows) + ",8", bean.get("wf_real_start") == null ? "" : DateUtil.formatDate((java.sql.Timestamp) bean.get("wf_real_start")));
+		}else{
+			//旧
+			sheet1FileInfo.put("1,1", oaOrder.getSellOrderCode());
+			sheet1FileInfo.put("1,3,", oaOrder.getStyleDesc());
+			sheet1FileInfo.put("1,8", oaOrder.getType().equals("2") ? "样衣打版" : "大货生产");
+			
+			// 材料清单
+			fsp = new FSPBean();
+			fsp.set("orderId", oaOrder.getId());
+			if ("2".equals(oaOrder.getType())) {
+				fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_DA_BAN_INFO_BY_SQL);
+			} else if ("3".equals(oaOrder.getType())) {
+				fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_DA_HUO_INFO_BY_SQL);
+			}
+			beans = getObjectsBySql(fsp);
+			int t = 0;
+			for (DynaBean bean : beans) {
+				sheet1FileInfo.put((3 + t) + ",0", bean.get("material_prop") == null ? "" : bean.get("material_prop").toString());
+				sheet1FileInfo.put((3 + t) + ",1", bean.get("material_name") == null ? "" : bean.get("material_name").toString());
+				sheet1FileInfo.put((3 + t) + ",2", bean.get("type") == null ? "" : bean.get("type").toString());
+				sheet1FileInfo.put((3 + t) + ",3", bean.get("color") == null ? "" : bean.get("color").toString());
+				sheet1FileInfo.put((3 + t) + ",4", bean.get("buffon") == null ? "" : bean.get("buffon").toString());
+				sheet1FileInfo.put((3 + t) + ",5", bean.get("unit_num") == null || "".equals(bean.get("unit_num").toString()) ? "" : decimalFormat.format(Float.parseFloat(bean.get("unit_num").toString())));
+				sheet1FileInfo.put((3 + t++) + ",6", bean.get("position") == null ? "" : bean.get("position").toString());
+			}
+			
+			// 查询尺寸表表头
+			fsp = new FSPBean();
+			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_ORDER_NUM_TITLE_BY_EQL);
+			fsp.set("orderNumId", oaOrder.getOaOrderNumId());
+			OaOrderNum oaOrderNum = (OaOrderNum) baseDao.getOnlyObjectByEql(fsp);
+			t = 0;
+			for (String title : oaOrderNum.getTitle().split("-")) {
+				sheet1FileInfo.put("19," + (1 + t++), title);
+			}
+			
+			// 查询尺寸表
+			fsp = new FSPBean();
+			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_CLOTHES_SIZE_BY_EQL);
+			fsp.set("orderId", oaOrder.getId());
+			OaClothesSize oaClothesSize = (OaClothesSize) baseDao.getOnlyObjectByEql(fsp);
+			if (null != oaClothesSize) {
+				sheet1FileInfo.put("18,5", oaClothesSize.getUnit());
+				sheet1FileInfo.put("18,8", oaClothesSize.getSampleSize());
+			}
+			
+			fsp = new FSPBean();
+			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_CLOTHES_SIZE_DETAIL_BY_SQL);
+			fsp.set("orderId", oaOrder.getId());
+			List<LazyDynaMap> OaClothesSizeDetailList = baseDao.getObjectsBySql(fsp);
+			List<OaClothesSizeDetail> oaClothesSizeDetails = copyOaClothesSizeDetailList2Vo(OaClothesSizeDetailList);
+			
+			int size = 12;
+			if (oaClothesSizeDetails.size() > 0) {
+				// size >12 则需要动态增行
+				size = oaClothesSizeDetails.size();
+				if (size > 12) {
+					sheet1DynaRow.put("31", (size - 12) + "");
+				} else {
+					size = 12;
+				}
+				t = 0;
+				for (OaClothesSizeDetail oaClothesSizeDetail : oaClothesSizeDetails) {
+					sheet1FileInfo.put((20 + t) + ",0", oaClothesSizeDetail.getPosition());
+					String nums = oaClothesSizeDetail.getClothSize();
+					int m = 0;
+					for (String num : nums.split("-")) {
+						if (StringUtils.isNotBlank(num)) {
+							try {
+								sheet1FileInfo.put((20 + t) + "," + (1 + m++), decimalFormat.format(Float.parseFloat(num)));
+							} catch (Exception e) {
+								sheet1FileInfo.put((20 + t) + "," + (1 + m++), "");
+							}
+						}
+					}
+					sheet1FileInfo.put((20 + t) + ",8", oaClothesSizeDetail.getSamplePageSize());
+					sheet1FileInfo.put((20 + t++) + ",9", oaClothesSizeDetail.getTolerance());
+				}
+			}
+			
+			// 工艺要求
+			fsp = new FSPBean();
+			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_PROCESS_EXPLAIN_BY_EQL);
+			fsp.set("orderId", oaOrder.getId());
+			OaProcessExplain oaProcessExplain = (OaProcessExplain) baseDao.getOnlyObjectByEql(fsp);
+			if (null != oaProcessExplain) {
+				sheet1FileInfo.put((32 + size - 12) + ",0", "特殊工艺要求：" + oaProcessExplain.getSpecialArt());
+				sheet1FileInfo.put((33 + size - 12) + ",0", "裁床工艺要求：" + oaProcessExplain.getCutArt());
+				sheet1FileInfo.put((32 + size - 12) + ",5," + (34 + size - 12) + ",10", oaProcessExplain.getMeasurePic());
+				
+				sheet1FileInfo.put((34 + size - 12) + ",0", "车缝工艺要求：" + oaProcessExplain.getSewing());
+				sheet1FileInfo.put((35 + size - 12) + ",0," + (37 + size - 12) + ",10", oaProcessExplain.getSewingPic());
+				
+				sheet1FileInfo.put((38 + size - 12) + ",1", oaProcessExplain.getTailButton());
+				sheet1FileInfo.put((39 + size - 12) + ",1", oaProcessExplain.getTailIroning());
+				sheet1FileInfo.put((40 + size - 12) + ",1", oaProcessExplain.getTailCard());
+				sheet1FileInfo.put((41 + size - 12) + ",1", oaProcessExplain.getTailPackaging());
+			}
+			fsp = new FSPBean();
+			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_MANAGER_INFO_BY_SQL);
+			fsp.set("orderId", oaOrder.getId());
+			fsp.set("node", "3");
+			fsp.set(FSPBean.FSP_ORDER, " order by id desc");
+			bean = baseDao.getOnlyObjectBySql(fsp);
+			sheet1FileInfo.put((42 + size - 12) + ",0", "备注：" + (bean.get("content") == null ? "" : bean.get("content").toString()));
+			
+			String node = oaOrder.getWfStep();
+			node = node.substring(node.lastIndexOf("_") + 1, node.length());
+			fsp = new FSPBean();
+			fsp.set("oa_order", oaOrder.getId());
+			fsp.set("wf_step", node);
+			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_DETAIL_EXCEL);
+			bean = baseDao.getOnlyObjectBySql(fsp);
+			sheet1FileInfo.put((43 + size - 12) + ",1", bean.get("operator") == null ? "" : bean.get("operator").toString());
+			sheet1FileInfo.put((43 + size - 12) + ",8", bean.get("wf_real_start") == null ? "" : DateUtil.formatDate((java.sql.Timestamp) bean.get("wf_real_start")));
 		}
-
-		// 工艺要求
-		fsp = new FSPBean();
-		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_PROCESS_EXPLAIN_BY_EQL);
-		fsp.set("orderId", oaOrder.getId());
-		OaProcessExplain oaProcessExplain = (OaProcessExplain) baseDao.getOnlyObjectByEql(fsp);
-		if (null != oaProcessExplain) {
-			params.put((32 + size - 12) + ",0", "特殊工艺要求：" + oaProcessExplain.getSpecialArt());
-			params.put((33 + size - 12) + ",0", "裁床工艺要求：" + oaProcessExplain.getCutArt());
-			params.put((32 + size - 12) + ",5," + (34 + size - 12) + ",10", oaProcessExplain.getMeasurePic());
-
-			params.put((34 + size - 12) + ",0", "车缝工艺要求：" + oaProcessExplain.getSewing());
-			params.put((35 + size - 12) + ",0," + (37 + size - 12) + ",10", oaProcessExplain.getSewingPic());
-
-			params.put((38 + size - 12) + ",1", oaProcessExplain.getTailButton());
-			params.put((39 + size - 12) + ",1", oaProcessExplain.getTailIroning());
-			params.put((40 + size - 12) + ",1", oaProcessExplain.getTailCard());
-			params.put((41 + size - 12) + ",1", oaProcessExplain.getTailPackaging());
-
-		}
-
-		fsp = new FSPBean();
-		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_MANAGER_INFO_BY_SQL);
-		fsp.set("orderId", oaOrder.getId());
-		fsp.set("node", "3");
-		fsp.set(FSPBean.FSP_ORDER, " order by id desc");
-		bean = baseDao.getOnlyObjectBySql(fsp);
-		params.put((42 + size - 12) + ",0", "备注：" + (bean.get("content") == null ? "" : bean.get("content").toString()));
-
-		String node = oaOrder.getWfStep();
-		node = node.substring(node.lastIndexOf("_") + 1, node.length());
-		fsp = new FSPBean();
-		fsp.set("oa_order", oaOrder.getId());
-		fsp.set("wf_step", node);
-		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_DETAIL_EXCEL);
-		bean = baseDao.getOnlyObjectBySql(fsp);
-		params.put((43 + size - 12) + ",1", bean.get("operator") == null ? "" : bean.get("operator").toString());
-		params.put((43 + size - 12) + ",8", bean.get("wf_real_start") == null ? "" : DateUtil.formatDate((java.sql.Timestamp) bean.get("wf_real_start")));
-		list.add(dynaRow);
-		list.add(params);
-		return list;
+		return fillInfo;
 	}
 
 	// 采购节点Excel
 	// by fangwei 2014-12-17
-	public List<Map<String, Object>> getPurchaseInfo(OaOrder oaOrder) {
-		// 表头信息
-		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		Map<String, Object> params = new HashMap<String, Object>();
-		Map<String, Object> dynaRow = new HashMap<String, Object>();
-		params.put("1,1", oaOrder.getSellOrderCode());
-		params.put("1,4", oaOrder.getStyleDesc());
-		params.put("1,8", oaOrder.getMrName());
-		params.put("1,25", oaOrder.getType().equals("2") ? "样衣打版" : "大货生产");
+	public Map<String, Object> getPurchaseInfo(OaOrder oaOrder) {
+		Map<String,Object> fillInfo = new HashMap<String,Object>();
+
+		fillInfo.put("sheetNames", "采购");
+		Map<String,Object> sheet1FileInfo = new HashMap<String,Object>();
+		Map<String,Object> sheet1DynaRow = new TreeMap<String,Object>();
+		fillInfo.put("采购FileInfo", sheet1FileInfo);
+		fillInfo.put("采购DynaRow", sheet1DynaRow);
+		
+		sheet1FileInfo.put("1,1", oaOrder.getSellOrderCode());
+		sheet1FileInfo.put("1,4", oaOrder.getStyleDesc());
+		sheet1FileInfo.put("1,8", oaOrder.getMrName());
+		sheet1FileInfo.put("1,25", oaOrder.getType().equals("2") ? "样衣打版" : "大货生产");
 
 		String node = oaOrder.getWfStep();
 		node = node.substring(node.lastIndexOf("_") + 1, node.length());
@@ -7532,8 +7652,8 @@ public class BxAction extends Action {
 		fsp.set("wf_step", node);
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_DETAIL_EXCEL);
 		bean = baseDao.getOnlyObjectBySql(fsp);
-		params.put("1,12", bean.get("worker") == null ? "" : bean.get("worker").toString());
-		params.put("1,16", bean.get("work_time") == null ? "" : DateUtil.formatDate((java.sql.Timestamp) bean.get("work_time")));
+		sheet1FileInfo.put("1,12", bean.get("worker") == null ? "" : bean.get("worker").toString());
+		sheet1FileInfo.put("1,16", bean.get("work_time") == null ? "" : DateUtil.formatDate((java.sql.Timestamp) bean.get("work_time"),DateUtil.YMD));
 
 		fsp = new FSPBean();
 		fsp.set("orderId", oaOrder.getId());
@@ -7543,382 +7663,198 @@ public class BxAction extends Action {
 			fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_DA_HUO_MATERIAL_PURCHASE_DESC_BY_SQL);
 		}
 		beans = getObjectsBySql(fsp);
+		sheet1DynaRow.put("4", beans.size()>15?beans.size()-15:0);
+		
 		int t = 0;
 		for (DynaBean bean : beans) {
-			params.put((4 + t) + ",0", bean.get("position") == null ? "" : bean.get("position").toString());
-			params.put((4 + t) + ",1", bean.get("material_prop") == null ? "" : bean.get("material_prop").toString());
-			params.put((4 + t) + ",2", bean.get("type") == null ? "" : bean.get("type").toString());
-			params.put((4 + t) + ",3", bean.get("material_name") == null ? "" : bean.get("material_name").toString());
-			params.put((4 + t) + ",4", bean.get("color") == null ? "" : bean.get("color").toString());
-			params.put((4 + t) + ",5", bean.get("supplier_name") == null ? "" : bean.get("supplier_name").toString());
-			params.put((4 + t) + ",6", bean.get("supplier_addr") == null ? "" : bean.get("supplier_addr").toString());
-			params.put((4 + t) + ",7", bean.get("supplier_tel") == null ? "" : bean.get("supplier_tel").toString());
+			sheet1FileInfo.put((4 + t) + ",0", bean.get("position") == null ? "" : bean.get("position").toString());
+			sheet1FileInfo.put((4 + t) + ",1", bean.get("material_prop") == null ? "" : bean.get("material_prop").toString());
+			sheet1FileInfo.put((4 + t) + ",2", bean.get("type") == null ? "" : bean.get("type").toString());
+			sheet1FileInfo.put((4 + t) + ",3", bean.get("material_name") == null ? "" : bean.get("material_name").toString());
+			sheet1FileInfo.put((4 + t) + ",4", bean.get("color") == null ? "" : bean.get("color").toString());
+			sheet1FileInfo.put((4 + t) + ",5", bean.get("supplier_name") == null ? "" : bean.get("supplier_name").toString());
+			sheet1FileInfo.put((4 + t) + ",6", bean.get("supplier_addr") == null ? "" : bean.get("supplier_addr").toString());
+			sheet1FileInfo.put((4 + t) + ",7", bean.get("supplier_tel") == null ? "" : bean.get("supplier_tel").toString());
 			if (oaOrder.getType().equals("3")) {
-				params.put((4 + t) + ",8", bean.get("buffon") == null ? "" : bean.get("buffon").toString());
-				params.put((4 + t) + ",9", bean.get("unit_num") == null ? "" : decimalFormat.format((float) bean.get("unit_num")));
-				params.put((4 + t) + ",10", bean.get("order_num") == null ? "" : bean.get("order_num").toString());
-				params.put((4 + t) + ",11", bean.get("need_num") == null ? "" : decimalFormat.format((float) bean.get("need_num")));
-				params.put((4 + t) + ",12", bean.get("org") == null ? "" : bean.get("org").toString());
-				params.put((4 + t) + ",13", bean.get("num") == null ? "" : bean.get("num").toString());
-				params.put((4 + t) + ",14", bean.get("price") == null ? "" : decimalFormat.format((float) bean.get("price")));
-				params.put((4 + t) + ",15", bean.get("total_price") == null ? "" : decimalFormat.format((float) bean.get("total_price")));
-				params.put((4 + t) + ",16", bean.get("test_price") == null ? "" : decimalFormat.format((float) bean.get("test_price")));
-				params.put((4 + t) + ",17", bean.get("freight") == null ? "" : decimalFormat.format((float) bean.get("freight")));
-				params.put((4 + t) + ",18", bean.get("total") == null ? "" : decimalFormat.format((float) bean.get("total")));
-				params.put((4 + t) + ",19", bean.get("buyer_loss") == null ? "" : bean.get("buyer_loss").toString());
-				params.put((4 + t) + ",20", bean.get("paper_tube") == null ? "" : decimalFormat.format((float) bean.get("paper_tube")));
-				params.put((4 + t) + ",21", bean.get("deviation") == null ? "" : decimalFormat.format((float) bean.get("deviation")));
-				params.put((4 + t++) + ",22", bean.get("pur_memo") == null ? "" : bean.get("pur_memo").toString());
+				sheet1FileInfo.put((4 + t) + ",8", bean.get("buffon") == null ? "" : bean.get("buffon").toString());
+				sheet1FileInfo.put((4 + t) + ",9", bean.get("unit_num") == null ? "" : decimalFormat.format((float) bean.get("unit_num")));
+				sheet1FileInfo.put((4 + t) + ",10", bean.get("order_num") == null ? "" : bean.get("order_num").toString());
+				sheet1FileInfo.put((4 + t) + ",11", bean.get("need_num") == null ? "" : decimalFormat.format((float) bean.get("need_num")));
+				sheet1FileInfo.put((4 + t) + ",12", bean.get("org") == null ? "" : bean.get("org").toString());
+				sheet1FileInfo.put((4 + t) + ",13", bean.get("num") == null ? "" : bean.get("num").toString());
+				sheet1FileInfo.put((4 + t) + ",14", bean.get("price") == null ? "" : decimalFormat.format((float) bean.get("price")));
+				sheet1FileInfo.put((4 + t) + ",15", bean.get("total_price") == null ? "" : decimalFormat.format((float) bean.get("total_price")));
+				sheet1FileInfo.put((4 + t) + ",16", bean.get("test_price") == null ? "" : decimalFormat.format((float) bean.get("test_price")));
+				sheet1FileInfo.put((4 + t) + ",17", bean.get("freight") == null ? "" : decimalFormat.format((float) bean.get("freight")));
+				sheet1FileInfo.put((4 + t) + ",18", bean.get("total") == null ? "" : decimalFormat.format((float) bean.get("total")));
+				sheet1FileInfo.put((4 + t) + ",19", bean.get("buyer_loss") == null ? "" : bean.get("buyer_loss").toString());
+				sheet1FileInfo.put((4 + t) + ",20", bean.get("paper_tube") == null ? "" : decimalFormat.format((float) bean.get("paper_tube")));
+				sheet1FileInfo.put((4 + t) + ",21", bean.get("deviation") == null ? "" : decimalFormat.format((float) bean.get("deviation")));
+				sheet1FileInfo.put((4 + t++) + ",22", bean.get("pur_memo") == null ? "" : bean.get("pur_memo").toString());
 			} else {
-				params.put((4 + t) + ",23", bean.get("weight") == null ? "" : bean.get("weight").toString());
-				params.put((4 + t) + ",24", bean.get("component") == null ? "" : bean.get("component").toString());
-				params.put((4 + t) + ",25", bean.get("delivery_time") == null ? "" : bean.get("delivery_time").toString());
-				params.put((4 + t) + ",26", bean.get("buyer_loss") == null ? "" : bean.get("buyer_loss").toString());
-				params.put((4 + t) + ",27", bean.get("paper_tube") == null ? "" : bean.get("paper_tube").toString());
-				params.put((4 + t) + ",28", bean.get("deviation") == null ? "" : bean.get("deviation").toString());
-				params.put((4 + t) + ",29,3Double", bean.get("shear_price") == null ? "" : decimalFormat3.format((float) bean.get("shear_price")));
-				params.put((4 + t) + ",30", bean.get("unit") == null ? "" : bean.get("unit").toString());
-				params.put((4 + t) + ",31,3Double", bean.get("goods_price") == null ? "" : decimalFormat3.format((float) bean.get("goods_price")));
-				params.put((4 + t) + ",32", bean.get("goods_unit") == null ? "" : bean.get("goods_unit").toString());
-				params.put((4 + t) + ",33", bean.get("buffon") == null ? "" : decimalFormat.format((float) bean.get("buffon")));
-				params.put((4 + t++) + ",34", bean.get("pur_memo") == null ? "" : bean.get("pur_memo").toString());
+				sheet1FileInfo.put((4 + t) + ",23,Integer", bean.get("weight") == null ? "" : bean.get("weight").toString());
+				sheet1FileInfo.put((4 + t) + ",24", bean.get("component") == null ? "" : bean.get("component").toString());
+				sheet1FileInfo.put((4 + t) + ",25,Integer", bean.get("delivery_time") == null ? "" : bean.get("delivery_time").toString());
+				sheet1FileInfo.put((4 + t) + ",26,Double-0.0%", bean.get("buyer_loss") == null ? "" : (((Float)bean.get("buyer_loss"))/100));
+				sheet1FileInfo.put((4 + t) + ",27,Double", bean.get("paper_tube") == null ? "" : bean.get("paper_tube").toString());
+				sheet1FileInfo.put((4 + t) + ",28,Double", bean.get("deviation") == null ? "" : bean.get("deviation").toString());
+				sheet1FileInfo.put((4 + t) + ",29,Double-@", bean.get("shear_price") == null ? "" : (float) bean.get("shear_price"));
+				sheet1FileInfo.put((4 + t) + ",30", bean.get("unit") == null ? "" : bean.get("unit").toString());
+				sheet1FileInfo.put((4 + t) + ",31,Double-@", bean.get("goods_price") == null ? "" : (float) bean.get("goods_price"));
+				sheet1FileInfo.put((4 + t) + ",32", bean.get("goods_unit") == null ? "" : bean.get("goods_unit").toString());
+				sheet1FileInfo.put((4 + t) + ",33,Double", bean.get("buffon") == null ? "" : (float) bean.get("buffon"));
+				sheet1FileInfo.put((4 + t++) + ",34", bean.get("pur_memo") == null ? "" : bean.get("pur_memo").toString());
 			}
 		}
-		list.add(dynaRow);
-		list.add(params);
-		return list;
+		return fillInfo;
 	}
 
 	// 核价节点Excel
 	// by fangwei 2014-12-17
-	public List<Map<String, Object>> getPricingInfo(OaOrder oaOrder) {
-		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		Map<String, Object> params = new HashMap<String, Object>();
-		Map<String, Object> dynaRow = new HashMap<String, Object>();
-		params.put("1,1", oaOrder.getSellOrderCode());
-		params.put("1,3", oaOrder.getStyleDesc());
-		params.put("1,8", oaOrder.getType().equals("2") ? "样衣打版" : "大货生产");
-		// params.put("27,0,38,4", oaOrder.getPictureFront());
+	public Map<String, Object> getPricingInfo(OaOrder oaOrder) {
+		Map<String,Object> fillInfo = new HashMap<String,Object>();
+		fillInfo.put("sheetNames", "核价");
+		Map<String,Object> sheet1FileInfo = new HashMap<String,Object>();
+		Map<String,Object> sheet1DynaRow = new TreeMap<String,Object>();
+		fillInfo.put("核价FileInfo", sheet1FileInfo);
+		fillInfo.put("核价DynaRow", sheet1DynaRow);
+		
+		sheet1FileInfo.put("1,1", oaOrder.getSellOrderCode());
+		sheet1FileInfo.put("1,3", oaOrder.getStyleDesc());
+		sheet1FileInfo.put("1,8", oaOrder.getType().equals("2") ? "样衣打版" : "大货生产");
 
 		String node = oaOrder.getWfStep();
 		node = node.substring(node.lastIndexOf("_") + 1, node.length());
+		
+		fsp = new FSPBean();
+		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_MATERIAL_COST_BY_SQL);
+		fsp.set("orderId", oaOrder.getId());
+		beans = getObjectsBySql(fsp);
+		Integer oaMaterialListAddRows =beans.size()>18?beans.size()-18:0;
+		sheet1DynaRow.put("4", oaMaterialListAddRows);
+		int t = 0;
+		for (DynaBean bean : beans) {
+			sheet1FileInfo.put((4 + t) + ",0", bean.get("material_prop") == null ? "" : (String) bean.get("material_prop"));
+			sheet1FileInfo.put((4 + t) + ",1", bean.get("type") == null ? "" : (String) bean.get("type"));
+			sheet1FileInfo.put((4 + t) + ",2", bean.get("material_name") == null ? "" : (String) bean.get("material_name"));
+			sheet1FileInfo.put((4 + t) + ",3", bean.get("color") == null ? "" : (String) bean.get("color"));
+			sheet1FileInfo.put((4 + t) + ",4,Double", bean.get("buffon") == null ? "" : bean.get("buffon").toString());
+			sheet1FileInfo.put((4 + t) + ",5,Double", bean.get("unit_num") == null ? "" : (float) bean.get("unit_num"));
+			sheet1FileInfo.put((4 + t) + ",6,Double-@", bean.get("cp_price") == null ? "" : bean.get("cp_price").toString());
+			sheet1FileInfo.put((4 + t) + ",7,Double-@", bean.get("shear_price") == null ? "" : bean.get("shear_price").toString());
+			sheet1FileInfo.put((4 + t) + ",8,Double", bean.get("cp_loss") == null ? "" : bean.get("cp_loss").toString());
+			sheet1FileInfo.put((4 + t) + ",9,Double", bean.get("cp_total_price") == null ? "" : (float) bean.get("cp_total_price"));
+			sheet1FileInfo.put((4 + t) + ",10,Double", bean.get("cp_shear_price") == null ? "" : (float) bean.get("cp_shear_price"));
+			sheet1FileInfo.put((4 + t++) + ",11", bean.get("cp_memo") == null ? "" : bean.get("cp_memo").toString());
+		}
+		
+		
 		fsp = new FSPBean();
 		fsp.set("oa_order", oaOrder.getId());
 		fsp.set("wf_step", node);
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_DETAIL_EXCEL);
 		bean = baseDao.getOnlyObjectBySql(fsp);
-		// params.put("1,10",(String)bean.get("operator"));
-		params.put("1,12", bean.get("wf_real_start") == null ? "" : DateUtil.formatDate((java.sql.Timestamp) bean.get("wf_real_start")));
-		params.put("27,0,38,4", (String) bean.get("other_file"));
-		params.put(39 + ",1", (String) bean.get("operator"));
+		sheet1FileInfo.put("1,12", bean.get("wf_real_start") == null ? "" : DateUtil.formatDate((java.sql.Timestamp) bean.get("wf_real_start")));
+		sheet1FileInfo.put((27+oaMaterialListAddRows)+",0,"+(38+oaMaterialListAddRows)+",4", (String) bean.get("other_file"));
+		sheet1FileInfo.put(39 +oaMaterialListAddRows+ ",1", (String) bean.get("operator"));
 
-		fsp = new FSPBean();
-		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_MATERIAL_COST_BY_SQL);
-		fsp.set("orderId", oaOrder.getId());
-		beans = getObjectsBySql(fsp);
-		int t = 0;
-		for (DynaBean bean : beans) {
-			params.put((4 + t) + ",0", bean.get("material_prop") == null ? "" : (String) bean.get("material_prop"));
-			params.put((4 + t) + ",1", bean.get("type") == null ? "" : (String) bean.get("type"));
-			params.put((4 + t) + ",2", bean.get("material_name") == null ? "" : (String) bean.get("material_name"));
-			params.put((4 + t) + ",3", bean.get("color") == null ? "" : (String) bean.get("color"));
-			params.put((4 + t) + ",4", bean.get("buffon") == null ? "" : bean.get("buffon").toString());
-			params.put((4 + t) + ",5", bean.get("unit_num") == null ? "" : decimalFormat.format((float) bean.get("unit_num")));
-			params.put((4 + t) + ",6", bean.get("cp_price") == null ? "" : bean.get("cp_price").toString());
-			params.put((4 + t) + ",7", bean.get("shear_price") == null ? "" : bean.get("shear_price").toString());
-			params.put((4 + t) + ",8", bean.get("cp_loss") == null ? "" : bean.get("cp_loss").toString());
-			params.put((4 + t) + ",9", bean.get("cp_total_price") == null ? "" : decimalFormat.format((float) bean.get("cp_total_price")));
-			params.put((4 + t) + ",10", bean.get("cp_shear_price") == null ? "" : decimalFormat.format((float) bean.get("cp_shear_price")));
-			params.put((4 + t++) + ",11", bean.get("cp_memo") == null ? "" : bean.get("cp_memo").toString());
-		}
 
 		fsp = new FSPBean();
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_COST_BY_EQL);
 		fsp.set("orderId", oaOrder.getId());
 		OaCost oaCost = (OaCost) baseDao.getOnlyObjectByEql(fsp);
 		if (oaCost != null) {
-			params.put(22 + ",9", oaCost.getMGoodsPrice() == null ? "" : decimalFormat.format(oaCost.getMGoodsPrice()));
-			params.put(22 + ",10", oaCost.getMShearPrice() == null ? "" : decimalFormat.format(oaCost.getMShearPrice()));
+			sheet1FileInfo.put(22+oaMaterialListAddRows + ",9,Double", oaCost.getMGoodsPrice() == null ? "" : oaCost.getMGoodsPrice());
+			sheet1FileInfo.put(22+oaMaterialListAddRows + ",10,Double", oaCost.getMShearPrice() == null ? "" : oaCost.getMShearPrice());
 
-			params.put(24 + ",1", oaCost.getOStamp() == null ? "" : decimalFormat.format(oaCost.getOStamp()));
-			params.put(24 + ",3", oaCost.getOEmbroider() == null ? "" : decimalFormat.format(oaCost.getOEmbroider()));
-			params.put(24 + ",6", oaCost.getOWash() == null ? "" : decimalFormat.format(oaCost.getOWash()));
-			params.put(24 + ",10", oaCost.getWaiXieTotalPrice() == null ? "" : decimalFormat.format(oaCost.getWaiXieTotalPrice()));
-			params.put(24 + ",11", oaCost.getOMemo() == null ? "" : oaCost.getOMemo().toString());
+			sheet1FileInfo.put(24+oaMaterialListAddRows + ",1,Double", oaCost.getOStamp() == null ? "" : oaCost.getOStamp());
+			sheet1FileInfo.put(24+oaMaterialListAddRows + ",3,Double", oaCost.getOEmbroider() == null ? "" : oaCost.getOEmbroider());
+			sheet1FileInfo.put(24+oaMaterialListAddRows + ",6,Double", oaCost.getOWash() == null ? "" : oaCost.getOWash());
+			sheet1FileInfo.put(24+oaMaterialListAddRows + ",10,Double", oaCost.getWaiXieTotalPrice() == null ? "" : oaCost.getWaiXieTotalPrice());
+			sheet1FileInfo.put(24+oaMaterialListAddRows + ",11", oaCost.getOMemo() == null ? "" : oaCost.getOMemo().toString());
 
-			params.put(28 + ",9", oaCost.getD1() == null ? "" : decimalFormat.format(oaCost.getD1()));
-			params.put(28 + ",10", oaCost.getD2() == null ? "" : decimalFormat.format(oaCost.getD2()));
-			params.put(28 + ",11", oaCost.getD3() == null ? "" : decimalFormat.format(oaCost.getD3()));
-			params.put(28 + ",12", oaCost.getPMemo() == null ? "" : oaCost.getPMemo().toString());
+			sheet1FileInfo.put(28+oaMaterialListAddRows + ",9,Double", oaCost.getD1() == null ? "" : oaCost.getD1());
+			sheet1FileInfo.put(28+oaMaterialListAddRows + ",10,Double", oaCost.getD2() == null ? "" : oaCost.getD2());
+			sheet1FileInfo.put(28+oaMaterialListAddRows + ",11,Double", oaCost.getD3() == null ? "" : oaCost.getD3());
+			sheet1FileInfo.put(28+oaMaterialListAddRows + ",12", oaCost.getPMemo() == null ? "" : oaCost.getPMemo().toString());
 
 			if (oaCost.getPCutting() != null) {
 				String[] pCutting = oaCost.getPCutting().split(",");
-				params.put(28 + ",5", pCutting[0] == null ? "" : decimalFormat.format(Float.parseFloat(pCutting[0])));
-				params.put(28 + ",6", pCutting[1] == null ? "" : decimalFormat.format(Float.parseFloat(pCutting[1])));
-				params.put(28 + ",7", pCutting[2] == null ? "" : decimalFormat.format(Float.parseFloat(pCutting[2])));
+				sheet1FileInfo.put(28+oaMaterialListAddRows + ",5,Double", pCutting[0] == null ? "" : Float.parseFloat(pCutting[0]));
+				sheet1FileInfo.put(28+oaMaterialListAddRows + ",6,Double", pCutting[1] == null ? "" : Float.parseFloat(pCutting[1]));
+				sheet1FileInfo.put(28+oaMaterialListAddRows + ",7,Double", pCutting[2] == null ? "" : Float.parseFloat(pCutting[2]));
 			}
 
 			if (oaCost.getPSew() != null) {
 				String[] pSew = oaCost.getPSew().split(",");
-				params.put(29 + ",5", pSew[0] == null ? "" : decimalFormat.format(Float.parseFloat(pSew[0])));
-				params.put(29 + ",6", pSew[1] == null ? "" : decimalFormat.format(Float.parseFloat(pSew[1])));
-				params.put(29 + ",7", pSew[2] == null ? "" : decimalFormat.format(Float.parseFloat(pSew[2])));
+				sheet1FileInfo.put(29+oaMaterialListAddRows + ",5,Double", pSew[0] == null ? "" : Float.parseFloat(pSew[0]));
+				sheet1FileInfo.put(29+oaMaterialListAddRows + ",6,Double", pSew[1] == null ? "" : Float.parseFloat(pSew[1]));
+				sheet1FileInfo.put(29+oaMaterialListAddRows + ",7,Double", pSew[2] == null ? "" : Float.parseFloat(pSew[2]));
 			}
 
 			if (oaCost.getPLast() != null) {
 				String[] pLast = oaCost.getPLast().split(",");
-				params.put(30 + ",5", pLast[0] == null ? "" : decimalFormat.format(Float.parseFloat(pLast[0])));
-				params.put(30 + ",6", pLast[1] == null ? "" : decimalFormat.format(Float.parseFloat(pLast[1])));
-				params.put(30 + ",7", pLast[2] == null ? "" : decimalFormat.format(Float.parseFloat(pLast[2])));
+				sheet1FileInfo.put(30+oaMaterialListAddRows + ",5,Double", pLast[0] == null ? "" : Float.parseFloat(pLast[0]));
+				sheet1FileInfo.put(30+oaMaterialListAddRows + ",6,Double", pLast[1] == null ? "" : Float.parseFloat(pLast[1]));
+				sheet1FileInfo.put(30+oaMaterialListAddRows + ",7,Double", pLast[2] == null ? "" : Float.parseFloat(pLast[2]));
 			}
 
-			params.put(31 + ",5", oaCost.getBhe1() == null ? "" : decimalFormat.format(oaCost.getBhe1()));
-			params.put(31 + ",6", oaCost.getBhe2() == null ? "" : decimalFormat.format(oaCost.getBhe2()));
-			params.put(31 + ",7", oaCost.getBhe3() == null ? "" : decimalFormat.format(oaCost.getBhe3()));
+			sheet1FileInfo.put(31+oaMaterialListAddRows + ",5,Double", oaCost.getBhe1() == null ? "" : oaCost.getBhe1());
+			sheet1FileInfo.put(31+oaMaterialListAddRows + ",6,Double", oaCost.getBhe2() == null ? "" : oaCost.getBhe2());
+			sheet1FileInfo.put(31+oaMaterialListAddRows + ",7,Double", oaCost.getBhe3() == null ? "" : oaCost.getBhe3());
 
-			params.put(35 + ",9", oaCost.getOrderNum1() == null ? "" : oaCost.getOrderNum1().toString());
-			params.put(35 + ",10", oaCost.getOrderNum2() == null ? "" : oaCost.getOrderNum2().toString());
-			params.put(35 + ",11", oaCost.getOrderNum3() == null ? "" : oaCost.getOrderNum3().toString());
+			sheet1FileInfo.put(35+oaMaterialListAddRows + ",9,Integer", oaCost.getOrderNum1() == null ? "" : oaCost.getOrderNum1().toString());
+			sheet1FileInfo.put(35+oaMaterialListAddRows + ",10,Integer", oaCost.getOrderNum2() == null ? "" : oaCost.getOrderNum2().toString());
+			sheet1FileInfo.put(35+oaMaterialListAddRows + ",11,Integer", oaCost.getOrderNum3() == null ? "" : oaCost.getOrderNum3().toString());
 
-			params.put(36 + ",9", oaCost.getBtotal1() == null ? "" : decimalFormat.format(oaCost.getBtotal1()));
-			params.put(36 + ",10", oaCost.getBtotal2() == null ? "" : decimalFormat.format(oaCost.getBtotal2()));
-			params.put(36 + ",11", oaCost.getBtotal3() == null ? "" : decimalFormat.format(oaCost.getBtotal3()));
+			sheet1FileInfo.put(36+oaMaterialListAddRows + ",9,Double", oaCost.getBtotal1() == null ? "" : oaCost.getBtotal1());
+			sheet1FileInfo.put(36+oaMaterialListAddRows + ",10,Double", oaCost.getBtotal2() == null ? "" : oaCost.getBtotal2());
+			sheet1FileInfo.put(36+oaMaterialListAddRows + ",11,Double", oaCost.getBtotal3() == null ? "" : oaCost.getBtotal3());
 
-			params.put(37 + ",9", oaCost.getDtotal1() == null ? "" : decimalFormat.format(oaCost.getDtotal1()));
-			params.put(37 + ",10", oaCost.getDtotal2() == null ? "" : decimalFormat.format(oaCost.getDtotal2()));
-			params.put(37 + ",11", oaCost.getDtotal3() == null ? "" : decimalFormat.format(oaCost.getDtotal3()));
+			sheet1FileInfo.put(37+oaMaterialListAddRows + ",9,Double", oaCost.getDtotal1() == null ? "" : oaCost.getDtotal1());
+			sheet1FileInfo.put(37+oaMaterialListAddRows + ",10,Double", oaCost.getDtotal2() == null ? "" : oaCost.getDtotal2());
+			sheet1FileInfo.put(37+oaMaterialListAddRows + ",11,Double", oaCost.getDtotal3() == null ? "" : oaCost.getDtotal3());
 		}
-
-		list.add(dynaRow);
-		list.add(params);
-		return list;
-	}
-
-	// CQC节点Excel
-	// by fangwei 2014-12-17
-	public List<Map<String, Object>> getCQCInfo(OaOrder oaOrder) {
-		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		Map<String, Object> sheet1 = new HashMap<String, Object>();
-		Map<String, Object> sheet2 = new HashMap<String, Object>();
-		Map<String, String> params1 = new HashMap<String, String>();
-		Map<String, String> dynaRow1 = new HashMap<String, String>();
-		Map<String, String> params2 = new HashMap<String, String>();
-		Map<String, String> dynaRow2 = new HashMap<String, String>();
-		sheet1.put("sheetIndex", "6");
-		sheet1.put("dynaRow", dynaRow1);
-		sheet1.put("params", params1);
-		sheet2.put("sheetIndex", "9");
-		sheet2.put("dynaRow", dynaRow2);
-		sheet2.put("params", params2);
-		fsp = new FSPBean();
-		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_CQC_INFO_BY_EQL);
-		fsp.set("oaOrderId", oaOrder.getId());
-		beans = getObjectsBySql(fsp);
-		if (beans.size() > 0) {
-			String str = beans.get(0).get("title") == null ? "" : beans.get(0).get("title").toString();
-			if (str != "") {
-				String titles[] = str.split("-");
-				int n = 0;
-				for (String s : titles) {
-					params1.put("2," + (29 + n++), s);
-				}
-			}
-			int t = 0;
-			for (DynaBean bean : beans) {
-				params1.put((3 + t) + ",10", bean.get("apply_unit_num") == null ? "" : bean.get("apply_unit_num").toString());
-				params1.put((3 + t) + ",11", bean.get("unit_num") == null ? "" : decimalFormat.format((float) bean.get("unit_num")));
-				params1.put((3 + t) + ",13", bean.get("need_num") == null ? "" : bean.get("need_num").toString());
-				params1.put((3 + t) + ",18", bean.get("receive_time") == null ? "" : DateUtil.formatDate((java.sql.Timestamp) bean.get("receive_time"), "MM/dd"));
-				params1.put((3 + t) + ",20", bean.get("receive_num") == null ? "" : decimalFormat.format((float) bean.get("receive_num")));
-				params1.put((3 + t) + ",24", bean.get("receive_rate") == null ? "" : bean.get("receive_rate").toString());
-				params1.put((3 + t) + ",25", bean.get("receive_memo") == null ? "" : bean.get("receive_memo").toString());
-				String nums = beans.get(0).get("shear_num_info") == null ? "" : beans.get(t).get("shear_num_info").toString();
-				Float f = 0f;
-				if (nums != "") {
-					String shearNumInfos[] = nums.split(",");
-					int n = 0;
-					for (String s : shearNumInfos) {
-						if (s == null || "".equals(s.trim())) {
-							continue;
-						}
-						f += Float.parseFloat(s);
-						params1.put((3 + t) + "," + (29 + n++), s.trim());
-					}
-				}
-				params1.put((3 + t) + ",36", f.toString());
-				params1.put((3 + t) + ",41", bean.get("loss_bundles") == null ? "" : bean.get("loss_bundles").toString());
-				params1.put((3 + t) + ",42", bean.get("loss_other") == null ? "" : bean.get("loss_other").toString());
-				params1.put((3 + t) + ",43", bean.get("loss_oddments") == null ? "" : bean.get("loss_oddments").toString());
-				params1.put((3 + t) + ",44", bean.get("loss_yiyou") == null ? "" : decimalFormat.format((float) bean.get("loss_yiyou")));
-				params1.put((3 + t) + ",45", bean.get("loss_company") == null ? "" : decimalFormat.format((float) bean.get("loss_company")));
-				params1.put((3 + t++) + ",46", bean.get("loss_memo") == null ? "" : bean.get("loss_memo").toString());
-			}
-		}
-
-		fsp = new FSPBean();
-		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_QITAO_INFO_BY_EQL);
-		fsp.set("oaOrderId", oaOrder.getId());
-		beans = getObjectsBySql(fsp);
-		if (beans.size() > 0) {
-			params2.put(1 + ",1", beans.get(0).get("sell_order_code") == null ? "" : beans.get(0).get("sell_order_code").toString());
-			params2.put(2 + ",1", beans.get(0).get("style_code") == null ? "" : beans.get(0).get("style_code").toString());
-			params2.put(1 + ",3", beans.get(0).get("qitao_receive_time") == null ? "" : beans.get(0).get("qitao_receive_time").toString());
-			params2.put(2 + ",3", beans.get(0).get("qitao_send_time") == null ? "" : beans.get(0).get("qitao_send_time").toString());
-			int t = 0;
-			dynaRow2.put("6", (beans.size() - 5) + "");
-			for (DynaBean bean : beans) {
-				params2.put((4 + t) + ",0", bean.get("project") == null ? "" : bean.get("project").toString());
-				params2.put((4 + t) + ",1", bean.get("tracke") == null ? "" : bean.get("tracke").toString());
-				params2.put((4 + t) + ",2", bean.get("department") == null ? "" : bean.get("department").toString());
-				params2.put((4 + t++) + ",3", bean.get("operator") == null ? "" : bean.get("operator").toString());
-			}
-		}
-		list.add(sheet1);
-		list.add(sheet2);
-		return list;
-	}
-
-	// TPE节点Excel
-	// by fangwei 2014-12-17
-	public List<Map<String, Object>> getTPEInfo(OaOrder oaOrder) {
-		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		Map<String, Object> params = new HashMap<String, Object>();
-		Map<String, Object> dynaRow = new HashMap<String, Object>();
-
-		FSPBean fspBean = new FSPBean();
-		fspBean.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_SEWING_NUM_INFO_BY_EQL);
-		fspBean.set("oaOrderId", oaOrder.getId());
-		OaTpe oaTpe = (OaTpe) baseDao.getOnlyObjectByEql(fspBean);
-		params.put("2,8", oaTpe.getSewingFactory().toString());
-		params.put("12,8", oaTpe.getSewingTotal().toString());
-		String[] infos = oaTpe.getSewingNum().split(",");
-		for (int i = 0; i < infos.length; i++) {
-			String[] nums = infos[i].split("-");
-			Float f = 0f;
-			for (int j = 0; j < nums.length; j++) {
-				params.put((5 + i) + "," + (j), nums[j]);
-				if (j == 0)
-					continue;
-				f += Float.parseFloat(nums[j]);
-			}
-			params.put((5 + i) + ",8", f.toString());
-		}
-
-		fsp = new FSPBean();
-		fsp.set("oa_order", oaOrder.getId());
-		fsp.set("wf_step", "6");
-		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_DETAIL_EXCEL);
-		bean = baseDao.getOnlyObjectBySql(fsp);
-		params.put("14,1", bean.get("content") == null ? "" : bean.get("content").toString());
-		params.put("17,1", bean.get("worker") == null ? "" : bean.get("worker").toString());
-		params.put("17,8", bean.get("wf_real_start") == null ? "" : DateUtil.formatDate((java.sql.Timestamp) bean.get("wf_real_start")));
-
-		list.add(dynaRow);
-		list.add(params);
-		return list;
-	}
-
-	// QA节点Excel
-	// by fangwei 2014-12-17
-	public List<Map<String, Object>> getQAInfo(OaOrder oaOrder) {
-		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		Map<String, Object> params = new HashMap<String, Object>();
-		Map<String, Object> dynaRow = new HashMap<String, Object>();
-
-		fsp = new FSPBean();
-		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_QA_INFO);
-		fsp.set("oaOrderId", oaOrder.getId());
-		bean = baseDao.getOnlyObjectBySql(fsp);
-
-		if (bean.get("qualified_num_info") != null) {
-			String[] numInfos = bean.get("qualified_num_info").toString().split(",");
-			for (int i = 0; i < numInfos.length; i++) {
-				String[] nums = numInfos[i].split("-");
-				for (int j = 0; j < nums.length; j++) {
-					params.put((5 + i) + "," + j, nums[j]);
-				}
-			}
-		}
-
-		if (bean.get("unqualified_num_info") != null) {
-			String[] numInfos = bean.get("unqualified_num_info").toString().split(",");
-			for (int i = 0; i < numInfos.length; i++) {
-				String[] nums = numInfos[i].split("-");
-				for (int j = 0; j < nums.length; j++) {
-					params.put((15 + i) + "," + j, nums[j]);
-				}
-			}
-		}
-
-		fsp = new FSPBean();
-		fsp.set("oa_order", oaOrder.getId());
-		fsp.set("wf_step", "7");
-		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_DETAIL_EXCEL);
-		bean = baseDao.getOnlyObjectBySql(fsp);
-		params.put("24,0", bean.get("content") == null ? "" : bean.get("content").toString());
-		params.put("27,1", bean.get("worker") == null ? "" : bean.get("worker").toString());
-		params.put("27,7", bean.get("wf_real_start") == null ? "" : DateUtil.formatDate((java.sql.Timestamp) bean.get("wf_real_start")));
-
-		list.add(dynaRow);
-		list.add(params);
-		return list;
+		return fillInfo;
 	}
 
 	// 填充list,返回模板中对应的excel索引
 	// by fangwei 2014-12-17
-	public List<Map<String, Object>> processOrder(OaOrder order) {
+	public Map<String, Object> processOrder(OaOrder order) {
 		String node = oaOrder.getWfStep();
 		node = node.substring(node.lastIndexOf("_") + 1, node.length());
-		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		List<Map<String, Object>> lists = new ArrayList<Map<String, Object>>();
-		String sheetNode = null;
+		Map<String, Object> fillInfo = new HashMap<String, Object>();
 		if ("2".equals(node)) {
-			sheetNode = "2";
-			list = createOrderInfo(oaOrder);
+			fillInfo = createOrderInfo(oaOrder);
 		} else if (oaOrder.getType().equals("2")) {
 			// 打板
-			// 采购 技术 核价 MR
 			switch (node) {
 			case "3":
-				list = getPurchaseInfo(oaOrder);
-				sheetNode = "3";
+				fillInfo = getPurchaseInfo(oaOrder);
 				break;
 			case "4":
-				list = getTechnologyInfo(oaOrder);
-				sheetNode = "4";
+				fillInfo = getTechnologyInfo(oaOrder);
 				break;
 			case "5":
-				list = getPricingInfo(oaOrder);
-				sheetNode = "5";
-				break;
-			case "6":
+				fillInfo = getPricingInfo(oaOrder);
 				break;
 			default:
 				break;
 			}
 		} else if (oaOrder.getType().equals("3")) {
 			// 大货
-			// 技术 采购 CQC TPE QA 财务 物流 异动
 			switch (node) {
 			case "3":
-				list = getTechnologyInfo(oaOrder);
-				sheetNode = "4";
+				fillInfo = getTechnologyInfo(oaOrder);
 				break;
 			case "4":
-				list = getPurchaseInfo(oaOrder);
-				sheetNode = "3";
+				fillInfo = getPurchaseInfo(oaOrder);
 				break;
 			case "5":
-				lists = getCQCInfo(oaOrder);
-				sheetNode = "999";
 				break;
 			case "6":
-				list = getTPEInfo(oaOrder);
-				sheetNode = "7";
 				break;
 			case "7":
-				list = getQAInfo(oaOrder);
-				sheetNode = "8";
 				break;
 			case "8":
 				break;
@@ -7928,13 +7864,7 @@ public class BxAction extends Action {
 				break;
 			}
 		}
-		if (sheetNode == "999") {
-			return lists;
-		}
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("node", sheetNode);
-		list.add(map);
-		return list;
+		return fillInfo;
 	}
 
 	/**
@@ -7947,7 +7877,7 @@ public class BxAction extends Action {
 			throw new RuntimeException("the parameter oaOrder.id is null!");
 		}
 		String url = null;
-		List<Map<String, Object>> list = processOrder(oaOrder);
+		Map<String, Object> fillInfo = processOrder(oaOrder);
 		try {
 			String fileName = "ERP-Order-" + oaOrder.getSellOrderCode() + "-" + (System.currentTimeMillis() / 1000 * 1000 + "").substring(6, 13) + ".xlsx";
 			File file = new File(PathUtil.getOaFileDir());
@@ -7977,11 +7907,8 @@ public class BxAction extends Action {
 					throw new RuntimeException("the orderDetail <" + bean.get("id") + "> attachment field is not exists!");
 				}
 			}
-			if ("c_ppc_factoryMsg_5".equals(oaOrder.getWfStep())) {
-				POIUtils.processExcel(os, baseExcelFile, list);
-			} else {
-				POIUtils.processExcel(os, baseExcelFile, (String) list.get(2).get("node"), list.get(0), list.get(1));
-			}
+			fillInfo.put("fileUrl", baseExcelFile);
+			POIUtilsEx.processExcel(os, fillInfo);
 			url = PathUtil.path2Url(PathUtil.getOaFileDir().concat(fileName));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -8003,7 +7930,7 @@ public class BxAction extends Action {
 		}
 		OutputStream os = Struts2Utils.getResponse().getOutputStream();
 		Struts2Utils.getResponse().setContentType("Application/msexcel");
-		List<Map<String, Object>> list = null;
+		Map<String, Object> fillInfo = null;
 		String baseExcelFile = Struts2Utils.getSession().getServletContext().getRealPath(ResourceUtil.getString("baseExcelFile"));
 		oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, oaOrder.getId());
 		// order当前所在节点
@@ -8011,9 +7938,9 @@ public class BxAction extends Action {
 		nowNode = nowNode.substring(nowNode.lastIndexOf("_") + 1, nowNode.length());
 		if (nowNode.equals("2")) {
 			// 通过模板生成excel
-			list = createOrderInfo(oaOrder);
+			fillInfo = createOrderInfo(oaOrder);
 			Struts2Utils.getResponse().setHeader("Content-Disposition", "attachment;filename=ERP-ORDER-" + oaOrder.getSellOrderCode() + "-" + (System.currentTimeMillis() / 1000 * 1000 + "").substring(6, 13) + ".xlsx");
-			POIUtils.processExcel(os, baseExcelFile, "2", list.get(0), list.get(1));
+			POIUtilsEx.processExcel(os, fillInfo);
 		} else if (node.compareTo(nowNode) < 0) {
 			// 下载之前节点excel
 			fsp.set("oa_order", oaOrder.getId());
@@ -8048,14 +7975,12 @@ public class BxAction extends Action {
 				throw new RuntimeException("the orderDetail <" + bean.get("id") + "> attachment field is not exists!");
 			}
 			baseExcelFile = PathUtil.url2Path(file);
-			list = processOrder(oaOrder);
+			fillInfo = processOrder(oaOrder);
+			fillInfo.put("fileUrl", baseExcelFile);
+			
 			Struts2Utils.getResponse().setHeader("Content-Disposition", "attachment;filename=ERP-ORDER-" + oaOrder.getSellOrderCode() + "-" + (System.currentTimeMillis() / 1000 * 1000 + "").substring(6, 13) + ".xlsx");
 			// 根据上一个节点来填充excel
-			if ("c_ppc_factoryMsg_5".equals(oaOrder.getWfStep())) {
-				POIUtils.processExcel(os, baseExcelFile, list);
-			} else {
-				POIUtils.processExcel(os, baseExcelFile, (String) list.get(2).get("node"), list.get(0), list.get(1));
-			}
+			POIUtilsEx.processExcel(os, fillInfo);
 		}
 	}
 
