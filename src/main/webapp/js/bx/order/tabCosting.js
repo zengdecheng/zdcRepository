@@ -641,8 +641,8 @@ define([ "v","vl" ], function(u,up) {
 				parent.iFrameHeight("iframeCosting");
 			},
 			materialAdd : function() {
-				if($("#costing>tbody tr").length>15){
-					alert("最多添加十五行");
+				if($("#costing>tbody tr").length>99){
+					alert("最多添加九十九行");
 				 	return;
 				}
 				var temp;

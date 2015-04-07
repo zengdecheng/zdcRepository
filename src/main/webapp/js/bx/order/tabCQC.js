@@ -31,7 +31,6 @@ define([ "v", "vl" ], function(v, vl) {
 			$("#processBtn").on("click", biz.event.processOrder); // 保存并提交
 			$("#saveBtn").on("click", biz.event.saveOrder); // 保存草稿
 			$(".download").on("click", biz.event.download); // 下载文件
-			$("#exportBtn").on("click", biz.event.exportExcel); // 导出订单Excel
 			$(".applyUnitNum").on("keyup", biz.event.calcNeedNum); // 需求数量计算
 			$(".shearNum").on("keyup", biz.event.calcShearNum); // 实际总裁数计算
 			$(".receiveNum").on("change", biz.event.calcKongCha); // 实到差数计算
@@ -175,9 +174,6 @@ define([ "v", "vl" ], function(v, vl) {
 					// update by 张华 2015-01-20
 					$("#workerTd").html("制单:" + "<span elementFillName='oaOrderDetail.worker'/>");
 					// $("#workerTimeTd").html("处理日期:"+"<span elementFillName='oaOrderDetail.wf_real_finish'/>");
-				}
-				if (parseInt(wfStepIndex) < 5) {
-					$("#exportBtn").remove();
 				}
 				// 初始化模板
 				var materialApplyTemplet; // 申购模板
@@ -488,18 +484,6 @@ define([ "v", "vl" ], function(v, vl) {
 				} else {
 					alert("发布异动信息不能为空");
 				}
-			},
-			exportExcel : function() { // 导出excel操作
-				$("#exportBtn").attr("disabled", "true");
-				$("#exportBtn").val("30秒后再次点击");
-				top.location.href = "/bx/downOAOrder?oaOrder.id=" + orderId + "&node=5";
-				setTimeout(function() {
-					$("#exportBtn").removeAttr("disabled");
-					$("#exportBtn").val("导出Excel");
-				}, 30000);
-			},
-			download : function() { // 下载文件
-				window.location.href = "/oaOrderFileDownload?fileUrl=" + encodeURI($(this).attr("downloadUrl"));
 			},
 			processOrder : function() { // 保存并提交订单
 				$("#processOrder").val("true"); // true标识流程流转
