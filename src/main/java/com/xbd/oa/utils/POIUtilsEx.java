@@ -306,8 +306,10 @@ public class POIUtilsEx {
 			for (Map.Entry<String, Object> entry : dynaRow.entrySet()) {
 				int addIndex = Integer.parseInt(entry.getKey().toString());
 				int addNum = Integer.parseInt(entry.getValue().toString());
-				insertRow(sheet, addIndex, addNum);
-				debug("复制第"+addIndex+"行，插入到"+addIndex+"行后"+addNum+"次", debugMode);
+				if (addNum !=0){
+					insertRow(sheet, addIndex, addNum);
+					debug("复制第"+addIndex+"行，插入到"+addIndex+"行后"+addNum+"次", debugMode);
+				}
 			}
 		}
 	}
@@ -416,6 +418,7 @@ public class POIUtilsEx {
 					cell.setCellValue(date);
 					cell.setCellStyle(getDataFormat(wb,cc,DateUtil.ALL_24H));
 				}else{
+					//TODO  STYLE
 					String dateFormat =type.substring(type.indexOf("-")+1);
 					SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
 					cell.setCellValue(sdf.format(value));
@@ -457,9 +460,14 @@ public class POIUtilsEx {
 						cell.setCellStyle(getDataFormat(wb,cc,"0.0#"));
 					}else{
 						String decimalFormat =type.substring(type.indexOf("-")+1);
-						DecimalFormat df=new DecimalFormat(decimalFormat);
-						cell.setCellValue(df.format(d));
-						cell.setCellStyle(style);
+						try {
+							cell.setCellValue(d);
+							cell.setCellStyle(getDataFormat(wb,cc,decimalFormat));
+						} catch (Exception e) {
+							DecimalFormat df=new DecimalFormat(decimalFormat);
+							cell.setCellValue(df.format(d));
+							cell.setCellStyle(style);
+						}
 					}
 				}else{
 					if ("0".equals(d.toString()) || "0.00".equals(d.toString()) || "0.0".equals(d.toString())) {
@@ -470,9 +478,15 @@ public class POIUtilsEx {
 							cell.setCellStyle(getDataFormat(wb,cc,"0.0#"));
 						}else{
 							String decimalFormat =type.substring(type.indexOf("-")+1);
-							DecimalFormat df=new DecimalFormat(decimalFormat);
-							cell.setCellValue(df.format(d));
-							cell.setCellStyle(style);
+							try {
+								cell.setCellValue(d);
+								cell.setCellStyle(getDataFormat(wb,cc,decimalFormat));
+							} catch (Exception e) {
+								DecimalFormat df=new DecimalFormat(decimalFormat);
+								cell.setCellValue(df.format(d));
+								cell.setCellStyle(style);
+							}
+							
 						}
 					}
 				}
@@ -553,6 +567,9 @@ public class POIUtilsEx {
 		for (Map.Entry<String, Object> entry : map.entrySet()) {
 			String[] indexs = entry.getKey().split(",");
 			Object value = entry.getValue();
+			if (value ==null){
+				value = "";
+			}
 			row = sheet.getRow(Integer.parseInt(indexs[0]));
 			if(row == null) {
 				row = sheet.createRow(Integer.parseInt(indexs[0]));
