@@ -7694,7 +7694,7 @@ public class BxAction extends Action {
 			} else {
 				sheet1FileInfo.put((4 + t) + ",23,Integer", bean.get("weight") == null ? "" : bean.get("weight").toString());
 				sheet1FileInfo.put((4 + t) + ",24", bean.get("component") == null ? "" : bean.get("component").toString());
-				sheet1FileInfo.put((4 + t) + ",25,Integer", bean.get("delivery_time") == null ? "" : bean.get("delivery_time").toString());
+				sheet1FileInfo.put((4 + t) + ",25,Integer-show", bean.get("delivery_time") == null ? "" : bean.get("delivery_time").toString());
 				sheet1FileInfo.put((4 + t) + ",26,Double-0.0%", bean.get("buyer_loss") == null ? "" : (((Float)bean.get("buyer_loss"))/100));
 				sheet1FileInfo.put((4 + t) + ",27,Double", bean.get("paper_tube") == null ? "" : bean.get("paper_tube").toString());
 				sheet1FileInfo.put((4 + t) + ",28,Double", bean.get("deviation") == null ? "" : bean.get("deviation").toString());
