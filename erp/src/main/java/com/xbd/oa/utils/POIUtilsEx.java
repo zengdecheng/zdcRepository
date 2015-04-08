@@ -495,6 +495,10 @@ public class POIUtilsEx {
 				e.printStackTrace();
 			}
 		}else if(type.startsWith("Integer")){
+			Boolean zeroShow = false;
+			if(type.indexOf("-") != -1){
+				zeroShow = true;
+			}
 			try {
 				Integer d;
 				try {
@@ -506,7 +510,7 @@ public class POIUtilsEx {
 						d = Integer.parseInt(value.toString());
 					}
 				}
-				if(zeroBlank){
+				if(zeroBlank || zeroShow){
 					cell.setCellValue(d);
 					cell.setCellStyle(style);
 				}else{
