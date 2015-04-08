@@ -105,7 +105,7 @@
 				</tr>
 				<tr height="28px;">
 					<td width="260px">
-						<div style="padding: 16 0 16 0;" id="isPreProductDiv">
+						<div style="padding: 16 0 16 0;">
 							交货日期：<span id="goods_time"></span>
 						</div>
 						<div style="padding: 16 0 16 0;" id="isPreProductDiv">
