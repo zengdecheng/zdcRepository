@@ -4703,46 +4703,136 @@ public class BxAction extends Action {
 			fsp.set("type", orderType);
 		}
 
-		if (fsp.getMap().get("wf_step") != null && !"".equals(fsp.getMap().get("wf_step")) && fsp.getMap().get("operator") != null && !"".equals(fsp.getMap().get("operator"))) {
+		StringBuffer sb = new StringBuffer();
+		if (fsp.getMap().get("wf_step") != null && !"".equals(fsp.getMap().get("wf_step"))) {
 			switch (fsp.getMap().get("wf_step").toString()) {
 			case "c_mr_improve_2":
-				fsp.setStaticSqlPart(" and mrdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' and mrdel_operator = '" + fsp.getMap().get("operator").toString() + "'");
+				sb = new StringBuffer();
+				sb.append(" and mrdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
+				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
+					sb.append(" and mrdel_operator = '" + fsp.getMap().get("operator").toString() + "' ");
+				}
+				liuruTime(fsp, sb, "mrdel_wf_real_start", "mrdel_wf_real_finish");
+				fsp.setStaticSqlPart(sb.toString());
 				break;
 			case "c_ppc_assign_3":
-				fsp.setStaticSqlPart(" and jshdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' and jshdel_operator = '" + fsp.getMap().get("operator").toString() + "'");
+				sb = new StringBuffer();
+				sb.append(" and jshdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
+				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
+					sb.append(" and jshdel_operator = '" + fsp.getMap().get("operator").toString() + "' ");
+				}
+				liuruTime(fsp, sb, "jshdel_wf_real_start", "jshdel_wf_real_finish");
+				fsp.setStaticSqlPart(sb.toString());
 				break;
 			case "c_fi_pay_4":
-				fsp.setStaticSqlPart(" and fidel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(fidel_worker) then fidel_operator = '" + fsp.getMap().get("operator").toString() + "' else fidel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
+				sb = new StringBuffer();
+				sb.append(" and fidel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
+				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
+					sb.append(" AND case when ISNULL(fidel_worker) then fidel_operator = '" + fsp.getMap().get("operator").toString() + "' else fidel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+				}
+
+				liuruTime(fsp, sb, "fidel_wf_real_start", "fidel_wf_real_finish");
+				fsp.setStaticSqlPart(sb.toString());
 				break;
 			case "c_ppc_factoryMsg_5":
-				fsp.setStaticSqlPart(" and cqcdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(cqcdel_worker) then cqcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cqcdel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
+				sb = new StringBuffer();
+				sb.append(" and cqcdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
+				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
+					sb.append(" AND case when ISNULL(cqcdel_worker) then cqcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cqcdel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+				}
+
+				liuruTime(fsp, sb, "cqc_wf_real_start", "cqc_wf_real_finish");
+				fsp.setStaticSqlPart(sb.toString());
 				break;
 			case "c_qc_cutting_6":
-				fsp.setStaticSqlPart(" and tpedel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(tpedel_worker) then tpedel_operator = '" + fsp.getMap().get("operator").toString() + "' else tpedel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
+				sb = new StringBuffer();
+				sb.append(" and tpedel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
+				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
+					sb.append(" AND case when ISNULL(tpedel_worker) then tpedel_operator = '" + fsp.getMap().get("operator").toString() + "' else tpedel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+				}
+
+				liuruTime(fsp, sb, "tpedel_wf_real_start", "tpedel_wf_real_finish");
+				fsp.setStaticSqlPart(sb.toString());
 				break;
 			case "c_ppc_confirm_7":
-				fsp.setStaticSqlPart(" and qadel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(qadel_worker) then qadel_operator = '" + fsp.getMap().get("operator").toString() + "' else qadel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
+				sb = new StringBuffer();
+				sb.append(" and qadel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
+				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
+					sb.append(" AND case when ISNULL(qadel_worker) then qadel_operator = '" + fsp.getMap().get("operator").toString() + "' else qadel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+				}
+
+				liuruTime(fsp, sb, "qadel_wf_real_start", "qadel_wf_real_finish");
+				fsp.setStaticSqlPart(sb.toString());
 				break;
 			case "c_qc_printing_8":
-				fsp.setStaticSqlPart(" and cwdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(cwdel_worker) then cwdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cwdel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
+				sb = new StringBuffer();
+				sb.append(" and cwdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
+				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
+					sb.append(" AND case when ISNULL(cwdel_worker) then cwdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cwdel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+				}
+
+				liuruTime(fsp, sb, "cwdel_wf_real_start", "cwdel_wf_real_finish");
+				fsp.setStaticSqlPart(sb.toString());
 				break;
 			case "c_ppc_confirm_9":
-				fsp.setStaticSqlPart(" and wldel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(wldel_worker) then wldel_operator = '" + fsp.getMap().get("operator").toString() + "' else wldel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
+				sb = new StringBuffer();
+				sb.append(" and wldel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
+				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
+					sb.append(" AND case when ISNULL(wldel_worker) then wldel_operator = '" + fsp.getMap().get("operator").toString() + "' else wldel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+				}
+
+				liuruTime(fsp, sb, "wldel_wf_real_start", "wldel_wf_real_finish");
+				fsp.setStaticSqlPart(sb.toString());
 				break;
 			case "b_mr_improve_2":
-				fsp.setStaticSqlPart(" and mrdb_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' and mrdel_operator = '" + fsp.getMap().get("operator").toString() + "'");
+				sb = new StringBuffer();
+				sb.append(" and mrdb_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
+				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
+					sb.append(" and mrdb_operator = '" + fsp.getMap().get("operator").toString() + "' ");
+				}
+
+				liuruTime(fsp, sb, "mrdb_wf_real_start", "mrdb_wf_real_finish");
+				fsp.setStaticSqlPart(sb.toString());
 				break;
 			case "b_ppc_confirm_3":
-				fsp.setStaticSqlPart(" and ppcdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(ppcdel_worker) then ppcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else ppcdel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
+				sb = new StringBuffer();
+				sb.append(" and ppcdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
+				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
+					sb.append(" AND case when ISNULL(ppcdel_worker) then ppcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else ppcdel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+				}
+
+				liuruTime(fsp, sb, "ppcdel_wf_real_start", "ppcdel_wf_real_finish");
+				fsp.setStaticSqlPart(sb.toString());
 				break;
 			case "b_pur_confirm_4":
-				fsp.setStaticSqlPart(" and jsdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(jsdel_worker) then jsdel_operator = '" + fsp.getMap().get("operator").toString() + "' else jsdel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
+				sb = new StringBuffer();
+				sb.append(" and jsdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
+				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
+					sb.append(" AND case when ISNULL(jsdel_worker) then jsdel_operator = '" + fsp.getMap().get("operator").toString() + "' else jsdel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+				}
+
+				liuruTime(fsp, sb, "jsdel_wf_real_start", "jsdel_wf_real_finish");
+				fsp.setStaticSqlPart(sb.toString());
 				break;
 			case "b_ppc_confirm_5":
-				fsp.setStaticSqlPart(" and cqdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(cqdel_worker) then cqdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cqdel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
+				sb = new StringBuffer();
+				sb.append(" and cqdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
+				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
+					sb.append(" AND case when ISNULL(cqdel_worker) then cqdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cqdel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+				}
+
+				liuruTime(fsp, sb, "cqdel_wf_real_start", "cqdel_wf_real_finish");
+				fsp.setStaticSqlPart(sb.toString());
 				break;
 			case "b_qc_confirm_6":
-				fsp.setStaticSqlPart(" and bqcdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' AND case when ISNULL(bqcdel_worker) then bqcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else bqcdel_worker = '" + fsp.getMap().get("operator").toString() + "' end ");
+				sb = new StringBuffer();
+				sb.append(" and bqcdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
+				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
+					sb.append(" AND case when ISNULL(bqcdel_worker) then bqcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else bqcdel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+				}
+
+				liuruTime(fsp, sb, "bqcdel_wf_real_start", "bqcdel_wf_real_finish");
+				fsp.setStaticSqlPart(sb.toString());
 				break;
 			default:
 				break;
