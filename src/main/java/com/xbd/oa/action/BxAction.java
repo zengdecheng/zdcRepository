@@ -8608,7 +8608,7 @@ public class BxAction extends Action {
 		relationOrderList = baseDao.getObjectsBySql(fsp);
 		processPageInfo(getObjectsCountSql(fsp));
 
-		return "bx/tabpage/orderRelationList";
+		return "tabpage/orderRelationList";
 	}
 
 	/**
