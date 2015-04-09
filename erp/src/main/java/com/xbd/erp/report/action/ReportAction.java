@@ -87,19 +87,4 @@ public class ReportAction extends Action {
         //订单总数
         mapCount.put("orderNums", orderNums+"");
     }
-
-	public String hello(){
-		System.out.println("aaaaaaaaaaaaaa");
-		return "hello";
-	}
-	
-	public String world(){
-		System.out.println("aaaaaaaaaaaaaa");
-		return "tabpage/tabCQC";
-	}
-	
-	public String execute(){
-		System.out.println("aaaaaaaaaaaaaa");
-		return "hello";
-	}
 }
