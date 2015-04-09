@@ -624,10 +624,10 @@ public class BxAction extends Action {
 
                 long actualTime = 0l;
                 // 计算实际生产周期
-                if (superList.get(i).get("bqcdel_wf_real_finish") != null && !"".equals(superList.get(i).get("bqcdel_wf_real_finish")) && superList.get(i).get("cqdel_wf_real_finish") != null
-                        && !"".equals(superList.get(i).get("cqdel_wf_real_finish"))) {
+                if (superList.get(i).get("bqcdel_wf_real_finish") != null && !"".equals(superList.get(i).get("bqcdel_wf_real_finish")) && superList.get(i).get("mrdb_wf_real_finish") != null
+                        && !"".equals(superList.get(i).get("mrdb_wf_real_finish"))) {
 
-                    actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("bqcdel_wf_real_finish"), (Timestamp) superList.get(i).get("cqdel_wf_real_finish"));
+                    actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("bqcdel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdb_wf_real_finish"));
                     sheet1FileInfo.put(j + ",22", WebUtil.getTimeDisPlayExcel(actualTime));// 实际生产周期
                 }
 
@@ -638,9 +638,9 @@ public class BxAction extends Action {
                 long scProgress = actualTime - bzTime;
                 if(scProgress > 0){
                     // 实际生产进度
-                    sheet1FileInfo.put(j + ",45", new CustomCell("超期"+WebUtil.getTimeDisPlayExcel(bzTime), "String").setCellColor(IndexedColors.RED.index).setFontColor(IndexedColors.WHITE.index));
+                    sheet1FileInfo.put(j + ",45", new CustomCell("超期"+WebUtil.getTimeDisPlayExcel(scProgress), "String").setCellColor(IndexedColors.RED.index).setFontColor(IndexedColors.WHITE.index));
                 }else{
-                    sheet1FileInfo.put(j + ",45", new CustomCell("超期"+WebUtil.getTimeDisPlayExcel(Math.abs(bzTime)), "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
+                    sheet1FileInfo.put(j + ",45", new CustomCell("提前"+WebUtil.getTimeDisPlayExcel(Math.abs(scProgress)), "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
                 }
 
                 sheet1FileInfo.put(j + ",46", lazyMap.get("feeding_time") != null ? new CustomCell(lazyMap.get("feeding_time"), "Date") : new CustomCell());// 建议投料日期
@@ -727,9 +727,9 @@ public class BxAction extends Action {
                 long scProgress = actualTime - bzTime;
                 if(scProgress > 0){
                     // 实际生产进度
-                    sheet1FileInfo.put(j + ",45", new CustomCell("超期"+WebUtil.getTimeDisPlayExcel(bzTime), "String").setCellColor(IndexedColors.RED.index).setFontColor(IndexedColors.WHITE.index));
+                    sheet1FileInfo.put(j + ",45", new CustomCell("超期"+WebUtil.getTimeDisPlayExcel(scProgress), "String").setCellColor(IndexedColors.RED.index).setFontColor(IndexedColors.WHITE.index));
                 }else{
-                    sheet1FileInfo.put(j + ",45", new CustomCell("提前"+WebUtil.getTimeDisPlayExcel(Math.abs(bzTime)), "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
+                    sheet1FileInfo.put(j + ",45", new CustomCell("提前"+WebUtil.getTimeDisPlayExcel(Math.abs(scProgress)), "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
                 }
 
                 sheet1FileInfo.put(j + ",46", lazyMap.get("feeding_time") != null ? new CustomCell(lazyMap.get("feeding_time"), "Date") : new CustomCell());// 建议投料日期
@@ -855,8 +855,8 @@ public class BxAction extends Action {
 
                 Long actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("except_finish"), (Timestamp) superList.get(i).get("begin_time"));
                 sheet1FileInfo.put(j + ",38", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 合同周期
-
-                sheet1FileInfo.put(j + ",39", WebUtil.getTimeDisPlayExcel(Math.abs(sczq - actualTime)));// 与交期差额
+                String jqce = WebUtil.getTimeDisPlayExcel(Math.abs(sczq - actualTime));
+                sheet1FileInfo.put(j + ",39", (sczq - actualTime) < 0 ? "-"+jqce : jqce );// 与交期差额
             }
 
 //            // 与交期差额
@@ -4651,7 +4651,7 @@ public class BxAction extends Action {
 
         if (beans.size() > (fsp.getPageNo() - 1) * fsp.getPageSize() + fsp.getPageSize()) {
             beans = beans.subList((fsp.getPageNo() - 1) * fsp.getPageSize(), (fsp.getPageNo() - 1) * fsp.getPageSize() + fsp.getPageSize());
-        } else {
+        } else  if(beans.size() > 0){
             beans = beans.subList((fsp.getPageNo() - 1) * fsp.getPageSize(), beans.size());
         }
 
