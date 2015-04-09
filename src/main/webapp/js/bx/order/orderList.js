@@ -87,7 +87,7 @@ define(
 					getMrStaffJson : function() {
 						$.ajax({
 							type : "POST",
-							url : "/external/getMrStaff",
+							url : "/ext/getMrStaff",
 							async : false,
 							success : function(data) {
 								if ("0" == data.code) {
