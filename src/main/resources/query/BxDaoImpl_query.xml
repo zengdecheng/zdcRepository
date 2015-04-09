@@ -161,7 +161,7 @@ ote.oa_timebase = ot.id ${case}1">
 
     <!-- 查询 历史订单 -->
     <function name="list_orderwf_his_by_sql" type="sql" sql="select mian.*, del_oa_order, del_wf_step, del_operator,
-																	cqdel_oa_order, cqdel_wf_step, cqdel_operator,
+																	cqdel_oa_order, cqdel_wf_step, cqdel_operator, cqdel_wf_real_finish,
 																	jsdel_oa_order, jsdel_wf_step, jsdel_operator,
 																	jshdel_oa_order, jshdel_wf_step, jshdel_operator, jshdel_wf_real_finish,
 																	cqcdel_oa_order, cqcdel_wf_step, cqcdel_operator,
@@ -203,7 +203,7 @@ ote.oa_timebase = ot.id ${case}1">
 																) mian
 																LEFT JOIN (select oa_order as del_oa_order, wf_step as del_wf_step, operator as del_operator  from oa_order_detail where 1=1 and (wf_step = 'c_ppc_assign_3' or wf_step = 'b_ppc_confirm_3')) deatile
 																	on mian.id = del_oa_order
-																LEFT JOIN (select oa_order as cqdel_oa_order, wf_step as cqdel_wf_step, operator as cqdel_operator  from oa_order_detail where 1=1 and wf_step = 'b_ppc_confirm_5' order by id desc) cqdel
+																LEFT JOIN (select oa_order as cqdel_oa_order, wf_step as cqdel_wf_step, operator as cqdel_operator,  wf_real_finish as cqdel_wf_real_finish  from oa_order_detail where 1=1 and wf_step = 'b_ppc_confirm_5' order by id desc) cqdel
 																	on mian.id = cqdel_oa_order
                                                                 LEFT JOIN (select oa_order as jsdel_oa_order, wf_step as jsdel_wf_step, operator as jsdel_operator  from oa_order_detail where 1=1 and wf_step = 'b_pur_confirm_4' order by id desc) jsdel
 																	on mian.id = jsdel_oa_order

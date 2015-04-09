@@ -624,10 +624,10 @@ public class BxAction extends Action {
 
                 long actualTime = 0l;
                 // 计算实际生产周期
-                if (superList.get(i).get("bqcdel_wf_real_finish") != null && !"".equals(superList.get(i).get("bqcdel_wf_real_finish")) && superList.get(i).get("mrdb_wf_real_finish") != null
-                        && !"".equals(superList.get(i).get("mrdb_wf_real_finish"))) {
+                if (superList.get(i).get("bqcdel_wf_real_finish") != null && !"".equals(superList.get(i).get("bqcdel_wf_real_finish")) && superList.get(i).get("cqdel_wf_real_finish") != null
+                        && !"".equals(superList.get(i).get("cqdel_wf_real_finish"))) {
 
-                    actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("bqcdel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdb_wf_real_finish"));
+                    actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("bqcdel_wf_real_finish"), (Timestamp) superList.get(i).get("cqdel_wf_real_finish"));
                     sheet1FileInfo.put(j + ",22", WebUtil.getTimeDisPlayExcel(actualTime));// 实际生产周期
                 }
 
