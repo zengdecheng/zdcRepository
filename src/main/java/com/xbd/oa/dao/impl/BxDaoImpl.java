@@ -20,6 +20,7 @@ public class BxDaoImpl extends BaseDaoImpl {
 	public static final String GET_DETAIL_EXCEL = "get_detail_excel";
 
 	public static final String LIST_ORDERWF_HIS_BY_SQL = "list_orderwf_his_by_sql";
+	public static final String LIST_ORDERWF_HIS_HTM_BY_SQL = "list_orderwf_his_htm_by_sql";
 	public static final String LIST_ORDERWF_HIS_YH_BY_SQL = "list_orderwf_his_yh_by_sql";
 	public static final String LIST_ORDER_HIS_DETAIL_BY_SQL = "list_order_his_detail_by_sql";
 
