@@ -74,24 +74,7 @@
                         <td>
                             <s:select theme="simple" list="@com.xbd.oa.utils.XbdBuffer@getStaffsByGroupName('qc')" listKey="map.login_name" listValue="map.login_name" headerKey="" headerValue="请选择" cssClass="z_inp2" cssStyle="width: 170px;" name="fsp.map.tpe_name" value="%{fsp.map.tpe_name}"></s:select>
                         </td>
-                        <td><label class="">技术：</label></td>
-                        <td>
-                            <s:select theme="simple" list="@com.xbd.oa.utils.XbdBuffer@getStaffsByGroupName('it')" listKey="map.login_name" listValue="map.login_name" headerKey="" headerValue="请选择" cssClass="z_inp2" cssStyle="width: 170px;" name="fsp.map.del_operator" value="%{fsp.map.del_operator}"></s:select>
-                        </td>
-                        <td height="40"><label class="">核价：</label></td>
-                        <td>
-                            <s:select theme="simple" list="@com.xbd.oa.utils.XbdBuffer@getStaffsByGroupName('cp')" listKey="map.login_name" listValue="map.login_name" headerKey="" headerValue="请选择" cssClass="z_inp2" cssStyle="width: 170px;" name="fsp.map.cqdel_operator" value="%{fsp.map.cqdel_operator}"></s:select>
-                        </td>
-                        <td><label class="">CQC：</label></td>
-                        <td>
-                            <s:select theme="simple" list="@com.xbd.oa.utils.XbdBuffer@getStaffsByGroupName('cqc')" listKey="map.login_name" listValue="map.login_name" headerKey="" headerValue="请选择" cssClass="z_inp2" cssStyle="width: 170px;" name="fsp.map.cqcdel_operator" value="%{fsp.map.cqcdel_operator}"></s:select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><label class="">QA：</label></td>
-                        <td>
-                            <s:select theme="simple" list="@com.xbd.oa.utils.XbdBuffer@getStaffsByGroupName('qa')" listKey="map.login_name" listValue="map.login_name" headerKey="" headerValue="请选择" cssClass="z_inp2" cssStyle="width: 170px;" name="fsp.map.qadel_operator" value="%{fsp.map.qadel_operator}"></s:select>
-                        </td>
+
 
                         <td><label class="">工厂：</label></td>
                         <td><input type="text" name="fsp.map.sewing_factory" value="${fsp.map.sewing_factory}" class="z_inp2" style="width:167px;" maxlength='20' /></td>
@@ -106,31 +89,70 @@
                                          class="notselect" value="${fsp.map.status}" /></td>
                         <td height="40"><label class="">创建日期：</label></td>
                         <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.start_time1" value="${fsp.map.start_time1}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.start_time2" value="${fsp.map.start_time2}" onFocus="WdatePicker({readOnly:true})" /></td>
+
+                    <%--<td><label class="">技术：</label></td>--%>
+                        <%--<td>--%>
+                            <%--<s:select theme="simple" list="@com.xbd.oa.utils.XbdBuffer@getStaffsByGroupName('it')" listKey="map.login_name" listValue="map.login_name" headerKey="" headerValue="请选择" cssClass="z_inp2" cssStyle="width: 170px;" name="fsp.map.del_operator" value="%{fsp.map.del_operator}"></s:select>--%>
+                        <%--</td>--%>
+                        <%--<td height="40"><label class="">核价：</label></td>--%>
+                        <%--<td>--%>
+                            <%--<s:select theme="simple" list="@com.xbd.oa.utils.XbdBuffer@getStaffsByGroupName('cp')" listKey="map.login_name" listValue="map.login_name" headerKey="" headerValue="请选择" cssClass="z_inp2" cssStyle="width: 170px;" name="fsp.map.cqdel_operator" value="%{fsp.map.cqdel_operator}"></s:select>--%>
+                        <%--</td>--%>
+                        <%--<td><label class="">CQC：</label></td>--%>
+                        <%--<td>--%>
+                            <%--<s:select theme="simple" list="@com.xbd.oa.utils.XbdBuffer@getStaffsByGroupName('cqc')" listKey="map.login_name" listValue="map.login_name" headerKey="" headerValue="请选择" cssClass="z_inp2" cssStyle="width: 170px;" name="fsp.map.cqcdel_operator" value="%{fsp.map.cqcdel_operator}"></s:select>--%>
+                        <%--</td>--%>
                     </tr>
                     <tr>
-                        <td><label class="">是否需要复版：</label></td>
-                        <td><select name="fsp.map.if_repeat" class="z_inp3" id="if_repeatSel"  style="width: 170px" >
+                        <%--<td><label class="">QA：</label></td>--%>
+                        <%--<td>--%>
+                            <%--<s:select theme="simple" list="@com.xbd.oa.utils.XbdBuffer@getStaffsByGroupName('qa')" listKey="map.login_name" listValue="map.login_name" headerKey="" headerValue="请选择" cssClass="z_inp2" cssStyle="width: 170px;" name="fsp.map.qadel_operator" value="%{fsp.map.qadel_operator}"></s:select>--%>
+                        <%--</td>--%>
+
+                        <%--<td><label class="">工厂：</label></td>--%>
+                        <%--<td><input type="text" name="fsp.map.sewing_factory" value="${fsp.map.sewing_factory}" class="z_inp2" style="width:167px;" maxlength='20' /></td>--%>
+
+
+                        <td><label class="">订单状态：</label></td>
+                        <td><select name="fsp.map.status" class="z_inp3" id="statusSel" style="width: 170px">
                             <option value="">全部</option>
-                            <option value="0">需要</option>
-                            <option value="1">不需要</option>
-                        </select> <input type="hidden" hidName="hid.fsp.map.if_repeat" id="if_repeatHid"
-                                         class="notselect" value="${fsp.map.if_repeat}" /></td>
+                            <option value="0">已完成</option>
+                            <option value="1">已终止</option>
+                        </select> <input type="hidden" hidName="hid.fsp.map.status" id="statusHid"
+                                         class="notselect" value="${fsp.map.status}" /></td>
+                        <td height="40"><label class="">创建日期：</label></td>
+                        <td>
+                            <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.start_time1" value="${fsp.map.start_time1}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.start_time2" value="${fsp.map.start_time2}" onFocus="WdatePicker({readOnly:true})" />
+                        </td>
 
                         <td height="40"><label class="">QA完工日期：</label></td>
                         <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.qadel_wf_real_finish1" value="${fsp.map.qadel_wf_real_finish1}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.qadel_wf_real_finish2" value="${fsp.map.qadel_wf_real_finish2}" onFocus="WdatePicker({readOnly:true})" /></td>
 
-                        <td><label class="">样衣是否合格：</label></td>
-                        <td><select name="fsp.map.if_qualified" class="z_inp3" id="if_qualifiedSel"  style="width: 170px">
-                            <option value="">全部</option>
-                            <option value="0">合格</option>
-                            <option value="1">不合格</option>
-                        </select> <input type="hidden" hidName="hid.fsp.map.if_qualified" id="if_qualifiedHid"
-                                         class="notselect" value="${fsp.map.if_qualified}" /></td>
                         <td height="40"><label class="">发货日期：</label></td>
                         <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.wldel_wf_real_finish1" value="${fsp.map.wldel_wf_real_finish1}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.wldel_wf_real_finish2" value="${fsp.map.wldel_wf_real_finish2}" onFocus="WdatePicker({readOnly:true})" /></td>
 
                     </tr>
+                    <%--<tr>--%>
+                        <%--&lt;%&ndash;<td><label class="">是否需要复版：</label></td>&ndash;%&gt;--%>
+                        <%--&lt;%&ndash;<td><select name="fsp.map.if_repeat" class="z_inp3" id="if_repeatSel"  style="width: 170px" >&ndash;%&gt;--%>
+                            <%--&lt;%&ndash;<option value="">全部</option>&ndash;%&gt;--%>
+                            <%--&lt;%&ndash;<option value="0">需要</option>&ndash;%&gt;--%>
+                            <%--&lt;%&ndash;<option value="1">不需要</option>&ndash;%&gt;--%>
+                        <%--&lt;%&ndash;</select> <input type="hidden" hidName="hid.fsp.map.if_repeat" id="if_repeatHid"&ndash;%&gt;--%>
+                                         <%--&lt;%&ndash;class="notselect" value="${fsp.map.if_repeat}" /></td>&ndash;%&gt;--%>
+
+                        <%----%>
+                        <%--&lt;%&ndash;<td><label class="">样衣是否合格：</label></td>&ndash;%&gt;--%>
+                        <%--&lt;%&ndash;<td><select name="fsp.map.if_qualified" class="z_inp3" id="if_qualifiedSel"  style="width: 170px">&ndash;%&gt;--%>
+                            <%--&lt;%&ndash;<option value="">全部</option>&ndash;%&gt;--%>
+                            <%--&lt;%&ndash;<option value="0">合格</option>&ndash;%&gt;--%>
+                            <%--&lt;%&ndash;<option value="1">不合格</option>&ndash;%&gt;--%>
+                        <%--&lt;%&ndash;</select> <input type="hidden" hidName="hid.fsp.map.if_qualified" id="if_qualifiedHid"&ndash;%&gt;--%>
+                                         <%--&lt;%&ndash;class="notselect" value="${fsp.map.if_qualified}" /></td>&ndash;%&gt;--%>
+                        <%----%>
+                    <%--</tr>--%>
                     <tr>
+
                         <td height="40"><label class="">MR完成日期：</label></td>
                         <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odel_wf_real_finish" value="${fsp.map.odel_wf_real_finish}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odel_wf_real_finish1" value="${fsp.map.odel_wf_real_finish1}" onFocus="WdatePicker({readOnly:true})" /></td>
 
@@ -193,7 +215,7 @@
                 <td>${map.begin_time}</td>
                 <td>${map.bzTime}</td>
                 <td>
-                    <s:if test="map.type==2">${map.mrdb_operator}</s:if> <s:if test="map.type==3">${map.mrdel_operator}</s:if>
+                    <s:if test="map.type==2">${map.odel_operator}</s:if> <s:if test="map.type==3">${map.odel_operator}</s:if>
                 </td>
                 <td>${map.sewing_factory}</td>
                 <td>${map.tpedel_operator}</td>
@@ -220,7 +242,8 @@
     </table>
 
 
-    <table cellspacing="0" cellpadding="0" border="1" class="z_table_style2" width="1008" style="margin-top: 20px; text-align: center">
+    <input id="hisCount" type="button" value="显示统计数据" style="width: 120px;" />
+    <table cellspacing="0" cellpadding="0" border="1" id="hisCountTable" class="z_table_style2" width="1008" style="margin-top: 20px; text-align: center; display: none;">
         <tr>
             <td>车缝总产出</td>
             <td>${statisticsMap.want_count}</td>

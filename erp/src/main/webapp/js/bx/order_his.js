@@ -24,7 +24,7 @@ define(["p","f"], function(p,f) {
 					$(n).addClass("z_title_sty4");
 				}
 			});
-			
+
 			////初始化select
 			//$("select","#form_search_div").each(function(i,n){
 			//	var str = $("[hidName='hid."+$(n).attr("name")+"']").val();
@@ -41,6 +41,7 @@ define(["p","f"], function(p,f) {
 			$("#search_btn").on("click",biz.event.search);
 			$("#output").on("click",biz.event.outExcel);
 			$("#reset_btn").on("click",biz.event.resetFrom);
+			$("#hisCount").on("click",biz.event.getHisCount);
 		},
 		event : {
 			getSellStaffs : function(e) {
@@ -174,6 +175,42 @@ define(["p","f"], function(p,f) {
                     .val('')
                     .removeAttr('checked')
                     .removeAttr('selected');
+            },
+            // 获取MR人员数据
+            getHisCount : function() {
+                if($("#hisCount").val() == "隐藏"){
+                    $("#hisCount").val("显示统计数据");
+                    $("#hisCountTable").hide();
+                    return;
+                }
+                var queryString = $("input,select","#form_search_div").not(".notselect").fieldSerialize();
+                $.ajax({
+                    type : "POST",
+                    url : "/bx/order_his_Count?"+queryString,
+                    async : false,
+                    success : function(data) {
+                        $("#hisCount").val("隐藏");
+                        $.each($("#hisCountTable td"), function(i, v, itme){
+                            if(i == 1){
+                                $(this).html(data[0].want_count);
+                            }else if(i == 3){
+                                $(this).html(data[0].qualified_nums);
+                            }else if(i == 5){
+                                $(this).html(data[0].qalu + "%");
+                            }else if(i == 7){
+                                $(this).html(data[0].timeOutLv + "%");
+                            }else if(i == 9){
+                                $(this).html(data[0].actualDays);
+                            }else if(i == 11){
+                                $(this).html(data[0].toclv);
+                            }
+                        });
+                        $("#hisCountTable").show();
+                    },
+                    complete : function(XMLHttpRequest, textStatus) {
+                    },
+                    dataType : "json"
+                });
             }
 		}
 	}

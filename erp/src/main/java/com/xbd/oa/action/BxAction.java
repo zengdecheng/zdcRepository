@@ -549,6 +549,7 @@ public class BxAction extends Action {
                 fsp.set("if_all", "finish_999");
             }
         }
+
         // 判断查询数据类型，大货与打版流程不一样 by 范蠡
         if (fsp.getMap().get("type") == null || "".equals(fsp.getMap().get("type"))) {
             if (fsp.getMap().get("del_operator") != null && !"".equals(fsp.getMap().get("del_operator"))) {
@@ -1233,7 +1234,7 @@ public class BxAction extends Action {
 	 * @autuor 范蠡
 	 */
 	public String order_his() {
-        fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_ORDERWF_HIS_BY_SQL);
+        fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_ORDERWF_HIS_HTM_BY_SQL);
         if (!WebUtil.ifAdmin() && !WebUtil.ifManager()) { // 如果不是管理员就要加上查询条件
             fsp.set("his_opt", WebUtil.getCurrentLoginBx().getLoginName());
         }
@@ -1262,6 +1263,163 @@ public class BxAction extends Action {
         // }
         // }
 
+//        superList = getObjectsBySql(fsp);
+//        Map<String, String> statisticsMap = new HashMap<String, String>();
+//        int count = 0;
+//        int qualified_nums = 0;
+//        int beansNums = superList.size();
+//        int timeOut = 0;
+//        float toc = 0;
+//        long jishiTime = 0;
+//
+//        Date date = new Date();
+//        // SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS");
+//        // SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+//        // String time=sdf.format(date);
+//        LazyDynaMap bean = new LazyDynaMap();
+//        java.text.DecimalFormat df = new java.text.DecimalFormat("#");
+//
+//        for (int i = 0; i < superList.size(); i++) {
+//            count += Double.parseDouble(superList.get(i).get("sewing_total") != null ? superList.get(i).get("sewing_total").toString() : "0");
+//            if (superList.get(i).get("qualified_total") != null) {
+//                qualified_nums += Float.parseFloat(superList.get(i).get("qualified_total").toString());
+//            }
+//            if (superList.get(i).get("end_time") != null && !"".equals(superList.get(i).get("end_time"))) {
+//                long out = ((Date) superList.get(i).get("except_finish")).getTime() - ((Date) superList.get(i).get("end_time")).getTime();
+//
+//                if (out > 0) {
+//                    timeOut++;
+//                }
+//
+//                if (superList.get(i).get("type") != null && "2".equals(superList.get(i).get("type").toString())) { // 打版
+//                    if (superList.get(i).get("bqcdel_wf_real_finish") != null && superList.get(i).get("mrdb_wf_real_start") != null) {
+//                        jishiTime += BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("bqcdel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdb_wf_real_start"));
+//                    }
+//
+//                    if (superList.get(i).get("bqcdel_wf_real_finish") != null && !"".equals(superList.get(i).get("bqcdel_wf_real_finish"))) {
+//
+//						Date now = (Date) superList.get(i).get("bqcdel_wf_real_finish");
+//						Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
+//						Date beginTime = (Date) superList.get(i).get("begin_time");
+//						Date exceptFinish = (Date) superList.get(i).get("except_finish");
+//						double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
+//						// DecimalFormat dbtoc = new DecimalFormat("#");
+//						String time_consume = df.format(time);
+//						// 订单完成时TOC百分比
+//						int data = Integer.parseInt(time_consume);
+//						toc += data;
+//
+//                        // sheet1FileInfo.put(j+",34", time_consume+"%");
+//                    }
+//
+//                } else if (superList.get(i).get("type") != null && "3".equals(superList.get(i).get("type").toString())) { // 大货
+//                    if (superList.get(i).get("qadel_wf_real_finish") != null && superList.get(i).get("mrdel_wf_real_start") != null) {
+//                        jishiTime += BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("qadel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdel_wf_real_start"));
+//                    }
+//
+//                    if (superList.get(i).get("wldel_wf_real_finish") != null && !"".equals(superList.get(i).get("wldel_wf_real_finish"))) {
+//
+//						Date now = (Date) superList.get(i).get("wldel_wf_real_finish");
+//						Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
+//						Date beginTime = (Date) superList.get(i).get("begin_time");
+//						Date exceptFinish = (Date) superList.get(i).get("except_finish");
+//						double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
+//						String time_consume = df.format(time);
+//						// 订单完成时TOC百分比
+//						int data = Integer.parseInt(time_consume);
+//						toc += data;
+//					}
+//				}
+//			}
+//
+//            if (superList.get(i).get("wf_step") != null && "finish_999".equals(superList.get(i).get("wf_step"))) {
+//                bean = superList.get(i);
+//                Long nowDate = date.getTime()/1000*1000;
+//                Long begin_time = ((Date) superList.get(i).get("begin_time")).getTime();
+//                Long except_finish = ((Date) superList.get(i).get("except_finish")).getTime();
+//
+//                // if (0 != begin_time && 0 != except_finish) {
+//                // float baifenzhu = (nowDate - begin_time + 24 * 60 * 60 * 1000) / (except_finish - begin_time + 24 * 60 * 60 * 1000);
+//                // // float data = baifenzhu * 100;
+//                // toc += baifenzhu;
+//                // }
+//            }
+//
+//            long bzTime = (superList.get(i).get("standard_time") != null ? (long)superList.get(i).get("standard_time") : 0l)
+//                    + (superList.get(i).get("craft_time") != null ? (long)superList.get(i).get("craft_time") : 0l);
+//            superList.get(i).set("bzTime", WebUtil.getTimeDisPlayExcel(bzTime) + "");
+//        }
+//
+//        statisticsMap.put("want_count", count + "");
+//        statisticsMap.put("qualified_nums", qualified_nums + "");
+//        if (count > 0) {
+//            statisticsMap.put("qalu", (int) new BigDecimal((qualified_nums / (float) count) * 100).setScale(0, BigDecimal.ROUND_HALF_UP).floatValue() + "");
+//        } else {
+//            statisticsMap.put("qalu", "0");
+//        }
+//
+//        if (beansNums > 0) {
+//            statisticsMap.put("timeOutLv", (int) new BigDecimal((timeOut / (float) beansNums) * 100).setScale(0, BigDecimal.ROUND_HALF_UP).floatValue() + "");
+//            statisticsMap.put("actualDays", WebUtil.getTimeDisPlayExcel(jishiTime / beansNums) + "");
+//            statisticsMap.put("toclv", (int) new BigDecimal((toc / (float) beansNums)).setScale(0, BigDecimal.ROUND_HALF_UP).floatValue() + "");
+//        }
+//
+//        // statisticsMap.put("greenNum", greenNum+""); //new BigDecimal((greenNum/beansNums) * 10).setScale(5, BigDecimal.ROUND_HALF_UP).floatValue()
+//        // statisticsMap.put("orangeNum", orangeNum+"");//new BigDecimal((orangeNum/beansNums) * 10).setScale(5, BigDecimal.ROUND_HALF_UP).floatValue()
+//        // statisticsMap.put("redNum", redNum+"");
+//        // statisticsMap.put("blackNum", blackNum+"");
+//
+//        Struts2Utils.getRequest().setAttribute("statisticsMap", statisticsMap);
+//
+//        superList.clear();
+        fsp.setPageFlag(FSPBean.ACTIVE_PAGINATION);
+        superList = getObjectsBySql(fsp);
+
+        for (int i = 0; i < superList.size(); i++) {
+            if (superList.get(i).get("type") != null && "2".equals(superList.get(i).get("type").toString())) { // 打版
+                if (superList.get(i).get("bqcdel_wf_real_finish") != null && !"".equals(superList.get(i).get("bqcdel_wf_real_finish")) && superList.get(i).get("odel_wf_real_finish") != null
+                        && !"".equals(superList.get(i).get("odel_wf_real_finish"))) {
+
+                    Long actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("bqcdel_wf_real_finish"), (Timestamp) superList.get(i).get("odel_wf_real_finish"));
+                    superList.get(i).set("actualDay", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 实际生产周期
+                }
+            } else if (superList.get(i).get("type") != null && "3".equals(superList.get(i).get("type").toString())) { // 大货
+                if (superList.get(i).get("qadel_wf_real_finish") != null && !"".equals(superList.get(i).get("qadel_wf_real_finish")) && superList.get(i).get("odel_wf_real_finish") != null
+                        && !"".equals(superList.get(i).get("odel_wf_real_finish"))) {
+                    Long actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("qadel_wf_real_finish"), (Timestamp) superList.get(i).get("odel_wf_real_finish"));
+                    superList.get(i).set("actualDay", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 实际生产周期
+                }
+            }
+
+            long bzTime = (superList.get(i).get("standard_time") != null ? (long)superList.get(i).get("standard_time") : 0l)
+                    + (superList.get(i).get("craft_time") != null ? (long)superList.get(i).get("craft_time") : 0l);
+            superList.get(i).set("bzTime", WebUtil.getTimeDisPlayExcel(bzTime) + "");
+        }
+        processPageInfo(getObjectsCountSql(fsp));
+        return "bx/order_his";
+    }
+
+
+
+    public void order_his_Count() {
+        fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_ORDERWF_HIS_HTM_BY_SQL);
+        if (!WebUtil.ifAdmin() && !WebUtil.ifManager()) { // 如果不是管理员就要加上查询条件
+            fsp.set("his_opt", WebUtil.getCurrentLoginBx().getLoginName());
+        }
+        if (!"true".equals(Struts2Utils.getParameter("hidStatusFlag"))) {
+            fsp.set("status", "0"); // 默认为正常的订单
+            fsp.set("wf_step", "finish_999"); // 默认为已完成
+        } else {
+            if ("0".equals((String) fsp.get("status"))) { // 已完成
+                fsp.set("wf_step", "finish_999");
+            } else if ("1".equals((String) fsp.get("status"))) { // 作废
+                fsp.set("wf_step", null);
+            } else { // 全部
+                fsp.set("if_all", "finish_999");
+            }
+        }
+
+
         superList = getObjectsBySql(fsp);
         Map<String, String> statisticsMap = new HashMap<String, String>();
         int count = 0;
@@ -1272,9 +1430,6 @@ public class BxAction extends Action {
         long jishiTime = 0;
 
         Date date = new Date();
-        // SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS");
-        // SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        // String time=sdf.format(date);
         LazyDynaMap bean = new LazyDynaMap();
         java.text.DecimalFormat df = new java.text.DecimalFormat("#");
 
@@ -1291,43 +1446,43 @@ public class BxAction extends Action {
                 }
 
                 if (superList.get(i).get("type") != null && "2".equals(superList.get(i).get("type").toString())) { // 打版
-                    if (superList.get(i).get("bqcdel_wf_real_finish") != null && superList.get(i).get("mrdb_wf_real_start") != null) {
-                        jishiTime += BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("bqcdel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdb_wf_real_start"));
+                    if (superList.get(i).get("bqcdel_wf_real_finish") != null && superList.get(i).get("odel_wf_real_start") != null) {
+                        jishiTime += BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("bqcdel_wf_real_finish"), (Timestamp) superList.get(i).get("odel_wf_real_start"));
                     }
 
-                    if (superList.get(i).get("bqcdel_wf_real_finish") != null && !"".equals(superList.get(i).get("bqcdel_wf_real_finish"))) {
-
-						Date now = (Date) superList.get(i).get("bqcdel_wf_real_finish");
-						Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
-						Date beginTime = (Date) superList.get(i).get("begin_time");
-						Date exceptFinish = (Date) superList.get(i).get("except_finish");
-						double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
-						// DecimalFormat dbtoc = new DecimalFormat("#");
-						String time_consume = df.format(time);
-						// 订单完成时TOC百分比
-						int data = Integer.parseInt(time_consume);
-						toc += data;
-
-                        // sheet1FileInfo.put(j+",34", time_consume+"%");
-                    }
+//                    if (superList.get(i).get("bqcdel_wf_real_finish") != null && !"".equals(superList.get(i).get("bqcdel_wf_real_finish"))) {
+//
+//						Date now = (Date) superList.get(i).get("bqcdel_wf_real_finish");
+//						Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
+//						Date beginTime = (Date) superList.get(i).get("begin_time");
+//						Date exceptFinish = (Date) superList.get(i).get("except_finish");
+//						double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
+//						// DecimalFormat dbtoc = new DecimalFormat("#");
+//						String time_consume = df.format(time);
+//						// 订单完成时TOC百分比
+//						int data = Integer.parseInt(time_consume);
+//						toc += data;
+//
+//                        // sheet1FileInfo.put(j+",34", time_consume+"%");
+//                    }
 
                 } else if (superList.get(i).get("type") != null && "3".equals(superList.get(i).get("type").toString())) { // 大货
-                    if (superList.get(i).get("qadel_wf_real_finish") != null && superList.get(i).get("mrdel_wf_real_start") != null) {
-                        jishiTime += BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("qadel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdel_wf_real_start"));
+                    if (superList.get(i).get("qadel_wf_real_finish") != null && superList.get(i).get("odel_wf_real_start") != null) {
+                        jishiTime += BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("qadel_wf_real_finish"), (Timestamp) superList.get(i).get("odel_wf_real_start"));
                     }
 
-                    if (superList.get(i).get("wldel_wf_real_finish") != null && !"".equals(superList.get(i).get("wldel_wf_real_finish"))) {
-
-						Date now = (Date) superList.get(i).get("wldel_wf_real_finish");
-						Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
-						Date beginTime = (Date) superList.get(i).get("begin_time");
-						Date exceptFinish = (Date) superList.get(i).get("except_finish");
-						double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
-						String time_consume = df.format(time);
-						// 订单完成时TOC百分比
-						int data = Integer.parseInt(time_consume);
-						toc += data;
-					}
+//                    if (superList.get(i).get("wldel_wf_real_finish") != null && !"".equals(superList.get(i).get("wldel_wf_real_finish"))) {
+//
+//						Date now = (Date) superList.get(i).get("wldel_wf_real_finish");
+//						Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
+//						Date beginTime = (Date) superList.get(i).get("begin_time");
+//						Date exceptFinish = (Date) superList.get(i).get("except_finish");
+//						double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
+//						String time_consume = df.format(time);
+//						// 订单完成时TOC百分比
+//						int data = Integer.parseInt(time_consume);
+//						toc += data;
+//					}
 				}
 			}
 
@@ -1369,33 +1524,8 @@ public class BxAction extends Action {
         // statisticsMap.put("blackNum", blackNum+"");
 
         Struts2Utils.getRequest().setAttribute("statisticsMap", statisticsMap);
-
-        superList.clear();
-        fsp.setPageFlag(FSPBean.ACTIVE_PAGINATION);
-        superList = getObjectsBySql(fsp);
-
-        for (int i = 0; i < superList.size(); i++) {
-            if (superList.get(i).get("type") != null && "2".equals(superList.get(i).get("type").toString())) { // 打版
-                if (superList.get(i).get("bqcdel_wf_real_finish") != null && !"".equals(superList.get(i).get("bqcdel_wf_real_finish")) && superList.get(i).get("mrdb_wf_real_finish") != null
-                        && !"".equals(superList.get(i).get("mrdb_wf_real_finish"))) {
-
-                    Long actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("bqcdel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdb_wf_real_finish"));
-                    superList.get(i).set("actualDay", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 实际生产周期
-                }
-            } else if (superList.get(i).get("type") != null && "3".equals(superList.get(i).get("type").toString())) { // 大货
-                if (superList.get(i).get("qadel_wf_real_finish") != null && !"".equals(superList.get(i).get("qadel_wf_real_finish")) && superList.get(i).get("mrdel_wf_real_finish") != null
-                        && !"".equals(superList.get(i).get("mrdel_wf_real_finish"))) {
-                    Long actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("qadel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdel_wf_real_finish"));
-                    superList.get(i).set("actualDay", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 实际生产周期
-                }
-            }
-
-            long bzTime = (superList.get(i).get("standard_time") != null ? (long)superList.get(i).get("standard_time") : 0l)
-                    + (superList.get(i).get("craft_time") != null ? (long)superList.get(i).get("craft_time") : 0l);
-            superList.get(i).set("bzTime", WebUtil.getTimeDisPlayExcel(bzTime) + "");
-        }
-        processPageInfo(getObjectsCountSql(fsp));
-        return "bx/order_his";
+        String result = JSONArray.fromObject(statisticsMap).toString();
+        Struts2Utils.renderText(result);
     }
 
 	public String staff_add() {

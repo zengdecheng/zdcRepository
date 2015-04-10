@@ -274,6 +274,97 @@ ote.oa_timebase = ot.id ${case}1">
     </function>
 
 
+
+    <!-- 查询 历史订单 -->
+    <function name="list_orderwf_his_htm_by_sql" type="sql" sql="SELECT
+                                                                oa.*, tpe.sewing_factory,
+                                                                tpe.sewing_num,
+                                                                tpe.sewing_total,
+                                                                qa.qualified_num_info,
+                                                                qa.unqualified_num_info,
+                                                                qa.qualified_total,
+                                                                qa.unqualified_total,
+                                                                cost.p_sam,
+                                                                qadel_oa_order,
+                                                                qadel_wf_step,
+                                                                qadel_operator,
+                                                                qadel_wf_real_finish,
+                                                                jshdel_oa_order,
+                                                                jshdel_wf_step,
+                                                                jshdel_operator,
+                                                                jshdel_wf_real_finish,
+                                                                wldel_oa_order, wldel_wf_step, wldel_wf_plan_start, wldel_wf_real_finish, wldel_wf_step_duration,
+                                                                tpedel_oa_order, tpedel_wf_step, tpedel_wf_real_start, tpedel_operator,
+                                                                odel_wf_step, odel_operator, odel_wf_real_start, odel_wf_real_finish, odel_oa_order,
+                                                                bqcdel_oa_order, bqcdel_wf_step, bqcdel_wf_plan_start, bqcdel_wf_real_finish, bqcdel_wf_step_duration, bqcdel_operator
+                                                            FROM
+                                                                oa_order oa
+                                                            LEFT JOIN oa_tpe tpe ON oa.id = tpe.oa_order_id
+                                                            LEFT JOIN oa_qa qa ON oa.id = qa.oa_order_id
+                                                            LEFT JOIN oa_cost cost ON oa.id = cost.oa_order_id
+                                                            LEFT JOIN(
+                                                                SELECT
+                                                                    oa_order AS qadel_oa_order,
+                                                                    wf_step AS qadel_wf_step,
+                                                                    operator AS qadel_operator,
+                                                                    wf_real_finish AS qadel_wf_real_finish
+                                                                FROM
+                                                                    oa_order_detail
+                                                                WHERE
+                                                                    wf_step = 'c_ppc_confirm_7'
+                                                                AND ISNULL(back_flag)
+                                                            )qadel ON oa.id = qadel.qadel_oa_order
+                                                            LEFT JOIN (select oa_order as jshdel_oa_order, wf_step as jshdel_wf_step, operator as jshdel_operator, wf_real_finish AS jshdel_wf_real_finish  from oa_order_detail where 1=1 and wf_step = 'c_ppc_assign_3'  AND ISNULL(back_flag)) jshdel
+																	on oa.id = jshdel_oa_order
+                                                            LEFT JOIN (select oa_order as wldel_oa_order, wf_step as wldel_wf_step, wf_plan_start as wldel_wf_plan_start, wf_real_finish as wldel_wf_real_finish, wf_step_duration as wldel_wf_step_duration  from oa_order_detail where 1=1 and wf_step = 'c_ppc_confirm_9'  AND ISNULL(back_flag)) wldel
+																	on oa.id = wldel_oa_order
+                                                            LEFT JOIN (select oa_order as tpedel_oa_order, wf_step as tpedel_wf_step, wf_real_start as tpedel_wf_real_start, operator as tpedel_operator from oa_order_detail where 1=1 and wf_step = 'c_qc_cutting_6'  AND ISNULL(back_flag)) tpedel
+																	on oa.id = tpedel_oa_order
+                                                            LEFT JOIN(
+																	SELECT
+																		wf_step AS odel_wf_step, operator AS odel_operator, wf_real_start AS odel_wf_real_start, wf_real_finish AS odel_wf_real_finish,
+																		oa_order AS odel_oa_order
+																	FROM
+																		oa_order_detail
+																	WHERE
+																		1 = 1
+																	AND(
+																		wf_step = 'c_mr_improve_2'
+																		OR wf_step = 'b_mr_improve_2'
+																	) and ISNULL(back_flag)
+																)odel ON oa.id = odel_oa_order
+                                                            LEFT JOIN(SELECT oa_order AS bqcdel_oa_order, wf_step AS bqcdel_wf_step, wf_plan_start as bqcdel_wf_plan_start, wf_real_finish AS bqcdel_wf_real_finish, wf_step_duration as bqcdel_wf_step_duration, operator AS bqcdel_operator FROM oa_order_detail WHERE 1 = 1 AND wf_step = 'b_qc_confirm_6' and ISNULL(back_flag)) bqcdel
+	                                                                ON oa.id = bqcdel_oa_order
+																where 1 = 1  ${case}1  ORDER BY oa.end_time desc">
+        <parser index="1">
+            <param fspname="his_opt" sqlname="oa.his_opt" op="like"></param>
+            <param fspname="cus_name" sqlname="oa.cus_name"  op="like"></param>
+            <param fspname="style_code" sqlname="oa.style_code" op="like"></param>
+            <param fspname="sell_order_code" sqlname="oa.sell_order_code" op="like"></param>
+            <param fspname="type" sqlname="oa.type"></param>
+            <param fspname="city" sqlname="oa.city"></param>
+            <param fspname="order_code" sqlname="oa.order_code" op="like"></param>
+            <param fspname="sales" sqlname="oa.sales"></param>
+            <param fspname="mr_name" sqlname="odel_operator"></param>
+            <param fspname="tpe_name" sqlname="tpedel_operator"></param>
+            <param fspname="sewing_factory" sqlname="tpe.sewing_factory" op="like"></param>
+            <param fspname="status" sqlname="oa.status"></param>
+            <param fspname="wf_step" sqlname="oa.wf_step"></param>
+            <param fspname="if_all" sqlname=" and (wf_step=? or status='1') " op="sp"></param>
+            <param fspname="start_time1" sqlname="oa.begin_time" op="&gt;="></param>
+            <param fspname="start_time2" sqlname="oa.begin_time" op="&lt;"></param>
+            <param fspname="qadel_wf_real_finish1" sqlname="qadel_wf_real_finish" op="&gt;="></param>
+            <param fspname="qadel_wf_real_finish2" sqlname="qadel_wf_real_finish" op="&lt;"></param>
+            <param fspname="wldel_wf_real_finish1" sqlname="wldel_wf_real_finish" op="&gt;="></param>
+            <param fspname="wldel_wf_real_finish2" sqlname="wldel_wf_real_finish" op="&lt;"></param>
+            <param fspname="odel_wf_real_finish" sqlname="odel_wf_real_finish" op="&gt;="></param>
+            <param fspname="odel_wf_real_finish1" sqlname="odel_wf_real_finish" op="&lt;"></param>
+            <param fspname="ppc_wf_real_finish" sqlname="jshdel_wf_real_finish" op="&gt;="></param>
+            <param fspname="ppc_wf_real_finish1" sqlname="jshdel_wf_real_finish" op="&lt;"></param>
+        </parser>
+    </function>
+
+
     <!-- 查询 历史订单 -->
     <function name="list_orderwf_his_yh_by_sql" type="sql" sql="select * from oa_order mian
 																where 1 = 1  ${case}1  GROUP BY mian.id  ORDER BY mian.end_time desc">
