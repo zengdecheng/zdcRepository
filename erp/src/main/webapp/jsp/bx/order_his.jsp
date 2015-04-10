@@ -113,23 +113,29 @@
                         <%--<td><input type="text" name="fsp.map.sewing_factory" value="${fsp.map.sewing_factory}" class="z_inp2" style="width:167px;" maxlength='20' /></td>--%>
 
 
-                        <td><label class="">订单状态：</label></td>
-                        <td><select name="fsp.map.status" class="z_inp3" id="statusSel" style="width: 170px">
-                            <option value="">全部</option>
-                            <option value="0">已完成</option>
-                            <option value="1">已终止</option>
-                        </select> <input type="hidden" hidName="hid.fsp.map.status" id="statusHid"
-                                         class="notselect" value="${fsp.map.status}" /></td>
-                        <td height="40"><label class="">创建日期：</label></td>
-                        <td>
-                            <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.start_time1" value="${fsp.map.start_time1}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.start_time2" value="${fsp.map.start_time2}" onFocus="WdatePicker({readOnly:true})" />
-                        </td>
+                        <%--<td><label class="">订单状态：</label></td>--%>
+                        <%--<td><select name="fsp.map.status" class="z_inp3" id="statusSel" style="width: 170px">--%>
+                            <%--<option value="">全部</option>--%>
+                            <%--<option value="0">已完成</option>--%>
+                            <%--<option value="1">已终止</option>--%>
+                        <%--</select> <input type="hidden" hidName="hid.fsp.map.status" id="statusHid"--%>
+                                         <%--class="notselect" value="${fsp.map.status}" /></td>--%>
+                        <%--<td height="40"><label class="">创建日期：</label></td>--%>
+                        <%--<td>--%>
+                            <%--<input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.start_time1" value="${fsp.map.start_time1}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.start_time2" value="${fsp.map.start_time2}" onFocus="WdatePicker({readOnly:true})" />--%>
+                        <%--</td>--%>
 
                         <td height="40"><label class="">QA完工日期：</label></td>
                         <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.qadel_wf_real_finish1" value="${fsp.map.qadel_wf_real_finish1}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.qadel_wf_real_finish2" value="${fsp.map.qadel_wf_real_finish2}" onFocus="WdatePicker({readOnly:true})" /></td>
 
                         <td height="40"><label class="">发货日期：</label></td>
                         <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.wldel_wf_real_finish1" value="${fsp.map.wldel_wf_real_finish1}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.wldel_wf_real_finish2" value="${fsp.map.wldel_wf_real_finish2}" onFocus="WdatePicker({readOnly:true})" /></td>
+
+                        <td height="40"><label class="">MR完成日期：</label></td>
+                        <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odel_wf_real_finish" value="${fsp.map.odel_wf_real_finish}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odel_wf_real_finish1" value="${fsp.map.odel_wf_real_finish1}" onFocus="WdatePicker({readOnly:true})" /></td>
+
+                        <td height="40"><label class="">技术完工日期（大货）：</label></td>
+                        <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.ppc_wf_real_finish" value="${fsp.map.ppc_wf_real_finish}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.ppc_wf_real_finish1" value="${fsp.map.ppc_wf_real_finish1}" onFocus="WdatePicker({readOnly:true})" /></td>
 
                     </tr>
                     <%--<tr>--%>
@@ -153,13 +159,8 @@
                     <%--</tr>--%>
                     <tr>
 
-                        <td height="40"><label class="">MR完成日期：</label></td>
-                        <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odel_wf_real_finish" value="${fsp.map.odel_wf_real_finish}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odel_wf_real_finish1" value="${fsp.map.odel_wf_real_finish1}" onFocus="WdatePicker({readOnly:true})" /></td>
 
-                        <td height="40"><label class="">技术完工日期（大货）：</label></td>
-                        <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.ppc_wf_real_finish" value="${fsp.map.ppc_wf_real_finish}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.ppc_wf_real_finish1" value="${fsp.map.ppc_wf_real_finish1}" onFocus="WdatePicker({readOnly:true})" /></td>
-
-                        <td colspan="4" align="right">
+                        <td colspan="8" align="right">
                             <input id="search_btn" type="button" value="查&nbsp;&nbsp;询" class="z_submit2" />
                             <input id="reset_btn" type="button" value="重&nbsp;&nbsp;置" class="z_submit2" />
                         </td>
@@ -253,10 +254,10 @@
             <td>${statisticsMap.qalu}%</td>
             <td>及时率</td>
             <td>${statisticsMap.timeOutLv}%</td>
-            <td>平均生产周期</td>
-            <td>${statisticsMap.actualDays} </td>
-            <td>平均生产TOC</td>
-            <td>${statisticsMap.toclv}% </td>
+            <%--<td>平均生产周期</td>--%>
+            <%--<td>${statisticsMap.actualDays} </td>--%>
+            <%--<td>平均生产TOC</td>--%>
+            <%--<td>${statisticsMap.toclv}% </td>--%>
         </tr>
     </table>
 </div>
