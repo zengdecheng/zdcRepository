@@ -7483,7 +7483,7 @@ public class BxAction extends Action {
 	// by fangwei 2014-12-17
 	public Map<String, Object> getTechnologyInfo(OaOrder oaOrder) {
 		//时间判断，
-		String erp209 = "2015-4-7 12:00:00";
+		String erp209 = "2015-4-11 9:00:00";
 		Map<String,Object> fillInfo = new HashMap<String,Object>();
 		fillInfo.put("sheetNames", "技术");
 		Map<String,Object> sheet1FileInfo = new HashMap<String,Object>();
