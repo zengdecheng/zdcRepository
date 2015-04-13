@@ -255,6 +255,7 @@ public class BxDaoImpl extends BaseDaoImpl {
 	public static final String LIST_CATEGORY_BY_SQL = "list_category_by_sql";
 	public static final String LIST_CATEGORY_ALL_BY_SQL = "list_category_all_by_sql";
 	public static final String GET_OA_ORDER_BY_EQL = "get_oa_order_by_eql";
+	public static final String GET_OA_ORDER_BY_EQL_LS = "get_oa_order_by_eql_ls";
 	public static final String LIST_OA_ORDER_DETAIL_ORDER_BY_EQL = "list_oa_order_detail_order_by_eql";
 
 	/**

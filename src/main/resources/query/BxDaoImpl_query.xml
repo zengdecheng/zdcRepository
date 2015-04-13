@@ -1351,6 +1351,11 @@ ote.oa_timebase = ot.id ${case}1">
 	<!-- 获取15分钟内未处理的任务 -->
 	<function name="get_oa_order_by_eql" type="eql" sql="select vo from OaOrder vo where 1=1">
 	</function>
+
+
+    <!-- 临时查询 -->
+    <function name="get_oa_order_by_eql_ls" type="eql" sql="select vo from OaOrder vo where 1=1 and beginTime &lt;= '2015-03-25 23:59:59' ">
+    </function>
 	
 	<!-- 订单详细查询 -->
 	<function name="list_oa_order_detail_order_by_eql" type="eql" sql="select vo from OaOrderDetail vo where 1=1 ${case}1 ">
