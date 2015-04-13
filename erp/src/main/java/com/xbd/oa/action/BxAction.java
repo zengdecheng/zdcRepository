@@ -7498,9 +7498,14 @@ public class BxAction extends Action {
 	// by fangwei 2014-12-17
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> createOrderInfo(OaOrder oaOrder) {
-		String erp209 = "2015-4-11 9:00:00";
+		String erp209 = "2015-4-13 13:30:00";
 		Map<String,Object> fillInfo = new HashMap<String,Object>();
-		String baseExcelFile = Struts2Utils.getSession().getServletContext().getRealPath(ResourceUtil.getString("baseExcelFile"));
+		String baseExcelFile = null;
+		if(oaOrder.getBeginTime().compareTo(DateUtil.parseDate(erp209))>0){
+			baseExcelFile = Struts2Utils.getSession().getServletContext().getRealPath(ResourceUtil.getString("baseExcelFile"));
+		}else{
+			baseExcelFile = Struts2Utils.getSession().getServletContext().getRealPath(ResourceUtil.getString("oldBaseExcelFile"));
+		}
 		fillInfo.put("fileUrl", baseExcelFile);
 		fillInfo.put("sheetNames", "订单");
 		Map<String,Object> sheet1FileInfo = new HashMap<String,Object>();
@@ -7715,7 +7720,7 @@ public class BxAction extends Action {
 	// by fangwei 2014-12-17
 	public Map<String, Object> getTechnologyInfo(OaOrder oaOrder) {
 		//时间判断，
-		String erp209 = "2015-4-11 9:00:00";
+		String erp209 = "2015-4-13 13:30:00";
 		Map<String,Object> fillInfo = new HashMap<String,Object>();
 		fillInfo.put("sheetNames", "技术");
 		Map<String,Object> sheet1FileInfo = new HashMap<String,Object>();
@@ -8195,7 +8200,7 @@ public class BxAction extends Action {
 	public String createExcelByOrderId(Integer orderId) {
 		String baseExcelFile = null;
 		oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, orderId);
-		String erp209 = "2015-4-11 9:00:00";
+		String erp209 = "2015-4-13 13:30:00";
 		if(oaOrder.getBeginTime().compareTo(DateUtil.parseDate(erp209))>0){
 			baseExcelFile = Struts2Utils.getSession().getServletContext().getRealPath(ResourceUtil.getString("baseExcelFile"));
 		}else{
@@ -8261,7 +8266,7 @@ public class BxAction extends Action {
 		Map<String, Object> fillInfo = null;
 		String baseExcelFile = null;
 		oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, oaOrder.getId());
-		String erp209 = "2015-4-11 9:00:00";
+		String erp209 = "2015-4-13 13:30:00";
 		if(oaOrder.getBeginTime().compareTo(DateUtil.parseDate(erp209))>0){
 			baseExcelFile = Struts2Utils.getSession().getServletContext().getRealPath(ResourceUtil.getString("baseExcelFile"));
 		}else{
