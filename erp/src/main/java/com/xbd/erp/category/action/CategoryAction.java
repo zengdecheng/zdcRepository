@@ -487,6 +487,62 @@ public class CategoryAction extends Action {
 		}
 	}
 
+
+
+
+    public String updateHisDate3() {
+        fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_OA_ORDER_BY_EQL_LS);
+        List<OaOrder> beans = baseDao.getObjectsByEql(fsp);
+        for (int i = 0; i < beans.size(); i++) {
+            OaOrder oaOrder = beans.get(i);
+            if (oaOrder.getStyleClass() != null && !"".equals(oaOrder.getStyleClass())) {
+                fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_CATEGORY_ALL_BY_SQL);
+                fsp.set("style_class", oaOrder.getStyleClass());
+                superList = baseDao.getObjectsBySql(fsp);
+                if (superList.size() > 0) {
+                    String craft = oaOrder.getStyleCraft();
+                    if(craft != null && !"".equals(craft)){
+                        Long craftTime = 0l;
+
+                        String str[] = craft.split(",");
+                        for(String s : str){
+                            switch (s){
+                                case "绣花":
+                                    craftTime = craftTime +  (superList.get(0).get("embroidery") != null ? Long.parseLong(superList.get(0).get("embroidery").toString()) : 0);
+                                    break;
+                                case "洗水":
+                                    craftTime = craftTime +  (superList.get(0).get("washwater_time") != null ? Long.parseLong(superList.get(0).get("washwater_time").toString()) : 0);
+                                    break;
+                                case "印花":
+                                    craftTime = craftTime +  (superList.get(0).get("printing_time") != null ? Long.parseLong(superList.get(0).get("printing_time").toString()) : 0);
+                                    break;
+                                case "缩折/打条":
+                                    craftTime = craftTime +  (superList.get(0).get("folding_time") != null ? Long.parseLong(superList.get(0).get("folding_time").toString()) : 0);
+                                    break;
+                                case "打揽":
+                                    craftTime = craftTime +  (superList.get(0).get("dalan_time") != null ? Long.parseLong(superList.get(0).get("dalan_time").toString()) : 0);
+                                    break;
+                                case "订珠":
+                                    craftTime = craftTime +  (superList.get(0).get("beads_time") != null ? Long.parseLong(superList.get(0).get("beads_time").toString()) : 0);
+                                    break;
+                                case "其他":
+                                    craftTime = craftTime +  (superList.get(0).get("other_time") != null ? Long.parseLong(superList.get(0).get("other_time").toString()) : 0);
+                                    break;
+                            }
+                        }
+                        oaOrder.setCraftTime(craftTime);
+                    }else{
+                        oaOrder.setCraftTime(0l);
+                    }
+
+                }
+            }
+            baseDao.saveObject(oaOrder);
+        }
+
+        return null;
+    }
+
 	public OaCategory getOaCategory() {
 		return oaCategory;
 	}
