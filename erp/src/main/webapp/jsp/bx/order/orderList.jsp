@@ -71,7 +71,7 @@
                     <input type="hidden" id="orderColorHid" value="${orderColor}" />
                     <s:select cssClass="z_inp2" list="#{'':'全部','-1':'蓝色','0':'绿色','33':'橙色','66':'红色','100':'黑色'}" id="orderColor" theme="simple" name="orderColor" value="%{orderColor}" cssStyle="width: 170px"></s:select></td>
 
-                <td><label class="">工厂：</label></td>
+                <td><label class="">匠人坊：</label></td>
                 <td><input type="text" name="fsp.map.sewing_factory" value="${fsp.map.sewing_factory}" class="z_inp2" style="width:167px;" maxlength='20' /></td>
             </tr>
 

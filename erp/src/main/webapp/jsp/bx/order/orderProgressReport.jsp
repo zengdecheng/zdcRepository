@@ -18,7 +18,7 @@
 				<td><input type="text" name="fsp.map.cus_name" value="${fsp.map.cus_name}" class="z_inp2" style="width:167px;margin-right:19px" maxlength='20' /></td>
 				<td height="40"><label class="">款号：</label></td>
 				<td><input type="text" class="z_inp2" name="fsp.map.style_code" style="width:167px;margin-right:19px" value="${fsp.map.style_code}" maxlength='20' /></td>
-				<td><label class="">工厂：</label></td>
+				<td><label class="">匠人坊：</label></td>
 				<td><input type="text" name="fsp.map.sewing_factory" value="${fsp.map.sewing_factory}" class="z_inp2" style="width:167px;" maxlength='20' /></td>
 			</tr>
 			<tr>
@@ -79,7 +79,7 @@
 			</s:if>
 			<s:else>
 				<th width="70">TPE</th>
-				<th width="93">车缝工厂</th>
+				<th width="93">车缝匠人坊</th>
 				<th width="96">MR</th>
 				<th width="96">技术部</th>
 				<th width="96">采购部</th>
