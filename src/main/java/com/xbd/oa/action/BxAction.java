@@ -8091,8 +8091,14 @@ public class BxAction extends Action {
 	 * 通过order的id生成excel by fangwei 2014-12-17
 	 */
 	public String createExcelByOrderId(Integer orderId) {
-		String baseExcelFile = Struts2Utils.getSession().getServletContext().getRealPath(ResourceUtil.getString("baseExcelFile"));
+		String baseExcelFile = null;
 		oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, orderId);
+		String erp209 = "2015-4-11 9:00:00";
+		if(oaOrder.getBeginTime().compareTo(DateUtil.parseDate(erp209))>0){
+			baseExcelFile = Struts2Utils.getSession().getServletContext().getRealPath(ResourceUtil.getString("baseExcelFile"));
+		}else{
+			baseExcelFile = Struts2Utils.getSession().getServletContext().getRealPath(ResourceUtil.getString("OldBaseExcelFile"));
+		}
 		if (null == oaOrder || null == oaOrder.getId()) {
 			throw new RuntimeException("the parameter oaOrder.id is null!");
 		}
@@ -8151,8 +8157,14 @@ public class BxAction extends Action {
 		OutputStream os = Struts2Utils.getResponse().getOutputStream();
 		Struts2Utils.getResponse().setContentType("Application/msexcel");
 		Map<String, Object> fillInfo = null;
-		String baseExcelFile = Struts2Utils.getSession().getServletContext().getRealPath(ResourceUtil.getString("baseExcelFile"));
+		String baseExcelFile = null;
 		oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, oaOrder.getId());
+		String erp209 = "2015-4-11 9:00:00";
+		if(oaOrder.getBeginTime().compareTo(DateUtil.parseDate(erp209))>0){
+			baseExcelFile = Struts2Utils.getSession().getServletContext().getRealPath(ResourceUtil.getString("baseExcelFile"));
+		}else{
+			baseExcelFile = Struts2Utils.getSession().getServletContext().getRealPath(ResourceUtil.getString("OldBaseExcelFile"));
+		}
 		// order当前所在节点
 		String nowNode = oaOrder.getWfStep();
 		nowNode = nowNode.substring(nowNode.lastIndexOf("_") + 1, nowNode.length());
