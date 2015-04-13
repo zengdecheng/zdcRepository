@@ -118,7 +118,9 @@ define([ "v", "vl" ], function(v, vl) {
 							// 计算流入颜色和流出颜色
 							if (undefined != data.oaOrderDetail && undefined != data.oaOrderDetail.step_start_time_consume && null != data.oaOrderDetail.step_start_time_consume && "" != data.oaOrderDetail.step_start_time_consume) {
 								var rate = parseFloat(data.oaOrderDetail.step_start_time_consume);
-								if (rate <= 33) {
+								if( rate < 0 ) {
+									$("#detailRealStartColor").css("background-color","#0000FF");
+								}else if (rate <= 33) {
 									$("#detailRealStartColor").css("background-color", "#33cc00");
 								} else if (rate <= 66) {
 									$("#detailRealStartColor").css("background-color", "#ff9900");
@@ -131,7 +133,9 @@ define([ "v", "vl" ], function(v, vl) {
 							}
 							if (undefined != data.oaOrderDetail && undefined != data.oaOrderDetail.step_finish_time_consume && null != data.oaOrderDetail.step_finish_time_consume && "" != data.oaOrderDetail.step_finish_time_consume) {
 								var rate = parseFloat(data.oaOrderDetail.step_finish_time_consume);
-								if (rate <= 33) {
+								if( rate < 0 ) {
+									$("#detailRealFinishColor").css("background-color","#0000FF");
+								}else if (rate <= 33) {
 									$("#detailRealFinishColor").css("background-color", "#33cc00");
 								} else if (rate <= 66) {
 									$("#detailRealFinishColor").css("background-color", "#ff9900");

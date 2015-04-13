@@ -84,20 +84,24 @@ define([ "v","vl" ], function(v,vl) {
 							//计算流入颜色和流出颜色
 							if(undefined != data.oaOrderDetail && undefined != data.oaOrderDetail.step_start_time_consume && null != data.oaOrderDetail.step_start_time_consume && "" != data.oaOrderDetail.step_start_time_consume) {
 								var rate=parseFloat(data.oaOrderDetail.step_start_time_consume);
-								if(rate <= 33){
-									$("#detailRealStartColor").css("background-color","#33cc00");
+								if( rate < 0 ) {
+									$("#detailRealStartColor").css("background-color","#0000FF");
+								}else if(0 <= rate <= 33){
+									$("#detailRealStartColor").css("background-color","#33cc00");//绿色
 								}else if(rate <= 66){
-									$("#detailRealStartColor").css("background-color","#ff9900");
+									$("#detailRealStartColor").css("background-color","#ff9900");//黄色
 								}else if(rate <= 100){
-									$("#detailRealStartColor").css("background-color","#ff3300");
+									$("#detailRealStartColor").css("background-color","#ff3300");//红色
 								}else {
-									$("#detailRealStartColor").css("background-color","#000000");
+									$("#detailRealStartColor").css("background-color","#000000");//黑色
 								}
 								$("#detailRealStartColor").text(data.oaOrderDetail.step_start_time_consume + "%");
 							}
 							if(undefined != data.oaOrderDetail && undefined != data.oaOrderDetail.step_finish_time_consume && null != data.oaOrderDetail.step_finish_time_consume && "" != data.oaOrderDetail.step_finish_time_consume) {
 								var rate=parseFloat(data.oaOrderDetail.step_finish_time_consume);
-								if(rate <= 33){
+								if( rate < 0 ) {
+									$("#detailRealFinishColor").css("background-color","#0000FF");
+								}else if(rate <= 33){
 									$("#detailRealFinishColor").css("background-color","#33cc00");
 								}else if(rate <= 66){
 									$("#detailRealFinishColor").css("background-color","#ff9900");

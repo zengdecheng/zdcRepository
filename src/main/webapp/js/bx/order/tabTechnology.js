@@ -417,7 +417,9 @@ define([ "u","up","v","vl"  ], function(u,up) {
 					}
 					if(undefined != orderDetail.step_start_time_consume && null != orderDetail.step_start_time_consume && "" != orderDetail.step_start_time_consume) {
 						var rate=parseFloat(orderDetail.step_start_time_consume);
-						if(rate <= 33){
+						if(rate < 0){
+							$("#detailRealStartColor").css("background-color","#0000FF");
+						}else if(rate <= 33){
 							$("#detailRealStartColor").css("background-color","#33cc00");
 						}else if(rate <= 66){
 							$("#detailRealStartColor").css("background-color","#ff9900");
@@ -430,7 +432,9 @@ define([ "u","up","v","vl"  ], function(u,up) {
 					}
 					if(undefined != orderDetail.step_finish_time_consume && null != orderDetail.step_finish_time_consume && "" != orderDetail.step_finish_time_consume) {
 						var rate=parseFloat(orderDetail.step_finish_time_consume);
-						if(rate <= 33){
+						if(rate < 0){
+							$("#detailRealFinishColor").css("background-color","#0000FF");
+						}else if(rate <= 33){
 							$("#detailRealFinishColor").css("background-color","#33cc00");
 						}else if(rate <= 66){
 							$("#detailRealFinishColor").css("background-color","#ff9900");
