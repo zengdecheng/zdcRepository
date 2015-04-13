@@ -134,7 +134,7 @@
 						fillName='oaCost.pmemo' style="width: 100px" /></td>
 				</tr>
 				<tr>
-					<td align="center">工厂匹配系数</td>
+					<td align="center">匠人坊匹配系数</td>
 					<td><input id="pfactory_match_0"
 						class="validate[required,custom[number2],maxSize[10]]"
 						type="text" name='oaCost.pFactoryMatch' fillName='oaCost.pfactoryMatch[0]'

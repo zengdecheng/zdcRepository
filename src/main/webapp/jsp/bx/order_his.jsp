@@ -76,7 +76,7 @@
                         </td>
 
 
-                        <td><label class="">工厂：</label></td>
+                        <td><label class="">匠人坊：</label></td>
                         <td><input type="text" name="fsp.map.sewing_factory" value="${fsp.map.sewing_factory}" class="z_inp2" style="width:167px;" maxlength='20' /></td>
 
 
@@ -109,7 +109,7 @@
                             <%--<s:select theme="simple" list="@com.xbd.oa.utils.XbdBuffer@getStaffsByGroupName('qa')" listKey="map.login_name" listValue="map.login_name" headerKey="" headerValue="请选择" cssClass="z_inp2" cssStyle="width: 170px;" name="fsp.map.qadel_operator" value="%{fsp.map.qadel_operator}"></s:select>--%>
                         <%--</td>--%>
 
-                        <%--<td><label class="">工厂：</label></td>--%>
+                        <%--<td><label class="">匠人坊：</label></td>--%>
                         <%--<td><input type="text" name="fsp.map.sewing_factory" value="${fsp.map.sewing_factory}" class="z_inp2" style="width:167px;" maxlength='20' /></td>--%>
 
 
@@ -185,7 +185,7 @@
             <th width="80">下单日期</th>
             <th width="80">标准生产时间</th>
             <th width="80">MR</th>
-            <th width="80">工厂</th>
+            <th width="80">匠人坊</th>
             <th width="80">TPE</th>
             <th width="80">车缝产出数量</th>
             <th width="80">检验合格数量</th>
