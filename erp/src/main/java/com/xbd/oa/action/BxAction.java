@@ -923,13 +923,17 @@ public class BxAction extends Action {
                 sheet1FileInfo.put(j + ",55", "不生产");// 是否生产大货
             }
 
-            if (superList.get(i).get("nodahuo_reason") !=  null && superList.get(i).get("nodahuo_reason").toString().equals("1")) {
-                sheet1FileInfo.put(j + ",56", "质量");// 不生产大货原因
-            } else if(superList.get(i).get("nodahuo_reason") !=  null && superList.get(i).get("nodahuo_reason").toString().equals("2")){
-                sheet1FileInfo.put(j + ",56", "工艺");// 不生产大货原因
-            } else if(superList.get(i).get("nodahuo_reason") !=  null && superList.get(i).get("nodahuo_reason").toString().equals("3")){
-                sheet1FileInfo.put(j + ",56", "交期");// 不生产大货原因
+            if (superList.get(i).get("nodahuo_reason") !=  null) {
+                superList.get(i).set("nodahuo_reason", superList.get(i).get("nodahuo_reason").toString().replaceAll("1", "质量").replaceAll("2", "工艺").replaceAll("3", "交期"));
             }
+            sheet1FileInfo.put(j + ",56", superList.get(i).get("nodahuo_reason"));// 不生产大货原因
+//            if (superList.get(i).get("nodahuo_reason") !=  null && superList.get(i).get("nodahuo_reason").toString().equals("1")) {
+//                sheet1FileInfo.put(j + ",56", "质量");// 不生产大货原因
+//            } else if(superList.get(i).get("nodahuo_reason") !=  null && superList.get(i).get("nodahuo_reason").toString().equals("2")){
+//                sheet1FileInfo.put(j + ",56", "工艺");// 不生产大货原因
+//            } else if(superList.get(i).get("nodahuo_reason") !=  null && superList.get(i).get("nodahuo_reason").toString().equals("3")){
+//                sheet1FileInfo.put(j + ",56", "交期");// 不生产大货原因
+//            }
 
 
             sheet1FileInfo.put(j + ",57", superList.get(i).get("mr_nodahuo_othreaseon"));// 不生产其他大货原因
