@@ -1129,7 +1129,7 @@ ote.oa_timebase = ot.id ${case}1">
 		</parser>
 	</function>
 	
-	<function name="get_order_list_excel_info" type="sql" sql="SELECT od.value,oo.id, oq.qualified_total, oq.unqualified_total, ot.sewing_total, ood.worker, ot.sewing_factory, ood.operator, oo.sell_order_code, oo.cus_name, oo.cloth_class, oo.style_class, ood.wf_step, ood.wf_step_duration, ood.wf_real_start,ood.wf_real_finish,oo.begin_time,oo.except_finish,oon.num_info FROM oa_order AS oo LEFT JOIN oa_order_detail AS ood ON ood.oa_order = oo.id LEFT JOIN oa_tpe AS ot ON ot.oa_order_id = oo.id LEFT JOIN oa_qa AS oq ON oq.oa_order_id = oo.id LEFT JOIN oa_dt AS od ON oo.cloth_class = od.code LEFT JOIN oa_order_num AS oon ON oo.oa_order_num_id = oon.id where $$ order by id asc,task_id asc">
+	<function name="get_order_list_excel_info" type="sql" sql="SELECT od.value,oo.id, oq.qualified_total, oq.unqualified_total, ot.sewing_total, ood.worker, ot.sewing_factory, ood.operator, oo.sell_order_code, oo.cus_name, oo.cloth_class, oo.style_class, ood.wf_step, ood.wf_step_duration, ood.wf_real_start,ood.wf_real_finish,oo.begin_time,oo.except_finish,oon.num_info,oo.wf_step_name FROM oa_order AS oo LEFT JOIN oa_order_detail AS ood ON ood.oa_order = oo.id LEFT JOIN oa_tpe AS ot ON ot.oa_order_id = oo.id LEFT JOIN oa_qa AS oq ON oq.oa_order_id = oo.id LEFT JOIN oa_dt AS od ON oo.cloth_class = od.code LEFT JOIN oa_order_num AS oon ON oo.oa_order_num_id = oon.id where $$ order by id asc,task_id asc">
 	</function>
 		
 	<!-- 得到订单进度跟踪报表  -->
