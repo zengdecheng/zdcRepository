@@ -578,6 +578,16 @@ public class BxAction extends Action {
 
             long hetongTime = lazyMap.get("except_finish") != null ? ((Date)lazyMap.get("except_finish")).getTime() : 0l;
 
+
+
+            OaOrder tocOaOrder = new OaOrder();
+            tocOaOrder.setSellReadyTime(lazyMap.get("sell_ready_time") != null ? (Long)lazyMap.get("sell_ready_time") : 0l);
+            tocOaOrder.setStandardTime(lazyMap.get("standard_time") != null ? (Long) lazyMap.get("standard_time") : 0l);
+            tocOaOrder.setCraftTime(lazyMap.get("craft_time") != null ? (Long) lazyMap.get("craft_time") : 0l);
+            tocOaOrder.setGoodsTime(lazyMap.get("goods_time") != null ? (Timestamp) lazyMap.get("goods_time") : null);
+
+
+
             // 优先级
             // if (0 != begin_time && 0 != except_finish) {
             // float baifenzhu = (nowDate - begin_time + 24 * 60 * 60 * 1000) / (except_finish - begin_time + 24 * 60 * 60 * 1000);
@@ -615,13 +625,13 @@ public class BxAction extends Action {
 
                 sheet1FileInfo.put(j + ",8", lazyMap.get("mrdb_operator") != null ? lazyMap.get("mrdb_operator") : "");// 负责MR
 
-                sheet1FileInfo.put(j + ",18", lazyMap.get("mrdb_wf_real_start") != null ? new CustomCell(lazyMap.get("mrdb_wf_real_start"), "Date") : new CustomCell());// MR补录订单日期
+                sheet1FileInfo.put(j + ",25", lazyMap.get("mrdb_wf_real_start") != null ? new CustomCell(lazyMap.get("mrdb_wf_real_start"), "Date") : new CustomCell());// MR补录订单日期
 
                 //修改位置
-                sheet1FileInfo.put(j + ",19", lazyMap.get("mrdb_wf_real_finish") != null ? new CustomCell(lazyMap.get("mrdb_wf_real_finish"), "Date") : new CustomCell());// MR补录订单日期
+                sheet1FileInfo.put(j + ",26", lazyMap.get("mrdb_wf_real_finish") != null ? new CustomCell(lazyMap.get("mrdb_wf_real_finish"), "Date") : new CustomCell());// MR补录订单日期
 
 
-                sheet1FileInfo.put(j + ",25", lazyMap.get("jsdel_operator") != null ? lazyMap.get("jsdel_operator") : "");// 打版技术
+                sheet1FileInfo.put(j + ",31", lazyMap.get("jsdel_operator") != null ? lazyMap.get("jsdel_operator") : "");// 打版技术
 
                 long actualTime = 0l;
                 // 计算实际生产周期
@@ -629,45 +639,43 @@ public class BxAction extends Action {
                         && !"".equals(superList.get(i).get("mrdb_wf_real_finish"))) {
 
                     actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("bqcdel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdb_wf_real_finish"));
-                    sheet1FileInfo.put(j + ",22", WebUtil.getTimeDisPlayExcel(actualTime));// 实际生产周期
+                    sheet1FileInfo.put(j + ",28", WebUtil.getTimeDisPlayExcel(actualTime));// 实际生产周期
                 }
 
                 long bzTime = (superList.get(i).get("standard_time") != null ? (long)superList.get(i).get("standard_time") : 0l)
                         + (superList.get(i).get("craft_time") != null ? (long)superList.get(i).get("craft_time") : 0l);
-                sheet1FileInfo.put(j + ",44", WebUtil.getTimeDisPlayExcel(bzTime) + "");// 标准生产周期
+                sheet1FileInfo.put(j + ",52", WebUtil.getTimeDisPlayExcel(bzTime) + "");// 标准生产周期
 
                 long scProgress = actualTime - bzTime;
                 if(scProgress > 0){
                     // 实际生产进度
-                    sheet1FileInfo.put(j + ",45", new CustomCell("超期"+WebUtil.getTimeDisPlayExcel(scProgress), "String").setCellColor(IndexedColors.RED.index).setFontColor(IndexedColors.WHITE.index));
+                    sheet1FileInfo.put(j + ",53", new CustomCell("超期"+WebUtil.getTimeDisPlayExcel(scProgress), "String").setCellColor(IndexedColors.RED.index).setFontColor(IndexedColors.WHITE.index));
                 }else{
-                    sheet1FileInfo.put(j + ",45", new CustomCell("提前"+WebUtil.getTimeDisPlayExcel(Math.abs(scProgress)), "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
+                    sheet1FileInfo.put(j + ",53", new CustomCell("提前"+WebUtil.getTimeDisPlayExcel(Math.abs(scProgress)), "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
                 }
 
-                sheet1FileInfo.put(j + ",46", lazyMap.get("feeding_time") != null ? new CustomCell(lazyMap.get("feeding_time"), "Date") : new CustomCell());// 建议投料日期
+                sheet1FileInfo.put(j + ",54", lazyMap.get("feeding_time") != null ? new CustomCell(lazyMap.get("feeding_time"), "Date") : new CustomCell());// 建议投料日期
 
 
                 if (lazyMap.get("bqcdel_wf_real_finish") != null && !"".equals(lazyMap.get("bqcdel_wf_real_finish"))) {
 
                     Date now = (Date) lazyMap.get("bqcdel_wf_real_finish");
-                    Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
-                    Date beginTime = (Date) lazyMap.get("begin_time");
-                    Date exceptFinish = (Date) lazyMap.get("except_finish");
-                    double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
-                    DecimalFormat df = new DecimalFormat("#");
-                    String time_consume = df.format(time);
+                    Timestamp tocTime = new Timestamp(now.getTime()/1000*1000);
+                    Map tocMap = new HashMap();
+                    tocMap.put("oaOrder", tocOaOrder);
+                    tocMap.put("tocTime", tocTime);
+                    Float data = BizUtil.computeToc(tocMap);
                     // 订单完成时TOC百分比
-                    int data = Integer.parseInt(time_consume);
                     if (data > 0 && data <= 33) {
-                        sheet1FileInfo.put(j + ",35", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
+                        sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
                     } else if (data > 33 && data <= 66) {
-                        sheet1FileInfo.put(j + ",35", new CustomCell(data + "%", "String").setCellColor(IndexedColors.ORANGE.index).setFontColor(IndexedColors.WHITE.index));
+                        sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.ORANGE.index).setFontColor(IndexedColors.WHITE.index));
                     } else if (data > 66 && data <= 100) {
-                        sheet1FileInfo.put(j + ",35", new CustomCell(data + "%", "String").setCellColor(IndexedColors.RED.index).setFontColor(IndexedColors.WHITE.index));
+                        sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.RED.index).setFontColor(IndexedColors.WHITE.index));
                     } else if (data > 100) {
-                        sheet1FileInfo.put(j + ",35", new CustomCell(data + "%", "String").setCellColor(IndexedColors.BLACK.index).setFontColor(IndexedColors.WHITE.index));
+                        sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.BLACK.index).setFontColor(IndexedColors.WHITE.index));
                     } else {
-                        sheet1FileInfo.put(j + ",35", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
+                        sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
                     }
                     // sheet1FileInfo.put(j+",34", time_consume+"%");
                 }
@@ -678,7 +686,7 @@ public class BxAction extends Action {
 
                     actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("bqcdel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdb_wf_real_start"));
                     sczq = actualTime; //用于计算与交期差额
-                    sheet1FileInfo.put(j + ",37", WebUtil.getTimeDisPlayExcel(actualTime));// 实际生产周期
+                    sheet1FileInfo.put(j + ",43", WebUtil.getTimeDisPlayExcel(actualTime));// 实际生产周期
                 }
 
                 // sheet1FileInfo.put(i+",37", logsCounts);//实际订单周期
@@ -701,61 +709,70 @@ public class BxAction extends Action {
                 sheet1FileInfo.put(j + ",8", lazyMap.get("mrdel_operator") != null ? lazyMap.get("mrdel_operator") : "");// 负责MR
 
                 sheet1FileInfo.put(j + ",11", lazyMap.get("tpedel_operator") != null ? lazyMap.get("tpedel_operator") : "");// TPE
-                sheet1FileInfo.put(j + ",18", lazyMap.get("mrdel_wf_real_start") != null ? new CustomCell(lazyMap.get("mrdel_wf_real_start"), "Date") : new CustomCell());// MR补录订单日期
+                sheet1FileInfo.put(j + ",24", lazyMap.get("mrdel_wf_real_start") != null ? new CustomCell(lazyMap.get("mrdel_wf_real_start"), "Date") : new CustomCell());// MR补录订单日期
 
-                sheet1FileInfo.put(j + ",19", lazyMap.get("mrdel_wf_real_finish") != null ? new CustomCell(lazyMap.get("mrdel_wf_real_finish"), "Date") : new CustomCell());// MR补录订单完成日期
+                sheet1FileInfo.put(j + ",25", lazyMap.get("mrdel_wf_real_finish") != null ? new CustomCell(lazyMap.get("mrdel_wf_real_finish"), "Date") : new CustomCell());// MR补录订单完成日期
 
-                sheet1FileInfo.put(j + ",20", lazyMap.get("jshdel_wf_real_finish") != null ? new CustomCell(lazyMap.get("jshdel_wf_real_finish"), "Date") : new CustomCell());// 技术完成日期（仅大货）
+                sheet1FileInfo.put(j + ",26", lazyMap.get("jshdel_wf_real_finish") != null ? new CustomCell(lazyMap.get("jshdel_wf_real_finish"), "Date") : new CustomCell());// 技术完成日期（仅大货）
 
                 sheet1FileInfo.put(j + ",12", lazyMap.get("sewing_total") != null ? lazyMap.get("sewing_total") : "0");// 车缝产出数量
                 sheet1FileInfo.put(j + ",13", lazyMap.get("qualified_total") != null ? lazyMap.get("qualified_total") : "0");// 合格数量
                 sheet1FileInfo.put(j + ",14", lazyMap.get("unqualified_total") != null ? lazyMap.get("unqualified_total") : "0");// 次品数量
 
-                sheet1FileInfo.put(j + ",25", lazyMap.get("jshdel_operator") != null ? lazyMap.get("jshdel_operator") : "");// 大货技术
+
+
+                sheet1FileInfo.put(j + ",15", lazyMap.get("gy_qualified") != null ? lazyMap.get("gy_qualified") : "0");// 次品数量
+                sheet1FileInfo.put(j + ",16", lazyMap.get("bl_qualified") != null ? lazyMap.get("bl_qualified") : "0");// 次品数量
+                sheet1FileInfo.put(j + ",17", lazyMap.get("hd_qualified") != null ? lazyMap.get("hd_qualified") : "0");// 次品数量
+                sheet1FileInfo.put(j + ",18", lazyMap.get("cp_qualified") != null ? lazyMap.get("cp_qualified") : "0");// 次品数量
+                sheet1FileInfo.put(j + ",19", lazyMap.get("hd_lost") != null ? lazyMap.get("hd_lost") : "0");// 次品数量
+                sheet1FileInfo.put(j + ",20", lazyMap.get("other_qualified") != null ? lazyMap.get("other_qualified") : "0");// 次品数量
+
+
+
+                sheet1FileInfo.put(j + ",31", lazyMap.get("jshdel_operator") != null ? lazyMap.get("jshdel_operator") : "");// 大货技术
                 long actualTime = 0l;
                 // 计算实际生产周期
                 if (superList.get(i).get("qadel_wf_real_finish") != null && !"".equals(superList.get(i).get("qadel_wf_real_finish")) && superList.get(i).get("mrdel_wf_real_finish") != null
                         && !"".equals(superList.get(i).get("mrdel_wf_real_finish"))) {
 
                     actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("qadel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdel_wf_real_finish"));
-                    sheet1FileInfo.put(j + ",22", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 实际生产周期
+                    sheet1FileInfo.put(j + ",28", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 实际生产周期
                 }
 
                 long bzTime = (superList.get(i).get("standard_time") != null ? (long)superList.get(i).get("standard_time") : 0l)
                         + (superList.get(i).get("craft_time") != null ? (long)superList.get(i).get("craft_time") : 0l);
-                sheet1FileInfo.put(j + ",44", WebUtil.getTimeDisPlayExcel(bzTime) + "");// 标准生产周期
+                sheet1FileInfo.put(j + ",52", WebUtil.getTimeDisPlayExcel(bzTime) + "");// 标准生产周期
 
                 long scProgress = actualTime - bzTime;
                 if(scProgress > 0){
                     // 实际生产进度
-                    sheet1FileInfo.put(j + ",45", new CustomCell("超期"+WebUtil.getTimeDisPlayExcel(scProgress), "String").setCellColor(IndexedColors.RED.index).setFontColor(IndexedColors.WHITE.index));
+                    sheet1FileInfo.put(j + ",53", new CustomCell("超期"+WebUtil.getTimeDisPlayExcel(scProgress), "String").setCellColor(IndexedColors.RED.index).setFontColor(IndexedColors.WHITE.index));
                 }else{
-                    sheet1FileInfo.put(j + ",45", new CustomCell("提前"+WebUtil.getTimeDisPlayExcel(Math.abs(scProgress)), "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
+                    sheet1FileInfo.put(j + ",53", new CustomCell("提前"+WebUtil.getTimeDisPlayExcel(Math.abs(scProgress)), "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
                 }
 
-                sheet1FileInfo.put(j + ",46", lazyMap.get("feeding_time") != null ? new CustomCell(lazyMap.get("feeding_time"), "Date") : new CustomCell());// 建议投料日期
+                sheet1FileInfo.put(j + ",54", lazyMap.get("feeding_time") != null ? new CustomCell(lazyMap.get("feeding_time"), "Date") : new CustomCell());// 建议投料日期
 
                 if (lazyMap.get("wldel_wf_real_finish") != null && !"".equals(lazyMap.get("wldel_wf_real_finish"))) {
 
                     Date now = (Date) lazyMap.get("wldel_wf_real_finish");
-                    Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
-                    Date beginTime = (Date) lazyMap.get("begin_time");
-                    Date exceptFinish = (Date) lazyMap.get("except_finish");
-                    double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
-                    DecimalFormat df = new DecimalFormat("#");
-                    String time_consume = df.format(time);
+                    Timestamp tocTime = new Timestamp(now.getTime()/1000*1000);
+                    Map tocMap = new HashMap();
+                    tocMap.put("oaOrder", tocOaOrder);
+                    tocMap.put("tocTime", tocTime);
+                    Float data = BizUtil.computeToc(tocMap);
                     // 订单完成时TOC百分比
-                    int data = Integer.parseInt(time_consume);
                     if (data > 0 && data <= 33) {
-                        sheet1FileInfo.put(j + ",35", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
+                        sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
                     } else if (data > 33 && data <= 66) {
-                        sheet1FileInfo.put(j + ",35", new CustomCell(data + "%", "String").setCellColor(IndexedColors.ORANGE.index).setFontColor(IndexedColors.WHITE.index));
+                        sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.ORANGE.index).setFontColor(IndexedColors.WHITE.index));
                     } else if (data > 66 && data <= 100) {
-                        sheet1FileInfo.put(j + ",35", new CustomCell(data + "%", "String").setCellColor(IndexedColors.RED.index).setFontColor(IndexedColors.WHITE.index));
+                        sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.RED.index).setFontColor(IndexedColors.WHITE.index));
                     } else if (data > 100) {
-                        sheet1FileInfo.put(j + ",35", new CustomCell(data + "%", "String").setCellColor(IndexedColors.BLACK.index).setFontColor(IndexedColors.WHITE.index));
+                        sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.BLACK.index).setFontColor(IndexedColors.WHITE.index));
                     } else {
-                        sheet1FileInfo.put(j + ",35", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
+                        sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
                     }
                     // sheet1FileInfo.put(j+",34", time_consume+"%");
                 }
@@ -765,7 +782,7 @@ public class BxAction extends Action {
                         && !"".equals(superList.get(i).get("mrdel_wf_real_start"))) {
                     actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("wldel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdel_wf_real_start"));
                     sczq = actualTime; //用于计算与交期差额
-                    sheet1FileInfo.put(j + ",37", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 实际生产周期
+                    sheet1FileInfo.put(j + ",43", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 实际生产周期
                 }
 
 
@@ -782,47 +799,46 @@ public class BxAction extends Action {
             sheet1FileInfo.put(j + ",10", lazyMap.get("sewing_factory") != null ? lazyMap.get("sewing_factory") : "");// 工厂
 
             if (lazyMap.get("sewing_total") != null && !"".equals(lazyMap.get("sewing_total")) && lazyMap.get("qualified_total") != null && !"".equals(lazyMap.get("qualified_total"))) {
-                sheet1FileInfo.put(j + ",15", (int) new BigDecimal((Float.parseFloat(lazyMap.get("qualified_total").toString()) / Float.parseFloat(lazyMap.get("sewing_total").toString())) * 100)
+                sheet1FileInfo.put(j + ",21", (int) new BigDecimal((Float.parseFloat(lazyMap.get("qualified_total").toString()) / Float.parseFloat(lazyMap.get("sewing_total").toString())) * 100)
                         .setScale(0, BigDecimal.ROUND_HALF_UP).floatValue() + "%");// 合格率
             } else {
-                sheet1FileInfo.put(j + ",15", "");// 合格率
+                sheet1FileInfo.put(j + ",21", "");// 合格率
             }
-            sheet1FileInfo.put(j + ",16", lazyMap.get("qadel_wf_real_finish") != null ? new CustomCell(lazyMap.get("qadel_wf_real_finish"), "Date") : new CustomCell());// QA完成日期
+            sheet1FileInfo.put(j + ",22", lazyMap.get("qadel_wf_real_finish") != null ? new CustomCell(lazyMap.get("qadel_wf_real_finish"), "Date") : new CustomCell());// QA完成日期
 
             if (lazyMap.get("qadel_wf_real_finish") != null) {
                 Date now = (Date) lazyMap.get("qadel_wf_real_finish");
-                Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
-                Date beginTime = (Date) lazyMap.get("begin_time");
-                Date exceptFinish = (Date) lazyMap.get("except_finish");
-                double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
-                DecimalFormat df = new DecimalFormat("#");
-                String time_consume = df.format(time);
+                Timestamp tocTime = new Timestamp(now.getTime()/1000*1000);
+                Map tocMap = new HashMap();
+                tocMap.put("oaOrder", tocOaOrder);
+                tocMap.put("tocTime", tocTime);
+                Float data = BizUtil.computeToc(tocMap);
+
                 // QA完成时TOC百分比
-                int data = Integer.parseInt(time_consume);
                 if (data > 0 && data <= 33) {
-                    sheet1FileInfo.put(j + ",17", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
+                    sheet1FileInfo.put(j + ",23", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
                 } else if (data > 33 && data <= 66) {
-                    sheet1FileInfo.put(j + ",17", new CustomCell(data + "%", "String").setCellColor(IndexedColors.ORANGE.index).setFontColor(IndexedColors.WHITE.index));
+                    sheet1FileInfo.put(j + ",23", new CustomCell(data + "%", "String").setCellColor(IndexedColors.ORANGE.index).setFontColor(IndexedColors.WHITE.index));
                 } else if (data > 66 && data <= 100) {
-                    sheet1FileInfo.put(j + ",17", new CustomCell(data + "%", "String").setCellColor(IndexedColors.RED.index).setFontColor(IndexedColors.WHITE.index));
+                    sheet1FileInfo.put(j + ",23", new CustomCell(data + "%", "String").setCellColor(IndexedColors.RED.index).setFontColor(IndexedColors.WHITE.index));
                 } else if (data > 100) {
-                    sheet1FileInfo.put(j + ",17", new CustomCell(data + "%", "String").setCellColor(IndexedColors.BLACK.index).setFontColor(IndexedColors.WHITE.index));
+                    sheet1FileInfo.put(j + ",23", new CustomCell(data + "%", "String").setCellColor(IndexedColors.BLACK.index).setFontColor(IndexedColors.WHITE.index));
                 } else {
-                    sheet1FileInfo.put(j + ",17", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
+                    sheet1FileInfo.put(j + ",23", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
                 }
 
                 // sheet1FileInfo.put(j+",18", time_consume+"%");
             }
 
 
-            sheet1FileInfo.put(j + ",21", lazyMap.get("except_finish") != null ? new CustomCell(lazyMap.get("except_finish"), "Date") : new CustomCell());// 合同交期
+            sheet1FileInfo.put(j + ",27", lazyMap.get("except_finish") != null ? new CustomCell(lazyMap.get("except_finish"), "Date") : new CustomCell());// 合同交期
 
-            sheet1FileInfo.put(j + ",23", lazyMap.get("style_craft") != null ? lazyMap.get("style_craft") : "");// 特殊工艺
-            sheet1FileInfo.put(j + ",24", lazyMap.get("fidel_operator") != null ? lazyMap.get("fidel_operator") : "");// 采购
-            sheet1FileInfo.put(j + ",26", lazyMap.get("cqdel_operator") != null ? lazyMap.get("cqdel_operator") : "");// 核价
-            sheet1FileInfo.put(j + ",27", lazyMap.get("cqcdel_operator") != null ? lazyMap.get("cqcdel_operator") : "");// CQC
-            sheet1FileInfo.put(j + ",28", lazyMap.get("qadel_operator") != null ? lazyMap.get("qadel_operator") : "");// QA
-            sheet1FileInfo.put(j + ",29", lazyMap.get("style_class") != null ? lazyMap.get("style_class") : "");// 一级分类
+            sheet1FileInfo.put(j + ",29", lazyMap.get("style_craft") != null ? lazyMap.get("style_craft") : "");// 特殊工艺
+            sheet1FileInfo.put(j + ",30", lazyMap.get("fidel_operator") != null ? lazyMap.get("fidel_operator") : "");// 采购
+            sheet1FileInfo.put(j + ",32", lazyMap.get("cqdel_operator") != null ? lazyMap.get("cqdel_operator") : "");// 核价
+            sheet1FileInfo.put(j + ",33", lazyMap.get("cqcdel_operator") != null ? lazyMap.get("cqcdel_operator") : "");// CQC
+            sheet1FileInfo.put(j + ",34", lazyMap.get("qadel_operator") != null ? lazyMap.get("qadel_operator") : "");// QA
+            sheet1FileInfo.put(j + ",35", lazyMap.get("style_class") != null ? lazyMap.get("style_class") : "");// 一级分类
             /**
              * 从oa_dt表中查询二级分类数据
              */
@@ -831,14 +847,14 @@ public class BxAction extends Action {
             dtFsp.set("code", lazyMap.get("cloth_class"));
             beans = getObjectsBySql(dtFsp);
             for (int n = 0; n < beans.size(); n++) {
-                sheet1FileInfo.put(j + ",30", beans.get(n).get("value") != null ? beans.get(n).get("value") : "");// 二级分类
+                sheet1FileInfo.put(j + ",36", beans.get(n).get("value") != null ? beans.get(n).get("value") : "");// 二级分类
             }
             beans.clear();
 
-            sheet1FileInfo.put(j + ",31", lazyMap.get("style_type") != null ? lazyMap.get("style_type") : "");// 男女款
-            sheet1FileInfo.put(j + ",32", lazyMap.get("order_code") != null ? lazyMap.get("order_code") : "");// 合同号
-            sheet1FileInfo.put(j + ",33", lazyMap.get("pay_type") != null ? lazyMap.get("pay_type") : "");// 付款方式
-            sheet1FileInfo.put(j + ",34", lazyMap.get("end_time") != null ? new CustomCell(lazyMap.get("end_time"), "Date") : new CustomCell());// 订单完成日期
+            sheet1FileInfo.put(j + ",37", lazyMap.get("style_type") != null ? lazyMap.get("style_type") : "");// 男女款
+            sheet1FileInfo.put(j + ",38", lazyMap.get("order_code") != null ? lazyMap.get("order_code") : "");// 合同号
+            sheet1FileInfo.put(j + ",39", lazyMap.get("pay_type") != null ? lazyMap.get("pay_type") : "");// 付款方式
+            sheet1FileInfo.put(j + ",40", lazyMap.get("end_time") != null ? new CustomCell(lazyMap.get("end_time"), "Date") : new CustomCell());// 订单完成日期
 
             FSPBean logFsp = new FSPBean();
             logFsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_OALOGISTICS_BY_SQL);
@@ -848,16 +864,16 @@ public class BxAction extends Action {
             for (int n = 0; n < beans.size(); n++) {
                 logsCounts += Double.parseDouble(beans.get(n).get("delivery_num") != null ? beans.get(n).get("delivery_num").toString() : "0");
             }
-            sheet1FileInfo.put(j + ",36", logsCounts);// 发货数量
+            sheet1FileInfo.put(j + ",42", logsCounts);// 发货数量
 
             // 合同周期
             if (superList.get(i).get("except_finish") != null && !"".equals(superList.get(i).get("except_finish")) && superList.get(i).get("begin_time") != null
                     && !"".equals(superList.get(i).get("begin_time"))) {
 
                 Long actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("except_finish"), (Timestamp) superList.get(i).get("begin_time"));
-                sheet1FileInfo.put(j + ",38", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 合同周期
+                sheet1FileInfo.put(j + ",44", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 合同周期
                 String jqce = WebUtil.getTimeDisPlayExcel(Math.abs(sczq - actualTime));
-                sheet1FileInfo.put(j + ",39", (sczq - actualTime) < 0 ? "-"+jqce : jqce );// 与交期差额
+                sheet1FileInfo.put(j + ",45", (sczq - actualTime) < 0 ? "-"+jqce : jqce );// 与交期差额
             }
 
 //            // 与交期差额
@@ -867,25 +883,58 @@ public class BxAction extends Action {
 //                sheet1FileInfo.put(j + ",39", WebUtil.getTimeDisPlayExcel(Math.abs(sczq - actualTime)));// 与交期差额
 //            }
 
-            sheet1FileInfo.put(j + ",40", superList.get(i).get("terminate_memo") != null ? superList.get(i).get("mr_if_repeat") : "");// 终止原因
+            sheet1FileInfo.put(j + ",46", superList.get(i).get("terminate_memo") != null ? superList.get(i).get("mr_if_repeat") : "");// 终止原因
 
             // sheet1FileInfo.put(i+",41", "需要");//终止原因
             if (superList.get(i).get("mr_if_repeat") != null && !superList.get(i).get("mr_if_repeat").toString().equals("")) {
                 if (superList.get(i).get("mr_if_repeat").toString().equals("0")) {
-                    sheet1FileInfo.put(j + ",41", "需要");// 是否需要复版
+                    sheet1FileInfo.put(j + ",47", "需要");// 是否需要复版
                 } else {
-                    sheet1FileInfo.put(j + ",41", "不需要");// 是否需要复版
+                    sheet1FileInfo.put(j + ",47", "不需要");// 是否需要复版
                 }
 
             }
             if (superList.get(i).get("mr_if_qualified") != null && !superList.get(i).get("mr_if_qualified").toString().equals("")) {
                 if (superList.get(i).get("mr_if_qualified").toString().equals("0")) {
-                    sheet1FileInfo.put(j + ",42", "合格");// 是否合格
+                    sheet1FileInfo.put(j + ",48", "合格");// 是否合格
                 } else {
-                    sheet1FileInfo.put(j + ",42", "不合格");// 是否合格
+                    sheet1FileInfo.put(j + ",48", "不合格");// 是否合格
                 }
             }
-            sheet1FileInfo.put(j + ",43", superList.get(i).get("p_sam") != null ? superList.get(i).get("p_sam") : "");// 核价SAM
+
+
+            if (superList.get(i).get("is_over_order") !=  null && superList.get(i).get("is_over_order").toString().equals("0")) {
+                sheet1FileInfo.put(j + ",49", "否");// 是否翻单
+            } else if(superList.get(i).get("is_over_order") !=  null && superList.get(i).get("is_over_order").toString().equals("1")){
+                sheet1FileInfo.put(j + ",49", "是");// 是否翻单
+            }
+
+            if (superList.get(i).get("is_special_fabric") !=  null && superList.get(i).get("is_special_fabric").toString().equals("0")) {
+                sheet1FileInfo.put(j + ",50", "否");// 是否特俗面料抽
+            } else if(superList.get(i).get("is_special_fabric") !=  null && superList.get(i).get("is_special_fabric").toString().equals("1")){
+                sheet1FileInfo.put(j + ",50", "是");// 是否特俗面料抽
+            }
+
+
+            //mr_if_dahuo, mr_nodahuo_othreaseon, mr_nodahuo_reason
+            if (superList.get(i).get("mr_if_dahuo") !=  null && superList.get(i).get("mr_if_dahuo").toString().equals("0")) {
+                sheet1FileInfo.put(j + ",55", "是");// 是否生产大货
+            } else if(superList.get(i).get("mr_if_dahuo") !=  null && superList.get(i).get("mr_if_dahuo").toString().equals("1")){
+                sheet1FileInfo.put(j + ",55", "否");// 是否生产大货
+            }
+
+            if (superList.get(i).get("nodahuo_reason") !=  null && superList.get(i).get("nodahuo_reason").toString().equals("1")) {
+                sheet1FileInfo.put(j + ",56", "质量");// 不生产大货原因
+            } else if(superList.get(i).get("nodahuo_reason") !=  null && superList.get(i).get("nodahuo_reason").toString().equals("2")){
+                sheet1FileInfo.put(j + ",56", "工艺");// 不生产大货原因
+            } else if(superList.get(i).get("nodahuo_reason") !=  null && superList.get(i).get("nodahuo_reason").toString().equals("3")){
+                sheet1FileInfo.put(j + ",56", "交期");// 不生产大货原因
+            }
+
+
+            sheet1FileInfo.put(j + ",57", superList.get(i).get("mr_nodahuo_othreaseon"));// 不生产其他大货原因
+
+            sheet1FileInfo.put(j + ",51", superList.get(i).get("p_sam") != null ? superList.get(i).get("p_sam") : "");// 核价SAM
 
 
 
@@ -986,12 +1035,26 @@ public class BxAction extends Action {
             Long sellReadyTime = beans.get(i).get("sell_ready_time") == null ? 0 : (Long) beans.get(i).get("sell_ready_time");
             Long standardTime = beans.get(i).get("standard_time") == null ? 0 : (Long) beans.get(i).get("standard_time");
             Long craftTime = beans.get(i).get("craft_time") == null ? 0 : (Long) beans.get(i).get("craft_time");
-            Long orderTime = (sellReadyTime + standardTime + craftTime) / 9 * 24;
             // 交期
             Timestamp goodsTime = (Timestamp) beans.get(i).get("goods_time");
+
+            OaOrder tocOaOrder = new OaOrder();
+            tocOaOrder.setSellReadyTime(sellReadyTime);
+            tocOaOrder.setStandardTime(standardTime);
+            tocOaOrder.setCraftTime(craftTime);
+            tocOaOrder.setGoodsTime(goodsTime);
+
+
             // 当前工作时间
-            Timestamp workTime = BizUtil.getOperatingTime(new Timestamp(new Date().getTime()));
-            Integer cycle1 = (int) ((workTime.getTime() - goodsTime.getTime() + orderTime - 60 * 60 * 1000 * 24d) / orderTime * 100);
+
+            Timestamp tocTime = new Timestamp(System.currentTimeMillis()/1000*1000);
+            if(beans.get(i).get("wf_step") != null && "finish_999".equals(beans.get(i).get("wf_step").toString())){
+                tocTime = BizUtil.getOperatingTime((Timestamp)beans.get(i).get("end_time"));
+            }
+            Map tocMap = new HashMap();
+            tocMap.put("oaOrder", tocOaOrder);
+            tocMap.put("tocTime", tocTime);
+            Float cycle1 = BizUtil.computeToc(tocMap);
 
             beans.get(i).set("data", cycle1);
             if (orderColor != null && !"".equals(orderColor)) {
@@ -1035,7 +1098,7 @@ public class BxAction extends Action {
 
         for (int i = 0; i < beans.size(); i++) {
             for (int j = i; j < beans.size(); j++) {
-                if (Integer.parseInt(beans.get(i).get("data").toString()) < Integer.parseInt(beans.get(j).get("data").toString())) {
+                if (Float.parseFloat(beans.get(i).get("data").toString()) < Float.parseFloat(beans.get(j).get("data").toString())) {
                     LazyDynaMap temp = beans.get(i);
                     beans.set(i, beans.get(j));
                     beans.set(j, temp);
@@ -1055,8 +1118,20 @@ public class BxAction extends Action {
             Date beginTime = (Date) lazyMap.get("begin_time");
             Date exceptFinish = (Date) lazyMap.get("except_finish");
 
+            Long sellReadyTime = lazyMap.get("sell_ready_time") == null ? 0 : (Long) lazyMap.get("sell_ready_time");
+            Long standardTime = lazyMap.get("standard_time") == null ? 0 : (Long) lazyMap.get("standard_time");
+            Long craftTime = lazyMap.get("craft_time") == null ? 0 : (Long) lazyMap.get("craft_time");
+            // 交期
+            Timestamp goodsTime = (Timestamp) lazyMap.get("goods_time");
+
+            OaOrder tocOaOrder = new OaOrder();
+            tocOaOrder.setSellReadyTime(sellReadyTime);
+            tocOaOrder.setStandardTime(standardTime);
+            tocOaOrder.setCraftTime(craftTime);
+            tocOaOrder.setGoodsTime(goodsTime);
+
             // 优先级
-            int data = lazyMap.get("data") != null ? (int) Double.parseDouble(lazyMap.get("data").toString()) : 0;
+            float data = lazyMap.get("data") != null ?  Float.parseFloat(lazyMap.get("data").toString()) : 0;
             if (data > 0 && data <= 33) {
                 sheet1FileInfo.put(j + ",0", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
             } else if (data > 33 && data <= 66) {
@@ -1116,10 +1191,11 @@ public class BxAction extends Action {
 					// QA完成时TOC百分比
 					Date now = (Date) beans.get(n).get("wf_real_finish");
 					if (now != null) {
-						Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
-						double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
-						DecimalFormat df = new DecimalFormat("#");
-						String time_consume = df.format(time);
+                        Timestamp tocTime = new Timestamp(now.getTime()/1000*1000);
+                        Map tocMap = new HashMap();
+                        tocMap.put("oaOrder", tocOaOrder);
+                        tocMap.put("tocTime", tocTime);
+                        Float time_consume = BizUtil.computeToc(tocMap);
 						sheet1FileInfo.put(j + ",20", time_consume + "%");
 					} else {
 						sheet1FileInfo.put(j + ",20", "");
@@ -7095,7 +7171,7 @@ public class BxAction extends Action {
 	 * 
 	 * @author 张华
 	 */
-	public void jsonGetThirdNode() {
+	public void jsonjsonGetThirdNode() {
 		Map resMap = new HashMap();// 返回结果
 		try {
 			String orderIds = Struts2Utils.getParameter("oaOrder.id");
@@ -9019,8 +9095,53 @@ public class BxAction extends Action {
 				} else {
 					bean.set("unqualified_num_info", colors);
 				}
+                float unQualifiedSum = 0l;
+                if(bean.get("gy_qualified") != null){
+                    bean.set("gyQualified", bean.get("gy_qualified"));
+                    unQualifiedSum += (float)bean.get("gy_qualified");
+                }else{
+                    bean.set("gyQualified", "");
+                }
+
+                if(bean.get("bl_qualified") != null){
+                    bean.set("blQualified", bean.get("bl_qualified"));
+                    unQualifiedSum += (float)bean.get("bl_qualified");
+                }else{
+                    bean.set("blQualified", "");
+                }
+
+                if(bean.get("hd_qualified") != null){
+                    bean.set("hdQualified", bean.get("hd_qualified"));
+                    unQualifiedSum += (float)bean.get("hd_qualified");
+                }else{
+                    bean.set("hdQualified", "");
+                }
+
+                if(bean.get("cp_qualified") != null){
+                    bean.set("cpQualified", bean.get("cp_qualified"));
+                    unQualifiedSum += (float)bean.get("cp_qualified");
+                }else{
+                    bean.set("cpQualified", "");
+                }
+
+                if(bean.get("hd_lost") != null){
+                    bean.set("hdLost", bean.get("hd_lost"));
+                    unQualifiedSum += (float)bean.get("hd_lost");
+                }else{
+                    bean.set("hdLost", "");
+                }
+
+                if(bean.get("other_qualified") != null){
+                    bean.set("otherQualified", bean.get("other_qualified"));
+                    unQualifiedSum += (float)bean.get("other_qualified");
+                }else{
+                    bean.set("otherQualified", "");
+                }
+
+                bean.set("unQualifiedSum", unQualifiedSum);
+
 				resMap.put("qaInfo", bean.getMap());
-			}
+            }
 			FSPBean fspBean = new FSPBean();
 			fspBean.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_SEWING_NUM_INFO_BY_EQL);
 			fspBean.set("oaOrderId", orderId);
