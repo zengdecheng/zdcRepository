@@ -156,10 +156,21 @@ define([ "v","vl" ], function(v,vl) {
 					titleLength = jsonData.qaInfo.title.length;
 				}
 				title+="<th style='width: 155px;'>小计</th></tr>";
+
+
+                var titleUnqualify = "<th style='width: 155px;'>工艺次品</th>" +
+                    "<th style='width: 155px;'>布料次品</th>" +
+                    "<th style='width: 155px;'>后道次品</th>" +
+                    "<th style='width: 155px;'>车缝次品</th>" +
+                    "<th style='width: 155px;'>后道丢失</th>" +
+                    "<th style='width: 155px;'>其他原因</th>" +
+                    "<th style='width: 155px;'>小计</th></tr>";
+
 				$("#sewing_num_show").append(title);
 				$("#qualify_num_show").append(title);
-				$("#unqualify_num_show").append(title);
-				
+				//$("#unqualify_num_show").append(title);
+				$("#unqualify_num_show").append(titleUnqualify);
+
 				if(jsonData.qaInfo != undefined && jsonData.qaInfo.sewing_num != undefined){
 					sewing_num_show = "<tr><td elementFillName='qaInfo.sewing_num[][0]'></td>";
 					var i;
@@ -183,16 +194,26 @@ define([ "v","vl" ], function(v,vl) {
 						}
 						qualify_num_show += "<td class='total'></td></tr>";
 					}
-					if(jsonData.qaInfo != undefined && jsonData.qaInfo.unqualified_num_info !=undefined){
-						var t = (typeof(jsonData.qaInfo.unqualified_num_info[0]) == "object")?"[0]":"";
-						unqualify_num_show = "<tr><td elementFillName='qaInfo.unqualified_num_info[]"+t+"'/>"
-							var i;
-						for(i=1;i<titleLength+1;i++){
-							var t = (typeof(jsonData.qaInfo.unqualified_num_info[0]) == "object")?"elementFillName='qaInfo.unqualified_num_info[]["+i+"]'":"";
-							unqualify_num_show+="<td "+t+" class='qualify_num'/>";
-						}
-						unqualify_num_show += "<td class='total'></td></tr>";
-					}
+					//if(jsonData.qaInfo != undefined && jsonData.qaInfo.unqualified_num_info !=undefined){
+					//	var t = (typeof(jsonData.qaInfo.unqualified_num_info[0]) == "object")?"[0]":"";
+					//	unqualify_num_show = "<tr><td elementFillName='qaInfo.unqualified_num_info[]"+t+"'/>"
+					//		var i;
+					//	for(i=1;i<titleLength+1;i++){
+					//		var t = (typeof(jsonData.qaInfo.unqualified_num_info[0]) == "object")?"elementFillName='qaInfo.unqualified_num_info[]["+i+"]'":"";
+					//		unqualify_num_show+="<td "+t+" class='qualify_num'/>";
+					//	}
+					//	unqualify_num_show += "<td class='total'></td></tr>";
+					//}
+
+                    unqualify_num_show =  "<tr><td>"+jsonData.qaInfo.gyQualified+"</td>" +
+                    "<td>"+jsonData.qaInfo.blQualified+"</td>" +
+                    "<td>"+jsonData.qaInfo.hdQualified+"</td>" +
+                    "<td>"+jsonData.qaInfo.cpQualified+"</td>" +
+                    "<td>"+jsonData.qaInfo.hdLost+"</td>" +
+                    "<td>"+jsonData.qaInfo.otherQualified+"</td>" +
+                    "<td  class='total'>"+jsonData.qaInfo.unQualifiedSum+"</td></tr>" +
+                    "<tr><td colspan='5'/><td>合计</td><td class='unqualifiedTotal'>"+jsonData.qaInfo.unQualifiedSum+"</td><tr>";
+                    $("#unqualify_num_show").append(unqualify_num_show);
 				}else{
 					$("#worker").attr("fillName","oaOrderDetail.worker");
 					if(jsonData.qaInfo != undefined && jsonData.qaInfo.qualified_num_info !=undefined){
@@ -205,18 +226,29 @@ define([ "v","vl" ], function(v,vl) {
 						}
 						qualify_num_show += "<td class='total'></td></tr>";
 					}
-					if(jsonData.qaInfo != undefined && jsonData.qaInfo.unqualified_num_info !=undefined){
-						var t = (typeof(jsonData.qaInfo.unqualified_num_info[0]) == "object")?"[0]":"";
-						unqualify_num_show = "<tr><td><input style='width: 80px;' class='color' fillName='qaInfo.unqualified_num_info[]"+t+"' class='validate[maxSize[10]]' type='text'/></td>"
-							var i;
-						for(i=1;i<titleLength+1;i++){
-							var t = (typeof(jsonData.qaInfo.unqualified_num_info[0]) == "object")?"fillName='qaInfo.unqualified_num_info[]["+i+"]'":"";
-							unqualify_num_show+="<td><input style='width: 80px;' class='qualify_num validate[custom[number2],maxSize[10]]' "+t+" type='text'/></td>";
-						}
-						unqualify_num_show += "<td class='total'></td></tr>";
-					}
+					//if(jsonData.qaInfo != undefined && jsonData.qaInfo.unqualified_num_info !=undefined){
+					//	var t = (typeof(jsonData.qaInfo.unqualified_num_info[0]) == "object")?"[0]":"";
+					//	unqualify_num_show = "<tr><td><input style='width: 80px;' class='color' fillName='qaInfo.unqualified_num_info[]"+t+"' class='validate[maxSize[10]]' type='text'/></td>"
+					//		var i;
+					//	for(i=1;i<titleLength+1;i++){
+					//		var t = (typeof(jsonData.qaInfo.unqualified_num_info[0]) == "object")?"fillName='qaInfo.unqualified_num_info[]["+i+"]'":"";
+					//		unqualify_num_show+="<td><input style='width: 80px;' class='qualify_num validate[custom[number2],maxSize[10]]' "+t+" type='text'/></td>";
+					//	}
+					//	unqualify_num_show += "<td class='total'></td></tr>";
+					//}
+
+                    unqualify_num_show =  "<tr><td><input style='width: 80px;' class='qualify_num validate[custom[number2],maxSize[10]]' name='oaQa.gyQualified' value='"+jsonData.qaInfo.gyQualified+"' type='text'/></td>" +
+                                                            "<td><input style='width: 80px;' class='qualify_num validate[custom[number2],maxSize[10]]' name='oaQa.blQualified' value='"+jsonData.qaInfo.blQualified+"' type='text'/></td>" +
+                                                            "<td><input style='width: 80px;' class='qualify_num validate[custom[number2],maxSize[10]]' name='oaQa.hdQualified' value='"+jsonData.qaInfo.hdQualified+"' type='text'/></td>" +
+                                                            "<td><input style='width: 80px;' class='qualify_num validate[custom[number2],maxSize[10]]' name='oaQa.cpQualified' value='"+jsonData.qaInfo.cpQualified+"' type='text'/></td>" +
+                                                            "<td><input style='width: 80px;' class='qualify_num validate[custom[number2],maxSize[10]]' name='oaQa.hdLost' value='"+jsonData.qaInfo.hdLost+"' type='text'/></td>" +
+                                                            "<td><input style='width: 80px;' class='qualify_num validate[custom[number2],maxSize[10]]' name='oaQa.otherQualified' value='"+jsonData.qaInfo.otherQualified+"' type='text'/></td>" +
+                                                            "<td  class='total'>"+jsonData.qaInfo.unQualifiedSum+"</td></tr>" +
+                                                            "<tr><td colspan='5'/><td>合计</td><td class='unqualifiedTotal'>"+jsonData.qaInfo.unQualifiedSum+"</td><tr>";
+                    $("#unqualify_num_show").append(unqualify_num_show);
+
 				};
-				
+				console.log(unqualify_num_show);
 				sewing_num_opt = {
 					formFill:true,
 					formFillName:'fillName',
@@ -255,12 +287,12 @@ define([ "v","vl" ], function(v,vl) {
 				};
 				$("#tabQA").autoFill(jsonData, sewing_num_opt);
 				$("#tabQA").autoFill(jsonData, qualify_num_opt);
-				$("#tabQA").autoFill(jsonData, unqualify_num_opt);
+				//$("#tabQA").autoFill(jsonData, unqualify_num_opt);
 				var qualify_num_total = "<tr><td colspan="+titleLength+"/><td>合计</td><td class='qualifiedTotal'></td><tr>";
-				var unqualify_num_total ="<tr><td colspan="+titleLength+"/><td>合计</td><td class='unqualifiedTotal'></td><tr>";
+				//var unqualify_num_total ="";
 				var sewingTotal ="<tr><td colspan="+titleLength+"/><td>合计</td><td class='sewingTotal'></td><tr>";
 				$("#qualify_num_show").append(qualify_num_total);
-				$("#unqualify_num_show").append(unqualify_num_total);
+				//$("#unqualify_num_show").append(unqualify_num_total);
 				$("#sewing_num_show").append(sewingTotal);
 			},
 			initSewingTotal:function(){
