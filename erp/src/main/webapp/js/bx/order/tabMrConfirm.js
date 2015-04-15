@@ -118,6 +118,7 @@ define([ "u","up"], function(u,up) {
 				} else {
 					$("input[name='oaMrConfirm.ifRepeat'][value='0']").attr("checked", true); //是否需要复版，默认为需要
 					$("input[name='oaMrConfirm.ifQualified'][value='0']").attr("checked", true); //是否合格，默认为合格
+					$("input[name='oaMrConfirm.ifDahuo'][value='1']").attr("checked", true); //是否生产大货，默认为合格
 					$("#unqualifiedReason").attr("readonly", "true"); //不合格原因默认不可编辑
 				}
 			},

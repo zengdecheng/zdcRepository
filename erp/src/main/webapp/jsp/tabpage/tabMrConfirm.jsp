@@ -62,9 +62,9 @@
                             type="radio" name="oaMrConfirm.ifDahuo" value="1">&nbsp;不生产</td>
                     <td width="12%">不生产大货原因：</td>
                     <td id="ndsn">
-                        <input type="checkbox" name="oaMrConfirm.nodahuoReason" vid="1" value="1">&nbsp;质量原因&nbsp;&nbsp;&nbsp;
-                        <input type="checkbox" name="oaMrConfirm.nodahuoReason" vid="2" value="2">&nbsp;工艺原因
-                        <input type="checkbox" name="oaMrConfirm.nodahuoReason" vid="3" value="3">&nbsp;交期原因
+                        <input type="checkbox" name="oaMrConfirm.nodahuoReason" value="1">&nbsp;质量原因&nbsp;&nbsp;&nbsp;
+                        <input type="checkbox" name="oaMrConfirm.nodahuoReason" value="2">&nbsp;工艺原因
+                        <input type="checkbox" name="oaMrConfirm.nodahuoReason" value="3">&nbsp;交期原因
                     </td>
                 </tr>
                 <tr>
