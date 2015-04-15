@@ -44,9 +44,9 @@
 					<input type="hidden" id="operatoreSelectHid" value="${fsp.map.operator }">
 				</td>
 				<td height="40"><label class="">流入时间：</label></td>
-				<td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.start_time1" value="${fsp.map.start_time1}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.start_time2" value="${fsp.map.start_time2}" onFocus="WdatePicker({readOnly:true})" /></td>
+				<td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.start_time1" value="${fsp.map.start_time1}" onFocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd 09:00:00'})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.start_time2" value="${fsp.map.start_time2}" onFocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd 18:00:00'})" /></td>
 				<td height="40"><label class="">流出时间：</label></td>
-				<td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.end_time1" value="${fsp.map.end_time1}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.end_time2" value="${fsp.map.end_time2}" onFocus="WdatePicker({readOnly:true})" /></td>
+				<td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.end_time1" value="${fsp.map.end_time1}" onFocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd 09:00:00'})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.end_time2" value="${fsp.map.end_time2}" onFocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd 18:00:00'})" /></td>
 			</tr>
 			<tr>
 				<%-- <td height="40"><label class="">创建日期：</label></td>

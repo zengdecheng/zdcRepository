@@ -62,7 +62,7 @@
             </tr>
             <tr>
                 <td height="40"><label class="">创建日期：</label></td>
-                <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.start_time1" value="${fsp.map.start_time1}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.start_time2" value="${fsp.map.start_time2}" onFocus="WdatePicker({readOnly:true})" /></td>
+                <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.start_time1" value="${fsp.map.start_time1}" onFocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd 09:00:00'})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.start_time2" value="${fsp.map.start_time2}" onFocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd 18:00:00'})" /></td>
                 <td><label class="">紧急订单：</label></td>
                 <td><s:select cssClass="z_inp2" list="#{'':'全部','0':'加急','1':'普通'}" theme="simple" name="fsp.map.is_urgent" value="%{fsp.map.is_urgent}" cssStyle="width: 170px"></s:select></td>
 
@@ -77,21 +77,21 @@
 
             <tr>
                 <td height="40"><label class="">MR补录订单日期：</label></td>
-                <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odel_wf_real_start" value="${fsp.map.odel_wf_real_start}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odel_wf_real_start1" value="${fsp.map.odel_wf_real_start1}" onFocus="WdatePicker({readOnly:true})" /></td>
+                <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odel_wf_real_start" value="${fsp.map.odel_wf_real_start}" onFocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd 09:00:00'})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odel_wf_real_start1" value="${fsp.map.odel_wf_real_start1}" onFocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd 18:00:00'})" /></td>
 
                 <td height="40"><label class="">MR完成日期：</label></td>
-                <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odel_wf_real_finish" value="${fsp.map.odel_wf_real_finish}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odel_wf_real_finish1" value="${fsp.map.odel_wf_real_finish1}" onFocus="WdatePicker({readOnly:true})" /></td>
+                <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odel_wf_real_finish" value="${fsp.map.odel_wf_real_finish}" onFocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd 09:00:00'})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odel_wf_real_finish1" value="${fsp.map.odel_wf_real_finish1}" onFocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd 18:00:00'})" /></td>
 
                 <td height="40"><label class="">技术完工日期（大货）：</label></td>
-                <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.ppc_wf_real_finish" value="${fsp.map.ppc_wf_real_finish}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.ppc_wf_real_finish1" value="${fsp.map.ppc_wf_real_finish1}" onFocus="WdatePicker({readOnly:true})" /></td>
+                <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.ppc_wf_real_finish" value="${fsp.map.ppc_wf_real_finish}" onFocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd 09:00:00'})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.ppc_wf_real_finish1" value="${fsp.map.ppc_wf_real_finish1}" onFocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd 18:00:00'})" /></td>
 
                 <td height="40"><label class="">QA完工日期：</label></td>
-                <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odelqa_wf_real_finish" value="${fsp.map.odelqa_wf_real_finish}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 73px;" name="fsp.map.odelqa_wf_real_finish1" value="${fsp.map.odelqa_wf_real_finish1}" onFocus="WdatePicker({readOnly:true})" /></td>
+                <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.odelqa_wf_real_finish" value="${fsp.map.odelqa_wf_real_finish}" onFocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd 09:00:00'})" /> - <input type="text" class="z_inp2 createTime" style="width: 73px;" name="fsp.map.odelqa_wf_real_finish1" value="${fsp.map.odelqa_wf_real_finish1}" onFocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd 18:00:00'})" /></td>
             </tr>
 
             <tr>
                 <td height="40"><label class="">建议投料日期：</label></td>
-                <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.feeding_time" value="${fsp.map.feeding_time}" onFocus="WdatePicker({readOnly:true})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.feeding_time1" value="${fsp.map.feeding_time1}" onFocus="WdatePicker({readOnly:true})" /></td>
+                <td><input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.feeding_time" value="${fsp.map.feeding_time}" onFocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd 09:00:00'})" /> - <input type="text" class="z_inp2 createTime" style="width: 75px;" name="fsp.map.feeding_time1" value="${fsp.map.feeding_time1}" onFocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd 18:00:00'})" /></td>
 
 
                 <td colspan="6" align="right"><input type="submit" value="查询" style="width: 60px;" />
