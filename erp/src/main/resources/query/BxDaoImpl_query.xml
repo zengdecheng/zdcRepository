@@ -358,7 +358,7 @@ ote.oa_timebase = ot.id ${case}1">
             <param fspname="wf_step" sqlname="oa.wf_step"></param>
             <param fspname="if_all" sqlname=" and (wf_step=? or status='1') " op="sp"></param>
             <param fspname="start_time1" sqlname="oa.begin_time" op="&gt;="></param>
-            <param fspname="start_time2" sqlname="oa.begin_time" op="&lt;＝"></param>
+            <param fspname="start_time2" sqlname="oa.begin_time" op="&lt;="></param>
             <param fspname="qadel_wf_real_finish1" sqlname="qadel_wf_real_finish" op="&gt;="></param>
             <param fspname="qadel_wf_real_finish2" sqlname="qadel_wf_real_finish" op="&lt;="></param>
             <param fspname="wldel_wf_real_finish1" sqlname="wldel_wf_real_finish" op="&gt;="></param>
