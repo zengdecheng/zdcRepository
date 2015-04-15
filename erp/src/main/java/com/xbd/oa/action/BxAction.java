@@ -10462,7 +10462,8 @@ public class BxAction extends Action {
 			case "b_create_yangyi_1":
 				if (isNew) {
 					Integer orderNum = getOrdreNum(map.get("num_info") == null ? "" : (String) map.get("num_info"));
-					sheetFileInfo.put(t + ",21,Double", orderNum);
+					sheetFileInfo.put(t + ",22,Double", orderNum);
+					sheetFileInfo.put(t + ",5", map.get("wf_step_name") == null ? "" : map.get("wf_step_name").toString());
 					sheetFileInfo.put(t + ",4", map.get("value") == null ? "" : map.get("value").toString());
 					sheetFileInfo.put(t + ",3", map.get("style_class") == null ? "" : map.get("style_class").toString());
 					sheetFileInfo.put(t + ",2", map.get("cus_name") == null ? "" : map.get("cus_name").toString());
@@ -10475,27 +10476,27 @@ public class BxAction extends Action {
 				break;
 			case "b_mr_improve_2":
 				if (real_time != null) {
-					getColorIndex2(real_time, plan_time, sheetFileInfo, map, t, "operator", 5, 16, 10);
+					getColorIndex2(real_time, plan_time, sheetFileInfo, map, t, "operator", 6, 17, 11);
 				}
 				break;
 			case "b_ppc_confirm_3":
 				if (real_time != null) {
-					getColorIndex2(real_time, plan_time, sheetFileInfo, map, t, "worker", 6, 17, 11);
+					getColorIndex2(real_time, plan_time, sheetFileInfo, map, t, "worker", 7, 18, 12);
 				}
 				break;
 			case "b_pur_confirm_4":
 				if (real_time != null) {
-					getColorIndex2(real_time, plan_time, sheetFileInfo, map, t, "worker", 7, 18, 12);
+					getColorIndex2(real_time, plan_time, sheetFileInfo, map, t, "worker", 8, 19, 13);
 				}
 				break;
 			case "b_ppc_confirm_5":
 				if (real_time != null) {
-					getColorIndex2(real_time, plan_time, sheetFileInfo, map, t, "worker", 8, 19, 13);
+					getColorIndex2(real_time, plan_time, sheetFileInfo, map, t, "worker", 9, 20, 14);
 				}
 				break;
 			case "b_qc_confirm_6":
 				if (real_time != null) {
-					getColorIndex2(real_time, plan_time, sheetFileInfo, map, t, "worker", 9, 20, 14);
+					getColorIndex2(real_time, plan_time, sheetFileInfo, map, t, "worker", 10, 21, 15);
 				}
 				break;
 			default:
@@ -10513,7 +10514,7 @@ public class BxAction extends Action {
 				} else {
 					color = IndexedColors.RED.index;
 				}
-				sheetFileInfo.put(t + ",15", new CustomCell("IF(AND(BA" + (t + 1) + "<>\"\",BA" + (t + 1) + "<>0),TEXT(BA" + (t + 1) + "/86400,\"[h]小时mm分\"),\"\")", "Expression").setCellColor(color));
+				sheetFileInfo.put(t + ",16", new CustomCell("IF(AND(BA" + (t + 1) + "<>\"\",BA" + (t + 1) + "<>0),TEXT(BA" + (t + 1) + "/86400,\"[h]小时mm分\"),\"\")", "Expression").setCellColor(color));
 			}
 		}
 		String baseExcelFile = Struts2Utils.getSession().getServletContext().getRealPath(ResourceUtil.getString("baseReportExcelFile"));
@@ -10523,9 +10524,9 @@ public class BxAction extends Action {
 
 		Map<String, Object> sheetMergeCell = new HashMap<String, Object>();
 
-		sheetMergeCell.put(++t + "," + t + ",0,7", true);
-		sheetFileInfo.put(t + ",8", "平均值：");
-		sheetFileInfo.put(t + ",21", new CustomCell("\"总数:\"&SUM(INDIRECT(\"V2\"):INDIRECT(\"V\"&(ROW()-1)))", "Expression"));
+		sheetMergeCell.put(++t + "," + t + ",0,8", true);
+		sheetFileInfo.put(t + ",9", "平均值：");
+		sheetFileInfo.put(t + ",22", new CustomCell("\"总数:\"&SUM(INDIRECT(\"W2\"):INDIRECT(\"W\"&(ROW()-1)))", "Expression"));
 
 		sheetFileInfo.put(t + ",47", new CustomCell("IF(ISERR(AVERAGE(AV1:AV" + t + ")),\"\",AVERAGE(AV1:AV" + t + "))", "Expression", "0.#%"));
 		sheetFileInfo.put(t + ",48", new CustomCell("IF(ISERR(AVERAGE(AW1:AW" + t + ")),\"\",AVERAGE(AW1:AW" + t + "))", "Expression", "0.#%"));
@@ -10533,18 +10534,18 @@ public class BxAction extends Action {
 		sheetFileInfo.put(t + ",50", new CustomCell("IF(ISERR(AVERAGE(AY1:AY" + t + ")),\"\",AVERAGE(AY1:AY" + t + "))", "Expression", "0.#%"));
 		sheetFileInfo.put(t + ",51", new CustomCell("IF(ISERR(AVERAGE(AZ1:AZ" + t + ")),\"\",AVERAGE(AZ1:AZ" + t + "))", "Expression", "0.#%"));
 
-		sheetFileInfo.put(t + ",10", new CustomCell("IF(AND(INDEX(AV:AZ,ROW(),1)<>\"\",INDEX(AV:AZ,ROW(),1)<>0),TEXT(INDEX(AV:AZ,ROW(),1)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
-		sheetFileInfo.put(t + ",11", new CustomCell("IF(AND(INDEX(AV:AZ,ROW(),2)<>\"\",INDEX(AV:AZ,ROW(),2)<>0),TEXT(INDEX(AV:AZ,ROW(),2)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
-		sheetFileInfo.put(t + ",12", new CustomCell("IF(AND(INDEX(AV:AZ,ROW(),3)<>\"\",INDEX(AV:AZ,ROW(),3)<>0),TEXT(INDEX(AV:AZ,ROW(),3)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
-		sheetFileInfo.put(t + ",13", new CustomCell("IF(AND(INDEX(AV:AZ,ROW(),4)<>\"\",INDEX(AV:AZ,ROW(),4)<>0),TEXT(INDEX(AV:AZ,ROW(),4)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
-		sheetFileInfo.put(t + ",14", new CustomCell("IF(AND(INDEX(AV:AZ,ROW(),5)<>\"\",INDEX(AV:AZ,ROW(),5)<>0),TEXT(INDEX(AV:AZ,ROW(),5)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
-		sheetFileInfo.put(t + ",15", new CustomCell("IF(AND(SUM(AV" + (t + 1) + ":AZ" + (t + 1) + ")<>\"\",SUM(AV" + (t + 1) + ":AZ" + (t + 1) + ")<>0),TEXT(SUM(AV" + (t + 1) + ":AZ" + (t + 1) + ")/86400,\"[h]小时mm分\"),\"\")", "Expression"));
+		sheetFileInfo.put(t + ",11", new CustomCell("IF(AND(INDEX(AV:AZ,ROW(),1)<>\"\",INDEX(AV:AZ,ROW(),1)<>0),TEXT(INDEX(AV:AZ,ROW(),1)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
+		sheetFileInfo.put(t + ",12", new CustomCell("IF(AND(INDEX(AV:AZ,ROW(),2)<>\"\",INDEX(AV:AZ,ROW(),2)<>0),TEXT(INDEX(AV:AZ,ROW(),2)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
+		sheetFileInfo.put(t + ",13", new CustomCell("IF(AND(INDEX(AV:AZ,ROW(),3)<>\"\",INDEX(AV:AZ,ROW(),3)<>0),TEXT(INDEX(AV:AZ,ROW(),3)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
+		sheetFileInfo.put(t + ",14", new CustomCell("IF(AND(INDEX(AV:AZ,ROW(),4)<>\"\",INDEX(AV:AZ,ROW(),4)<>0),TEXT(INDEX(AV:AZ,ROW(),4)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
+		sheetFileInfo.put(t + ",15", new CustomCell("IF(AND(INDEX(AV:AZ,ROW(),5)<>\"\",INDEX(AV:AZ,ROW(),5)<>0),TEXT(INDEX(AV:AZ,ROW(),5)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
+		sheetFileInfo.put(t + ",16", new CustomCell("IF(AND(SUM(AV" + (t + 1) + ":AZ" + (t + 1) + ")<>\"\",SUM(AV" + (t + 1) + ":AZ" + (t + 1) + ")<>0),TEXT(SUM(AV" + (t + 1) + ":AZ" + (t + 1) + ")/86400,\"[h]小时mm分\"),\"\")", "Expression"));
 
-		sheetFileInfo.put(t + ",16", new CustomCell("IF(ISERR(AVERAGE(Q2:Q" + t + ")),\"\",AVERAGE(Q2:Q" + t + "))", "Expression", "0.#%"));
 		sheetFileInfo.put(t + ",17", new CustomCell("IF(ISERR(AVERAGE(R2:R" + t + ")),\"\",AVERAGE(R2:R" + t + "))", "Expression", "0.#%"));
 		sheetFileInfo.put(t + ",18", new CustomCell("IF(ISERR(AVERAGE(S2:S" + t + ")),\"\",AVERAGE(S2:S" + t + "))", "Expression", "0.#%"));
 		sheetFileInfo.put(t + ",19", new CustomCell("IF(ISERR(AVERAGE(T2:T" + t + ")),\"\",AVERAGE(T2:T" + t + "))", "Expression", "0.#%"));
 		sheetFileInfo.put(t + ",20", new CustomCell("IF(ISERR(AVERAGE(U2:U" + t + ")),\"\",AVERAGE(U2:U" + t + "))", "Expression", "0.#%"));
+		sheetFileInfo.put(t + ",21", new CustomCell("IF(ISERR(AVERAGE(V2:V" + t + ")),\"\",AVERAGE(V2:V" + t + "))", "Expression", "0.#%"));
 
 		fillInfo.put(sheetNames + "FileInfo", sheetFileInfo);
 		fillInfo.put(sheetNames + "MergeCell", sheetMergeCell);
@@ -10574,13 +10575,14 @@ public class BxAction extends Action {
 			switch (wf_step) {
 			case "c_create_dahuo_1":
 				if (isNew) {
-					sheetFileInfo.put(t + ",34", "");
-					sheetFileInfo.put(t + ",33,Double", map.get("unqualified_total") == null ? "" : map.get("unqualified_total").toString());
-					sheetFileInfo.put(t + ",32,Double", map.get("qualified_total") == null ? "" : map.get("qualified_total").toString());
-					sheetFileInfo.put(t + ",31,Double", map.get("sewing_total") == null ? "" : map.get("sewing_total").toString());
+					sheetFileInfo.put(t + ",35", "");
+					sheetFileInfo.put(t + ",34,Double", map.get("unqualified_total") == null ? "" : map.get("unqualified_total").toString());
+					sheetFileInfo.put(t + ",33,Double", map.get("qualified_total") == null ? "" : map.get("qualified_total").toString());
+					sheetFileInfo.put(t + ",32,Double", map.get("sewing_total") == null ? "" : map.get("sewing_total").toString());
 					Integer orderNum = getOrdreNum(map.get("num_info") == null ? "" : (String) map.get("num_info"));
-					sheetFileInfo.put(t + ",30,Double", orderNum);
-					sheetFileInfo.put(t + ",12", map.get("sewing_factory") == null ? "" : map.get("sewing_factory").toString());
+					sheetFileInfo.put(t + ",31,Double", orderNum);
+					sheetFileInfo.put(t + ",13", map.get("sewing_factory") == null ? "" : map.get("sewing_factory").toString());
+					sheetFileInfo.put(t + ",5", map.get("wf_step_name") == null ? "" : map.get("wf_step_name").toString());
 					sheetFileInfo.put(t + ",4", map.get("value") == null ? "" : map.get("value").toString());
 					sheetFileInfo.put(t + ",3", map.get("style_class") == null ? "" : map.get("style_class").toString());
 					sheetFileInfo.put(t + ",2", map.get("cus_name") == null ? "" : map.get("cus_name").toString());
@@ -10592,42 +10594,42 @@ public class BxAction extends Action {
 				break;
 			case "c_mr_improve_2":
 				if (real_time != null) {
-					getColorIndex(real_time, plan_time, sheetFileInfo, map, t, "operator", 5, 22, 13);
+					getColorIndex(real_time, plan_time, sheetFileInfo, map, t, "operator", 6, 23, 14);
 				}
 				break;
 			case "c_ppc_assign_3":
 				if (real_time != null) {
-					getColorIndex(real_time, plan_time, sheetFileInfo, map, t, "operator", 6, 23, 14);
+					getColorIndex(real_time, plan_time, sheetFileInfo, map, t, "operator", 7, 24, 15);
 				}
 				break;
 			case "c_fi_pay_4":
 				if (real_time != null) {
-					getColorIndex(real_time, plan_time, sheetFileInfo, map, t, "worker", 7, 24, 15);
+					getColorIndex(real_time, plan_time, sheetFileInfo, map, t, "worker", 8, 25, 16);
 				}
 				break;
 			case "c_ppc_factoryMsg_5":
 				if (real_time != null) {
-					getColorIndex(real_time, plan_time, sheetFileInfo, map, t, "worker", 8, 25, 16);
+					getColorIndex(real_time, plan_time, sheetFileInfo, map, t, "worker", 9, 26, 17);
 				}
 				break;
 			case "c_qc_cutting_6":
 				if (real_time != null) {
-					getColorIndex(real_time, plan_time, sheetFileInfo, map, t, "worker", 9, 26, 17);
+					getColorIndex(real_time, plan_time, sheetFileInfo, map, t, "worker", 10, 27, 18);
 				}
 				break;
 			case "c_ppc_confirm_7":
 				if (real_time != null) {
-					getColorIndex(real_time, plan_time, sheetFileInfo, map, t, "worker", 10, 27, 18);
+					getColorIndex(real_time, plan_time, sheetFileInfo, map, t, "worker", 11, 28, 19);
 				}
 				break;
 			case "c_qc_printing_8":
 				if (real_time != null) {
-					getColorIndex(real_time, plan_time, sheetFileInfo, map, t, "worker", 11, 28, 19);
+					getColorIndex(real_time, plan_time, sheetFileInfo, map, t, "worker", 12, 29, 20);
 				}
 				break;
 			case "c_ppc_confirm_9":
 				if (real_time != null) {
-					getColorIndex(real_time, plan_time, sheetFileInfo, map, t, "sewing_factory", 12, 29, 20);
+					getColorIndex(real_time, plan_time, sheetFileInfo, map, t, "sewing_factory", 13, 30, 21);
 				}
 				break;
 			default:
@@ -10647,7 +10649,7 @@ public class BxAction extends Action {
 				} else {
 					color = IndexedColors.RED.index;
 				}
-				sheetFileInfo.put(t + ",21", new CustomCell("IF(AND(BG" + (t + 1) + "<>\"\",BG" + (t + 1) + "<>0),TEXT(BG" + (t + 1) + "/86400,\"[h]小时mm分\"),\"\")", "Expression").setCellColor(color));
+				sheetFileInfo.put(t + ",22", new CustomCell("IF(AND(BG" + (t + 1) + "<>\"\",BG" + (t + 1) + "<>0),TEXT(BG" + (t + 1) + "/86400,\"[h]小时mm分\"),\"\")", "Expression").setCellColor(color));
 			}
 		}
 		String baseExcelFile = Struts2Utils.getSession().getServletContext().getRealPath(ResourceUtil.getString("baseReportExcelFile"));
@@ -10656,13 +10658,13 @@ public class BxAction extends Action {
 		fillInfo.put("sheetNames", sheetNames);
 		Map<String, Object> sheetMergeCell = new HashMap<String, Object>();
 
-		sheetMergeCell.put(++t + "," + t + ",0,11", true);
-		sheetFileInfo.put(t + ",12", "平均值：");
-		sheetFileInfo.put(t + ",30", new CustomCell("\"总数:\"&SUM(INDIRECT(\"AE2\"):INDIRECT(\"AE\"&(ROW()-1)))", "Expression"));
+		sheetMergeCell.put(++t + "," + t + ",0,12", true);
+		sheetFileInfo.put(t + ",13", "平均值：");
 		sheetFileInfo.put(t + ",31", new CustomCell("\"总数:\"&SUM(INDIRECT(\"AF2\"):INDIRECT(\"AF\"&(ROW()-1)))", "Expression"));
 		sheetFileInfo.put(t + ",32", new CustomCell("\"总数:\"&SUM(INDIRECT(\"AG2\"):INDIRECT(\"AG\"&(ROW()-1)))", "Expression"));
 		sheetFileInfo.put(t + ",33", new CustomCell("\"总数:\"&SUM(INDIRECT(\"AH2\"):INDIRECT(\"AH\"&(ROW()-1)))", "Expression"));
 		sheetFileInfo.put(t + ",34", new CustomCell("\"总数:\"&SUM(INDIRECT(\"AI2\"):INDIRECT(\"AI\"&(ROW()-1)))", "Expression"));
+		sheetFileInfo.put(t + ",35", new CustomCell("\"总数:\"&SUM(INDIRECT(\"AJ2\"):INDIRECT(\"AJ\"&(ROW()-1)))", "Expression"));
 
 		sheetFileInfo.put(t + ",50", new CustomCell("IF(ISERR(AVERAGE(AY1:AY" + t + ")),\"\",AVERAGE(AY1:AY" + t + "))", "Expression"));
 		sheetFileInfo.put(t + ",51", new CustomCell("IF(ISERR(AVERAGE(AZ1:AZ" + t + ")),\"\",AVERAGE(AZ1:AZ" + t + "))", "Expression"));
@@ -10673,17 +10675,16 @@ public class BxAction extends Action {
 		sheetFileInfo.put(t + ",56", new CustomCell("IF(ISERR(AVERAGE(BE1:BE" + t + ")),\"\",AVERAGE(BE1:BE" + t + "))", "Expression"));
 		sheetFileInfo.put(t + ",57", new CustomCell("IF(ISERR(AVERAGE(BF1:BF" + t + ")),\"\",AVERAGE(BF1:BF" + t + "))", "Expression"));
 
-		sheetFileInfo.put(t + ",13", new CustomCell("IF(AND(INDEX(AY:BF,ROW(),1)<>\"\",INDEX(AY:BF,ROW(),1)<>0),TEXT(INDEX(AY:BF,ROW(),1)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
-		sheetFileInfo.put(t + ",14", new CustomCell("IF(AND(INDEX(AY:BF,ROW(),2)<>\"\",INDEX(AY:BF,ROW(),2)<>0),TEXT(INDEX(AY:BF,ROW(),2)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
-		sheetFileInfo.put(t + ",15", new CustomCell("IF(AND(INDEX(AY:BF,ROW(),3)<>\"\",INDEX(AY:BF,ROW(),3)<>0),TEXT(INDEX(AY:BF,ROW(),3)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
-		sheetFileInfo.put(t + ",16", new CustomCell("IF(AND(INDEX(AY:BF,ROW(),4)<>\"\",INDEX(AY:BF,ROW(),4)<>0),TEXT(INDEX(AY:BF,ROW(),4)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
-		sheetFileInfo.put(t + ",17", new CustomCell("IF(AND(INDEX(AY:BF,ROW(),5)<>\"\",INDEX(AY:BF,ROW(),5)<>0),TEXT(INDEX(AY:BF,ROW(),5)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
-		sheetFileInfo.put(t + ",18", new CustomCell("IF(AND(INDEX(AY:BF,ROW(),6)<>\"\",INDEX(AY:BF,ROW(),6)<>0),TEXT(INDEX(AY:BF,ROW(),6)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
-		sheetFileInfo.put(t + ",19", new CustomCell("IF(AND(INDEX(AY:BF,ROW(),7)<>\"\",INDEX(AY:BF,ROW(),7)<>0),TEXT(INDEX(AY:BF,ROW(),7)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
-		sheetFileInfo.put(t + ",20", new CustomCell("IF(AND(INDEX(AY:BF,ROW(),8)<>\"\",INDEX(AY:BF,ROW(),8)<>0),TEXT(INDEX(AY:BF,ROW(),8)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
-		sheetFileInfo.put(t + ",21", new CustomCell("IF(AND(SUM(AY" + (t + 1) + ":BF" + (t + 1) + ")<>\"\",SUM(AY" + (t + 1) + ":BF" + (t + 1) + ")<>0),TEXT(SUM(AY" + (t + 1) + ":BF" + (t + 1) + ")/86400,\"[h]小时mm分\"),\"\")", "Expression"));
+		sheetFileInfo.put(t + ",14", new CustomCell("IF(AND(INDEX(AY:BG,ROW(),1)<>\"\",INDEX(AY:BG,ROW(),1)<>0),TEXT(INDEX(AY:BG,ROW(),1)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
+		sheetFileInfo.put(t + ",15", new CustomCell("IF(AND(INDEX(AY:BG,ROW(),2)<>\"\",INDEX(AY:BG,ROW(),2)<>0),TEXT(INDEX(AY:BG,ROW(),2)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
+		sheetFileInfo.put(t + ",16", new CustomCell("IF(AND(INDEX(AY:BG,ROW(),3)<>\"\",INDEX(AY:BG,ROW(),3)<>0),TEXT(INDEX(AY:BG,ROW(),3)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
+		sheetFileInfo.put(t + ",17", new CustomCell("IF(AND(INDEX(AY:BG,ROW(),4)<>\"\",INDEX(AY:BG,ROW(),4)<>0),TEXT(INDEX(AY:BG,ROW(),4)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
+		sheetFileInfo.put(t + ",18", new CustomCell("IF(AND(INDEX(AY:BG,ROW(),5)<>\"\",INDEX(AY:BG,ROW(),5)<>0),TEXT(INDEX(AY:BG,ROW(),5)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
+		sheetFileInfo.put(t + ",19", new CustomCell("IF(AND(INDEX(AY:BG,ROW(),6)<>\"\",INDEX(AY:BG,ROW(),6)<>0),TEXT(INDEX(AY:BG,ROW(),6)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
+		sheetFileInfo.put(t + ",20", new CustomCell("IF(AND(INDEX(AY:BG,ROW(),7)<>\"\",INDEX(AY:BG,ROW(),7)<>0),TEXT(INDEX(AY:BG,ROW(),7)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
+		sheetFileInfo.put(t + ",21", new CustomCell("IF(AND(INDEX(AY:BG,ROW(),8)<>\"\",INDEX(AY:BG,ROW(),8)<>0),TEXT(INDEX(AY:BG,ROW(),8)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
+		sheetFileInfo.put(t + ",22", new CustomCell("IF(AND(SUM(AY" + (t + 1) + ":BG" + (t + 1) + ")<>\"\",SUM(AY" + (t + 1) + ":BG" + (t + 1) + ")<>0),TEXT(SUM(AY" + (t + 1) + ":BG" + (t + 1) + ")/86400,\"[h]小时mm分\"),\"\")", "Expression"));
 
-		sheetFileInfo.put(t + ",22", new CustomCell("IF(ISERR(AVERAGE(W2:W" + t + ")),\"\",AVERAGE(W2:W" + t + "))", "Expression", "0.#%"));
 		sheetFileInfo.put(t + ",23", new CustomCell("IF(ISERR(AVERAGE(X2:X" + t + ")),\"\",AVERAGE(X2:X" + t + "))", "Expression", "0.#%"));
 		sheetFileInfo.put(t + ",24", new CustomCell("IF(ISERR(AVERAGE(Y2:Y" + t + ")),\"\",AVERAGE(Y2:Y" + t + "))", "Expression", "0.#%"));
 		sheetFileInfo.put(t + ",25", new CustomCell("IF(ISERR(AVERAGE(Z2:Z" + t + ")),\"\",AVERAGE(Z2:Z" + t + "))", "Expression", "0.#%"));
@@ -10691,6 +10692,7 @@ public class BxAction extends Action {
 		sheetFileInfo.put(t + ",27", new CustomCell("IF(ISERR(AVERAGE(AB2:AB" + t + ")),\"\",AVERAGE(AB2:AB" + t + "))", "Expression", "0.#%"));
 		sheetFileInfo.put(t + ",28", new CustomCell("IF(ISERR(AVERAGE(AC2:AC" + t + ")),\"\",AVERAGE(AC2:AC" + t + "))", "Expression", "0.#%"));
 		sheetFileInfo.put(t + ",29", new CustomCell("IF(ISERR(AVERAGE(AD2:AD" + t + ")),\"\",AVERAGE(AD2:AD" + t + "))", "Expression", "0.#%"));
+		sheetFileInfo.put(t + ",30", new CustomCell("IF(ISERR(AVERAGE(AE2:AE" + t + ")),\"\",AVERAGE(AE2:AE" + t + "))", "Expression", "0.#%"));
 
 		fillInfo.put(sheetNames + "FileInfo", sheetFileInfo);
 		fillInfo.put(sheetNames + "MergeCell", sheetMergeCell);
@@ -10712,7 +10714,7 @@ public class BxAction extends Action {
 			}
 		}
 		sheetFileInfo.put(index + "," + opratorIndex, "".equals(op) ? new CustomCell() : op);
-		sheetFileInfo.put(index + "," + dataIndex, new CustomCell("IF(AND(INDIRECT(\"AZ\"&ROW())<>\"\",INDIRECT(\"AZ\"&ROW())<>0),ROUND(INDEX(AV:AZ,ROW()," + (dataIndex - 15) + ")/BA" + (index + 1) + ",3),\"\")", "Expression", "0.#%"));
+		sheetFileInfo.put(index + "," + dataIndex, new CustomCell("IF(AND(INDIRECT(\"AZ\"&ROW())<>\"\",INDIRECT(\"AZ\"&ROW())<>0),ROUND(INDEX(AV:AZ,ROW()," + (dataIndex - 16) + ")/BA" + (index + 1) + ",3),\"\")", "Expression", "0.#%"));
 
 		Short color;
 		if (plan_time > real_time) {
@@ -10723,15 +10725,15 @@ public class BxAction extends Action {
 			color = IndexedColors.RED.index;
 		}
 		if (real_time > 0) {
-			if (timeIndex > 10) {
-				sheetFileInfo.put(index + "," + (timeIndex + 37), new CustomCell("IF(AND(INDIRECT(ADDRESS(ROW(),COLUMN()-1))<>\"\",INDIRECT(ADDRESS(ROW(),COLUMN()-1))<>0)," + real_time / 1000 + ",\"\")", "Expression", "0"));
+			if (timeIndex > 11) {
+				sheetFileInfo.put(index + "," + (timeIndex + 36), new CustomCell("IF(AND(INDIRECT(ADDRESS(ROW(),COLUMN()-1))<>\"\",INDIRECT(ADDRESS(ROW(),COLUMN()-1))<>0)," + real_time / 1000 + ",\"\")", "Expression", "0"));
 			} else {
-				sheetFileInfo.put(index + "," + (timeIndex + 37) + ",Integer", real_time / 1000);
+				sheetFileInfo.put(index + "," + (timeIndex + 36) + ",Integer", real_time / 1000);
 			}
 		} else if (real_time == 0) {
-			sheetFileInfo.put(index + "," + (timeIndex + 37), "");
+			sheetFileInfo.put(index + "," + (timeIndex + 36), "");
 		}
-		sheetFileInfo.put(index + "," + timeIndex, new CustomCell("IF(AND(INDEX(AV:AZ,ROW()," + (timeIndex - 9) + ")<>\"\",INDEX(AV:AZ,ROW()," + (timeIndex - 9) + ")<>0),TEXT(INDEX(AV:AZ,ROW()," + (timeIndex - 9) + ")/86400,\"[h]小时mm分\"),\"\")", "Expression").setCellColor(color));
+		sheetFileInfo.put(index + "," + timeIndex, new CustomCell("IF(AND(INDEX(AV:AZ,ROW()," + (timeIndex - 10) + ")<>\"\",INDEX(AV:AZ,ROW()," + (timeIndex - 10) + ")<>0),TEXT(INDEX(AV:AZ,ROW()," + (timeIndex - 10) + ")/86400,\"[h]小时mm分\"),\"\")", "Expression").setCellColor(color));
 		return color;
 	}
 
@@ -10751,7 +10753,7 @@ public class BxAction extends Action {
 			}
 		}
 		sheetFileInfo.put(index + "," + opratorIndex, "".equals(op) ? new CustomCell() : op);
-		sheetFileInfo.put(index + "," + dataIndex, new CustomCell("IF(AND(INDIRECT(\"BF\"&ROW())<>\"\",INDIRECT(\"BF\"&ROW())<>0),ROUND(INDEX(AY:BG,ROW()," + (dataIndex - 21) + ")/BG" + (index + 1) + ",3),\"\")", "Expression", "0.#%"));
+		sheetFileInfo.put(index + "," + dataIndex, new CustomCell("IF(AND(INDIRECT(\"BF\"&ROW())<>\"\",INDIRECT(\"BF\"&ROW())<>0),ROUND(INDEX(AY:BG,ROW()," + (dataIndex - 22) + ")/BG" + (index + 1) + ",3),\"\")", "Expression", "0.#%"));
 		Short color;
 		if (plan_time > real_time) {
 			color = IndexedColors.GREEN.index;
@@ -10762,15 +10764,15 @@ public class BxAction extends Action {
 		}
 
 		if (real_time > 0) {
-			if (timeIndex > 13) {
-				sheetFileInfo.put(index + "," + (timeIndex + 37), new CustomCell("IF(AND(INDIRECT(ADDRESS(ROW(),COLUMN()-1))<>\"\",INDIRECT(ADDRESS(ROW(),COLUMN()-1))<>0)," + real_time / 1000 + ",\"\")", "Expression", "0"));
+			if (timeIndex > 14) {
+				sheetFileInfo.put(index + "," + (timeIndex + 36), new CustomCell("IF(AND(INDIRECT(ADDRESS(ROW(),COLUMN()-1))<>\"\",INDIRECT(ADDRESS(ROW(),COLUMN()-1))<>0)," + real_time / 1000 + ",\"\")", "Expression", "0"));
 			} else {
-				sheetFileInfo.put(index + "," + (timeIndex + 37) + ",Integer", real_time / 1000);
+				sheetFileInfo.put(index + "," + (timeIndex + 36) + ",Integer", real_time / 1000);
 			}
 		} else if (real_time == 0) {
-			sheetFileInfo.put(index + "," + (timeIndex + 37), "");
+			sheetFileInfo.put(index + "," + (timeIndex + 36), "");
 		}
-		sheetFileInfo.put(index + "," + timeIndex, new CustomCell("IF(AND(INDEX(AY:BF,ROW()," + (timeIndex - 12) + ")<>\"\",INDEX(AY:BF,ROW()," + (timeIndex - 12) + ")<>0),TEXT(INDEX(AY:BF,ROW()," + (timeIndex - 12) + ")/86400,\"[h]小时mm分\"),\"\")", "Expression", "0").setCellColor(color));
+		sheetFileInfo.put(index + "," + timeIndex, new CustomCell("IF(AND(INDEX(AY:BF,ROW()," + (timeIndex - 13) + ")<>\"\",INDEX(AY:BF,ROW()," + (timeIndex - 13) + ")<>0),TEXT(INDEX(AY:BF,ROW()," + (timeIndex - 13) + ")/86400,\"[h]小时mm分\"),\"\")", "Expression", "0").setCellColor(color));
 		return color;
 	}
 
