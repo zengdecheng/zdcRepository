@@ -592,6 +592,7 @@ public class BizUtil {
 	 * @param hourPersent
 	 * @return
 	 */
+	@Deprecated
 	public static float culCurToc(Timestamp curTime, Float persent, Float hourPersent) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(curTime);
@@ -762,6 +763,55 @@ public class BizUtil {
 			}
 		}
 		return buf.toString();
+	}
+
+	/**
+	 * 
+	 * @Title: computeToc
+	 * @Description: TODO用于计算Toc，返回Toc值
+	 *
+	 * @author 张华
+	 * @param tocMap
+	 *            存储计算Toc所需参数，按index顺序传入。 1.要计算Toc的订单OaOrder对象，key=oaOrder， 2.要计算Toc的时间点，当前时间或订单完成时间或节点流转时间等，key=tocTime，类型为Timestamp
+	 * @return
+	 */
+	public static Float computeToc(Map tocMap) {
+		OaOrder oaOrder = (OaOrder) tocMap.get("oaOrder");
+		Timestamp tocTime = (Timestamp) tocMap.get("tocTime");
+
+		// 订单周期
+		Long sellReadyTime = oaOrder.getSellReadyTime() == null ? 0l : oaOrder.getSellReadyTime();
+		Long standardTime = oaOrder.getStandardTime() == null ? 0l : oaOrder.getStandardTime();
+		Long craftTime = oaOrder.getCraftTime() == null ? 0l : oaOrder.getCraftTime();
+		Long orderTime = (sellReadyTime + standardTime + craftTime) / 9 * 24;
+
+		// 交期、当前时间
+		SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Timestamp goodsTime = oaOrder.getGoodsTime();
+
+		// 当前工作时间
+		Timestamp workTime = getOperatingTime(tocTime);
+
+		// 格式化交期和要计算toc的时间点
+		try {
+			goodsTime = new Timestamp(sdf.parse(df1.format(goodsTime)).getTime());
+			tocTime = new Timestamp(sdf.parse(df1.format(tocTime)).getTime());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// 计算进度信息，计算两天进度差，分为9份作为每小时递增率
+		Float persent = (float) ((tocTime.getTime() - goodsTime.getTime() + orderTime - 60 * 60 * 1000 * 24d) / orderTime * 100);
+		Float persent2 = (float) ((tocTime.getTime() - goodsTime.getTime() + orderTime.floatValue()) / orderTime.floatValue() * 100);
+		Float hourPersent = (persent2.floatValue() - persent) / 9;
+
+		// 以第一天进度为基数，加上超了几个工作小时*递增率，返回Toc
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(workTime);
+		int hour = calendar.get(Calendar.HOUR_OF_DAY);
+		return Float.parseFloat(String.format("%.1f", (persent + hourPersent * (hour - 9))));
 	}
 
 }

@@ -5867,44 +5867,24 @@ public class BxAction extends Action {
 			bean.set("currentNode", "已完成");
 			break;
 		}
-		Date now = new Date();
-		DecimalFormat df = new DecimalFormat("0");
-		Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
-		if ("finish_999".equals(wfStepIndex)) {
-			tamp = oaOrder.getEndTime();
-		}
+		// Date now = new Date();
+		// DecimalFormat df = new DecimalFormat("0");
+		// Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
+		// if ("finish_999".equals(wfStepIndex)) {
+		// tamp = oaOrder.getEndTime();
+		// }
 
-		// 订单周期
-		Long sellReadyTime = oaOrder.getSellReadyTime() == null ? 0l : oaOrder.getSellReadyTime();
-		Long standardTime = oaOrder.getStandardTime() == null ? 0l : oaOrder.getStandardTime();
-		Long craftTime = oaOrder.getCraftTime() == null ? 0l : oaOrder.getCraftTime();
-		Long orderTime = (sellReadyTime + standardTime + craftTime) / 9 * 24;
-
-		// 交期、当前时间
-		SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Timestamp goodsTime = oaOrder.getGoodsTime();
-		Timestamp curTime = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
+		// 当前时间
+		Timestamp tocTime = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
 		// 当前工作时间
-		Timestamp workTime = null;
 		if (("finish_999").equals(oaOrder.getWfStep())) {
-			workTime = BizUtil.getOperatingTime(oaOrder.getEndTime());
-			curTime = workTime;
-		} else {
-			workTime = BizUtil.getOperatingTime(curTime);
+			tocTime = BizUtil.getOperatingTime(oaOrder.getEndTime());
 		}
-		try {
-			goodsTime = new Timestamp(sdf.parse(df1.format(goodsTime)).getTime());
-			curTime = new Timestamp(sdf.parse(df1.format(curTime)).getTime());
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		// 计算进度信息
-		Float persent = (float) ((curTime.getTime() - goodsTime.getTime() + orderTime - 60 * 60 * 1000 * 24d) / orderTime * 100);
-		Float persent2 = (float) ((curTime.getTime() - goodsTime.getTime() + orderTime.floatValue()) / orderTime.floatValue() * 100);
-		Float hourPersent = (persent2.floatValue() - persent) / 9;
-		persent = BizUtil.culCurToc(workTime, persent, hourPersent);
+		// 计算toc进度
+		Map tocMap = new HashMap();
+		tocMap.put("oaOrder", oaOrder);
+		tocMap.put("tocTime", tocTime);
+		Float persent = BizUtil.computeToc(tocMap);
 
 		bean.set("time_consume", persent);// 设置当前的耗时
 	}
