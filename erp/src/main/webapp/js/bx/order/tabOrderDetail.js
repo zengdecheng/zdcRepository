@@ -194,7 +194,9 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 				$("#oaOrder_craftTime").val($(window.parent.document).find("#craft_time").val());
 				$("#preProductDays").val($(window.parent.document).find("#preProductDays").val());
 				$("#goods_time").html($(window.parent.document).find("#goods_time").val());
-				
+				//add by ZQ 2015-4-13
+				$("input:radio[name='oaOrder.isSpecialFabric'][value="+$(window.parent.document).find("#isSpecialFabric").val()+"]").attr("checked",true);
+				$("input:radio[name='oaOrder.isOverOrder'][value="+$(window.parent.document).find("#isOverOrder").val()+"]").attr("checked",true);
 				//判断订单类型
 				if("样衣打版"==$(window.parent.document).find("#orderType").val()){
 					$("#t_repeatNum").show();
@@ -202,6 +204,7 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 					$("#repeatNum").text($(window.parent.document).find("#repeatNum").val());
 					$("#repeatReason").text($(window.parent.document).find("#repeatReason").val());
 					$("#isPreProductDiv").remove();
+					$(".dh").remove(); //add by ZQ 2015-4-13
 				}else if("大货生产"==$(window.parent.document).find("#orderType").val()){
 					if("1" == $(window.parent.document).find("#isPreProduct").val()) {
 						$("#isPreProductDiv").show();
@@ -209,6 +212,7 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 					} else {
 						$("#isPreProductDiv").remove();
 					}
+					$(".dh").show(); //add by ZQ 2015-4-13
 				}
 				//添加关联客户编号、ID、类型回显 Add by ZQ 2014-12-22
 				$("#related_order_code").val($(window.parent.document).find("#relatedOrderCode").val());
