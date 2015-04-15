@@ -625,10 +625,10 @@ public class BxAction extends Action {
 
                 sheet1FileInfo.put(j + ",8", lazyMap.get("mrdb_operator") != null ? lazyMap.get("mrdb_operator") : "");// 负责MR
 
-                sheet1FileInfo.put(j + ",25", lazyMap.get("mrdb_wf_real_start") != null ? new CustomCell(lazyMap.get("mrdb_wf_real_start"), "Date") : new CustomCell());// MR补录订单日期
+                sheet1FileInfo.put(j + ",24", lazyMap.get("mrdb_wf_real_start") != null ? new CustomCell(lazyMap.get("mrdb_wf_real_start"), "Date") : new CustomCell());// MR补录订单日期
 
                 //修改位置
-                sheet1FileInfo.put(j + ",26", lazyMap.get("mrdb_wf_real_finish") != null ? new CustomCell(lazyMap.get("mrdb_wf_real_finish"), "Date") : new CustomCell());// MR补录订单日期
+                sheet1FileInfo.put(j + ",25", lazyMap.get("mrdb_wf_real_finish") != null ? new CustomCell(lazyMap.get("mrdb_wf_real_finish"), "Date") : new CustomCell());// MR补录订单日期
 
 
                 sheet1FileInfo.put(j + ",31", lazyMap.get("jsdel_operator") != null ? lazyMap.get("jsdel_operator") : "");// 打版技术
