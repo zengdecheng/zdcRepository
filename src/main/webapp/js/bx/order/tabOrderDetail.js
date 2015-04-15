@@ -771,8 +771,9 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 		                    if("ajaxLogin" == data){
 	                			alert("登录超时，请重新登录");
 	                		} else if("0" ==  data.code){
-	                			top.location.href = "/bx/todo";
-	                		} else {
+	                			//top.location.href = "/bx/todo";
+                                top.location.reload(true);
+                            } else {
 	                			alert(data.msg);
 		        				$("#processBtn").removeAttr("disabled");
 		        				$("#saveBtn").removeAttr("disabled");
