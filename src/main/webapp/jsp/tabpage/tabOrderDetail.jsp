@@ -106,6 +106,16 @@
 				<tr height="28px;">
 					<td width="260px">
 						<div style="padding: 16 0 16 0;">
+							<span style="color: red;">*</span>是否特殊面料采购：
+							<input type="radio" class="validate[required] radio" name="oaOrder.isSpecialFabric" value="1"/>特殊面料
+							<input type="radio" class="validate[required] radio" name="oaOrder.isSpecialFabric" value="0" style="padding-left:30px"/>常规面料
+						</div>
+						<div class="dh" style="padding: 16 0 16 0;display:none">
+							<span style="color: red;">*</span>是否翻单：
+							<input type="radio" class="validate[required] radio" name="oaOrder.isOverOrder" value="1"/>是
+							<input type="radio" class="validate[required] radio" name="oaOrder.isOverOrder" value="0" style="padding-left:30px"/>否
+						</div>
+						<div style="padding: 16 0 16 0;">
 							交货日期：<span id="goods_time"></span>
 						</div>
 						<div style="padding: 16 0 16 0;" id="isPreProductDiv">
