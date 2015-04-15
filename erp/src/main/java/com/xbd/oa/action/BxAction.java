@@ -5804,6 +5804,8 @@ public class BxAction extends Action {
 		bean.set("standard_time", oaOrder.getStandardTime());
 		bean.set("goods_time", oaOrder.getGoodsTime());
 		bean.set("relatedOrderDetailId", "");
+		bean.set("isSpecialFabric", oaOrder.getIsSpecialFabric());//是否特殊面料采购 add by ZQ
+		bean.set("isOverOrder", oaOrder.getIsOverOrder());//是否翻单 add by ZQ
 		if (null != oaOrder.getRelatedOrderId() && oaOrder.getRelatedOrderId() > 0) { // 关联订单存在，则查询关联订单最新detail的Id
 			// FSPBean fspBean = new FSPBean();
 			// fspBean.set(FSPBean.FSP_QUERY_BY_XML,
@@ -6293,6 +6295,10 @@ public class BxAction extends Action {
 			oaOrder1.setFeedingTime(oaOrder.getFeedingTime());// 建议投料日期
 			oaOrder1.setStandardTime(oaOrder.getStandardTime());
 			oaOrder1.setSellReadyTime(oaOrder.getSellReadyTime());
+			oaOrder1.setIsSpecialFabric(oaOrder.getIsSpecialFabric());//是否特殊布料采购 Add by ZQ 2015-4-14
+			if(StringUtils.isNotEmpty(oaOrder.getIsOverOrder())){
+				oaOrder1.setIsOverOrder(oaOrder.getIsOverOrder());//大货是否翻单 Add by ZQ 2015-4-14
+			}
 			// 判断产前版日期，获得新的货期
 			if (null != oaOrder.getPreVersionDate()) {
 				if (null == oaOrder.getPreproductDays() || 0 >= oaOrder.getPreproductDays().intValue()) {
