@@ -104,6 +104,9 @@
 	<input type="hidden" id="isPreProduct" value="${bean.map.isPreproduct }">
 	<input type="hidden" id="preVersionDate" value="${bean.map.preVersionDate }">
 	<input type="hidden" id="preProductDays" value="${bean.map.preProductDays }">
+	<%--Add by ZQ 2015-4-13 --%>
+	<input type="hidden" id="isSpecialFabric" value="${bean.map.isSpecialFabric }">
+	<input type="hidden" id="isOverOrder" value="${bean.map.isOverOrder }">
 	<!-- 隐藏元素 -->
 	<!-- tab标签页 -->
 	<div class="order_tab_all">

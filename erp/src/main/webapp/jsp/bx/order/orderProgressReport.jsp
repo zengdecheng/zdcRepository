@@ -68,6 +68,7 @@
 			<th width="70">一级品类</th>
 			<th width="194">二级品类</th>
 			<th width="70">MR</th>
+			<th width="173">当前节点</th>
 			<s:if test="fsp.map.type eq 2">
 				<th width="96">MR用时</th>
 				<th width="96">采购用时</th>
@@ -107,6 +108,7 @@
 					<td>${map.style_class }</td>
 					<td>${map.value }</td>
 					<td>${map.mrdb_operator }</td>
+					<td>${map.wf_step_name }</td>
 					<td class="color_td">${map.b_mr_improve_2 } <input type="hidden" name="wtep_color" value="${map.b_mr_improve_2_color}" /></td>
 					<td class="color_td">${map.b_ppc_confirm_3 } <input type="hidden" name="wtep_color" value="${map.b_ppc_confirm_3_color}" /></td>
 					<td class="color_td">${map.b_pur_confirm_4 } <input type="hidden" name="wtep_color" value="${map.b_pur_confirm_4_color}" /></td>
@@ -136,6 +138,7 @@
 					<td>${map.style_class }</td>
 					<td>${map.value }</td>
 					<td>${map.mrdel_operator }</td>
+					<td>${map.wf_step_name }</td>
 					<td>${map.tpedel_operator }</td>
 					<td>${map.sewing_factory }</td>
 					<td class="color_td">${map.c_mr_improve_2 } <input type="hidden" name="wtep_color" value="${map.c_mr_improve_2_color}" /></td>

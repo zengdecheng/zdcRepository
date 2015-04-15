@@ -114,6 +114,9 @@
 	<input type="hidden" id="status" value="${bean.map.status }">
 	<input type="hidden" id="repeatNum" value="${bean.map.repeatNum }">
 	<input type="hidden" id="repeatReason" value="${bean.map.repeatReason }">
+	<%--Add by ZQ 2015-4-13 --%>
+	<input type="hidden" id="isSpecialFabric" value="${bean.map.isSpecialFabric }">
+	<input type="hidden" id="isOverOrder" value="${bean.map.isOverOrder }">
 	<!-- 隐藏元素 -->
 	<!-- tab标签页 -->
 	<div class="order_tab_all">
