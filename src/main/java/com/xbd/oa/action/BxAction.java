@@ -5058,19 +5058,19 @@ public class BxAction extends Action {
 
 	public void liuruTime(FSPBean fsp, StringBuffer sb, String wf_real_start, String wf_real_finish) {
 		if (fsp.getMap().get("start_time1") != null && !"".equals(fsp.getMap().get("start_time1"))) {
-			sb.append(" and " + wf_real_start + " > '" + fsp.getMap().get("start_time1").toString() + "' ");
+			sb.append(" and " + wf_real_start + " >= '" + fsp.getMap().get("start_time1").toString() + "' ");
 		}
 
 		if (fsp.getMap().get("start_time2") != null && !"".equals(fsp.getMap().get("start_time2"))) {
-			sb.append(" and " + wf_real_start + " < '" + fsp.getMap().get("start_time2").toString() + "' ");
+			sb.append(" and " + wf_real_start + " <= '" + fsp.getMap().get("start_time2").toString() + "' ");
 		}
 
 		if (fsp.getMap().get("end_time1") != null && !"".equals(fsp.getMap().get("end_time1"))) {
-			sb.append(" and " + wf_real_finish + " > '" + fsp.getMap().get("end_time1").toString() + "' ");
+			sb.append(" and " + wf_real_finish + " >= '" + fsp.getMap().get("end_time1").toString() + "' ");
 		}
 
 		if (fsp.getMap().get("end_time2") != null && !"".equals(fsp.getMap().get("end_time2"))) {
-			sb.append(" and " + wf_real_finish + " < '" + fsp.getMap().get("end_time2").toString() + "' ");
+			sb.append(" and " + wf_real_finish + " <= '" + fsp.getMap().get("end_time2").toString() + "' ");
 		}
 	}
 
