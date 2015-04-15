@@ -46,6 +46,36 @@
 				</tr>
 			</table>
 		</div>
+
+        <div
+                style="border-bottom: 1px solid rgb(205, 205, 205); font-size: 14px; height: 28px; line-height: 28px; padding: 0 1.5% 0 10px;">
+            大货确认</div>
+        <div
+                style="font-size: 14px; margin-left: 2.5%; padding: 5px 0 5px 0; width: 96%;">
+            <table
+                    style="border-collapse: collapse; width: 100%; font-size: 12px;"
+                    id="dahuoProduction">
+                <tr>
+                    <td width="9%" height="35px">是否生产大货：</td>
+                    <td width="20%"><input type="radio"
+                                           name="oaMrConfirm.ifDahuo" value="0">&nbsp;生产&nbsp;&nbsp;&nbsp;<input
+                            type="radio" name="oaMrConfirm.ifDahuo" value="1">&nbsp;不生产</td>
+                    <td width="12%">不生产大货原因：</td>
+                    <td id="ndsn">
+                        <input type="checkbox" name="oaMrConfirm.nodahuoReason" vid="1" value="1">&nbsp;质量原因&nbsp;&nbsp;&nbsp;
+                        <input type="checkbox" name="oaMrConfirm.nodahuoReason" vid="2" value="2">&nbsp;工艺原因
+                        <input type="checkbox" name="oaMrConfirm.nodahuoReason" vid="3" value="3">&nbsp;交期原因
+                    </td>
+                </tr>
+                <tr>
+                    <td width="9%" height="30px">其他原因：<br></td>
+                    <td colspan="3"><textarea maxlength="250"
+                                              style="width: 100%; height: 100px;"
+                                              name="oaMrConfirm.nodahuoOthreason" id="noDahuoOthReason"></textarea></td>
+                </tr>
+            </table>
+        </div>
+
 		<div
 			style="border-bottom: 1px solid rgb(205, 205, 205); font-size: 14px;">
 			<p style="padding: 5px 5px 5px 10px; margin: 0;">MR确认</p>

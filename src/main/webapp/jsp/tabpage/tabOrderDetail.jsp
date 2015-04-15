@@ -189,7 +189,7 @@
 				</tr>
 				<tr height="28px;">
 					<td colspan="2">Mr备注：<textarea name="oaOrder.memo" id="mrMemo"
-							style="width: 585px; height: 100px;" maxlength="250"></textarea></td>
+							style="width: 585px; height: 100px;" maxlength="500"></textarea></td>
 					<td>
 						<div style="height: 105px;">
 							<span style="line-height: 22px;">进度信息:<span>
