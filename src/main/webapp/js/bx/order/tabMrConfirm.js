@@ -99,10 +99,10 @@ define([ "u","up"], function(u,up) {
 						$("input[name='oaMrConfirm.ifQualified'][value='0']").attr("checked", true);
 						$("#unqualifiedReason").attr("readonly", "true");
 					}
-                    if("1" == oaMrConfirm.ifDahuo){
-                        $("input[name='oaMrConfirm.ifDahuo'][value='1']").attr("checked", true);
+                    if("0" == oaMrConfirm.ifDahuo){
+                        $("input[name='oaMrConfirm.ifDahuo'][value='0']").attr("checked", true);//生产大货
                     }else {
-                        $("input[name='oaMrConfirm.ifDahuo'][value='0']").attr("checked", true);
+                        $("input[name='oaMrConfirm.ifDahuo'][value='1']").attr("checked", true);//不生产大货，显示原因和其他原因
                         $("#noDahuoOthReason").attr("readonly", "true");
 
                         if (undefined != oaMrConfirm.nodahuoReason && null != oaMrConfirm.nodahuoReason) {
