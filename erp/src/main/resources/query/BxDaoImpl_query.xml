@@ -358,15 +358,15 @@ ote.oa_timebase = ot.id ${case}1">
             <param fspname="wf_step" sqlname="oa.wf_step"></param>
             <param fspname="if_all" sqlname=" and (wf_step=? or status='1') " op="sp"></param>
             <param fspname="start_time1" sqlname="oa.begin_time" op="&gt;="></param>
-            <param fspname="start_time2" sqlname="oa.begin_time" op="&lt;"></param>
+            <param fspname="start_time2" sqlname="oa.begin_time" op="&lt;＝"></param>
             <param fspname="qadel_wf_real_finish1" sqlname="qadel_wf_real_finish" op="&gt;="></param>
-            <param fspname="qadel_wf_real_finish2" sqlname="qadel_wf_real_finish" op="&lt;"></param>
+            <param fspname="qadel_wf_real_finish2" sqlname="qadel_wf_real_finish" op="&lt;="></param>
             <param fspname="wldel_wf_real_finish1" sqlname="wldel_wf_real_finish" op="&gt;="></param>
-            <param fspname="wldel_wf_real_finish2" sqlname="wldel_wf_real_finish" op="&lt;"></param>
+            <param fspname="wldel_wf_real_finish2" sqlname="wldel_wf_real_finish" op="&lt;="></param>
             <param fspname="odel_wf_real_finish" sqlname="odel_wf_real_finish" op="&gt;="></param>
-            <param fspname="odel_wf_real_finish1" sqlname="odel_wf_real_finish" op="&lt;"></param>
+            <param fspname="odel_wf_real_finish1" sqlname="odel_wf_real_finish" op="&lt;="></param>
             <param fspname="ppc_wf_real_finish" sqlname="jshdel_wf_real_finish" op="&gt;="></param>
-            <param fspname="ppc_wf_real_finish1" sqlname="jshdel_wf_real_finish" op="&lt;"></param>
+            <param fspname="ppc_wf_real_finish1" sqlname="jshdel_wf_real_finish" op="&lt;="></param>
         </parser>
     </function>
 
@@ -773,20 +773,20 @@ ote.oa_timebase = ot.id ${case}1">
             <param fspname="wf_step" sqlname="oder.wf_step"></param>
             <param fspname="is_urgent" sqlname="oder.is_urgent"></param>
             <param fspname="start_time1" sqlname="oder.begin_time" op="&gt;="></param>
-            <param fspname="start_time2" sqlname="oder.begin_time" op="&lt;"></param>
+            <param fspname="start_time2" sqlname="oder.begin_time" op="&lt;="></param>
             <param fspname="sewing_factory" sqlname="tpe.sewing_factory" op="like"></param>
             <param fspname="odel_wf_step" sqlname="odel_wf_step"></param>
             <param fspname="odelqa_wf_step" sqlname="odelqa_wf_step"></param>
             <param fspname="odel_wf_real_start" sqlname="odel_wf_real_start" op="&gt;="></param>
-            <param fspname="odel_wf_real_start1" sqlname="odel_wf_real_start" op="&lt;"></param>
+            <param fspname="odel_wf_real_start1" sqlname="odel_wf_real_start" op="&lt;="></param>
             <param fspname="odel_wf_real_finish" sqlname="odel_wf_real_finish" op="&gt;="></param>
-            <param fspname="odel_wf_real_finish1" sqlname="odel_wf_real_finish" op="&lt;"></param>
+            <param fspname="odel_wf_real_finish1" sqlname="odel_wf_real_finish" op="&lt;="></param>
             <param fspname="odelqa_wf_real_finish" sqlname="odelqa_wf_real_finish" op="&gt;="></param>
-            <param fspname="odelqa_wf_real_finish1" sqlname="odelqa_wf_real_finish" op="&lt;"></param>
+            <param fspname="odelqa_wf_real_finish1" sqlname="odelqa_wf_real_finish" op="&lt;="></param>
             <param fspname="ppc_wf_real_finish" sqlname="ppc_wf_real_finish" op="&gt;="></param>
-            <param fspname="ppc_wf_real_finish1" sqlname="ppc_wf_real_finish" op="&lt;"></param>
+            <param fspname="ppc_wf_real_finish1" sqlname="ppc_wf_real_finish" op="&lt;="></param>
             <param fspname="feeding_time" sqlname="oder.feeding_time" op="&gt;="></param>
-            <param fspname="feeding_time1" sqlname="oder.feeding_time" op="&lt;"></param>
+            <param fspname="feeding_time1" sqlname="oder.feeding_time" op="&lt;="></param>
         </parser>
     </function>
 
@@ -1174,7 +1174,7 @@ ote.oa_timebase = ot.id ${case}1">
                                                                         FROM
                                                                             oa_order_detail
                                                                         WHERE
-                                                                            wf_step = 'c_ppc_confirm_7' order by id desc
+                                                                            wf_step = 'c_ppc_confirm_7' and ISNULL(back_flag)
                                                                     )qadel ON oa.id = qadel.qadel_oa_order
 	                                                            )mian
                                                                 LEFT JOIN(
@@ -1186,7 +1186,7 @@ ote.oa_timebase = ot.id ${case}1">
                                                                         oa_order_detail
                                                                     WHERE
                                                                         1 = 1
-                                                                    AND wf_step = 'b_ppc_confirm_5' order by id desc
+                                                                    AND wf_step = 'b_ppc_confirm_5' and ISNULL(back_flag)
                                                                 )cqdel ON mian.id = cqdel_oa_order
                                                                 LEFT JOIN(
                                                                     SELECT
@@ -1197,7 +1197,7 @@ ote.oa_timebase = ot.id ${case}1">
                                                                         oa_order_detail
                                                                     WHERE
                                                                         1 = 1
-                                                                    AND wf_step = 'b_pur_confirm_4' order by id desc
+                                                                    AND wf_step = 'b_pur_confirm_4' and ISNULL(back_flag)
                                                                 )jsdel ON mian.id = jsdel_oa_order
                                                                 LEFT JOIN(
                                                                     SELECT
@@ -1208,7 +1208,7 @@ ote.oa_timebase = ot.id ${case}1">
                                                                         oa_order_detail
                                                                     WHERE
                                                                         1 = 1
-                                                                    AND wf_step = 'c_ppc_assign_3' order by id desc
+                                                                    AND wf_step = 'c_ppc_assign_3' and ISNULL(back_flag)
                                                                 )jshdel ON mian.id = jshdel_oa_order
                                                                 LEFT JOIN(
                                                                     SELECT
@@ -1218,7 +1218,7 @@ ote.oa_timebase = ot.id ${case}1">
                                                                         oa_order_detail
                                                                     WHERE
                                                                         1 = 1
-                                                                    AND wf_step = 'c_ppc_factoryMsg_5' order by id desc
+                                                                    AND wf_step = 'c_ppc_factoryMsg_5' and ISNULL(back_flag)
                                                                 )cqcdel ON mian.id = cqcdel_oa_order
                                                                 LEFT JOIN(
                                                                     SELECT
@@ -1236,7 +1236,7 @@ ote.oa_timebase = ot.id ${case}1">
                                                                         oa_order_detail
                                                                     WHERE
                                                                         1 = 1
-                                                                    AND wf_step = 'c_ppc_confirm_9' order by id desc
+                                                                    AND wf_step = 'c_ppc_confirm_9' and ISNULL(back_flag)
                                                                 )wldel ON mian.id = wldel_oa_order
                                                                 LEFT JOIN(
                                                                     SELECT
@@ -1248,7 +1248,7 @@ ote.oa_timebase = ot.id ${case}1">
                                                                         oa_order_detail
                                                                     WHERE
                                                                         1 = 1
-                                                                    AND wf_step = 'c_mr_improve_2' order by id desc
+                                                                    AND wf_step = 'c_mr_improve_2' and ISNULL(back_flag)
                                                                 )mrdel ON mian.id = mrdel_oa_order
                                                                 LEFT JOIN(
                                                                     SELECT
@@ -1259,7 +1259,7 @@ ote.oa_timebase = ot.id ${case}1">
                                                                         oa_order_detail
                                                                     WHERE
                                                                         1 = 1
-                                                                    AND wf_step = 'b_mr_improve_2' order by id desc
+                                                                    AND wf_step = 'b_mr_improve_2' and ISNULL(back_flag)
                                                                 )mrdb ON mian.id = mrdb_oa_order
                                                                 LEFT JOIN(
                                                                     SELECT
@@ -1270,7 +1270,7 @@ ote.oa_timebase = ot.id ${case}1">
                                                                         oa_order_detail
                                                                     WHERE
                                                                         1 = 1
-                                                                    AND wf_step = 'c_fi_pay_4' order by id desc
+                                                                    AND wf_step = 'c_fi_pay_4' and ISNULL(back_flag)
                                                                 )fidel ON mian.id = fidel_oa_order
                                                                 LEFT JOIN(
                                                                     SELECT
@@ -1281,7 +1281,7 @@ ote.oa_timebase = ot.id ${case}1">
                                                                         oa_order_detail
                                                                     WHERE
                                                                         1 = 1
-                                                                    AND wf_step = 'b_ppc_confirm_3' order by id desc
+                                                                    AND wf_step = 'b_ppc_confirm_3' and ISNULL(back_flag)
                                                                 )ppcdel ON mian.id = ppcdel_oa_order
                                                                 LEFT JOIN(
                                                                     SELECT
@@ -1292,7 +1292,7 @@ ote.oa_timebase = ot.id ${case}1">
                                                                         oa_order_detail
                                                                     WHERE
                                                                         1 = 1
-                                                                    AND wf_step = 'b_qc_confirm_6' order by id desc
+                                                                    AND wf_step = 'b_qc_confirm_6' and ISNULL(back_flag)
                                                                 )bqcdel ON mian.id = bqcdel_oa_order
                                                                 LEFT JOIN(
                                                                     SELECT
@@ -1303,7 +1303,7 @@ ote.oa_timebase = ot.id ${case}1">
                                                                         oa_order_detail
                                                                     WHERE
                                                                         1 = 1
-                                                                    AND wf_step = 'c_qc_cutting_6' order by id desc
+                                                                    AND wf_step = 'c_qc_cutting_6' and ISNULL(back_flag)
                                                                 )tpedel ON mian.id = tpedel_oa_order
                                                                 LEFT JOIN(
                                                                     SELECT
@@ -1316,7 +1316,7 @@ ote.oa_timebase = ot.id ${case}1">
                                                                         oa_order_detail
                                                                     WHERE
                                                                         1 = 1
-                                                                    AND wf_step = 'c_qc_printing_8' order by id desc
+                                                                    AND wf_step = 'c_qc_printing_8' and ISNULL(back_flag)
                                                                 )cwdel ON mian.id = cwdel_oa_order
                                                             WHERE
                                                                 1 = 1 and  mian.STATUS = '0' ${case}1
