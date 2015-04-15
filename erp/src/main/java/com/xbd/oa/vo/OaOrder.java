@@ -175,7 +175,7 @@ public class OaOrder extends CommonBean {
 		return isUrgent;
 	}
 
-	@Column(name = "memo",columnDefinition="varchar(500)")
+	@Column(name = "memo",columnDefinition="varchar(1000)")
 	public String getMemo() {
 		return memo;
 	}
