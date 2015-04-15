@@ -165,7 +165,7 @@ ote.oa_timebase = ot.id ${case}1">
 																	jsdel_oa_order, jsdel_wf_step, jsdel_operator,
 																	jshdel_oa_order, jshdel_wf_step, jshdel_operator, jshdel_wf_real_finish,
 																	cqcdel_oa_order, cqcdel_wf_step, cqcdel_operator,
-																	mr_oa_order, mr_if_repeat, mr_if_qualified,
+																	mr_oa_order, mr_if_repeat, mr_if_qualified, mr_if_dahuo, mr_nodahuo_othreaseon, mr_nodahuo_reason,
 																	wldel_oa_order, wldel_wf_step, wldel_wf_plan_start, wldel_wf_step_duration, wldel_wf_real_finish,
 																	mrdel_oa_order, mrdel_wf_step, mrdel_wf_real_start, mrdel_wf_real_finish, mrdel_operator,
 																	mrdb_oa_order, mrdb_wf_step, mrdb_wf_real_start, mrdb_wf_real_finish, mrdb_operator,
@@ -184,6 +184,12 @@ ote.oa_timebase = ot.id ${case}1">
 																	qa.unqualified_num_info,
 																	qa.qualified_total,
 																	qa.unqualified_total,
+																	qa.bl_qualified,
+																	qa.cp_qualified,
+																	qa.gy_qualified,
+																	qa.hd_lost,
+																	qa.hd_qualified,
+																	qa.other_qualified,
 																	cost.p_sam,
 																	qadel_oa_order,
 																	qadel_wf_step,
@@ -211,7 +217,7 @@ ote.oa_timebase = ot.id ${case}1">
 																	on mian.id = jshdel_oa_order
 																LEFT JOIN (select oa_order as cqcdel_oa_order, wf_step as cqcdel_wf_step, operator as cqcdel_operator  from oa_order_detail where 1=1 and wf_step = 'c_ppc_factoryMsg_5' order by id desc) cqcdel
 																	on mian.id = cqcdel_oa_order
-																LEFT JOIN (select oa_order as mr_oa_order, if_repeat as mr_if_repeat, if_qualified as mr_if_qualified  from oa_mr_confirm) mr
+																LEFT JOIN (select oa_order as mr_oa_order, if_repeat as mr_if_repeat, if_qualified as mr_if_qualified, if_dahuo as mr_if_dahuo, nodahuo_othreason as mr_nodahuo_othreaseon, nodahuo_reason as mr_nodahuo_reason  from oa_mr_confirm) mr
 																	on mian.id = mr_oa_order
 																LEFT JOIN (select oa_order as wldel_oa_order, wf_step as wldel_wf_step, wf_plan_start as wldel_wf_plan_start, wf_real_finish as wldel_wf_real_finish, wf_step_duration as wldel_wf_step_duration  from oa_order_detail where 1=1 and wf_step = 'c_ppc_confirm_9' order by id desc) wldel
 																	on mian.id = wldel_oa_order
@@ -667,7 +673,7 @@ ote.oa_timebase = ot.id ${case}1">
 															SELECT
 																o.sell_order_id, o.sell_order_code, o.oa_order_detail, o.his_opt, o.id,
 																o.type, o.style_type, o.style_craft, o.style_class, o.sales, o.style_code,
-																o.style_desc, o.style_id, o.cus_id, o.cus_name, o.begin_time, o.want_cnt,
+																o.style_desc, o.style_id, o.cus_id, o.cus_name, o.begin_time, o.end_time, o.want_cnt,
 																o.mr_name, o.tpe_name, o.wf_step_name, o.wf_step, o.wf_step_duration,
 																o.cloth_class, o.pay_type, o.order_code, o.wf_plan_start, o.wf_real_start,
 																o.except_finish, o.city, o.is_urgent, o.operator, o. STATUS,
@@ -1107,7 +1113,7 @@ ote.oa_timebase = ot.id ${case}1">
 	</function>
 
 	<!-- 查询QA的信息  -->
-	<function name="get_qa_info" type="sql" sql="SELECT qa.id, qa.oa_order_id, qa.qualified_num_info, qa.unqualified_num_info, qa.qualified_total, qa.unqualified_total, oon.title, oon.num_info ,ot.sewing_num FROM oa_order_num AS oon LEFT JOIN oa_order AS oo ON oo.oa_order_num_id = oon.id LEFT JOIN oa_qa AS qa ON oo.id = qa.oa_order_id LEFT JOIN oa_tpe As ot ON ot.oa_order_id = oo.id WHERE 1=1 ${case}1">
+	<function name="get_qa_info" type="sql" sql="SELECT qa.id, qa.oa_order_id, qa.qualified_num_info, qa.unqualified_num_info, qa.qualified_total, qa.unqualified_total, qa.bl_qualified, qa.cp_qualified, qa.gy_qualified, qa.hd_qualified, qa.hd_lost, qa.other_qualified, oon.title, oon.num_info ,ot.sewing_num FROM oa_order_num AS oon LEFT JOIN oa_order AS oo ON oo.oa_order_num_id = oon.id LEFT JOIN oa_qa AS qa ON oo.id = qa.oa_order_id LEFT JOIN oa_tpe As ot ON ot.oa_order_id = oo.id WHERE 1=1 ${case}1">
 		<parser index="1">
 			<param fspname="oaOrderId" sqlname="oo.id"></param>
 		</parser>
