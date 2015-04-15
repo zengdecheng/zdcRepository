@@ -21,6 +21,9 @@ public class OaMrConfirm extends CommonBean{
 	private String ifQualified; 			// 是否合格；0是合格，1是不合格
 	private String unqualifiedReason;		// 不合格原因
 	private Integer oaOrder;				// 订单ID
+    private String ifDahuo;                 //是否生产大货
+    private String nodahuoReason;           //不生产大货原因
+    private String nodahuoOthreason;        //不生产大货其他原因
 
 	@Column(name = "if_qualified", columnDefinition = "CHAR(1)")
 	public String getIfQualified() {
@@ -42,6 +45,21 @@ public class OaMrConfirm extends CommonBean{
 		return unqualifiedReason;
 	}
 
+    @Column(name = "if_dahuo", columnDefinition = "char(1)")
+    public String getIfDahuo() {
+        return ifDahuo;
+    }
+
+    @Column(name = "nodahuo_reason", columnDefinition = "varchar(10)")
+    public String getNodahuoReason() {
+        return nodahuoReason;
+    }
+
+    @Column(name = "nodahuo_othreason", columnDefinition = "varchar(500)")
+    public String getNodahuoOthreason() {
+        return nodahuoOthreason;
+    }
+
 	public void setIfQualified(String ifQualified) {
 		this.ifQualified = ifQualified;
 	}
@@ -58,7 +76,19 @@ public class OaMrConfirm extends CommonBean{
 		this.unqualifiedReason = unqualifiedReason;
 	}
 
-	@Override
+    public void setIfDahuo(String ifDahuo) {
+        this.ifDahuo = ifDahuo;
+    }
+
+    public void setNodahuoOthreason(String nodahuoOthreason) {
+        this.nodahuoOthreason = nodahuoOthreason;
+    }
+
+    public void setNodahuoReason(String nodahuoReason) {
+        this.nodahuoReason = nodahuoReason;
+    }
+
+    @Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
