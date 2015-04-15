@@ -7171,7 +7171,7 @@ public class BxAction extends Action {
 	 * 
 	 * @author 张华
 	 */
-	public void jsonjsonGetThirdNode() {
+	public void jsonGetThirdNode() {
 		Map resMap = new HashMap();// 返回结果
 		try {
 			String orderIds = Struts2Utils.getParameter("oaOrder.id");
