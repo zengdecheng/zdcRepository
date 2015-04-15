@@ -86,6 +86,8 @@ public class OaOrder extends CommonBean {
 	private Long craftTime; // 特殊工艺时间
 	private Timestamp feedingTime; // 建议投料日期
 	private Timestamp goodsTime; // 货期
+	private String isSpecialFabric; // 是否特殊面料采购
+	private String isOverOrder; // 是否翻单
 
 	@Column(name = "begin_time",columnDefinition="timestamp null default null")
 	public Timestamp getBeginTime() {
@@ -414,6 +416,24 @@ public class OaOrder extends CommonBean {
 	@Column(name = "wf_step_name",columnDefinition="varchar(50)")
 	public String getWfStepName() {
 		return wfStepName;
+	}
+
+	@Column(name = "is_special_fabric",columnDefinition="char(1)")
+	public String getIsSpecialFabric() {
+		return isSpecialFabric;
+	}
+	
+	@Column(name = "is_over_order",columnDefinition="char(1)")
+	public String getIsOverOrder() {
+		return isOverOrder;
+	}
+
+	public void setIsSpecialFabric(String isSpecialFabric) {
+		this.isSpecialFabric = isSpecialFabric;
+	}
+
+	public void setIsOverOrder(String isOverOrder) {
+		this.isOverOrder = isOverOrder;
 	}
 
 	public void setBeginTime(Timestamp beginTime) {
