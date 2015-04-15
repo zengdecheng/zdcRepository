@@ -23,6 +23,8 @@ define([ "u","up"], function(u,up) {
 		},
 		bind : function() {
 			$("input[name='oaMrConfirm.ifQualified']").on("click", biz.event.ifQualifiedClick); //是否合格点击事件
+			$("input[name='oaMrConfirm.ifRepeat']").on("click", biz.event.ifRepeatClick); //是否合格点击事件
+            $("input[name='oaMrConfirm.ifDahuo']").on("click", biz.event.ifDahuoClick);//是否大货
 			$("#processBtn").on("click", biz.event.processOrder); //保存并提交
 			$(".download").on("click", biz.event.download); //下载文件
 			$("#terminateBtn").on("click", biz.event.toTerminateOrderDetail); //跳转到终止订单
@@ -46,6 +48,27 @@ define([ "u","up"], function(u,up) {
 					$("#unqualifiedReason").attr("readonly", "true");
 				}
 			},
+            ifDahuoClick : function(){
+                if("1" == $("input[name='oaMrConfirm.ifDahuo']:checked").val()) {
+                    $("input[name='oaMrConfirm.nodahuoReason']").removeAttr("readonly", true);
+                    $("input[name='oaMrConfirm.nodahuoReason']").removeAttr("disabled", true);
+                    $("#noDahuoOthReason").removeAttr("readonly", true);
+                } else {
+                    $("#noDahuoOthReason").val("");
+                    $("input[name='oaMrConfirm.nodahuoReason']").attr("checked", false);
+                    $("input[name='oaMrConfirm.nodahuoReason']").attr("disabled", true);
+                    $("#noDahuoOthReason").attr("readonly", true);
+                }
+            },
+            ifRepeatClick :function(){
+                // 0不需要 1 需要
+                if("0" == $("input[name='oaMrConfirm.ifRepeat']:checked").val()) {
+                    //不复版则不选择是否生产大货
+                } else {
+                    $("input[name='oaMrConfirm.ifDahuo'][value ='1']").attr("checked",true);//复版则不生产大货
+                    biz.event.ifDahuoClick();
+                }
+            },
 			jsonGetDaBanSixNode : function() { // 获取打版第六个节点页面信息
 				$.ajax({
                     url: "/bx/jsonGetDaBanSixNode?orderId=" + $(window.parent.document).find("#orderId").val() + "&wfStepIndex=" + wfStepIndex,
@@ -76,8 +99,22 @@ define([ "u","up"], function(u,up) {
 						$("input[name='oaMrConfirm.ifQualified'][value='0']").attr("checked", true);
 						$("#unqualifiedReason").attr("readonly", "true");
 					}
-					$("#unqualifiedReason").val(oaMrConfirm.unqualifiedReason);
-					$("#mrConfirmId").val(oaMrConfirm.id);
+                    if("1" == oaMrConfirm.ifDahuo){
+                        $("input[name='oaMrConfirm.ifDahuo'][value='1']").attr("checked", true);
+                    }else {
+                        $("input[name='oaMrConfirm.ifDahuo'][value='0']").attr("checked", true);
+                        $("#noDahuoOthReason").attr("readonly", "true");
+
+                        if (undefined != oaMrConfirm.nodahuoReason && null != oaMrConfirm.nodahuoReason) {
+                            var str = oaMrConfirm.nodahuoReason.split(", ");
+                            $(str).each(function (index) {
+                                $("input[name='oaMrConfirm.nodahuoReason'][value='" + str[index] + "']").attr("checked", true);
+                            })
+                        }
+                        $("#noDahuoOthReason").val(oaMrConfirm.nodahuoOthreason);
+                        $("#unqualifiedReason").val(oaMrConfirm.unqualifiedReason);
+                        $("#mrConfirmId").val(oaMrConfirm.id);
+                    }
 				} else {
 					$("input[name='oaMrConfirm.ifRepeat'][value='0']").attr("checked", true); //是否需要复版，默认为需要
 					$("input[name='oaMrConfirm.ifQualified'][value='0']").attr("checked", true); //是否合格，默认为合格
@@ -172,6 +209,11 @@ define([ "u","up"], function(u,up) {
 						$("#unqualifiedReason").focus();
 					}
 				}
+                //判断是否选择大货生产
+                if(undefined == $("input[name='oaMrConfirm.ifDahuo']").val() || null == $("input[name='oaMrConfirm.ifDahuo']").val() || "" == $("input[name='oaMrConfirm.ifDahuo']").val()){
+                    alert("请选择是否大货生产！");
+                    $("input[name= 'oaMrConfirm.ifDahuo']").focus();
+                }
 				if(fleg){
 					$("#processBtn").attr("disabled", "true");
 					$("#saveBtn").attr("disabled", "true");
@@ -208,6 +250,7 @@ define([ "u","up"], function(u,up) {
 				if(!detailUpdateFlag) {
 					$("input").attr("readonly", "true");
 					$("input[type=radio]").attr("disabled", "true");
+                    $("input[type=checkbox]").attr("disabled", "true");
 					$("textarea").attr("readonly", "true");
 					$("#otherFileUploadTd").text("");
 					$("#processOrderDive").hide();
