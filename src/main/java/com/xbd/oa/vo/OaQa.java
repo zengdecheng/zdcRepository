@@ -22,6 +22,12 @@ public class OaQa extends CommonBean {
 	private String unqualifiedNumInfo;			//次品 数量信息
 	private Float unqualifiedTotal;				//合格总计
 	private Float qualifiedTotal;				//次品总计
+    private Float gyQualified;                  //工艺次品
+    private Float blQualified;                  //布料次品
+    private Float hdQualified;                  //后道次品
+    private Float cpQualified;                  //车缝次品
+    private Float hdLost;                       //后道丢失
+    private Float otherQualified;               //其他次品
 
 	@Column(name = "oa_order_id")
 	public Integer getOaOrderId() {
@@ -68,7 +74,62 @@ public class OaQa extends CommonBean {
 		this.unqualifiedTotal = unqualifiedTotal;
 	}
 
-	@Override
+    @Column(name = "gy_qualified",columnDefinition="float(10,2)")
+    public Float getGyQualified() {
+        return gyQualified;
+    }
+
+    public void setGyQualified(Float gyQualified) {
+        this.gyQualified = gyQualified;
+    }
+
+    @Column(name = "bl_qualified",columnDefinition="float(10,2)")
+    public Float getBlQualified() {
+        return blQualified;
+    }
+
+    public void setBlQualified(Float blQualified) {
+        this.blQualified = blQualified;
+    }
+
+    @Column(name = "hd_qualified",columnDefinition="float(10,2)")
+    public Float getHdQualified() {
+        return hdQualified;
+    }
+
+    public void setHdQualified(Float hdQualified) {
+        this.hdQualified = hdQualified;
+    }
+
+    @Column(name = "cp_qualified",columnDefinition="float(10,2)")
+    public Float getCpQualified() {
+        return cpQualified;
+    }
+
+    public void setCpQualified(Float cpQualified) {
+        this.cpQualified = cpQualified;
+    }
+
+    @Column(name = "hd_lost",columnDefinition="float(10,2)")
+    public Float getHdLost() {
+        return hdLost;
+    }
+
+    public void setHdLost(Float hdLost) {
+        this.hdLost = hdLost;
+    }
+
+    @Column(name = "other_qualified",columnDefinition="float(10,2)")
+    public Float getOtherQualified() {
+        return otherQualified;
+    }
+
+    public void setOtherQualified(Float otherQualified) {
+        this.otherQualified = otherQualified;
+    }
+
+
+    @Override
 	public String toString() {
 		return "OaQa [oaOrderId=" + oaOrderId + ", qualifiedNumInfo=" + qualifiedNumInfo + ", unqualifiedNumInfo=" + unqualifiedNumInfo + ", unqualifiedTotal=" + unqualifiedTotal + ", qualifiedTotal=" + qualifiedTotal + ", id=" + id + "]";
 	}
