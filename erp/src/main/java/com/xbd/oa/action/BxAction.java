@@ -918,9 +918,9 @@ public class BxAction extends Action {
 
             //mr_if_dahuo, mr_nodahuo_othreaseon, mr_nodahuo_reason
             if (superList.get(i).get("mr_if_dahuo") !=  null && superList.get(i).get("mr_if_dahuo").toString().equals("0")) {
-                sheet1FileInfo.put(j + ",55", "是");// 是否生产大货
+                sheet1FileInfo.put(j + ",55", "生产");// 是否生产大货
             } else if(superList.get(i).get("mr_if_dahuo") !=  null && superList.get(i).get("mr_if_dahuo").toString().equals("1")){
-                sheet1FileInfo.put(j + ",55", "否");// 是否生产大货
+                sheet1FileInfo.put(j + ",55", "不生产");// 是否生产大货
             }
 
             if (superList.get(i).get("nodahuo_reason") !=  null && superList.get(i).get("nodahuo_reason").toString().equals("1")) {
