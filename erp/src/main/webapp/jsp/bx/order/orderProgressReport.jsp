@@ -80,7 +80,7 @@
 			</s:if>
 			<s:else>
 				<th width="70">TPE</th>
-				<th width="93">车缝匠人坊</th>
+				<th width="93">匠人坊</th>
 				<th width="96">MR</th>
 				<th width="96">技术部</th>
 				<th width="96">采购部</th>

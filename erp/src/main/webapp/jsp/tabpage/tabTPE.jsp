@@ -41,7 +41,7 @@
 		</div>
 		<div style="margin-top: 5px;">
 			<span style="margin-left:2.5%">车缝产出数量：<input type="text" id="sewing_total" name="oaTpe.sewingTotal" class="validate[min[1]]"></span>
-			<span style="color:red;margin-left:2.5%">*</span><span>生产匠人坊：<input type="text" class="validate[required]" id="sewing_factory" name="oaTpe.sewingFactory"></span>
+			<span style="color:red;margin-left:2.5%">*</span><span>匠人坊：<input type="text" class="validate[required]" id="sewing_factory" name="oaTpe.sewingFactory"></span>
 		</div>
 		<div
 			style="border-bottom: 1px solid rgb(205, 205, 205); font-size: 14px;">
