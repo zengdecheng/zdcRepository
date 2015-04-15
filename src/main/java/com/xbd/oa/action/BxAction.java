@@ -910,9 +910,9 @@ public class BxAction extends Action {
             }
 
             if (superList.get(i).get("is_special_fabric") !=  null && superList.get(i).get("is_special_fabric").toString().equals("0")) {
-                sheet1FileInfo.put(j + ",50", "否");// 是否特俗面料抽
+                sheet1FileInfo.put(j + ",50", "常规面料");// 是否特俗面料抽
             } else if(superList.get(i).get("is_special_fabric") !=  null && superList.get(i).get("is_special_fabric").toString().equals("1")){
-                sheet1FileInfo.put(j + ",50", "是");// 是否特俗面料抽
+                sheet1FileInfo.put(j + ",50", "特殊面料");// 是否特俗面料抽
             }
 
 
