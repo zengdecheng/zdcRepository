@@ -5801,7 +5801,7 @@ public class BxAction extends Action {
 				String oaSec = ExtAction.getMD5Str(miyaoString + oaOrder.getSellOrderCode());
 				bean.set("oaSec", oaSec);
 				bean.set("sellOrderId", oaOrder.getSellOrderId());
-				return "bx/order/toTerminateOrder";
+				return "bx/order/terminateOrder";
 			} else if ("2".equals(oaOrder.getType())) { // 样衣打版
 				return "bx/order/processDabanOrder";
 			} else if ("3".equals(oaOrder.getType())) { // 大货生产
