@@ -338,6 +338,7 @@ define([ "v","vl" ], function(v,vl) {
                                 if( "true" == $("#processOrder").val() ){
                                     top.location.href = "/bx/todo";
                                 }else {
+                                    alert("保存成功！");
                                     top.location.reload(true);
                                 }
 	                		} else {

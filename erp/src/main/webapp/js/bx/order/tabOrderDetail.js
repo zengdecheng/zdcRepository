@@ -774,6 +774,7 @@ define([ "u","layer","v","vl" ], function(u,layer) {
                                 if( "true" == $("#processOrder").val() ){
                                     top.location.href = "/bx/todo";
                                 }else {
+                                    alert("保存成功！");
                                     top.location.reload(true);
                                 }
                             } else {
