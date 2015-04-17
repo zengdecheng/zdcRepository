@@ -116,7 +116,10 @@
 		<div class="tabone order_tab" pageTo="tabPage3" id="tab3">
 			<span>技术</span>
 		</div>
-		<div class="tabone order_tab" pageTo="tabPage4" id="tab4">
+		<div class="tabone order_tab" pageTo="tabPage11" id="tab11">
+			<span>缓冲</span>
+		</div>
+        <div class="tabone order_tab" pageTo="tabPage4" id="tab4">
 			<span>采购</span>
 		</div>
 		<div class="tabone order_tab" pageTo="tabPage5" id="tab5">
@@ -147,6 +150,9 @@
 	</div>
 	<div id="tabPage3" class="tab_page tabpageone">
 		<iframe id="iframeTechnology" width="100%" frameborder="no" border="0" scrolling="no" src=""> </iframe>
+	</div>
+    <div id="tabPage11" class="tab_page tabpageone">
+		<iframe id="iframeBuffer" width="100%" frameborder="no" border="0" scrolling="no" src=""> </iframe>
 	</div>
 	<div id="tabPage4" class="tab_page tabpageone" >
 		<iframe id="iframePurchase" width="100%" frameborder="no" border="0" scrolling="no" src=""> </iframe>
