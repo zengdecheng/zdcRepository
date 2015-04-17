@@ -29,11 +29,12 @@ define([ "u" ], function(u) {
 				dahuoIframeUrl[1] = "/jsp/tabpage/tabTechnology.jsp";
 				dahuoIframeUrl[2] = "/jsp/tabpage/tabPurchase.jsp";
 				dahuoIframeUrl[3] = "/jsp/tabpage/tabCQC.jsp";
-				dahuoIframeUrl[4] = "/jsp/tabpage/tabTPE.jsp";
-				dahuoIframeUrl[5] = "/jsp/tabpage/tabQA.jsp";
-				dahuoIframeUrl[6] = "/jsp/tabpage/tabFinance.jsp";
-				dahuoIframeUrl[7] = "/jsp/tabpage/tabLogistics.jsp";
-				dahuoIframeUrl[8] = "/jsp/tabpage/tabOrderTimeout.jsp";
+				dahuoIframeUrl[4] = "/jsp/qitao/tabQiTao.jsp";
+				dahuoIframeUrl[5] = "/jsp/tabpage/tabTPE.jsp";
+				dahuoIframeUrl[6] = "/jsp/tabpage/tabQA.jsp";
+				dahuoIframeUrl[7] = "/jsp/tabpage/tabFinance.jsp";
+				dahuoIframeUrl[8] = "/jsp/tabpage/tabLogistics.jsp";
+				dahuoIframeUrl[9] = "/jsp/tabpage/tabOrderTimeout.jsp";
 			}
 //			if("样衣打版" == $("#orderType").val()) {
 			var wfStepIndex = $("#wfStepIndex").val();
