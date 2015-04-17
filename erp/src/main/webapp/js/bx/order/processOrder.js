@@ -1,7 +1,7 @@
 requirejs.config({
 	baseUrl : "/js/pub/",
 	paths : {
-		"u" : "util",
+		"u" : "util"
 	}
 });
 var _this, orderTypeNum;
@@ -35,6 +35,7 @@ define([ "u" ], function(u) {
 				dahuoIframeUrl[7] = "/jsp/tabpage/tabFinance.jsp";
 				dahuoIframeUrl[8] = "/jsp/tabpage/tabLogistics.jsp";
 				dahuoIframeUrl[9] = "/jsp/tabpage/tabOrderTimeout.jsp";
+                dahuoIframeUrl[9] = "/jsp/tabpage/tabBuffer.jsp";//缓冲节点
 			}
 //			if("样衣打版" == $("#orderType").val()) {
 			var wfStepIndex = $("#wfStepIndex").val();
@@ -98,7 +99,7 @@ define([ "u" ], function(u) {
 				var pageTo = $(this).attr("pageTo");
 				$("#" + pageTo).removeClass("tab_page");
 				$("#" + pageTo).addClass("tab_page_active");
-				biz.event.iframeLoadData(pageTo.substr((pageTo.length - 1), 1));
+				biz.event.iframeLoadData(pageTo.substr(7,pageTo.length));
 			},
 			iframeLoadData : function(activeIndex) {
 				if(parseInt(activeIndex) >= 0 && parseInt(activeIndex) < 2) {
