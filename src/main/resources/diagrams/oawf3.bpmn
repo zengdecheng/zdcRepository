@@ -64,11 +64,19 @@
     <sequenceFlow id="flow12" sourceRef="c_ppc_huanchong_3" targetRef="c_ppc_assign_4"></sequenceFlow>
     <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
     <sequenceFlow id="flow13" sourceRef="c_ppc_factoryMsg_6" targetRef="exclusivegateway1"></sequenceFlow>
-    <userTask id="c_qitao_8" name="齐套"></userTask>
+    <userTask id="c_qitao_8" name="齐套">
+      <extensionElements>
+        <activiti:taskListener event="oastephandler" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
     <sequenceFlow id="flow14" sourceRef="exclusivegateway1" targetRef="c_qitao_8">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${art == 'false'}]]></conditionExpression>
     </sequenceFlow>
-    <userTask id="c_art_7" name="特殊工艺"></userTask>
+    <userTask id="c_art_7" name="特殊工艺">
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
     <sequenceFlow id="flow15" sourceRef="exclusivegateway1" targetRef="c_art_7">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${art == 'true'}]]></conditionExpression>
     </sequenceFlow>
