@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="oawf2" name="样衣打版流程" isExecutable="true">
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <userTask id="b_create_yangyi_1" name="新建样衣打版订单" activiti:candidateGroups="mr">
+      <documentation>样版通知单（要写清楚打办时的面辅料用量）</documentation>
+      <extensionElements>
+        <activiti:taskListener event="oastephandler" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="b_mr_improve_2" name="补充订单信息" activiti:assignee="111" activiti:candidateGroups="mr">
+      <extensionElements>
+        <activiti:taskListener event="oastephandler" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="b_ppc_confirm_3" name="采购面料" activiti:assignee="222" activiti:candidateGroups="pur">
+      <documentation>电子版面辅料搭配信息</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <userTask id="b_pur_confirm_4" name="技术" activiti:assignee="333" activiti:candidateGroups="it">
+      <documentation>工艺单</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="b_ppc_confirm_7" name="成本核算" activiti:assignee="444" activiti:candidateGroups="cp">
+      <documentation>成本核算单</documentation>
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="b_qc_confirm_8" name="提交MR确认" activiti:candidateGroups="mr">
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="b_create_yangyi_1"></sequenceFlow>
+    <sequenceFlow id="flow3" sourceRef="b_mr_improve_2" targetRef="b_ppc_confirm_3"></sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="b_ppc_confirm_3" targetRef="b_art_5"></sequenceFlow>
+    <sequenceFlow id="flow6" sourceRef="b_ppc_confirm_7" targetRef="b_qc_confirm_8"></sequenceFlow>
+    <sequenceFlow id="flow7" sourceRef="b_qc_confirm_8" targetRef="endevent1"></sequenceFlow>
+    <sequenceFlow id="flow2" sourceRef="b_create_yangyi_1" targetRef="b_mr_improve_2"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow8" sourceRef="b_art_5" targetRef="exclusivegateway1"></sequenceFlow>
+    <userTask id="b_art_5" name="特殊工艺">
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow9" sourceRef="exclusivegateway1" targetRef="b_art_5">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[{art='true'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow10" sourceRef="exclusivegateway1" targetRef="b_ppc_confirm_7">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[{art='false'}]]></conditionExpression>
+    </sequenceFlow>
+    <userTask id="b_tech_6" name="技术">
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow11" sourceRef="b_art_5" targetRef="b_tech_6"></sequenceFlow>
+    <sequenceFlow id="flow12" sourceRef="b_tech_6" targetRef="b_ppc_confirm_7"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_oawf2">
+    <bpmndi:BPMNPlane bpmnElement="oawf2" id="BPMNPlane_oawf2">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="100.0" y="30.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="b_create_yangyi_1" id="BPMNShape_b_create_yangyi_1">
+        <omgdc:Bounds height="55.0" width="105.0" x="231.0" y="20.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="b_mr_improve_2" id="BPMNShape_b_mr_improve_2">
+        <omgdc:Bounds height="55.0" width="105.0" x="231.0" y="110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="b_ppc_confirm_3" id="BPMNShape_b_ppc_confirm_3">
+        <omgdc:Bounds height="55.0" width="105.0" x="231.0" y="200.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="501.0" y="630.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="b_pur_confirm_4" id="BPMNShape_b_pur_confirm_4">
+        <omgdc:Bounds height="55.0" width="105.0" x="231.0" y="290.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="b_ppc_confirm_7" id="BPMNShape_b_ppc_confirm_7">
+        <omgdc:Bounds height="55.0" width="105.0" x="231.0" y="540.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="b_qc_confirm_8" id="BPMNShape_b_qc_confirm_8">
+        <omgdc:Bounds height="55.0" width="105.0" x="231.0" y="620.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="263.0" y="378.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="b_art_5" id="BPMNShape_b_art_5">
+        <omgdc:Bounds height="55.0" width="105.0" x="390.0" y="371.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="b_tech_6" id="BPMNShape_b_tech_6">
+        <omgdc:Bounds height="55.0" width="105.0" x="390.0" y="460.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="135.0" y="47.0"></omgdi:waypoint>
+        <omgdi:waypoint x="231.0" y="47.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="283.0" y="165.0"></omgdi:waypoint>
+        <omgdi:waypoint x="283.0" y="200.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="283.0" y="255.0"></omgdi:waypoint>
+        <omgdi:waypoint x="442.0" y="371.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="283.0" y="595.0"></omgdi:waypoint>
+        <omgdi:waypoint x="283.0" y="620.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="336.0" y="647.0"></omgdi:waypoint>
+        <omgdi:waypoint x="501.0" y="647.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="283.0" y="75.0"></omgdi:waypoint>
+        <omgdi:waypoint x="283.0" y="110.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="390.0" y="398.0"></omgdi:waypoint>
+        <omgdi:waypoint x="303.0" y="398.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="303.0" y="398.0"></omgdi:waypoint>
+        <omgdi:waypoint x="390.0" y="398.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+        <omgdi:waypoint x="283.0" y="418.0"></omgdi:waypoint>
+        <omgdi:waypoint x="283.0" y="540.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+        <omgdi:waypoint x="442.0" y="426.0"></omgdi:waypoint>
+        <omgdi:waypoint x="442.0" y="460.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+        <omgdi:waypoint x="442.0" y="515.0"></omgdi:waypoint>
+        <omgdi:waypoint x="283.0" y="540.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
