@@ -27,7 +27,8 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.task.Task;
 import org.apache.commons.beanutils.LazyDynaMap;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.xbd.erp.base.utils.XBDUtils;
 
 public class WorkFlowUtil {
 	protected static ApplicationContext context;
@@ -43,7 +44,7 @@ public class WorkFlowUtil {
 
 	static {
 		if (context == null) {
-			context = new ClassPathXmlApplicationContext("spring.xml");
+			context =XBDUtils.context;
 			formService = (FormService) context.getBean("formService");
 			repositoryService = (RepositoryService) context.getBean("repositoryService");
 			runtimeService = (RuntimeService) context.getBean("runtimeService");
