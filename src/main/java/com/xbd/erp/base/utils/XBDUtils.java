@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.activiti.engine.task.Task;
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.LazyDynaMap;
 import org.apache.commons.lang3.StringUtils;
@@ -35,6 +36,7 @@ import com.xbd.oa.utils.PathUtil;
 import com.xbd.oa.utils.ResourceUtil;
 import com.xbd.oa.utils.Struts2Utils;
 import com.xbd.oa.utils.WebUtil;
+import com.xbd.oa.utils.WorkFlowUtil;
 import com.xbd.oa.vo.OaClothesSize;
 import com.xbd.oa.vo.OaClothesSizeDetail;
 import com.xbd.oa.vo.OaCost;
@@ -59,7 +61,7 @@ import com.xbd.oa.vo.base.CustomCell;
 public class XBDUtils {
 	private static DecimalFormat decimalFormat = new DecimalFormat("0.##");
 	private static DecimalFormat decimalFormat3 = new DecimalFormat("0.###");
-	protected static ApplicationContext context;
+	public static ApplicationContext context;
 	protected static BaseDao<?> baseDao;
 	static {
 		if (baseDao == null) {
@@ -72,8 +74,8 @@ public class XBDUtils {
 	 * 大货：
 	 * 		新建大货订单		c_create_dahuo_1
 	 * 		补充订单信息		c_mr_improve_2
-	 * 		缓冲				c_ppc_huanchong_3
-	 * 		技术				c_ppc_assign_4
+	 * 		技术				c_ppc_assign_3
+	 * 		缓冲				c_ppc_huanchong_4
 	 * 		采购				c_fi_pay_5
 	 * 		CQC				c_ppc_factoryMsg_6
 	 * 		特殊工艺			c_art_7
@@ -93,18 +95,45 @@ public class XBDUtils {
 	 *      mr确认			b_qc_confirm_8
 	 */
 	
+	
+	
+	/**
+	 * 启动第一个节点
+	 * @param processInstanceByKey
+	 * @param curUser
+	 * @param oaOrder
+	 */
+	public static void startOrderWf(String processInstanceByKey, String curUser, OaOrder oaOrder) {
+		Map<String,Object> variabes =new HashMap<String,Object>();
+		variabes.put("oa_order", oaOrder.getId());
+		WorkFlow.startProcess(processInstanceByKey, variabes).getId();
+		
+		// 开始节点和第一步是连起来做的，每个流程的第一个节点不扩展createHandle
+//		Task task = WorkFlowUtil.getOnlyCurTaskByProcessInstanceId(processInstanceId);
+//		task.setAssignee(curUser);
+//		firstEditBizOrderAndDetail(processInstanceId, curUser, oaOrder, task);
+//		WorkFlowUtil.completeTask(task.getId());
+		/*
+		 * //2.修改订单主表 //oaOrder.set
+		 * 
+		 * //3.存入第一步的订单细节表 OaOrderDetail oaOrderDetail = new OaOrderDetail(); oaOrderDetail.setOaOrder(oaOrder.getId()); oaOrderDetail.setOperator(owner); oaOrderDetail.setProcId(processId);
+		 * //oaOrderDetail.set
+		 * 
+		 * //4.使工作流工作流走到下一个节点 WorkFlowUtil.completeTask(task.getId());
+		 */
+	}
+	
 	/**
 	 * 核心处理方法
 	 * @param orderId  订单ID
 	 * @param processOrder	订单处理标识
 	 */
-
 	public static void processOrder(OaOrder dbOaOrder){
 		// 查询该订单节点信息
 		OaOrderDetail oaOrderDetail = (OaOrderDetail) baseDao.getObject(OaOrderDetail.class, dbOaOrder.getOaOrderDetail());
 		// 样衣打版第六个流程节点（MR确认）不写Excel，排除在外
 		if ("c_mr_improve_2".equals(dbOaOrder.getWfStep()) 
-				|| "c_ppc_assign_4".equals(dbOaOrder.getWfStep()) 
+				|| "c_ppc_huanchong_4".equals(dbOaOrder.getWfStep()) 
 				|| "c_fi_pay_5".equals(dbOaOrder.getWfStep())
 				|| "b_mr_improve_2".equals(dbOaOrder.getWfStep())
 				|| "b_ppc_confirm_3".equals(dbOaOrder.getWfStep())
