@@ -5,6 +5,7 @@ import java.util.Iterator;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
+import org.apache.commons.lang3.StringUtils;
 
 import com.xbd.oa.utils.BizUtil;
 
@@ -16,11 +17,9 @@ public class OaStepHandler implements TaskListener {
 	private static final long serialVersionUID = 1L;
 	private String groupName;
 	public void notify(DelegateTask delegateTask) {
-		
 		Integer oaOrderInt = (Integer)delegateTask.getVariable("oa_order");//上一节点的oa_order_detail 的id
 		Integer oaOrderDetailInt = (Integer)delegateTask.getVariable("oa_order_detail");//上一节点的oa_order_detail 的id
 		String description = delegateTask.getDescription();
-		//delegateTask.get
 		//1设置本任务指派人
 		String assignment = setAssignment(delegateTask,oaOrderInt);
 		//2新增oa_order_detail 并修改上一个节点的完成时间及order主表
@@ -35,21 +34,17 @@ public class OaStepHandler implements TaskListener {
 	 * @param delegateTask
 	 */
 	private String setAssignment(DelegateTask delegateTask,Integer oaOrderInt){
-		// Execute custom identity lookups here
-
-	    // and then for example call following methods:
-		//System.out.println(delegateTask.getCandidates());
 		String adminName = "";
 		groupName = "";
 		String assigneeName = "";
 		
-		for (Iterator iterator = delegateTask.getCandidates().iterator(); iterator.hasNext();) {
+		for (Iterator<?> iterator = delegateTask.getCandidates().iterator(); iterator.hasNext();) {
 			IdentityLinkEntity identityLinkEntity = (IdentityLinkEntity) iterator.next();
 			groupName = identityLinkEntity.getGroupId();
 			assigneeName = identityLinkEntity.getUserId();
 		}
 
-		if(assigneeName != null && !assigneeName.equals("")){
+		if(StringUtils.isNotBlank(assigneeName)){
 			adminName = assigneeName;
 		}else{
 			adminName = BizUtil.getAssigneeByGroup(groupName,delegateTask.getProcessInstanceId(),oaOrderInt);
@@ -61,5 +56,4 @@ public class OaStepHandler implements TaskListener {
 		}
 		return adminName;
 	}
-	
 }
