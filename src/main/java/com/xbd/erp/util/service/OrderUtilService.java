@@ -8,6 +8,4 @@ import java.util.Map;
 public interface OrderUtilService extends BaseService<Object> {
 
     public void getTracke(int orderId, String node, Map resMap) throws Exception;
-
-    public void getSvn();
 }
