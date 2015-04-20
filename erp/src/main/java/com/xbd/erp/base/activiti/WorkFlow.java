@@ -25,6 +25,7 @@ import org.activiti.engine.task.Task;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.xbd.erp.base.utils.XBDUtils;
 import com.xbd.test.activiti.JumpTask;
 
 public class WorkFlow{
@@ -42,7 +43,7 @@ public class WorkFlow{
 	
 	static {
 		if (context == null) {
-			context = new ClassPathXmlApplicationContext("spring.xml");
+			context =XBDUtils.context;
 			formService = (FormService) context.getBean("formService");
 			repositoryService = (RepositoryService) context.getBean("repositoryService");
 			runtimeService = (RuntimeService) context.getBean("runtimeService");
@@ -182,6 +183,14 @@ public class WorkFlow{
 	}
 	public static List<Task> getPersonalTaskLikeByPage(String assignee,int firstResult,int maxResults){
 		return processEngine.getTaskService().createTaskQuery().taskAssigneeLike(assignee).orderByTaskCreateTime().desc().listPage(firstResult, maxResults);
+	}
+	
+	public static List<Task> getTasksByProcessInstanceId(String processInstanceId){
+		return taskService.createTaskQuery().processInstanceId(processInstanceId).list();
+	}
+	
+	public static Task getTaskByTaskId(String taskId){
+		return taskService.createTaskQuery().taskId(taskId).singleResult();
 	}
 	
 	public static List<HistoricTaskInstance> getHisTaskByPerson(String assignee){
