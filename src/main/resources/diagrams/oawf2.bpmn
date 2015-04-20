@@ -4,9 +4,6 @@
     <startEvent id="startevent1" name="Start"></startEvent>
     <userTask id="b_create_yangyi_1" name="新建样衣打版订单" activiti:candidateGroups="mr">
       <documentation>样版通知单（要写清楚打办时的面辅料用量）</documentation>
-      <extensionElements>
-        <activiti:taskListener event="oastephandler" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
-      </extensionElements>
     </userTask>
     <userTask id="b_mr_improve_2" name="补充订单信息" activiti:assignee="111" activiti:candidateGroups="mr">
       <extensionElements>
