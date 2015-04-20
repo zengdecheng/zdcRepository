@@ -145,11 +145,13 @@ public class XBDUtils {
 		}
 		
 		Map<String,Object> variables = new HashMap<String,Object>();
-		variables.put("oa_order_detail", oaOrderDetail.getId());
-		if(StringUtils.isNotBlank(dbOaOrder.getStyleCraft())){
-			variables.put("art", "true");
-		}else{
-			variables.put("art", "false");
+		if("c_ppc_factoryMsg_6".equals(dbOaOrder.getWfStep()) || "b_pur_confirm_4".equals(dbOaOrder.getWfStep()) ){
+			//variables.put("oa_order_detail", oaOrderDetail.getId());
+			if(StringUtils.isNotBlank(dbOaOrder.getStyleCraft())){
+				variables.put("art", "true");
+			}else{
+				variables.put("art", "false");
+			}
 		}
 		WorkFlow.nextUserTask(oaOrderDetail.getTaskId(), variables);
 		
