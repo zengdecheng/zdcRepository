@@ -59,7 +59,7 @@
     <sequenceFlow id="flow8" sourceRef="c_ppc_confirm_10" targetRef="c_qc_printing_11"></sequenceFlow>
     <sequenceFlow id="flow9" sourceRef="c_qc_printing_11" targetRef="c_ppc_confirm_12"></sequenceFlow>
     <sequenceFlow id="flow10" sourceRef="c_ppc_confirm_12" targetRef="endevent1"></sequenceFlow>
-    <userTask id="c_ppc_assign_3" name="技术1" activiti:candidateGroups="ppc">
+    <userTask id="c_ppc_assign_3" name="技术1" activiti:async="true" activiti:candidateGroups="ppc">
       <extensionElements>
         <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
       </extensionElements>
