@@ -42,8 +42,8 @@ public class DaoQueryByXml {
 	static {
 		try {
 			daoQueryByXmlCfgMapping = new Mapping();
-			URL daoQueryByXmlCfgUrl = DaoQueryByXml.class.getClassLoader().getResource("/query/mapping.xml");
-//			URL daoQueryByXmlCfgUrl =Thread.currentThread().getContextClassLoader().getResource("/com/xbd/erp/base/dao/query/mapping.xml");
+			URL daoQueryByXmlCfgUrl = DaoQueryByXml.class.getClassLoader().getResource("query/mapping.xml");
+//			URL daoQueryByXmlCfgUrl =Thread.currentThread().getContextClassLoader().getResource("/query/mapping.xml");
 			daoQueryByXmlCfgMapping.loadMapping(daoQueryByXmlCfgUrl);
 		} catch (Exception e) {
 			e.printStackTrace();
