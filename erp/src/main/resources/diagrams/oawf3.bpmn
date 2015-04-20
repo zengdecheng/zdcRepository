@@ -11,7 +11,7 @@
         <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
       </extensionElements>
     </userTask>
-    <userTask id="c_ppc_assign_4" name="制作纸样、生产工艺制造单" activiti:candidateGroups="it">
+    <userTask id="c_ppc_huanchong_4" name="缓冲" activiti:candidateGroups="it">
       <documentation>齐码纸样，生产工艺制造单，面辅料流转表（填写用量）</documentation>
       <extensionElements>
         <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
@@ -53,15 +53,19 @@
     </userTask>
     <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="c_create_dahuo_1"></sequenceFlow>
     <sequenceFlow id="flow2" sourceRef="c_create_dahuo_1" targetRef="c_mr_improve_2"></sequenceFlow>
-    <sequenceFlow id="flow4" sourceRef="c_ppc_assign_4" targetRef="c_fi_pay_5"></sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="c_ppc_huanchong_4" targetRef="c_fi_pay_5"></sequenceFlow>
     <sequenceFlow id="flow5" sourceRef="c_fi_pay_5" targetRef="c_ppc_factoryMsg_6"></sequenceFlow>
     <sequenceFlow id="flow7" sourceRef="c_qc_cutting_9" targetRef="c_ppc_confirm_10"></sequenceFlow>
     <sequenceFlow id="flow8" sourceRef="c_ppc_confirm_10" targetRef="c_qc_printing_11"></sequenceFlow>
     <sequenceFlow id="flow9" sourceRef="c_qc_printing_11" targetRef="c_ppc_confirm_12"></sequenceFlow>
     <sequenceFlow id="flow10" sourceRef="c_ppc_confirm_12" targetRef="endevent1"></sequenceFlow>
-    <userTask id="c_ppc_huanchong_3" name="缓冲" activiti:candidateGroups="ppc"></userTask>
-    <sequenceFlow id="flow11" sourceRef="c_mr_improve_2" targetRef="c_ppc_huanchong_3"></sequenceFlow>
-    <sequenceFlow id="flow12" sourceRef="c_ppc_huanchong_3" targetRef="c_ppc_assign_4"></sequenceFlow>
+    <userTask id="c_ppc_assign_3" name="技术" activiti:candidateGroups="ppc">
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow11" sourceRef="c_mr_improve_2" targetRef="c_ppc_assign_3"></sequenceFlow>
+    <sequenceFlow id="flow12" sourceRef="c_ppc_assign_3" targetRef="c_ppc_huanchong_4"></sequenceFlow>
     <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
     <sequenceFlow id="flow13" sourceRef="c_ppc_factoryMsg_6" targetRef="exclusivegateway1"></sequenceFlow>
     <userTask id="c_qitao_8" name="齐套">
@@ -97,7 +101,7 @@
       <bpmndi:BPMNShape bpmnElement="c_mr_improve_2" id="BPMNShape_c_mr_improve_2">
         <omgdc:Bounds height="55.0" width="105.0" x="191.0" y="110.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="c_ppc_assign_4" id="BPMNShape_c_ppc_assign_4">
+      <bpmndi:BPMNShape bpmnElement="c_ppc_huanchong_4" id="BPMNShape_c_ppc_huanchong_4">
         <omgdc:Bounds height="55.0" width="105.0" x="191.0" y="280.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="c_fi_pay_5" id="BPMNShape_c_fi_pay_5">
@@ -118,7 +122,7 @@
       <bpmndi:BPMNShape bpmnElement="c_ppc_confirm_12" id="BPMNShape_c_ppc_confirm_12">
         <omgdc:Bounds height="55.0" width="105.0" x="192.0" y="960.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="c_ppc_huanchong_3" id="BPMNShape_c_ppc_huanchong_3">
+      <bpmndi:BPMNShape bpmnElement="c_ppc_assign_3" id="BPMNShape_c_ppc_assign_3">
         <omgdc:Bounds height="55.0" width="105.0" x="191.0" y="190.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
