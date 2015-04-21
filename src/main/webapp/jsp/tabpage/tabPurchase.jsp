@@ -59,7 +59,7 @@
 							fillName="oaOrderDetail.content" name="oaOrderDetail.content"></textarea></td>
 					<td>
 						<div style="height: 105px;">
-							<span style="line-height: 22px;">进度信息:<span>
+							<span style="line-height: 22px;">进度信息:</span>
 									<div
 										style="height: 100px; width: 80%; float: right; border: 1px solid rgb(205, 205, 205);">
 										<p
