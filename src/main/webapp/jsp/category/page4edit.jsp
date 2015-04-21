@@ -55,7 +55,7 @@ input {
 		</div>
 		<div
 			style="background: #4b8df8; font-size: 14px; margin: 15px 5px 5px 0; color: #ffffff; width: 100%;">
-			<p style="padding: 5px 5px">&nbsp;品类缓冲时间设置</p>
+			<p style="padding: 5px 5px">&nbsp;整体时间设置</p>
 		</div>
 		<div style="padding-left: 8px;">
 			<table style="width: 1000px;">
@@ -76,22 +76,53 @@ input {
 					<td width="200">&nbsp;</td>
 				</tr>
 				<tr>
-					<td height="30">绣花（小时）：</td>
+					<td height="30">销售等待（小时）：</td>
 					<td><input type="text"
+						class="validate[custom[number2],maxSize[5]] time_text"
+						id="sellWait" tname="sellWait"><input type="hidden"
+						name="oaCategory.sellWait" tname="sellWait_hid" id="sellWait_hid"
+						class="time_hid" value="${oaCategory.sellWait }"></td>
+					<td>货款等待（小时）：</td>
+					<td><input type="text"
+						class="validate[custom[number2],maxSize[5]] time_text"
+						id="paymentWait" tname="paymentWait"><input type="hidden"
+						name="oaCategory.paymentWait" tname="paymentWait_hid"
+						id="paymentWait_hid" class="time_hid"
+						value="${oaCategory.paymentWait }"></td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td>备注：</td>
+					<td colspan="5"><textarea name="oaCategory.remark"
+							class="validate[maxSize[200]]"
+							style="width: 505px; height: 80px;">${oaCategory.remark }</textarea></td>
+				</tr>
+			</table>
+		</div>
+		<div
+			style="background: #4b8df8; font-size: 14px; margin: 15px 5px 5px 0; color: #ffffff; width: 100%;">
+			<p style="padding: 5px 5px">&nbsp;大货-特殊工艺处理时间设置</p>
+		</div>
+		<div style="padding-left: 8px;">
+			<table style="width: 1000px;">
+				<tr>
+					<td width="130" height="30">绣花（小时）：</td>
+					<td width="200"><input type="text"
 						class="validate[custom[number2],maxSize[5]] time_text"
 						id="embroidery" tname="embroidery"><input type="hidden"
 						name="oaCategory.embroidery" tname="embroidery_hid"
 						id="embroidery_hid" class="time_hid"
 						value="${oaCategory.embroidery }"></td>
-					<td>洗水（小时）：</td>
-					<td><input type="text"
+					<td width="120">洗水（小时）：</td>
+					<td width="200"><input type="text"
 						class="validate[custom[number2],maxSize[5]] time_text"
 						id="washwaterTime" tname="washwaterTime"><input
 						type="hidden" name="oaCategory.washwaterTime"
 						tname="washwaterTime_hid" id="washwaterTime_hid" class="time_hid"
 						value="${oaCategory.washwaterTime }"></td>
-					<td>印花（小时）：</td>
-					<td><input type="text"
+					<td width="116">印花（小时）：</td>
+					<td width="200"><input type="text"
 						class="validate[custom[number2],maxSize[5]] time_text"
 						id="printingTime" tname="printingTime"><input
 						type="hidden" name="oaCategory.printingTime"
@@ -122,19 +153,6 @@ input {
 						value="${oaCategory.beadsTime }"></td>
 				</tr>
 				<tr>
-					<td height="30">销售等待（小时）：</td>
-					<td><input type="text"
-						class="validate[custom[number2],maxSize[5]] time_text"
-						id="sellWait" tname="sellWait"><input type="hidden"
-						name="oaCategory.sellWait" tname="sellWait_hid" id="sellWait_hid"
-						class="time_hid" value="${oaCategory.sellWait }"></td>
-					<td>货款等待（小时）：</td>
-					<td><input type="text"
-						class="validate[custom[number2],maxSize[5]] time_text"
-						id="paymentWait" tname="paymentWait"><input type="hidden"
-						name="oaCategory.paymentWait" tname="paymentWait_hid"
-						id="paymentWait_hid" class="time_hid"
-						value="${oaCategory.paymentWait }"></td>
 					<td>其他（小时）：</td>
 					<td><input type="text"
 						class="validate[custom[number2],maxSize[5]] time_text"
@@ -142,12 +160,226 @@ input {
 						name="oaCategory.otherTime" tname="otherTime_hid"
 						id="otherTime_hid" class="time_hid"
 						value="${oaCategory.otherTime }"></td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+			</table>
+		</div>
+		<div
+			style="background: #4b8df8; font-size: 14px; margin: 15px 5px 5px 0; color: #ffffff; width: 100%;">
+			<p style="padding: 5px 5px">&nbsp;打版-特殊工艺处理时间设置</p>
+		</div>
+		<div style="padding-left: 8px;">
+			<table style="width: 1000px;">
+				<tr>
+					<td width="130" height="30">绣花（小时）：</td>
+					<td width="200"><input type="text"
+						class="validate[custom[number2],maxSize[5]] time_text"
+						id="dabanEmbroidery" tname="dabanEmbroidery"><input
+						type="hidden" name="oaCategory.dabanEmbroidery"
+						tname="dabanEmbroidery_hid" id="dabanEmbroidery_hid"
+						class="time_hid" value="${oaCategory.dabanEmbroidery }"></td>
+					<td width="120">洗水（小时）：</td>
+					<td width="200"><input type="text"
+						class="validate[custom[number2],maxSize[5]] time_text"
+						id="dabanWashwaterTime" tname="dabanWashwaterTime"><input
+						type="hidden" name="oaCategory.dabanWashwaterTime"
+						tname="dabanWashwaterTime_hid" id="dabanWashwaterTime_hid"
+						class="time_hid" value="${oaCategory.dabanWashwaterTime }"></td>
+					<td width="116">印花（小时）：</td>
+					<td width="200"><input type="text"
+						class="validate[custom[number2],maxSize[5]] time_text"
+						id="dabanPrintingTime" tname="dabanPrintingTime"><input
+						type="hidden" name="oaCategory.dabanPrintingTime"
+						tname="dabanPrintingTime_hid" id="dabanPrintingTime_hid"
+						class="time_hid" value="${oaCategory.dabanPrintingTime }"></td>
 				</tr>
 				<tr>
-					<td>备注：</td>
-					<td colspan="5"><textarea name="oaCategory.remark"
-							class="validate[maxSize[200]]"
-							style="width: 505px; height: 80px;">${oaCategory.remark }</textarea></td>
+					<td height="30">缩折/打条（小时）：</td>
+					<td><input type="text"
+						class="validate[custom[number2],maxSize[5]] time_text"
+						id="dabanFoldingTime" tname="dabanFoldingTime"><input
+						type="hidden" name="oaCategory.dabanFoldingTime"
+						tname="dabanFoldingTime_hid" id="dabanFoldingTime_hid"
+						class="time_hid" value="${oaCategory.dabanFoldingTime }"></td>
+					<td>打揽（小时）：</td>
+					<td><input type="text"
+						class="validate[custom[number2],maxSize[5]] time_text"
+						id="dabanDalanTime" tname="dabanDalanTime"><input
+						type="hidden" name="oaCategory.dabanDalanTime"
+						tname="dabanDalanTime_hid" id="dabanDalanTime_hid"
+						class="time_hid" value="${oaCategory.dabanDalanTime }"></td>
+					<td>订珠（小时）：</td>
+					<td><input type="text"
+						class="validate[custom[number2],maxSize[5]] time_text"
+						id="dabanBeadsTime" tname="dabanBeadsTime"><input
+						type="hidden" name="oaCategory.dabanBeadsTime"
+						tname="dabanBeadsTime_hid" id="dabanBeadsTime_hid"
+						class="time_hid" value="${oaCategory.dabanBeadsTime }"></td>
+				</tr>
+				<tr>
+					<td>其他（小时）：</td>
+					<td><input type="text"
+						class="validate[custom[number2],maxSize[5]] time_text"
+						id="dabanOtherTime" tname="dabanOtherTime"><input
+						type="hidden" name="oaCategory.dabanOtherTime"
+						tname="dabanOtherTime_hid" id="dabanOtherTime_hid"
+						class="time_hid" value="${oaCategory.dabanOtherTime }"></td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+			</table>
+		</div>
+		<div
+			style="background: #4b8df8; font-size: 14px; margin: 15px 5px 5px 0; color: #ffffff; width: 100%;">
+			<p style="padding: 5px 5px">&nbsp;大货-节点时间设置</p>
+		</div>
+		<div style="padding-left: 8px;">
+			<input type="hidden" name="dhTimebase.id" value=""> <input
+				type="hidden" name="dhTimebaseEntries[0].stepDuration" value="0">
+			<input type="hidden" name="dhTimebaseEntries[0].id" value=""> <input
+				type="hidden" name="dhTimebaseEntries[0].step"
+				value="c_create_dahuo_1"> <input type="hidden"
+				name="dhTimebaseEntries[0].stepName" value="新建大货生产订单">
+			<table style="width: 1000px;">
+				<tr>
+					<td width="130" height="30">MR补录订单：</td>
+					<td width="200"><input type="text"
+						class="validate[custom[number2],maxSize[5]] time_text"
+						id="dhStep1" tname="dhStep1"><input type="hidden"
+						name="dhTimebaseEntries[1].stepDuration" tname="dhStep1_hid"
+						id="dhStep1_hid" class="time_hid"
+						value="${dhTimebaseEntries.stepDuration }"> <input
+						type="hidden" name="dhTimebaseEntries[1].id" value=""> <input
+						type="hidden" name="dhTimebaseEntries[1].step"
+						value="c_mr_improve_2"> <input type="hidden"
+						name="dhTimebaseEntries[1].stepName" value="MR补录订单"></td>
+					<td width="120">技术：</td>
+					<td width="200"><input type="text"
+						class="validate[custom[number2],maxSize[5]] time_text"
+						id="dhStep2" tname="dhStep2"><input type="hidden"
+						name="dhTimebaseEntries[2].stepDuration" tname="dhStep2_hid"
+						id="dhStep2_hid" class="time_hid"
+						value="${dhTimebaseEntries.stepDuration }"> <input
+						type="hidden" name="dhTimebaseEntries[2].id" value=""> <input
+						type="hidden" name="dhTimebaseEntries[2].step" value="c_ppc_assign_3"> <input
+						type="hidden" name="dhTimebaseEntries[2].stepName" value="技术"></td>
+					<td width="116">缓冲：</td>
+					<td width="200"><input type="text"
+						class="validate[custom[number2],maxSize[5]] time_text"
+						id="dhStep3" tname="dhStep3"><input type="hidden"
+						name="dhTimebaseEntries[3].stepDuration" tname="dhStep3_hid"
+						id="dhStep3_hid" class="time_hid"
+						value="${dhTimebaseEntries.stepDuration }"> <input
+						type="hidden" name="dhTimebaseEntries[3].id" value=""> <input
+						type="hidden" name="dhTimebaseEntries[3].step" value="c_ppc_huanchong_4"> <input
+						type="hidden" name="dhTimebaseEntries[3].stepName" value="缓冲"></td>
+				</tr>
+				<tr>
+					<td height="30">采购（常规）：</td>
+					<td><input type="text"
+						class="validate[custom[number2],maxSize[5]] time_text"
+						id="dhStep4" tname="dhStep4"><input type="hidden"
+						name="dhTimebaseEntries[4].stepDuration" tname="dhStep4_hid"
+						id="dhStep4_hid" class="time_hid"
+						value="${dhTimebaseEntries.stepDuration }"> <input
+						type="hidden" name="dhTimebaseEntries[4].id" value=""> <input
+						type="hidden" name="dhTimebaseEntries[4].step" value="c_fi_pay_5">
+						<input type="hidden" name="dhTimebaseEntries[4].stepName" value="采购"></td>
+					<td>采购（特殊）：</td>
+					<td><input type="text"
+						class="validate[custom[number2],maxSize[5]] time_text"
+						id="dhStep5" tname="dhStep5"><input type="hidden"
+						name="dhTimebaseEntries[5].stepDuration" tname="dhStep5_hid"
+						id="dhStep5_hid" class="time_hid"
+						value="${dhTimebaseEntries.stepDuration }"> <input
+						type="hidden" name="dhTimebaseEntries[5].id" value=""> <input
+						type="hidden" name="dhTimebaseEntries[5].step" value="c_fi_pay_5_a">
+						<input type="hidden" name="dhTimebaseEntries[5].stepName" value="采购"></td>
+					<td>CQC：</td>
+					<td><input type="text"
+						class="validate[custom[number2],maxSize[5]] time_text"
+						id="dhStep6" tname="dhStep6"><input type="hidden"
+						name="dhTimebaseEntries[6].stepDuration" tname="dhStep6_hid"
+						id="dhStep6_hid" class="time_hid"
+						value="${dhTimebaseEntries.stepDuration }"> <input
+						type="hidden" name="dhTimebaseEntries[6].id" value=""> <input
+						type="hidden" name="dhTimebaseEntries[6].step"
+						value="c_ppc_factoryMsg_6"> <input type="hidden"
+						name="dhTimebaseEntries[6].stepName" value="CQC"></td>
+				</tr>
+				<tr>
+					<td>特殊工艺：</td>
+					<td><input type="text"
+						class="validate[custom[number2],maxSize[5]] time_text"
+						id="dhStep7" tname="dhStep7"><input type="hidden"
+						name="dhTimebaseEntries[7].stepDuration" tname="dhStep7_hid"
+						id="dhStep7_hid" class="time_hid"
+						value="${dhTimebaseEntries.stepDuration }"> <input
+						type="hidden" name="dhTimebaseEntries[7].id" value=""> <input
+						type="hidden" name="dhTimebaseEntries[7].step" value="c_art_7">
+						<input type="hidden" name="dhTimebaseEntries[7].stepName"
+						value="特殊工艺"></td>
+					<td>齐套：</td>
+					<td><input type="text"
+						class="validate[custom[number2],maxSize[5]] time_text"
+						id="dhStep8" tname="dhStep8"><input type="hidden"
+						name="dhTimebaseEntries[8].stepDuration" tname="dhStep8_hid"
+						id="dhStep8_hid" class="time_hid"
+						value="${dhTimebaseEntries.stepDuration }"> <input
+						type="hidden" name="dhTimebaseEntries[8].id" value=""> <input
+						type="hidden" name="dhTimebaseEntries[8].step" value="c_qitao_8">
+						<input type="hidden" name="dhTimebaseEntries[8].stepName" value="齐套"></td>
+					<td>车缝：</td>
+					<td><input type="text"
+						class="validate[custom[number2],maxSize[5]] time_text"
+						id="dhStep9" tname="dhStep9"><input type="hidden"
+						name="dhTimebaseEntries[9].stepDuration" tname="dhStep9_hid"
+						id="dhStep9_hid" class="time_hid"
+						value="${dhTimebaseEntries.stepDuration }"> <input
+						type="hidden" name="dhTimebaseEntries[9].id" value=""> <input
+						type="hidden" name="dhTimebaseEntries[9].step"
+						value="c_qc_cutting_9"> <input type="hidden"
+						name="dhTimebaseEntries[9].stepName" value="车缝"></td>
+				</tr>
+				<tr>
+					<td>QA：</td>
+					<td><input type="text"
+						class="validate[custom[number2],maxSize[5]] time_text"
+						id="dhStep10" tname="dhStep10"><input type="hidden"
+						name="dhTimebaseEntries[10].stepDuration" tname="dhStep10_hid"
+						id="dhStep10_hid" class="time_hid"
+						value="${dhTimebaseEntries.stepDuration }"> <input
+						type="hidden" name="dhTimebaseEntries[10].id" value=""> <input
+						type="hidden" name="dhTimebaseEntries[10].step"
+						value="c_ppc_confirm_10"> <input type="hidden"
+						name="dhTimebaseEntries[10].stepName" value="QA"></td>
+					<td>财务：</td>
+					<td><input type="text"
+						class="validate[custom[number2],maxSize[5]] time_text"
+						id="dhStep11" tname="dhStep11"><input type="hidden"
+						name="dhTimebaseEntries[11].stepDuration" tname="dhStep11_hid"
+						id="dhStep11_hid" class="time_hid"
+						value="${dhTimebaseEntries.stepDuration }"> <input
+						type="hidden" name="dhTimebaseEntries[11].id" value=""> <input
+						type="hidden" name="dhTimebaseEntries[11].step"
+						value="c_qc_printing_11"> <input type="hidden"
+						name="dhTimebaseEntries[11].stepName" value="财务"></td>
+					<td>物流：</td>
+					<td><input type="text"
+						class="validate[custom[number2],maxSize[5]] time_text"
+						id="dhStep12" tname="dhStep12"><input type="hidden"
+						name="dhTimebaseEntries[12].stepDuration" tname="dhStep12_hid"
+						id="dhStep12_hid" class="time_hid"
+						value="${dhTimebaseEntries.stepDuration }"> <input
+						type="hidden" name="dhTimebaseEntries[12].id" value=""> <input
+						type="hidden" name="dhTimebaseEntries[12].step"
+						value="c_ppc_confirm_12"> <input type="hidden"
+						name="dhTimebaseEntries[12].stepName" value="物流"></td>
 				</tr>
 			</table>
 			<div style="height: 40px; line-height: 50px; text-align: center;">

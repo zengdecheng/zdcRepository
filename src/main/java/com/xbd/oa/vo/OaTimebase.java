@@ -17,35 +17,41 @@ public class OaTimebase extends CommonBean {
 
 	private static final long serialVersionUID = 1L;
 
-	private String clothClass;
-	private String defineId;
-	private String defineKey;
-	private String name;
-	private Long totalDuration;
+	private String clothClass; // 原二级品类对应的code值，原品类获取流程时间设置
+	private String defineId; // 流程定义id
+	private String defineKey; // 流程区分key
+	private String name; // 品类名称
+	private Long totalDuration; // 流程总时长
+	private Integer categoryId; // 品类Id，现在一级品类，新的获取流程时间设置
 
-	@Column(name = "cloth_class",columnDefinition="varchar(50)")
+	@Column(name = "cloth_class", columnDefinition = "varchar(50)")
 	public String getClothClass() {
 		return clothClass;
 	}
 
-	@Column(name = "define_id",columnDefinition="varchar(50)")
+	@Column(name = "define_id", columnDefinition = "varchar(50)")
 	public String getDefineId() {
 		return defineId;
 	}
 
-	@Column(name = "define_key",columnDefinition="varchar(50)")
+	@Column(name = "define_key", columnDefinition = "varchar(50)")
 	public String getDefineKey() {
 		return defineKey;
 	}
 
-	@Column(name = "name",columnDefinition="varchar(50)")
+	@Column(name = "name", columnDefinition = "varchar(50)")
 	public String getName() {
 		return name;
 	}
 
-	@Column(name = "total_duration",columnDefinition="bigint(20)")
+	@Column(name = "total_duration", columnDefinition = "bigint(20)")
 	public Long getTotalDuration() {
 		return totalDuration;
+	}
+
+	@Column(name = "category_id")
+	public Integer getCategoryId() {
+		return categoryId;
 	}
 
 	public void setClothClass(String clothClass) {
@@ -66,6 +72,10 @@ public class OaTimebase extends CommonBean {
 
 	public void setTotalDuration(Long totalDuration) {
 		this.totalDuration = totalDuration;
+	}
+
+	public void setCategoryId(Integer categoryId) {
+		this.categoryId = categoryId;
 	}
 
 	@Override
@@ -121,5 +131,5 @@ public class OaTimebase extends CommonBean {
 			return false;
 		return true;
 	}
-	
+
 }

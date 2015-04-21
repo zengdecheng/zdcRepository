@@ -15,15 +15,17 @@ import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.xbd.erp.base.action.Action;
 import com.xbd.erp.base.dao.BaseDao;
 import com.xbd.erp.base.pojo.sys.FSPBean;
+import com.xbd.erp.category.service.CategoryService;
 import com.xbd.oa.dao.impl.BxDaoImpl;
 import com.xbd.oa.vo.OaCategory;
 import com.xbd.oa.vo.OaOrder;
 import com.xbd.oa.vo.OaOrderDetail;
+import com.xbd.oa.vo.OaTimebase;
+import com.xbd.oa.vo.OaTimebaseEntry;
 
 @Results({ @Result(name = "page4list", type = "redirect", location = "category/list") })
 public class CategoryAction extends Action {
@@ -31,12 +33,26 @@ public class CategoryAction extends Action {
 	private static final long serialVersionUID = 1302383805516363265L;
 	public static final Logger logger = Logger.getLogger(CategoryAction.class);
 
-	private OaCategory oaCategory;
+	private OaCategory oaCategory; // 品类对象
+	private OaTimebase dhTimebase; // 基准时间设置品类对应流程记录
+	private List<OaTimebaseEntry> dhTimebaseEntries; // 基准时间设置具体节点时长定义
 	private BaseDao<?> baseDao;
+	private CategoryService categoryService; // cagetory的service
+
+	public CategoryService getCategoryService() {
+		return categoryService;
+	}
+
+	@Resource(name = "categoryService")
+	public void setCategoryService(CategoryService categoryService) {
+		this.categoryService = categoryService;
+	}
+
 	public BaseDao<?> getBaseDao() {
 		return baseDao;
 	}
-	@Resource(name="baseDaoImpl")
+
+	@Resource(name = "baseDaoImpl")
 	public void setBaseDao(BaseDao<?> baseDao) {
 		this.baseDao = baseDao;
 	}
@@ -121,9 +137,7 @@ public class CategoryAction extends Action {
 	 * @return
 	 */
 	public String edit() {
-		if (null != oaCategory) {
-			baseDao.saveObject(oaCategory);
-		}
+		categoryService.edit(oaCategory, dhTimebase, dhTimebaseEntries);
 		return "page4list";
 	}
 
@@ -487,61 +501,58 @@ public class CategoryAction extends Action {
 		}
 	}
 
+	public String updateHisDate3() {
+		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_OA_ORDER_BY_EQL_LS);
+		List<OaOrder> beans = baseDao.getObjectsByEql(fsp);
+		for (int i = 0; i < beans.size(); i++) {
+			OaOrder oaOrder = beans.get(i);
+			if (oaOrder.getStyleClass() != null && !"".equals(oaOrder.getStyleClass())) {
+				fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_CATEGORY_ALL_BY_SQL);
+				fsp.set("style_class", oaOrder.getStyleClass());
+				superList = baseDao.getObjectsBySql(fsp);
+				if (superList.size() > 0) {
+					String craft = oaOrder.getStyleCraft();
+					if (craft != null && !"".equals(craft)) {
+						Long craftTime = 0l;
 
+						String str[] = craft.split(",");
+						for (String s : str) {
+							switch (s) {
+							case "绣花":
+								craftTime = craftTime + (superList.get(0).get("embroidery") != null ? Long.parseLong(superList.get(0).get("embroidery").toString()) : 0);
+								break;
+							case "洗水":
+								craftTime = craftTime + (superList.get(0).get("washwater_time") != null ? Long.parseLong(superList.get(0).get("washwater_time").toString()) : 0);
+								break;
+							case "印花":
+								craftTime = craftTime + (superList.get(0).get("printing_time") != null ? Long.parseLong(superList.get(0).get("printing_time").toString()) : 0);
+								break;
+							case "缩折/打条":
+								craftTime = craftTime + (superList.get(0).get("folding_time") != null ? Long.parseLong(superList.get(0).get("folding_time").toString()) : 0);
+								break;
+							case "打揽":
+								craftTime = craftTime + (superList.get(0).get("dalan_time") != null ? Long.parseLong(superList.get(0).get("dalan_time").toString()) : 0);
+								break;
+							case "订珠":
+								craftTime = craftTime + (superList.get(0).get("beads_time") != null ? Long.parseLong(superList.get(0).get("beads_time").toString()) : 0);
+								break;
+							case "其他":
+								craftTime = craftTime + (superList.get(0).get("other_time") != null ? Long.parseLong(superList.get(0).get("other_time").toString()) : 0);
+								break;
+							}
+						}
+						oaOrder.setCraftTime(craftTime);
+					} else {
+						oaOrder.setCraftTime(0l);
+					}
 
+				}
+			}
+			baseDao.saveObject(oaOrder);
+		}
 
-    public String updateHisDate3() {
-        fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_OA_ORDER_BY_EQL_LS);
-        List<OaOrder> beans = baseDao.getObjectsByEql(fsp);
-        for (int i = 0; i < beans.size(); i++) {
-            OaOrder oaOrder = beans.get(i);
-            if (oaOrder.getStyleClass() != null && !"".equals(oaOrder.getStyleClass())) {
-                fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_CATEGORY_ALL_BY_SQL);
-                fsp.set("style_class", oaOrder.getStyleClass());
-                superList = baseDao.getObjectsBySql(fsp);
-                if (superList.size() > 0) {
-                    String craft = oaOrder.getStyleCraft();
-                    if(craft != null && !"".equals(craft)){
-                        Long craftTime = 0l;
-
-                        String str[] = craft.split(",");
-                        for(String s : str){
-                            switch (s){
-                                case "绣花":
-                                    craftTime = craftTime +  (superList.get(0).get("embroidery") != null ? Long.parseLong(superList.get(0).get("embroidery").toString()) : 0);
-                                    break;
-                                case "洗水":
-                                    craftTime = craftTime +  (superList.get(0).get("washwater_time") != null ? Long.parseLong(superList.get(0).get("washwater_time").toString()) : 0);
-                                    break;
-                                case "印花":
-                                    craftTime = craftTime +  (superList.get(0).get("printing_time") != null ? Long.parseLong(superList.get(0).get("printing_time").toString()) : 0);
-                                    break;
-                                case "缩折/打条":
-                                    craftTime = craftTime +  (superList.get(0).get("folding_time") != null ? Long.parseLong(superList.get(0).get("folding_time").toString()) : 0);
-                                    break;
-                                case "打揽":
-                                    craftTime = craftTime +  (superList.get(0).get("dalan_time") != null ? Long.parseLong(superList.get(0).get("dalan_time").toString()) : 0);
-                                    break;
-                                case "订珠":
-                                    craftTime = craftTime +  (superList.get(0).get("beads_time") != null ? Long.parseLong(superList.get(0).get("beads_time").toString()) : 0);
-                                    break;
-                                case "其他":
-                                    craftTime = craftTime +  (superList.get(0).get("other_time") != null ? Long.parseLong(superList.get(0).get("other_time").toString()) : 0);
-                                    break;
-                            }
-                        }
-                        oaOrder.setCraftTime(craftTime);
-                    }else{
-                        oaOrder.setCraftTime(0l);
-                    }
-
-                }
-            }
-            baseDao.saveObject(oaOrder);
-        }
-
-        return null;
-    }
+		return null;
+	}
 
 	public OaCategory getOaCategory() {
 		return oaCategory;
@@ -549,5 +560,21 @@ public class CategoryAction extends Action {
 
 	public void setOaCategory(OaCategory oaCategory) {
 		this.oaCategory = oaCategory;
+	}
+
+	public OaTimebase getDhTimebase() {
+		return dhTimebase;
+	}
+
+	public void setDhTimebase(OaTimebase dhTimebase) {
+		this.dhTimebase = dhTimebase;
+	}
+
+	public List<OaTimebaseEntry> getDhTimebaseEntries() {
+		return dhTimebaseEntries;
+	}
+
+	public void setDhTimebaseEntries(List<OaTimebaseEntry> dhTimebaseEntries) {
+		this.dhTimebaseEntries = dhTimebaseEntries;
 	}
 }

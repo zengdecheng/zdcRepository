@@ -25,18 +25,30 @@ define([ "u" ], function(u) {
 				dabanIframeUrl[4] = "/jsp/tabpage/tabMrConfirm.jsp";
 				dabanIframeUrl[5] = "/jsp/tabpage/tabOrderTimeout.jsp";
 			} else if("3" == orderTypeNum) {
-				dahuoIframeUrl[0] = "/jsp/tabpage/tabOrderDetail.jsp";
-				dahuoIframeUrl[1] = "/jsp/tabpage/tabTechnology.jsp";
-                dahuoIframeUrl[2] = "/jsp/tabpage/tabBuffer.jsp";//缓冲节点
-				dahuoIframeUrl[3] = "/jsp/tabpage/tabPurchase.jsp";
-				dahuoIframeUrl[4] = "/jsp/tabpage/tabCQC.jsp";
-				dahuoIframeUrl[5] = "/jsp/tabpage/tabST.jsp";//特殊工艺
-				dahuoIframeUrl[6] = "/jsp/qitao/tabQiTao.jsp";
-				dahuoIframeUrl[7] = "/jsp/tabpage/tabTPE.jsp";
-				dahuoIframeUrl[8] = "/jsp/tabpage/tabQA.jsp";
-				dahuoIframeUrl[9] = "/jsp/tabpage/tabFinance.jsp";
-				dahuoIframeUrl[10] = "/jsp/tabpage/tabLogistics.jsp";
-				dahuoIframeUrl[11] = "/jsp/tabpage/tabOrderTimeout.jsp";
+				if ("new" == $("#isOldWorkflow")) { // 新流程iframe所要嵌套的页面集合
+					dahuoIframeUrl[0] = "/jsp/tabpage/tabOrderDetail.jsp";
+					dahuoIframeUrl[1] = "/jsp/tabpage/tabTechnology.jsp";
+	                dahuoIframeUrl[2] = "/jsp/tabpage/tabBuffer.jsp";//缓冲节点
+					dahuoIframeUrl[3] = "/jsp/tabpage/tabPurchase.jsp";
+					dahuoIframeUrl[4] = "/jsp/tabpage/tabCQC.jsp";
+					dahuoIframeUrl[5] = "/jsp/tabpage/tabST.jsp";//特殊工艺
+					dahuoIframeUrl[6] = "/jsp/qitao/tabQiTao.jsp";
+					dahuoIframeUrl[7] = "/jsp/tabpage/tabTPE.jsp";
+					dahuoIframeUrl[8] = "/jsp/tabpage/tabQA.jsp";
+					dahuoIframeUrl[9] = "/jsp/tabpage/tabFinance.jsp";
+					dahuoIframeUrl[10] = "/jsp/tabpage/tabLogistics.jsp";
+					dahuoIframeUrl[11] = "/jsp/tabpage/tabOrderTimeout.jsp";
+				} else { // 旧流程iframe所要嵌套的页面集合
+					dahuoIframeUrl[0] = "/jsp/tabpage/tabOrderDetail.jsp";
+					dahuoIframeUrl[1] = "/jsp/tabpage/tabTechnology.jsp";
+					dahuoIframeUrl[2] = "/jsp/tabpage/tabPurchase.jsp";
+					dahuoIframeUrl[3] = "/jsp/tabpage/tabCQC.jsp";
+					dahuoIframeUrl[4] = "/jsp/tabpage/tabTPE.jsp";
+					dahuoIframeUrl[5] = "/jsp/tabpage/tabQA.jsp";
+					dahuoIframeUrl[6] = "/jsp/tabpage/tabFinance.jsp";
+					dahuoIframeUrl[7] = "/jsp/tabpage/tabLogistics.jsp";
+					dahuoIframeUrl[8] = "/jsp/tabpage/tabOrderTimeout.jsp";
+				}
 			}
 //			if("样衣打版" == $("#orderType").val()) {
 			var wfStepIndex = $("#wfStepIndex").val();
