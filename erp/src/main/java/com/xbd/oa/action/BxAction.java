@@ -26,6 +26,7 @@ import java.util.TreeMap;
 import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 
+import com.alibaba.fastjson.JSON;
 import jxl.write.WriteException;
 import net.sf.json.JSONArray;
 
@@ -6202,7 +6203,9 @@ public class BxAction extends Action {
 				boolean res = false;
 				if ("b_mr_improve_2".equals(dbOaOrder.getWfStep()) || "c_mr_improve_2".equals(dbOaOrder.getWfStep())) {
 					res = XBDUtils.saveMR(oaOrder, dbOaOrder, oaOrderDetail, oaMaterialLists, materialDelIds, oaCusMaterialLists, cusMaterialDelIds);
-				} else if ("b_pur_confirm_4".equals(dbOaOrder.getWfStep()) || "c_ppc_assign_3".equals(dbOaOrder.getWfStep())) {
+				} else if ("c_ppc_huanchong_3".equals(dbOaOrder.getWfStep())) {//缓冲节点
+                    res = XBDUtils.saveHuanChong(oaOrderDetail,dbOaOrder);
+                } else if ("b_pur_confirm_4".equals(dbOaOrder.getWfStep()) || "c_ppc_assign_3".equals(dbOaOrder.getWfStep())) {
 					res = XBDUtils.saveTech(dbOaOrder, oaOrderDetail, oaClothesSize, oaProcessExplain, oaDaHuoInfos, oaDaBanInfos, oaMaterialLists, oaClothesSizeDetails, processOrder, orderIdStr, processOrder);
 				} else if ("b_ppc_confirm_3".equals(dbOaOrder.getWfStep()) || "c_fi_pay_4".equals(dbOaOrder.getWfStep())) {
 					res = XBDUtils.savePur(dbOaOrder, oaOrderDetail, orderIdStr, processOrder, oaMaterialLists, oaDaHuoInfos, oaDaBanInfos);
@@ -7504,6 +7507,27 @@ public class BxAction extends Action {
 		resMap.put("oaQiTaoDetails", oaQitaoDetailList);
 		resMap.put("code", 0);
 	}
+
+    /**
+     * 缓冲节点查询
+     */
+    public void jsonGetDaHuoHuanchongNode(){
+        Map resMap = new HashMap();
+        String orderIds = Struts2Utils.getParameter("oaOrderId");
+        String wfStepIndex = Struts2Utils.getParameter("wfStepIndex");// 获取正在处理的订单节点index
+        String node = "3"; // 当前节点的index，后面查询需要
+        int orderId = Integer.valueOf(orderIds);
+
+        try {
+            getManagerInfo(orderId,node,wfStepIndex, resMap);
+            resMap.put("code", 0);
+            resMap.put("msg", "缓冲节点-信息查询成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            resMap.put("msg", "缓冲节点-信息查询失败");
+        }
+        Struts2Utils.renderJson(resMap);
+    }
 
 	/**
 	 * 
