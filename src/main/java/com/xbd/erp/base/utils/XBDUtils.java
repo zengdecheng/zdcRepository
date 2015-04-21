@@ -317,11 +317,18 @@ public class XBDUtils {
 	
 	/**
 	 * 保存缓冲信息
+     * @param oaOrderDetail
+     * @param oaOrder
 	 * @return
 	 */
-	public static boolean saveHuanChong(){
-		// TODO: 根据业务需要编写 
-		return false;
+	public static boolean saveHuanChong(OaOrderDetail oaOrderDetail,OaOrder oaOrder){
+		// TODO: 根据业务需要编写
+        try {
+            saveManegeInfo(oaOrderDetail,oaOrder.getOaOrderDetail());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
 	}
 	
 	/**
