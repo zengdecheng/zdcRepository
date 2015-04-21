@@ -33,8 +33,8 @@
 			style="width: 96%; font-size: 14px; margin-left: 2.5%; padding: 5px 0 5px 0;">
 			<table style="font-size: 12px; width: 100%;">
 				<tr height="28px">
-					<td width="8%" id="workerTd">制单:</td>
-                    <td width="58%">
+					<td width="8%" >制单:</td>
+                    <td width="58%" id="workerTd">
 						 <s:select id="ppc"  theme="simple" list="@com.xbd.oa.utils.XbdBuffer@getStaffsByGroupName('ppc')"  listKey="map.login_name" listValue="map.login_name"
 							cssClass="z_inp2 validate[required]" name="oaOrderDetail.worker">
 						</s:select>
