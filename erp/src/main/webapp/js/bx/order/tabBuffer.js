@@ -37,8 +37,8 @@ define([ "v","vl" ], function(u,up) {
 				$("#orderId").val(orderId);
 				var orderDetail = $(window.parent.document).find("#orderDetail").val(); //是否是查看订单详情
 				$("#ppc").attr("fillName","oaOrderDetail.worker");
-				//if("true" != orderDetail && "3" == wfStepIndex) { //判断是否可编辑
-                    if (true) {
+				if("true" != orderDetail && "3" == wfStepIndex) { //判断是否可编辑
+                    //if (true) {
                         isShowDetail = true;//可编辑
                         $("#orderDetailDive").remove();
                     } else {
@@ -47,7 +47,7 @@ define([ "v","vl" ], function(u,up) {
                         $("#otherFileUploadTd").remove();
                         $("form input,textarea").prop("disabled", true);  //不可编辑
                         // update by 张华 2015-01-20
-                        $("#workerTd").html("制单:"+"<span elementFillName='oaOrderDetail.worker'/>");//不可编辑
+                        $("#workerTd").html("<span elementFillName='oaOrderDetail.worker'/>");//不可编辑
                     }
                     parent.iFrameHeight("iframeBuffer");
                     opt = {
