@@ -116,31 +116,34 @@
 		<div class="tabone order_tab" pageTo="tabPage3" id="tab3">
 			<span>技术</span>
 		</div>
-		<div class="tabone order_tab" pageTo="tabPage11" id="tab11">
+		<div class="tabone order_tab" pageTo="tabPage4" id="tab4">
 			<span>缓冲</span>
 		</div>
-        <div class="tabone order_tab" pageTo="tabPage4" id="tab4">
+        <div class="tabone order_tab" pageTo="tabPage5" id="tab5">
 			<span>采购</span>
 		</div>
-		<div class="tabone order_tab" pageTo="tabPage5" id="tab5">
+		<div class="tabone order_tab" pageTo="tabPage6" id="tab6">
 			<span>CQC</span>
 		</div>
-        <div class="tabone order_tab" pageTo="tabPage6" id="tab6">
+        <div class="tabone order_tab" pageTo="tabPage7" id="tab7">
+			<span>特殊工艺</span>
+		</div>
+        <div class="tabone order_tab" pageTo="tabPage8" id="tab8">
             <span>齐套</span>
         </div>
-		<div class="tabone order_tab" pageTo="tabPage7" id="tab7">
+		<div class="tabone order_tab" pageTo="tabPage9" id="tab9">
 			<span>TPE</span>
 		</div>
-		<div class="tabone order_tab" pageTo="tabPage8" id="tab8">
+		<div class="tabone order_tab" pageTo="tabPage10" id="tab10">
 			<span>QA</span>
 		</div>
-		<div class="tabone order_tab" pageTo="tabPage9" id="tab9">
+		<div class="tabone order_tab" pageTo="tabPage11" id="tab11">
 			<span>财务</span>
 		</div>
-		<div class="tabone order_tab" pageTo="tabPage10" id="tab10">
+		<div class="tabone order_tab" pageTo="tabPage12" id="tab12">
 			<span>物流</span>
 		</div>
-		<div class="tabone order_tab" pageTo="tabPage11" id="tab11">
+		<div class="tabone order_tab" pageTo="tabPage13" id="tab13">
 			<span>异动管理</span>
 		</div>
 	</div>

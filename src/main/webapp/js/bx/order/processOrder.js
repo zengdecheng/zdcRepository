@@ -27,15 +27,16 @@ define([ "u" ], function(u) {
 			} else if("3" == orderTypeNum) {
 				dahuoIframeUrl[0] = "/jsp/tabpage/tabOrderDetail.jsp";
 				dahuoIframeUrl[1] = "/jsp/tabpage/tabTechnology.jsp";
-				dahuoIframeUrl[2] = "/jsp/tabpage/tabPurchase.jsp";
-				dahuoIframeUrl[3] = "/jsp/tabpage/tabCQC.jsp";
-				dahuoIframeUrl[4] = "/jsp/qitao/tabQiTao.jsp";
-				dahuoIframeUrl[5] = "/jsp/tabpage/tabTPE.jsp";
-				dahuoIframeUrl[6] = "/jsp/tabpage/tabQA.jsp";
-				dahuoIframeUrl[7] = "/jsp/tabpage/tabFinance.jsp";
-				dahuoIframeUrl[8] = "/jsp/tabpage/tabLogistics.jsp";
-				dahuoIframeUrl[9] = "/jsp/tabpage/tabOrderTimeout.jsp";
-                dahuoIframeUrl[9] = "/jsp/tabpage/tabBuffer.jsp";//缓冲节点
+                dahuoIframeUrl[2] = "/jsp/tabpage/tabBuffer.jsp";//缓冲节点
+				dahuoIframeUrl[3] = "/jsp/tabpage/tabPurchase.jsp";
+				dahuoIframeUrl[4] = "/jsp/tabpage/tabCQC.jsp";
+				dahuoIframeUrl[5] = "/jsp/tabpage/tabST.jsp";//特殊工艺
+				dahuoIframeUrl[6] = "/jsp/qitao/tabQiTao.jsp";
+				dahuoIframeUrl[7] = "/jsp/tabpage/tabTPE.jsp";
+				dahuoIframeUrl[8] = "/jsp/tabpage/tabQA.jsp";
+				dahuoIframeUrl[9] = "/jsp/tabpage/tabFinance.jsp";
+				dahuoIframeUrl[10] = "/jsp/tabpage/tabLogistics.jsp";
+				dahuoIframeUrl[11] = "/jsp/tabpage/tabOrderTimeout.jsp";
 			}
 //			if("样衣打版" == $("#orderType").val()) {
 			var wfStepIndex = $("#wfStepIndex").val();
