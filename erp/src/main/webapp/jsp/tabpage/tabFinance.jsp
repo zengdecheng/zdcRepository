@@ -49,7 +49,7 @@
 							style="width: 560px; height: 100px;" maxlength="1000"></textarea></td>
 					<td width="27%">
 						<div style="height: 105px; float:left">
-							<span style="line-height: 22px;">进度信息:<span>
+							<span style="line-height: 22px;">进度信息:</span>
 									<div
 										style="height: 100px; width: 80%; float: left; border: 1px solid rgb(205, 205, 205);margin-left:52px; position: relative; bottom: 22px;">
 										<p

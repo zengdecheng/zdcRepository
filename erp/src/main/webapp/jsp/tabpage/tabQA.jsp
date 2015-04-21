@@ -59,7 +59,7 @@
 					<td colspan="2">质量备注:&nbsp;&nbsp;<input type="hidden" name="oaOrderDetail_id" fillName="oaOrderDetail.id"/><textarea id="detailContent" fillName="oaOrderDetail.content" name="oaOrderDetail.content" style="width: 560px; height: 100px;" maxlength="1000"></textarea></td>
 					<td>
 						<div style="height: 105px;">
-							<span style="line-height: 22px;">进度信息:<span>
+							<span style="line-height: 22px;">进度信息:</span>
 							<div style="height: 100px; width: 80%; float: right; border: 1px solid rgb(205, 205, 205);">
 								<p style="padding: 0 0 0 10px; margin: 0; background-color: yellow; line-height: 22px; display:none;" id="detailSchedule">还未流入</p>
 								<ul style="margin: 0; padding: 0 0 0 10px; line-height: 19px;">
