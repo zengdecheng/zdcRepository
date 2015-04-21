@@ -23,13 +23,20 @@ public class OaCategory extends CommonBean {
 	private String status; // 状态
 	private Long dahuoCyc; // 大货生产周期
 	private Long dabanCyc; // 打版生产周期
-	private Long embroidery; // 绣花时间
-	private Long washwaterTime; // 洗水时间
-	private Long printingTime; // 印花时间
-	private Long foldingTime; // 缩折/打条时间
-	private Long dalanTime; // 打揽时间
-	private Long beadsTime; // 订珠时间
-	private Long otherTime; // 其他时间
+	private Long embroidery; // 大货绣花时间
+	private Long washwaterTime; // 大货洗水时间
+	private Long printingTime; // 大货印花时间
+	private Long foldingTime; // 大货缩折/打条时间
+	private Long dalanTime; // 大货打揽时间
+	private Long beadsTime; // 大货订珠时间
+	private Long otherTime; // 大货其他时间
+	private Long dabanEmbroidery; // 打版绣花时间
+	private Long dabanWashwaterTime; // 打版洗水时间
+	private Long dabanPrintingTime; // 打版印花时间
+	private Long dabanFoldingTime; // 打版缩折/打条时间
+	private Long dabanDalanTime; // 打版打揽时间
+	private Long dabanBeadsTime; // 打版订珠时间
+	private Long dabanOtherTime; // 打版其他时间
 	private String remark; // 备注
 	private String explainTxt; // 说明
 	private Long paymentWait; // 贷款等待时间
@@ -115,6 +122,41 @@ public class OaCategory extends CommonBean {
 		return washwaterTime;
 	}
 
+	@Column(name = "daban_embroidery", columnDefinition = "BIGINT(13)")
+	public Long getDabanEmbroidery() {
+		return dabanEmbroidery;
+	}
+
+	@Column(name = "daban_washwaterTime", columnDefinition = "BIGINT(13)")
+	public Long getDabanWashwaterTime() {
+		return dabanWashwaterTime;
+	}
+
+	@Column(name = "daban_printingTime", columnDefinition = "BIGINT(13)")
+	public Long getDabanPrintingTime() {
+		return dabanPrintingTime;
+	}
+
+	@Column(name = "daban_foldingTime", columnDefinition = "BIGINT(13)")
+	public Long getDabanFoldingTime() {
+		return dabanFoldingTime;
+	}
+
+	@Column(name = "daban_dalanTime", columnDefinition = "BIGINT(13)")
+	public Long getDabanDalanTime() {
+		return dabanDalanTime;
+	}
+
+	@Column(name = "daban_beadsTime", columnDefinition = "BIGINT(13)")
+	public Long getDabanBeadsTime() {
+		return dabanBeadsTime;
+	}
+
+	@Column(name = "daban_otherTime", columnDefinition = "BIGINT(13)")
+	public Long getDabanOtherTime() {
+		return dabanOtherTime;
+	}
+
 	public void setBeadsTime(Long beadsTime) {
 		this.beadsTime = beadsTime;
 	}
@@ -177,6 +219,34 @@ public class OaCategory extends CommonBean {
 
 	public void setWashwaterTime(Long washwaterTime) {
 		this.washwaterTime = washwaterTime;
+	}
+
+	public void setDabanEmbroidery(Long dabanEmbroidery) {
+		this.dabanEmbroidery = dabanEmbroidery;
+	}
+
+	public void setDabanWashwaterTime(Long dabanWashwaterTime) {
+		this.dabanWashwaterTime = dabanWashwaterTime;
+	}
+
+	public void setDabanPrintingTime(Long dabanPrintingTime) {
+		this.dabanPrintingTime = dabanPrintingTime;
+	}
+
+	public void setDabanFoldingTime(Long dabanFoldingTime) {
+		this.dabanFoldingTime = dabanFoldingTime;
+	}
+
+	public void setDabanDalanTime(Long dabanDalanTime) {
+		this.dabanDalanTime = dabanDalanTime;
+	}
+
+	public void setDabanBeadsTime(Long dabanBeadsTime) {
+		this.dabanBeadsTime = dabanBeadsTime;
+	}
+
+	public void setDabanOtherTime(Long dabanOtherTime) {
+		this.dabanOtherTime = dabanOtherTime;
 	}
 
 	public int hashCode() {

@@ -27,6 +27,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 
 import com.alibaba.fastjson.JSON;
+
 import jxl.write.WriteException;
 import net.sf.json.JSONArray;
 
@@ -88,13 +89,9 @@ import com.xbd.oa.vo.OaTpe;
 import com.xbd.oa.vo.OaTracke;
 import com.xbd.oa.vo.base.CustomCell;
 
-@Results({ 
-	@Result(name = "authError", type = "redirect", location = "/authError.jsp"),
-	@Result(name = "logout", type = "redirect", location = "/admin.jsp"),
-	@Result(name = "confirmOrder", type = "redirect", location = "/bx/todo"),
-	@Result(name = "saveTimebaseConfig", type = "redirect", location = "/bx/timebaseConfig"),
-	@Result(name = "saveClothClass", type = "redirect", location = "/bx/clothClass_list")
-})
+@Results({ @Result(name = "authError", type = "redirect", location = "/authError.jsp"), @Result(name = "logout", type = "redirect", location = "/admin.jsp"),
+		@Result(name = "confirmOrder", type = "redirect", location = "/bx/todo"), @Result(name = "saveTimebaseConfig", type = "redirect", location = "/bx/timebaseConfig"),
+		@Result(name = "saveClothClass", type = "redirect", location = "/bx/clothClass_list") })
 public class BxAction extends Action {
 
 	private BaseDao<?> baseDao;
@@ -331,12 +328,12 @@ public class BxAction extends Action {
 	private File file;
 	private String fileFileName;
 
-    @Override
-    public Long getObjectsCountSql(FSPBean fsp) {
-        return super.getObjectsCountSql(fsp);
-    }
+	@Override
+	public Long getObjectsCountSql(FSPBean fsp) {
+		return super.getObjectsCountSql(fsp);
+	}
 
-    /**
+	/**
 	 * 
 	 * <B>辛巴达员工登录</B><br>
 	 * 功能详细描述
@@ -454,13 +451,11 @@ public class BxAction extends Action {
 			}
 			bean.set("data", persent);
 
-
-
-            //提取退回数据
-            if(bean.get("back_flag") != null && "1".equals(bean.get("back_flag").toString())){
-                superList.add(bean);
-                beans.remove(bean);
-            }
+			// 提取退回数据
+			if (bean.get("back_flag") != null && "1".equals(bean.get("back_flag").toString())) {
+				superList.add(bean);
+				beans.remove(bean);
+			}
 		}
 		bean.set("counts", counts);
 
@@ -481,15 +476,15 @@ public class BxAction extends Action {
 			orderField = "data";
 		}
 
-        if(superList != null && superList.size() > 0){
-            cs.ListPropertySort(superList, orderField, orderType);
-        }
+		if (superList != null && superList.size() > 0) {
+			cs.ListPropertySort(superList, orderField, orderType);
+		}
 
 		cs.ListPropertySort(beans, orderField, orderType);
 		bean.set("orderType", orderType);
 		bean.set("orderField", orderField);
 
-        superList.addAll(beans);
+		superList.addAll(beans);
 
 		fsp.setRecordCount(superList.size());
 		int fromIndex = (fsp.getPageNo() - 1) * fsp.getPageSize();
@@ -542,663 +537,648 @@ public class BxAction extends Action {
 	 */
 	public String outExcel() {
 
-        // 导出excel基本参数设置
-        Map<String, Object> fillInfo = new HashMap<String, Object>();
-
-        String baseExcelFile = Struts2Utils.getSession().getServletContext().getRealPath(ResourceUtil.getString("baseReportHisExcelFile"));
-        String sheetNames = "历史订单分析报表";
-        fillInfo.put("fileUrl", baseExcelFile);
-        fillInfo.put("sheetNames", sheetNames);
-
-        // 查询导出数据
-        fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_ORDERWF_HIS_BY_SQL);
-        if (!WebUtil.ifAdmin() && !WebUtil.ifManager()) { // 如果不是管理员就要加上查询条件
-            fsp.set("his_opt", WebUtil.getCurrentLoginBx().getLoginName());
-        }
-        if (!"true".equals(Struts2Utils.getParameter("hidStatusFlag"))) {
-            fsp.set("status", "0"); // 默认为正常的订单
-            fsp.set("wf_step", "finish_999"); // 默认为已完成
-        } else {
-            if ("0".equals((String) fsp.get("status"))) { // 已完成
-                fsp.set("wf_step", "finish_999");
-            } else if ("1".equals((String) fsp.get("status"))) { // 作废
-                fsp.set("wf_step", null);
-            } else { // 全部
-                fsp.set("if_all", "finish_999");
-            }
-        }
-
-        // 判断查询数据类型，大货与打版流程不一样 by 范蠡
-        if (fsp.getMap().get("type") == null || "".equals(fsp.getMap().get("type"))) {
-            if (fsp.getMap().get("del_operator") != null && !"".equals(fsp.getMap().get("del_operator"))) {
-                fsp.set("del_operator_all", "c_ppc_assign_3");
-            }
-        } else {
-            if (fsp.getMap().get("type") != null && "2".equals(fsp.getMap().get("type"))) {
-                fsp.set("del_operator_b", "b_pur_confirm_4");
-            } else if (fsp.getMap().get("type") != null && "3".equals(fsp.getMap().get("type"))) {
-                fsp.set("del_operator_c", "c_ppc_assign_3");
-            }
-        }
-
-        superList = getObjectsBySql(fsp);
-        // 声明excel主体数据Map容器
-        Map<String, Object> sheet1FileInfo = new HashMap<String, Object>();
-        int i = 0;
-        int j = 1;
-        for (LazyDynaMap lazyMap : superList) {
-            // bean = superList.get(i);
-            Long nowDate = new Date().getTime()/1000*1000;
-            Long begin_time = ((Date) lazyMap.get("begin_time")).getTime();
-            Long except_finish = ((Date) lazyMap.get("except_finish")).getTime();
-
-            long sczq = 0l;
-
-            long hetongTime = lazyMap.get("except_finish") != null ? ((Date)lazyMap.get("except_finish")).getTime() : 0l;
-
-
-
-            OaOrder tocOaOrder = new OaOrder();
-            tocOaOrder.setSellReadyTime(lazyMap.get("sell_ready_time") != null ? (Long)lazyMap.get("sell_ready_time") : 0l);
-            tocOaOrder.setStandardTime(lazyMap.get("standard_time") != null ? (Long) lazyMap.get("standard_time") : 0l);
-            tocOaOrder.setCraftTime(lazyMap.get("craft_time") != null ? (Long) lazyMap.get("craft_time") : 0l);
-            tocOaOrder.setGoodsTime(lazyMap.get("goods_time") != null ? (Timestamp) lazyMap.get("goods_time") : null);
-
-
-
-            // 优先级
-            // if (0 != begin_time && 0 != except_finish) {
-            // float baifenzhu = (nowDate - begin_time + 24 * 60 * 60 * 1000) / (except_finish - begin_time + 24 * 60 * 60 * 1000);
-            // float data = baifenzhu * 100;
-            // if(data > 0 && data <=33){
-            // sheet1FileInfo.put(j+",0",new CustomCell(data+"%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
-            // }else if(data > 33 && data <=66){
-            // sheet1FileInfo.put(j+",0",new CustomCell(data+"%", "String").setCellColor(IndexedColors.ORANGE.index).setFontColor(IndexedColors.WHITE.index));
-            // }else if(data > 66 && data <=100){
-            // sheet1FileInfo.put(j+",0",new CustomCell(data+"%", "String").setCellColor(IndexedColors.RED.index).setFontColor(IndexedColors.WHITE.index));
-            // }else if(data > 100){
-            // sheet1FileInfo.put(j+",0",new CustomCell(data+"%", "String").setCellColor(IndexedColors.BLACK.index).setFontColor(IndexedColors.WHITE.index));
-            // }else{
-            // sheet1FileInfo.put(j+",0",new CustomCell(data+"%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
-            // }
-            // }else{
-            // sheet1FileInfo.put(j+",0", 0+"%");
-            // }
-            sheet1FileInfo.put(j + ",0", lazyMap.get("sell_order_code").toString());// 订单号
-            if (lazyMap.get("type") != null && "2".equals(lazyMap.get("type").toString())) {
-                sheet1FileInfo.put(j + ",1", "样衣打版");// 订单类型
-                StringBuffer buf = new StringBuffer();
-                if (lazyMap.get("bqcdel_wf_real_finish") != null && lazyMap.get("bqcdel_wf_plan_start") != null && lazyMap.get("bqcdel_wf_step_duration") != null) {
-                    // long diff = ((Date)lazyMap.get("bqcdel_wf_real_finish")).getTime() - ((Date)lazyMap.get("bqcdel_wf_plan_start")).getTime() + (long)lazyMap.get("bqcdel_wf_step_duration");
-                    Timestamp jihuaTime = new Timestamp(((Date) lazyMap.get("bqcdel_wf_plan_start")).getTime() + (long) lazyMap.get("bqcdel_wf_step_duration"));
-                    long diff = BizUtil.getWorkTimeBetween((Timestamp) lazyMap.get("bqcdel_wf_real_finish"), jihuaTime);
-                    if (diff > 0) {
-                        buf.append("超时");
-                    } else {
-                        buf.append("剩余");
-                    }
-                    buf.append(WebUtil.getTimeDisPlayExcel(Math.abs(diff)));
-                    sheet1FileInfo.put(j + ",7", buf.toString());// 订单进度
-                }
-
-                sheet1FileInfo.put(j + ",8", lazyMap.get("mrdb_operator") != null ? lazyMap.get("mrdb_operator") : "");// 负责MR
-
-                sheet1FileInfo.put(j + ",24", lazyMap.get("mrdb_wf_real_start") != null ? new CustomCell(lazyMap.get("mrdb_wf_real_start"), "Date") : new CustomCell());// MR补录订单日期
-
-                //修改位置
-                sheet1FileInfo.put(j + ",25", lazyMap.get("mrdb_wf_real_finish") != null ? new CustomCell(lazyMap.get("mrdb_wf_real_finish"), "Date") : new CustomCell());// MR补录订单日期
-
-
-                sheet1FileInfo.put(j + ",31", lazyMap.get("jsdel_operator") != null ? lazyMap.get("jsdel_operator") : "");// 打版技术
-
-                long actualTime = 0l;
-                // 计算实际生产周期
-                if (superList.get(i).get("bqcdel_wf_real_finish") != null && !"".equals(superList.get(i).get("bqcdel_wf_real_finish")) && superList.get(i).get("mrdb_wf_real_finish") != null
-                        && !"".equals(superList.get(i).get("mrdb_wf_real_finish"))) {
-
-                    actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("bqcdel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdb_wf_real_finish"));
-                    sheet1FileInfo.put(j + ",28", WebUtil.getTimeDisPlayExcel(actualTime));// 实际生产周期
-                }
-
-                long bzTime = (superList.get(i).get("standard_time") != null ? (long)superList.get(i).get("standard_time") : 0l)
-                        + (superList.get(i).get("craft_time") != null ? (long)superList.get(i).get("craft_time") : 0l);
-                sheet1FileInfo.put(j + ",52", WebUtil.getTimeDisPlayExcel(bzTime) + "");// 标准生产周期
-
-                long scProgress = actualTime - bzTime;
-                if(scProgress > 0){
-                    // 实际生产进度
-                    sheet1FileInfo.put(j + ",53", new CustomCell("超期"+WebUtil.getTimeDisPlayExcel(scProgress), "String").setCellColor(IndexedColors.RED.index).setFontColor(IndexedColors.WHITE.index));
-                }else{
-                    sheet1FileInfo.put(j + ",53", new CustomCell("提前"+WebUtil.getTimeDisPlayExcel(Math.abs(scProgress)), "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
-                }
-
-                sheet1FileInfo.put(j + ",54", lazyMap.get("feeding_time") != null ? new CustomCell(lazyMap.get("feeding_time"), "Date") : new CustomCell());// 建议投料日期
-
-
-                if (lazyMap.get("bqcdel_wf_real_finish") != null && !"".equals(lazyMap.get("bqcdel_wf_real_finish"))) {
-
-                    Date now = (Date) lazyMap.get("bqcdel_wf_real_finish");
-                    Timestamp tocTime = new Timestamp(now.getTime()/1000*1000);
-                    Map tocMap = new HashMap();
-                    tocMap.put("oaOrder", tocOaOrder);
-                    tocMap.put("tocTime", tocTime);
-                    Float data = BizUtil.computeToc(tocMap);
-                    // 订单完成时TOC百分比
-                    if (data > 0 && data <= 33) {
-                        sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
-                    } else if (data > 33 && data <= 66) {
-                        sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.ORANGE.index).setFontColor(IndexedColors.WHITE.index));
-                    } else if (data > 66 && data <= 100) {
-                        sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.RED.index).setFontColor(IndexedColors.WHITE.index));
-                    } else if (data > 100) {
-                        sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.BLACK.index).setFontColor(IndexedColors.WHITE.index));
-                    } else {
-                        sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
-                    }
-                    // sheet1FileInfo.put(j+",34", time_consume+"%");
-                }
-
-                // 计算实际订单周期
-                if (superList.get(i).get("bqcdel_wf_real_finish") != null && !"".equals(superList.get(i).get("bqcdel_wf_real_finish")) && superList.get(i).get("mrdb_wf_real_start") != null
-                        && !"".equals(superList.get(i).get("mrdb_wf_real_start"))) {
-
-                    actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("bqcdel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdb_wf_real_start"));
-                    sczq = actualTime; //用于计算与交期差额
-                    sheet1FileInfo.put(j + ",43", WebUtil.getTimeDisPlayExcel(actualTime));// 实际生产周期
-                }
-
-                // sheet1FileInfo.put(i+",37", logsCounts);//实际订单周期
-            } else if (lazyMap.get("type") != null && "3".equals(lazyMap.get("type").toString())) {
-                sheet1FileInfo.put(j + ",1", "大货生产");// 订单类型
-                StringBuffer buf = new StringBuffer();
-                if (lazyMap.get("wldel_wf_real_finish") != null && lazyMap.get("wldel_wf_plan_start") != null && lazyMap.get("wldel_wf_step_duration") != null) {
-                    // long diff = ((Date)lazyMap.get("wldel_wf_real_finish")).getTime() - ((Date)lazyMap.get("wldel_wf_plan_start")).getTime() + (long)lazyMap.get("wldel_wf_step_duration");
-                    Timestamp jihuaTime = new Timestamp(((Date) lazyMap.get("wldel_wf_plan_start")).getTime() + (long) lazyMap.get("wldel_wf_step_duration"));
-                    long diff = BizUtil.getWorkTimeBetween((Timestamp) lazyMap.get("wldel_wf_real_finish"), jihuaTime);
-                    if (diff > 0) {
-                        buf.append("超时");
-                    } else {
-                        buf.append("剩余");
-                    }
-                    buf.append(WebUtil.getTimeDisPlayExcel(Math.abs(diff)));
-                    sheet1FileInfo.put(j + ",7", buf.toString());// 订单进度
-                }
-
-                sheet1FileInfo.put(j + ",8", lazyMap.get("mrdel_operator") != null ? lazyMap.get("mrdel_operator") : "");// 负责MR
-
-                sheet1FileInfo.put(j + ",11", lazyMap.get("tpedel_operator") != null ? lazyMap.get("tpedel_operator") : "");// TPE
-                sheet1FileInfo.put(j + ",24", lazyMap.get("mrdel_wf_real_start") != null ? new CustomCell(lazyMap.get("mrdel_wf_real_start"), "Date") : new CustomCell());// MR补录订单日期
-
-                sheet1FileInfo.put(j + ",25", lazyMap.get("mrdel_wf_real_finish") != null ? new CustomCell(lazyMap.get("mrdel_wf_real_finish"), "Date") : new CustomCell());// MR补录订单完成日期
-
-                sheet1FileInfo.put(j + ",26", lazyMap.get("jshdel_wf_real_finish") != null ? new CustomCell(lazyMap.get("jshdel_wf_real_finish"), "Date") : new CustomCell());// 技术完成日期（仅大货）
-
-                sheet1FileInfo.put(j + ",12", lazyMap.get("sewing_total") != null ? lazyMap.get("sewing_total") : "0");// 车缝产出数量
-                sheet1FileInfo.put(j + ",13", lazyMap.get("qualified_total") != null ? lazyMap.get("qualified_total") : "0");// 合格数量
-                sheet1FileInfo.put(j + ",14", lazyMap.get("unqualified_total") != null ? lazyMap.get("unqualified_total") : "0");// 次品数量
-
-
-
-                sheet1FileInfo.put(j + ",15", lazyMap.get("gy_qualified") != null ? lazyMap.get("gy_qualified") : "0");// 次品数量
-                sheet1FileInfo.put(j + ",16", lazyMap.get("bl_qualified") != null ? lazyMap.get("bl_qualified") : "0");// 次品数量
-                sheet1FileInfo.put(j + ",17", lazyMap.get("hd_qualified") != null ? lazyMap.get("hd_qualified") : "0");// 次品数量
-                sheet1FileInfo.put(j + ",18", lazyMap.get("cp_qualified") != null ? lazyMap.get("cp_qualified") : "0");// 次品数量
-                sheet1FileInfo.put(j + ",19", lazyMap.get("hd_lost") != null ? lazyMap.get("hd_lost") : "0");// 次品数量
-                sheet1FileInfo.put(j + ",20", lazyMap.get("other_qualified") != null ? lazyMap.get("other_qualified") : "0");// 次品数量
-
-
-
-                sheet1FileInfo.put(j + ",31", lazyMap.get("jshdel_operator") != null ? lazyMap.get("jshdel_operator") : "");// 大货技术
-                long actualTime = 0l;
-                // 计算实际生产周期
-                if (superList.get(i).get("qadel_wf_real_finish") != null && !"".equals(superList.get(i).get("qadel_wf_real_finish")) && superList.get(i).get("mrdel_wf_real_finish") != null
-                        && !"".equals(superList.get(i).get("mrdel_wf_real_finish"))) {
-
-                    actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("qadel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdel_wf_real_finish"));
-                    sheet1FileInfo.put(j + ",28", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 实际生产周期
-                }
-
-                long bzTime = (superList.get(i).get("standard_time") != null ? (long)superList.get(i).get("standard_time") : 0l)
-                        + (superList.get(i).get("craft_time") != null ? (long)superList.get(i).get("craft_time") : 0l);
-                sheet1FileInfo.put(j + ",52", WebUtil.getTimeDisPlayExcel(bzTime) + "");// 标准生产周期
-
-                long scProgress = actualTime - bzTime;
-                if(scProgress > 0){
-                    // 实际生产进度
-                    sheet1FileInfo.put(j + ",53", new CustomCell("超期"+WebUtil.getTimeDisPlayExcel(scProgress), "String").setCellColor(IndexedColors.RED.index).setFontColor(IndexedColors.WHITE.index));
-                }else{
-                    sheet1FileInfo.put(j + ",53", new CustomCell("提前"+WebUtil.getTimeDisPlayExcel(Math.abs(scProgress)), "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
-                }
-
-                sheet1FileInfo.put(j + ",54", lazyMap.get("feeding_time") != null ? new CustomCell(lazyMap.get("feeding_time"), "Date") : new CustomCell());// 建议投料日期
-
-                if (lazyMap.get("wldel_wf_real_finish") != null && !"".equals(lazyMap.get("wldel_wf_real_finish"))) {
-
-                    Date now = (Date) lazyMap.get("wldel_wf_real_finish");
-                    Timestamp tocTime = new Timestamp(now.getTime()/1000*1000);
-                    Map tocMap = new HashMap();
-                    tocMap.put("oaOrder", tocOaOrder);
-                    tocMap.put("tocTime", tocTime);
-                    Float data = BizUtil.computeToc(tocMap);
-                    // 订单完成时TOC百分比
-                    if (data > 0 && data <= 33) {
-                        sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
-                    } else if (data > 33 && data <= 66) {
-                        sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.ORANGE.index).setFontColor(IndexedColors.WHITE.index));
-                    } else if (data > 66 && data <= 100) {
-                        sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.RED.index).setFontColor(IndexedColors.WHITE.index));
-                    } else if (data > 100) {
-                        sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.BLACK.index).setFontColor(IndexedColors.WHITE.index));
-                    } else {
-                        sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
-                    }
-                    // sheet1FileInfo.put(j+",34", time_consume+"%");
-                }
-
-                // 计算实际订单周期
-                if (superList.get(i).get("wldel_wf_real_finish") != null && !"".equals(superList.get(i).get("wldel_wf_real_finish")) && superList.get(i).get("mrdel_wf_real_start") != null
-                        && !"".equals(superList.get(i).get("mrdel_wf_real_start"))) {
-                    actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("wldel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdel_wf_real_start"));
-                    sczq = actualTime; //用于计算与交期差额
-                    sheet1FileInfo.put(j + ",43", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 实际生产周期
-                }
-
-
-
-            }
-            sheet1FileInfo.put(j + ",2", lazyMap.get("style_code").toString());// 款号
-            sheet1FileInfo.put(j + ",3", lazyMap.get("style_desc").toString());// 款式描述
-            sheet1FileInfo.put(j + ",4", lazyMap.get("cus_name").toString());// 客户名称
-            sheet1FileInfo.put(j + ",5", lazyMap.get("want_cnt").toString());// 数量
-            // sheet1FileInfo.put(j+",7", lazyMap.get("begin_time") !=null ? lazyMap.get("begin_time") : "");//下单日期
-            sheet1FileInfo.put(j + ",6", lazyMap.get("begin_time") != null ? new CustomCell(lazyMap.get("begin_time"), "Date") : new CustomCell());
-
-            sheet1FileInfo.put(j + ",9", lazyMap.get("sales") != null ? lazyMap.get("sales") : "");// 负责销售
-            sheet1FileInfo.put(j + ",10", lazyMap.get("sewing_factory") != null ? lazyMap.get("sewing_factory") : "");// 工厂
-
-            if (lazyMap.get("sewing_total") != null && !"".equals(lazyMap.get("sewing_total")) && lazyMap.get("qualified_total") != null && !"".equals(lazyMap.get("qualified_total"))) {
-                sheet1FileInfo.put(j + ",21", (int) new BigDecimal((Float.parseFloat(lazyMap.get("qualified_total").toString()) / Float.parseFloat(lazyMap.get("sewing_total").toString())) * 100)
-                        .setScale(0, BigDecimal.ROUND_HALF_UP).floatValue() + "%");// 合格率
-            } else {
-                sheet1FileInfo.put(j + ",21", "");// 合格率
-            }
-            sheet1FileInfo.put(j + ",22", lazyMap.get("qadel_wf_real_finish") != null ? new CustomCell(lazyMap.get("qadel_wf_real_finish"), "Date") : new CustomCell());// QA完成日期
-
-            if (lazyMap.get("qadel_wf_real_finish") != null) {
-                Date now = (Date) lazyMap.get("qadel_wf_real_finish");
-                Timestamp tocTime = new Timestamp(now.getTime()/1000*1000);
-                Map tocMap = new HashMap();
-                tocMap.put("oaOrder", tocOaOrder);
-                tocMap.put("tocTime", tocTime);
-                Float data = BizUtil.computeToc(tocMap);
-
-                // QA完成时TOC百分比
-                if (data > 0 && data <= 33) {
-                    sheet1FileInfo.put(j + ",23", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
-                } else if (data > 33 && data <= 66) {
-                    sheet1FileInfo.put(j + ",23", new CustomCell(data + "%", "String").setCellColor(IndexedColors.ORANGE.index).setFontColor(IndexedColors.WHITE.index));
-                } else if (data > 66 && data <= 100) {
-                    sheet1FileInfo.put(j + ",23", new CustomCell(data + "%", "String").setCellColor(IndexedColors.RED.index).setFontColor(IndexedColors.WHITE.index));
-                } else if (data > 100) {
-                    sheet1FileInfo.put(j + ",23", new CustomCell(data + "%", "String").setCellColor(IndexedColors.BLACK.index).setFontColor(IndexedColors.WHITE.index));
-                } else {
-                    sheet1FileInfo.put(j + ",23", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
-                }
-
-                // sheet1FileInfo.put(j+",18", time_consume+"%");
-            }
-
-
-            sheet1FileInfo.put(j + ",27", lazyMap.get("except_finish") != null ? new CustomCell(lazyMap.get("except_finish"), "Date") : new CustomCell());// 合同交期
-
-            sheet1FileInfo.put(j + ",29", lazyMap.get("style_craft") != null ? lazyMap.get("style_craft") : "");// 特殊工艺
-            sheet1FileInfo.put(j + ",30", lazyMap.get("fidel_operator") != null ? lazyMap.get("fidel_operator") : "");// 采购
-            sheet1FileInfo.put(j + ",32", lazyMap.get("cqdel_operator") != null ? lazyMap.get("cqdel_operator") : "");// 核价
-            sheet1FileInfo.put(j + ",33", lazyMap.get("cqcdel_operator") != null ? lazyMap.get("cqcdel_operator") : "");// CQC
-            sheet1FileInfo.put(j + ",34", lazyMap.get("qadel_operator") != null ? lazyMap.get("qadel_operator") : "");// QA
-            sheet1FileInfo.put(j + ",35", lazyMap.get("style_class") != null ? lazyMap.get("style_class") : "");// 一级分类
-            /**
-             * 从oa_dt表中查询二级分类数据
-             */
-            FSPBean dtFsp = new FSPBean();
-            dtFsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_DT_BY_CODE_SQL);
-            dtFsp.set("code", lazyMap.get("cloth_class"));
-            beans = getObjectsBySql(dtFsp);
-            for (int n = 0; n < beans.size(); n++) {
-                sheet1FileInfo.put(j + ",36", beans.get(n).get("value") != null ? beans.get(n).get("value") : "");// 二级分类
-            }
-            beans.clear();
-
-            sheet1FileInfo.put(j + ",37", lazyMap.get("style_type") != null ? lazyMap.get("style_type") : "");// 男女款
-            sheet1FileInfo.put(j + ",38", lazyMap.get("order_code") != null ? lazyMap.get("order_code") : "");// 合同号
-            sheet1FileInfo.put(j + ",39", lazyMap.get("pay_type") != null ? lazyMap.get("pay_type") : "");// 付款方式
-            sheet1FileInfo.put(j + ",40", lazyMap.get("end_time") != null ? new CustomCell(lazyMap.get("end_time"), "Date") : new CustomCell());// 订单完成日期
-
-            FSPBean logFsp = new FSPBean();
-            logFsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_OALOGISTICS_BY_SQL);
-            logFsp.set("oaOrderId", lazyMap.get("id"));
-            beans = getObjectsBySql(logFsp);
-            int logsCounts = 0;
-            for (int n = 0; n < beans.size(); n++) {
-                logsCounts += Double.parseDouble(beans.get(n).get("delivery_num") != null ? beans.get(n).get("delivery_num").toString() : "0");
-            }
-            sheet1FileInfo.put(j + ",42", logsCounts);// 发货数量
-
-            // 合同周期
-            if (superList.get(i).get("except_finish") != null && !"".equals(superList.get(i).get("except_finish")) && superList.get(i).get("begin_time") != null
-                    && !"".equals(superList.get(i).get("begin_time"))) {
-
-                Long actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("except_finish"), (Timestamp) superList.get(i).get("begin_time"));
-                sheet1FileInfo.put(j + ",44", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 合同周期
-                String jqce = WebUtil.getTimeDisPlayExcel(Math.abs(sczq - actualTime));
-                sheet1FileInfo.put(j + ",45", (sczq - actualTime) < 0 ? "-"+jqce : jqce );// 与交期差额
-            }
-
-//            // 与交期差额
-//            if (superList.get(i).get("end_time") != null && !"".equals(superList.get(i).get("end_time")) && superList.get(i).get("begin_time") != null
-//                    && !"".equals(superList.get(i).get("begin_time"))) {
-//                long actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("end_time"), (Timestamp) superList.get(i).get("begin_time"));
-//                sheet1FileInfo.put(j + ",39", WebUtil.getTimeDisPlayExcel(Math.abs(sczq - actualTime)));// 与交期差额
-//            }
-
-            sheet1FileInfo.put(j + ",46", superList.get(i).get("terminate_memo") != null ? superList.get(i).get("mr_if_repeat") : "");// 终止原因
-
-            // sheet1FileInfo.put(i+",41", "需要");//终止原因
-            if (superList.get(i).get("mr_if_repeat") != null && !superList.get(i).get("mr_if_repeat").toString().equals("")) {
-                if (superList.get(i).get("mr_if_repeat").toString().equals("0")) {
-                    sheet1FileInfo.put(j + ",47", "需要");// 是否需要复版
-                } else {
-                    sheet1FileInfo.put(j + ",47", "不需要");// 是否需要复版
-                }
-
-            }
-            if (superList.get(i).get("mr_if_qualified") != null && !superList.get(i).get("mr_if_qualified").toString().equals("")) {
-                if (superList.get(i).get("mr_if_qualified").toString().equals("0")) {
-                    sheet1FileInfo.put(j + ",48", "合格");// 是否合格
-                } else {
-                    sheet1FileInfo.put(j + ",48", "不合格");// 是否合格
-                }
-            }
-
-
-            if (superList.get(i).get("is_over_order") !=  null && superList.get(i).get("is_over_order").toString().equals("0")) {
-                sheet1FileInfo.put(j + ",49", "否");// 是否翻单
-            } else if(superList.get(i).get("is_over_order") !=  null && superList.get(i).get("is_over_order").toString().equals("1")){
-                sheet1FileInfo.put(j + ",49", "是");// 是否翻单
-            }
-
-            if (superList.get(i).get("is_special_fabric") !=  null && superList.get(i).get("is_special_fabric").toString().equals("0")) {
-                sheet1FileInfo.put(j + ",50", "常规面料");// 是否特俗面料抽
-            } else if(superList.get(i).get("is_special_fabric") !=  null && superList.get(i).get("is_special_fabric").toString().equals("1")){
-                sheet1FileInfo.put(j + ",50", "特殊面料");// 是否特俗面料抽
-            }
-
-
-            //mr_if_dahuo, mr_nodahuo_othreaseon, mr_nodahuo_reason
-            if (superList.get(i).get("mr_if_dahuo") !=  null && superList.get(i).get("mr_if_dahuo").toString().equals("0")) {
-                sheet1FileInfo.put(j + ",55", "生产");// 是否生产大货
-            } else if(superList.get(i).get("mr_if_dahuo") !=  null && superList.get(i).get("mr_if_dahuo").toString().equals("1")){
-                sheet1FileInfo.put(j + ",55", "不生产");// 是否生产大货
-            }
-
-            if (superList.get(i).get("mr_nodahuo_reason") !=  null) {
-                superList.get(i).set("mr_nodahuo_reason", superList.get(i).get("mr_nodahuo_reason").toString().replaceAll("1", "质量").replaceAll("2", "工艺").replaceAll("3", "交期"));
-            }
-            sheet1FileInfo.put(j + ",56", superList.get(i).get("mr_nodahuo_reason"));// 不生产大货原因
-//            if (superList.get(i).get("nodahuo_reason") !=  null && superList.get(i).get("nodahuo_reason").toString().equals("1")) {
-//                sheet1FileInfo.put(j + ",56", "质量");// 不生产大货原因
-//            } else if(superList.get(i).get("nodahuo_reason") !=  null && superList.get(i).get("nodahuo_reason").toString().equals("2")){
-//                sheet1FileInfo.put(j + ",56", "工艺");// 不生产大货原因
-//            } else if(superList.get(i).get("nodahuo_reason") !=  null && superList.get(i).get("nodahuo_reason").toString().equals("3")){
-//                sheet1FileInfo.put(j + ",56", "交期");// 不生产大货原因
-//            }
-
-
-            sheet1FileInfo.put(j + ",57", superList.get(i).get("mr_nodahuo_othreaseon"));// 不生产其他大货原因
-
-            sheet1FileInfo.put(j + ",51", superList.get(i).get("p_sam") != null ? superList.get(i).get("p_sam") : "");// 核价SAM
-
-
-
-            i++;
-            j++;
-        }
-        // sheet1FileInfo.put("0,0,Expression","RAND()");
-        // sheet1FileInfo.put("0,1,Expression","RAND()*5");
-        // sheet1FileInfo.put("0,2,Expression","RAND()");
-        // sheet1FileInfo.put("0,3,Expression","1+6");
-        // sheet1FileInfo.put("0,4,Expression","SUM(A1:D1)");
-        // sheet1FileInfo.put("1,1,5,5","http://erp.singbada.cn/images/login_pic_1.jpg");
-        //
-        // sheet1FileInfo.put("9,9",new CustomCell(1234.123, "Double-¥#,##0.0"));
-        // sheet1FileInfo.put("8,9",new CustomCell(11.6, "Double"));
-        // sheet1FileInfo.put("8,8",new CustomCell(new Date(), "Date"));
-        // sheet1FileInfo.put("8,7",new CustomCell("蓝背景", "String").setCellColor(IndexedColors.BLUE.index));
-        // sheet1FileInfo.put("8,6",new CustomCell("彩边框", "String").setBorderColors(IndexedColors.GREEN.index));
-        // sheet1FileInfo.put("8,5",new CustomCell("无边框", "String").setHasBorder(false));
-        // sheet1FileInfo.put("8,4",new CustomCell("红粗斜", "String").setFontBoldWeight(Font.BOLDWEIGHT_BOLD).setFontColor(IndexedColors.RED.index).setFontItalic(true));
-        // sheet1FileInfo.put("8,3",new CustomCell("楷体", "String").setFontName("楷体"));
-        // sheet1FileInfo.put("8,2",new CustomCell("粗体", "String").setFontBoldWeight(Font.BOLDWEIGHT_BOLD));
-        // sheet1FileInfo.put("8,1",new CustomCell("红色字体", "String").setFontColor(IndexedColors.RED.index));
-        // sheet1FileInfo.put("8,0",new CustomCell("蓝色字体", "String").setFontColor(IndexedColors.BLUE.index));
-        // sheet1FileInfo.put("7,9",new CustomCell("自定义字号", "String").setFontSize((short) 9));
-        // sheet1FileInfo.put("9,8,Double", 1111111.231D);
-        // sheet1FileInfo.put("7,8,Double", 11.231D);
-        // sheet1FileInfo.put("7,7,Boolean", false);//
-        // sheet1FileInfo.put("7,6,Calendar-yyyy/MM/dd hh", Calendar.getInstance());
-        // sheet1FileInfo.put("7,5,Calendar", Calendar.getInstance());//
-        // sheet1FileInfo.put("7,4,Date-yy-MM-dd", new Date());
-        // sheet1FileInfo.put("7,3,Date", new Date());
-        // sheet1FileInfo.put("7,2", new Date());//
-        // sheet1FileInfo.put("7,1", 111);//
-        // sheet1FileInfo.put("7,0", new CustomCell("自定义格式", "String"));
-        // Map<String,Object> sheet1DynaRow = new HashMap<String,Object>();
-        // //sheet1DynaRow.put("10", 1);
-        // //sheet1DynaRow.put("2", 1);
-        // Map<String,Object> sheet1MergeCell = new HashMap<String,Object>();
-        // sheet1MergeCell.put("4,4,0,4", true);
-
-        fillInfo.put("历史订单分析报表FileInfo", sheet1FileInfo);
-        fillInfo.put("订单进度跟踪报表-大货DynaRow", null);
-        fillInfo.put("订单进度跟踪报表-大货MergeCell", null);
-
-        // OutputStream os = null;
-        try {
-            // os = new FileOutputStream(outputFile);
-
-            OutputStream os = Struts2Utils.getResponse().getOutputStream();
-            Struts2Utils.getResponse().setContentType("application/msexcel");// x-msdownload
-            Struts2Utils.getResponse().setHeader("Content-Disposition", "attachment;filename=ERP-REPORT-" + (System.currentTimeMillis() + "").substring(6, 13) + ".xlsx");
-            POIUtilsEx.processExcel(os, fillInfo);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // POIUtilsEx.processExcel(os, fillInfo);
-        return null;
-
-    }
+		// 导出excel基本参数设置
+		Map<String, Object> fillInfo = new HashMap<String, Object>();
+
+		String baseExcelFile = Struts2Utils.getSession().getServletContext().getRealPath(ResourceUtil.getString("baseReportHisExcelFile"));
+		String sheetNames = "历史订单分析报表";
+		fillInfo.put("fileUrl", baseExcelFile);
+		fillInfo.put("sheetNames", sheetNames);
+
+		// 查询导出数据
+		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_ORDERWF_HIS_BY_SQL);
+		if (!WebUtil.ifAdmin() && !WebUtil.ifManager()) { // 如果不是管理员就要加上查询条件
+			fsp.set("his_opt", WebUtil.getCurrentLoginBx().getLoginName());
+		}
+		if (!"true".equals(Struts2Utils.getParameter("hidStatusFlag"))) {
+			fsp.set("status", "0"); // 默认为正常的订单
+			fsp.set("wf_step", "finish_999"); // 默认为已完成
+		} else {
+			if ("0".equals((String) fsp.get("status"))) { // 已完成
+				fsp.set("wf_step", "finish_999");
+			} else if ("1".equals((String) fsp.get("status"))) { // 作废
+				fsp.set("wf_step", null);
+			} else { // 全部
+				fsp.set("if_all", "finish_999");
+			}
+		}
+
+		// 判断查询数据类型，大货与打版流程不一样 by 范蠡
+		if (fsp.getMap().get("type") == null || "".equals(fsp.getMap().get("type"))) {
+			if (fsp.getMap().get("del_operator") != null && !"".equals(fsp.getMap().get("del_operator"))) {
+				fsp.set("del_operator_all", "c_ppc_assign_3");
+			}
+		} else {
+			if (fsp.getMap().get("type") != null && "2".equals(fsp.getMap().get("type"))) {
+				fsp.set("del_operator_b", "b_pur_confirm_4");
+			} else if (fsp.getMap().get("type") != null && "3".equals(fsp.getMap().get("type"))) {
+				fsp.set("del_operator_c", "c_ppc_assign_3");
+			}
+		}
+
+		superList = getObjectsBySql(fsp);
+		// 声明excel主体数据Map容器
+		Map<String, Object> sheet1FileInfo = new HashMap<String, Object>();
+		int i = 0;
+		int j = 1;
+		for (LazyDynaMap lazyMap : superList) {
+			// bean = superList.get(i);
+			Long nowDate = new Date().getTime() / 1000 * 1000;
+			Long begin_time = ((Date) lazyMap.get("begin_time")).getTime();
+			Long except_finish = ((Date) lazyMap.get("except_finish")).getTime();
+
+			long sczq = 0l;
+
+			long hetongTime = lazyMap.get("except_finish") != null ? ((Date) lazyMap.get("except_finish")).getTime() : 0l;
+
+			OaOrder tocOaOrder = new OaOrder();
+			tocOaOrder.setSellReadyTime(lazyMap.get("sell_ready_time") != null ? (Long) lazyMap.get("sell_ready_time") : 0l);
+			tocOaOrder.setStandardTime(lazyMap.get("standard_time") != null ? (Long) lazyMap.get("standard_time") : 0l);
+			tocOaOrder.setCraftTime(lazyMap.get("craft_time") != null ? (Long) lazyMap.get("craft_time") : 0l);
+			tocOaOrder.setGoodsTime(lazyMap.get("goods_time") != null ? (Timestamp) lazyMap.get("goods_time") : null);
+
+			// 优先级
+			// if (0 != begin_time && 0 != except_finish) {
+			// float baifenzhu = (nowDate - begin_time + 24 * 60 * 60 * 1000) / (except_finish - begin_time + 24 * 60 * 60 * 1000);
+			// float data = baifenzhu * 100;
+			// if(data > 0 && data <=33){
+			// sheet1FileInfo.put(j+",0",new CustomCell(data+"%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
+			// }else if(data > 33 && data <=66){
+			// sheet1FileInfo.put(j+",0",new CustomCell(data+"%", "String").setCellColor(IndexedColors.ORANGE.index).setFontColor(IndexedColors.WHITE.index));
+			// }else if(data > 66 && data <=100){
+			// sheet1FileInfo.put(j+",0",new CustomCell(data+"%", "String").setCellColor(IndexedColors.RED.index).setFontColor(IndexedColors.WHITE.index));
+			// }else if(data > 100){
+			// sheet1FileInfo.put(j+",0",new CustomCell(data+"%", "String").setCellColor(IndexedColors.BLACK.index).setFontColor(IndexedColors.WHITE.index));
+			// }else{
+			// sheet1FileInfo.put(j+",0",new CustomCell(data+"%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
+			// }
+			// }else{
+			// sheet1FileInfo.put(j+",0", 0+"%");
+			// }
+			sheet1FileInfo.put(j + ",0", lazyMap.get("sell_order_code").toString());// 订单号
+			if (lazyMap.get("type") != null && "2".equals(lazyMap.get("type").toString())) {
+				sheet1FileInfo.put(j + ",1", "样衣打版");// 订单类型
+				StringBuffer buf = new StringBuffer();
+				if (lazyMap.get("bqcdel_wf_real_finish") != null && lazyMap.get("bqcdel_wf_plan_start") != null && lazyMap.get("bqcdel_wf_step_duration") != null) {
+					// long diff = ((Date)lazyMap.get("bqcdel_wf_real_finish")).getTime() - ((Date)lazyMap.get("bqcdel_wf_plan_start")).getTime() + (long)lazyMap.get("bqcdel_wf_step_duration");
+					Timestamp jihuaTime = new Timestamp(((Date) lazyMap.get("bqcdel_wf_plan_start")).getTime() + (long) lazyMap.get("bqcdel_wf_step_duration"));
+					long diff = BizUtil.getWorkTimeBetween((Timestamp) lazyMap.get("bqcdel_wf_real_finish"), jihuaTime);
+					if (diff > 0) {
+						buf.append("超时");
+					} else {
+						buf.append("剩余");
+					}
+					buf.append(WebUtil.getTimeDisPlayExcel(Math.abs(diff)));
+					sheet1FileInfo.put(j + ",7", buf.toString());// 订单进度
+				}
+
+				sheet1FileInfo.put(j + ",8", lazyMap.get("mrdb_operator") != null ? lazyMap.get("mrdb_operator") : "");// 负责MR
+
+				sheet1FileInfo.put(j + ",24", lazyMap.get("mrdb_wf_real_start") != null ? new CustomCell(lazyMap.get("mrdb_wf_real_start"), "Date") : new CustomCell());// MR补录订单日期
+
+				// 修改位置
+				sheet1FileInfo.put(j + ",25", lazyMap.get("mrdb_wf_real_finish") != null ? new CustomCell(lazyMap.get("mrdb_wf_real_finish"), "Date") : new CustomCell());// MR补录订单日期
+
+				sheet1FileInfo.put(j + ",31", lazyMap.get("jsdel_operator") != null ? lazyMap.get("jsdel_operator") : "");// 打版技术
+
+				long actualTime = 0l;
+				// 计算实际生产周期
+				if (superList.get(i).get("bqcdel_wf_real_finish") != null && !"".equals(superList.get(i).get("bqcdel_wf_real_finish")) && superList.get(i).get("mrdb_wf_real_finish") != null
+						&& !"".equals(superList.get(i).get("mrdb_wf_real_finish"))) {
+
+					actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("bqcdel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdb_wf_real_finish"));
+					sheet1FileInfo.put(j + ",28", WebUtil.getTimeDisPlayExcel(actualTime));// 实际生产周期
+				}
+
+				long bzTime = (superList.get(i).get("standard_time") != null ? (long) superList.get(i).get("standard_time") : 0l)
+						+ (superList.get(i).get("craft_time") != null ? (long) superList.get(i).get("craft_time") : 0l);
+				sheet1FileInfo.put(j + ",52", WebUtil.getTimeDisPlayExcel(bzTime) + "");// 标准生产周期
+
+				long scProgress = actualTime - bzTime;
+				if (scProgress > 0) {
+					// 实际生产进度
+					sheet1FileInfo.put(j + ",53", new CustomCell("超期" + WebUtil.getTimeDisPlayExcel(scProgress), "String").setCellColor(IndexedColors.RED.index)
+							.setFontColor(IndexedColors.WHITE.index));
+				} else {
+					sheet1FileInfo.put(j + ",53",
+							new CustomCell("提前" + WebUtil.getTimeDisPlayExcel(Math.abs(scProgress)), "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
+				}
+
+				sheet1FileInfo.put(j + ",54", lazyMap.get("feeding_time") != null ? new CustomCell(lazyMap.get("feeding_time"), "Date") : new CustomCell());// 建议投料日期
+
+				if (lazyMap.get("bqcdel_wf_real_finish") != null && !"".equals(lazyMap.get("bqcdel_wf_real_finish"))) {
+
+					Date now = (Date) lazyMap.get("bqcdel_wf_real_finish");
+					Timestamp tocTime = new Timestamp(now.getTime() / 1000 * 1000);
+					Map tocMap = new HashMap();
+					tocMap.put("oaOrder", tocOaOrder);
+					tocMap.put("tocTime", tocTime);
+					Float data = BizUtil.computeToc(tocMap);
+					// 订单完成时TOC百分比
+					if (data > 0 && data <= 33) {
+						sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
+					} else if (data > 33 && data <= 66) {
+						sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.ORANGE.index).setFontColor(IndexedColors.WHITE.index));
+					} else if (data > 66 && data <= 100) {
+						sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.RED.index).setFontColor(IndexedColors.WHITE.index));
+					} else if (data > 100) {
+						sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.BLACK.index).setFontColor(IndexedColors.WHITE.index));
+					} else {
+						sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
+					}
+					// sheet1FileInfo.put(j+",34", time_consume+"%");
+				}
+
+				// 计算实际订单周期
+				if (superList.get(i).get("bqcdel_wf_real_finish") != null && !"".equals(superList.get(i).get("bqcdel_wf_real_finish")) && superList.get(i).get("mrdb_wf_real_start") != null
+						&& !"".equals(superList.get(i).get("mrdb_wf_real_start"))) {
+
+					actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("bqcdel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdb_wf_real_start"));
+					sczq = actualTime; // 用于计算与交期差额
+					sheet1FileInfo.put(j + ",43", WebUtil.getTimeDisPlayExcel(actualTime));// 实际生产周期
+				}
+
+				// sheet1FileInfo.put(i+",37", logsCounts);//实际订单周期
+			} else if (lazyMap.get("type") != null && "3".equals(lazyMap.get("type").toString())) {
+				sheet1FileInfo.put(j + ",1", "大货生产");// 订单类型
+				StringBuffer buf = new StringBuffer();
+				if (lazyMap.get("wldel_wf_real_finish") != null && lazyMap.get("wldel_wf_plan_start") != null && lazyMap.get("wldel_wf_step_duration") != null) {
+					// long diff = ((Date)lazyMap.get("wldel_wf_real_finish")).getTime() - ((Date)lazyMap.get("wldel_wf_plan_start")).getTime() + (long)lazyMap.get("wldel_wf_step_duration");
+					Timestamp jihuaTime = new Timestamp(((Date) lazyMap.get("wldel_wf_plan_start")).getTime() + (long) lazyMap.get("wldel_wf_step_duration"));
+					long diff = BizUtil.getWorkTimeBetween((Timestamp) lazyMap.get("wldel_wf_real_finish"), jihuaTime);
+					if (diff > 0) {
+						buf.append("超时");
+					} else {
+						buf.append("剩余");
+					}
+					buf.append(WebUtil.getTimeDisPlayExcel(Math.abs(diff)));
+					sheet1FileInfo.put(j + ",7", buf.toString());// 订单进度
+				}
+
+				sheet1FileInfo.put(j + ",8", lazyMap.get("mrdel_operator") != null ? lazyMap.get("mrdel_operator") : "");// 负责MR
+
+				sheet1FileInfo.put(j + ",11", lazyMap.get("tpedel_operator") != null ? lazyMap.get("tpedel_operator") : "");// TPE
+				sheet1FileInfo.put(j + ",24", lazyMap.get("mrdel_wf_real_start") != null ? new CustomCell(lazyMap.get("mrdel_wf_real_start"), "Date") : new CustomCell());// MR补录订单日期
+
+				sheet1FileInfo.put(j + ",25", lazyMap.get("mrdel_wf_real_finish") != null ? new CustomCell(lazyMap.get("mrdel_wf_real_finish"), "Date") : new CustomCell());// MR补录订单完成日期
+
+				sheet1FileInfo.put(j + ",26", lazyMap.get("jshdel_wf_real_finish") != null ? new CustomCell(lazyMap.get("jshdel_wf_real_finish"), "Date") : new CustomCell());// 技术完成日期（仅大货）
+
+				sheet1FileInfo.put(j + ",12", lazyMap.get("sewing_total") != null ? lazyMap.get("sewing_total") : "0");// 车缝产出数量
+				sheet1FileInfo.put(j + ",13", lazyMap.get("qualified_total") != null ? lazyMap.get("qualified_total") : "0");// 合格数量
+				sheet1FileInfo.put(j + ",14", lazyMap.get("unqualified_total") != null ? lazyMap.get("unqualified_total") : "0");// 次品数量
+
+				sheet1FileInfo.put(j + ",15", lazyMap.get("gy_qualified") != null ? lazyMap.get("gy_qualified") : "0");// 次品数量
+				sheet1FileInfo.put(j + ",16", lazyMap.get("bl_qualified") != null ? lazyMap.get("bl_qualified") : "0");// 次品数量
+				sheet1FileInfo.put(j + ",17", lazyMap.get("hd_qualified") != null ? lazyMap.get("hd_qualified") : "0");// 次品数量
+				sheet1FileInfo.put(j + ",18", lazyMap.get("cp_qualified") != null ? lazyMap.get("cp_qualified") : "0");// 次品数量
+				sheet1FileInfo.put(j + ",19", lazyMap.get("hd_lost") != null ? lazyMap.get("hd_lost") : "0");// 次品数量
+				sheet1FileInfo.put(j + ",20", lazyMap.get("other_qualified") != null ? lazyMap.get("other_qualified") : "0");// 次品数量
+
+				sheet1FileInfo.put(j + ",31", lazyMap.get("jshdel_operator") != null ? lazyMap.get("jshdel_operator") : "");// 大货技术
+				long actualTime = 0l;
+				// 计算实际生产周期
+				if (superList.get(i).get("qadel_wf_real_finish") != null && !"".equals(superList.get(i).get("qadel_wf_real_finish")) && superList.get(i).get("mrdel_wf_real_finish") != null
+						&& !"".equals(superList.get(i).get("mrdel_wf_real_finish"))) {
+
+					actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("qadel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdel_wf_real_finish"));
+					sheet1FileInfo.put(j + ",28", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 实际生产周期
+				}
+
+				long bzTime = (superList.get(i).get("standard_time") != null ? (long) superList.get(i).get("standard_time") : 0l)
+						+ (superList.get(i).get("craft_time") != null ? (long) superList.get(i).get("craft_time") : 0l);
+				sheet1FileInfo.put(j + ",52", WebUtil.getTimeDisPlayExcel(bzTime) + "");// 标准生产周期
+
+				long scProgress = actualTime - bzTime;
+				if (scProgress > 0) {
+					// 实际生产进度
+					sheet1FileInfo.put(j + ",53", new CustomCell("超期" + WebUtil.getTimeDisPlayExcel(scProgress), "String").setCellColor(IndexedColors.RED.index)
+							.setFontColor(IndexedColors.WHITE.index));
+				} else {
+					sheet1FileInfo.put(j + ",53",
+							new CustomCell("提前" + WebUtil.getTimeDisPlayExcel(Math.abs(scProgress)), "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
+				}
+
+				sheet1FileInfo.put(j + ",54", lazyMap.get("feeding_time") != null ? new CustomCell(lazyMap.get("feeding_time"), "Date") : new CustomCell());// 建议投料日期
+
+				if (lazyMap.get("wldel_wf_real_finish") != null && !"".equals(lazyMap.get("wldel_wf_real_finish"))) {
+
+					Date now = (Date) lazyMap.get("wldel_wf_real_finish");
+					Timestamp tocTime = new Timestamp(now.getTime() / 1000 * 1000);
+					Map tocMap = new HashMap();
+					tocMap.put("oaOrder", tocOaOrder);
+					tocMap.put("tocTime", tocTime);
+					Float data = BizUtil.computeToc(tocMap);
+					// 订单完成时TOC百分比
+					if (data > 0 && data <= 33) {
+						sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
+					} else if (data > 33 && data <= 66) {
+						sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.ORANGE.index).setFontColor(IndexedColors.WHITE.index));
+					} else if (data > 66 && data <= 100) {
+						sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.RED.index).setFontColor(IndexedColors.WHITE.index));
+					} else if (data > 100) {
+						sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.BLACK.index).setFontColor(IndexedColors.WHITE.index));
+					} else {
+						sheet1FileInfo.put(j + ",41", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
+					}
+					// sheet1FileInfo.put(j+",34", time_consume+"%");
+				}
+
+				// 计算实际订单周期
+				if (superList.get(i).get("wldel_wf_real_finish") != null && !"".equals(superList.get(i).get("wldel_wf_real_finish")) && superList.get(i).get("mrdel_wf_real_start") != null
+						&& !"".equals(superList.get(i).get("mrdel_wf_real_start"))) {
+					actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("wldel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdel_wf_real_start"));
+					sczq = actualTime; // 用于计算与交期差额
+					sheet1FileInfo.put(j + ",43", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 实际生产周期
+				}
+
+			}
+			sheet1FileInfo.put(j + ",2", lazyMap.get("style_code").toString());// 款号
+			sheet1FileInfo.put(j + ",3", lazyMap.get("style_desc").toString());// 款式描述
+			sheet1FileInfo.put(j + ",4", lazyMap.get("cus_name").toString());// 客户名称
+			sheet1FileInfo.put(j + ",5", lazyMap.get("want_cnt").toString());// 数量
+			// sheet1FileInfo.put(j+",7", lazyMap.get("begin_time") !=null ? lazyMap.get("begin_time") : "");//下单日期
+			sheet1FileInfo.put(j + ",6", lazyMap.get("begin_time") != null ? new CustomCell(lazyMap.get("begin_time"), "Date") : new CustomCell());
+
+			sheet1FileInfo.put(j + ",9", lazyMap.get("sales") != null ? lazyMap.get("sales") : "");// 负责销售
+			sheet1FileInfo.put(j + ",10", lazyMap.get("sewing_factory") != null ? lazyMap.get("sewing_factory") : "");// 工厂
+
+			if (lazyMap.get("sewing_total") != null && !"".equals(lazyMap.get("sewing_total")) && lazyMap.get("qualified_total") != null && !"".equals(lazyMap.get("qualified_total"))) {
+				sheet1FileInfo.put(j + ",21", (int) new BigDecimal((Float.parseFloat(lazyMap.get("qualified_total").toString()) / Float.parseFloat(lazyMap.get("sewing_total").toString())) * 100)
+						.setScale(0, BigDecimal.ROUND_HALF_UP).floatValue() + "%");// 合格率
+			} else {
+				sheet1FileInfo.put(j + ",21", "");// 合格率
+			}
+			sheet1FileInfo.put(j + ",22", lazyMap.get("qadel_wf_real_finish") != null ? new CustomCell(lazyMap.get("qadel_wf_real_finish"), "Date") : new CustomCell());// QA完成日期
+
+			if (lazyMap.get("qadel_wf_real_finish") != null) {
+				Date now = (Date) lazyMap.get("qadel_wf_real_finish");
+				Timestamp tocTime = new Timestamp(now.getTime() / 1000 * 1000);
+				Map tocMap = new HashMap();
+				tocMap.put("oaOrder", tocOaOrder);
+				tocMap.put("tocTime", tocTime);
+				Float data = BizUtil.computeToc(tocMap);
+
+				// QA完成时TOC百分比
+				if (data > 0 && data <= 33) {
+					sheet1FileInfo.put(j + ",23", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
+				} else if (data > 33 && data <= 66) {
+					sheet1FileInfo.put(j + ",23", new CustomCell(data + "%", "String").setCellColor(IndexedColors.ORANGE.index).setFontColor(IndexedColors.WHITE.index));
+				} else if (data > 66 && data <= 100) {
+					sheet1FileInfo.put(j + ",23", new CustomCell(data + "%", "String").setCellColor(IndexedColors.RED.index).setFontColor(IndexedColors.WHITE.index));
+				} else if (data > 100) {
+					sheet1FileInfo.put(j + ",23", new CustomCell(data + "%", "String").setCellColor(IndexedColors.BLACK.index).setFontColor(IndexedColors.WHITE.index));
+				} else {
+					sheet1FileInfo.put(j + ",23", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
+				}
+
+				// sheet1FileInfo.put(j+",18", time_consume+"%");
+			}
+
+			sheet1FileInfo.put(j + ",27", lazyMap.get("except_finish") != null ? new CustomCell(lazyMap.get("except_finish"), "Date") : new CustomCell());// 合同交期
+
+			sheet1FileInfo.put(j + ",29", lazyMap.get("style_craft") != null ? lazyMap.get("style_craft") : "");// 特殊工艺
+			sheet1FileInfo.put(j + ",30", lazyMap.get("fidel_operator") != null ? lazyMap.get("fidel_operator") : "");// 采购
+			sheet1FileInfo.put(j + ",32", lazyMap.get("cqdel_operator") != null ? lazyMap.get("cqdel_operator") : "");// 核价
+			sheet1FileInfo.put(j + ",33", lazyMap.get("cqcdel_operator") != null ? lazyMap.get("cqcdel_operator") : "");// CQC
+			sheet1FileInfo.put(j + ",34", lazyMap.get("qadel_operator") != null ? lazyMap.get("qadel_operator") : "");// QA
+			sheet1FileInfo.put(j + ",35", lazyMap.get("style_class") != null ? lazyMap.get("style_class") : "");// 一级分类
+			/**
+			 * 从oa_dt表中查询二级分类数据
+			 */
+			FSPBean dtFsp = new FSPBean();
+			dtFsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_DT_BY_CODE_SQL);
+			dtFsp.set("code", lazyMap.get("cloth_class"));
+			beans = getObjectsBySql(dtFsp);
+			for (int n = 0; n < beans.size(); n++) {
+				sheet1FileInfo.put(j + ",36", beans.get(n).get("value") != null ? beans.get(n).get("value") : "");// 二级分类
+			}
+			beans.clear();
+
+			sheet1FileInfo.put(j + ",37", lazyMap.get("style_type") != null ? lazyMap.get("style_type") : "");// 男女款
+			sheet1FileInfo.put(j + ",38", lazyMap.get("order_code") != null ? lazyMap.get("order_code") : "");// 合同号
+			sheet1FileInfo.put(j + ",39", lazyMap.get("pay_type") != null ? lazyMap.get("pay_type") : "");// 付款方式
+			sheet1FileInfo.put(j + ",40", lazyMap.get("end_time") != null ? new CustomCell(lazyMap.get("end_time"), "Date") : new CustomCell());// 订单完成日期
+
+			FSPBean logFsp = new FSPBean();
+			logFsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_OALOGISTICS_BY_SQL);
+			logFsp.set("oaOrderId", lazyMap.get("id"));
+			beans = getObjectsBySql(logFsp);
+			int logsCounts = 0;
+			for (int n = 0; n < beans.size(); n++) {
+				logsCounts += Double.parseDouble(beans.get(n).get("delivery_num") != null ? beans.get(n).get("delivery_num").toString() : "0");
+			}
+			sheet1FileInfo.put(j + ",42", logsCounts);// 发货数量
+
+			// 合同周期
+			if (superList.get(i).get("except_finish") != null && !"".equals(superList.get(i).get("except_finish")) && superList.get(i).get("begin_time") != null
+					&& !"".equals(superList.get(i).get("begin_time"))) {
+
+				Long actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("except_finish"), (Timestamp) superList.get(i).get("begin_time"));
+				sheet1FileInfo.put(j + ",44", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 合同周期
+				String jqce = WebUtil.getTimeDisPlayExcel(Math.abs(sczq - actualTime));
+				sheet1FileInfo.put(j + ",45", (sczq - actualTime) < 0 ? "-" + jqce : jqce);// 与交期差额
+			}
+
+			// // 与交期差额
+			// if (superList.get(i).get("end_time") != null && !"".equals(superList.get(i).get("end_time")) && superList.get(i).get("begin_time") != null
+			// && !"".equals(superList.get(i).get("begin_time"))) {
+			// long actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("end_time"), (Timestamp) superList.get(i).get("begin_time"));
+			// sheet1FileInfo.put(j + ",39", WebUtil.getTimeDisPlayExcel(Math.abs(sczq - actualTime)));// 与交期差额
+			// }
+
+			sheet1FileInfo.put(j + ",46", superList.get(i).get("terminate_memo") != null ? superList.get(i).get("mr_if_repeat") : "");// 终止原因
+
+			// sheet1FileInfo.put(i+",41", "需要");//终止原因
+			if (superList.get(i).get("mr_if_repeat") != null && !superList.get(i).get("mr_if_repeat").toString().equals("")) {
+				if (superList.get(i).get("mr_if_repeat").toString().equals("0")) {
+					sheet1FileInfo.put(j + ",47", "需要");// 是否需要复版
+				} else {
+					sheet1FileInfo.put(j + ",47", "不需要");// 是否需要复版
+				}
+
+			}
+			if (superList.get(i).get("mr_if_qualified") != null && !superList.get(i).get("mr_if_qualified").toString().equals("")) {
+				if (superList.get(i).get("mr_if_qualified").toString().equals("0")) {
+					sheet1FileInfo.put(j + ",48", "合格");// 是否合格
+				} else {
+					sheet1FileInfo.put(j + ",48", "不合格");// 是否合格
+				}
+			}
+
+			if (superList.get(i).get("is_over_order") != null && superList.get(i).get("is_over_order").toString().equals("0")) {
+				sheet1FileInfo.put(j + ",49", "否");// 是否翻单
+			} else if (superList.get(i).get("is_over_order") != null && superList.get(i).get("is_over_order").toString().equals("1")) {
+				sheet1FileInfo.put(j + ",49", "是");// 是否翻单
+			}
+
+			if (superList.get(i).get("is_special_fabric") != null && superList.get(i).get("is_special_fabric").toString().equals("0")) {
+				sheet1FileInfo.put(j + ",50", "常规面料");// 是否特俗面料抽
+			} else if (superList.get(i).get("is_special_fabric") != null && superList.get(i).get("is_special_fabric").toString().equals("1")) {
+				sheet1FileInfo.put(j + ",50", "特殊面料");// 是否特俗面料抽
+			}
+
+			// mr_if_dahuo, mr_nodahuo_othreaseon, mr_nodahuo_reason
+			if (superList.get(i).get("mr_if_dahuo") != null && superList.get(i).get("mr_if_dahuo").toString().equals("0")) {
+				sheet1FileInfo.put(j + ",55", "生产");// 是否生产大货
+			} else if (superList.get(i).get("mr_if_dahuo") != null && superList.get(i).get("mr_if_dahuo").toString().equals("1")) {
+				sheet1FileInfo.put(j + ",55", "不生产");// 是否生产大货
+			}
+
+			if (superList.get(i).get("mr_nodahuo_reason") != null) {
+				superList.get(i).set("mr_nodahuo_reason", superList.get(i).get("mr_nodahuo_reason").toString().replaceAll("1", "质量").replaceAll("2", "工艺").replaceAll("3", "交期"));
+			}
+			sheet1FileInfo.put(j + ",56", superList.get(i).get("mr_nodahuo_reason"));// 不生产大货原因
+			// if (superList.get(i).get("nodahuo_reason") != null && superList.get(i).get("nodahuo_reason").toString().equals("1")) {
+			// sheet1FileInfo.put(j + ",56", "质量");// 不生产大货原因
+			// } else if(superList.get(i).get("nodahuo_reason") != null && superList.get(i).get("nodahuo_reason").toString().equals("2")){
+			// sheet1FileInfo.put(j + ",56", "工艺");// 不生产大货原因
+			// } else if(superList.get(i).get("nodahuo_reason") != null && superList.get(i).get("nodahuo_reason").toString().equals("3")){
+			// sheet1FileInfo.put(j + ",56", "交期");// 不生产大货原因
+			// }
+
+			sheet1FileInfo.put(j + ",57", superList.get(i).get("mr_nodahuo_othreaseon"));// 不生产其他大货原因
+
+			sheet1FileInfo.put(j + ",51", superList.get(i).get("p_sam") != null ? superList.get(i).get("p_sam") : "");// 核价SAM
+
+			i++;
+			j++;
+		}
+		// sheet1FileInfo.put("0,0,Expression","RAND()");
+		// sheet1FileInfo.put("0,1,Expression","RAND()*5");
+		// sheet1FileInfo.put("0,2,Expression","RAND()");
+		// sheet1FileInfo.put("0,3,Expression","1+6");
+		// sheet1FileInfo.put("0,4,Expression","SUM(A1:D1)");
+		// sheet1FileInfo.put("1,1,5,5","http://erp.singbada.cn/images/login_pic_1.jpg");
+		//
+		// sheet1FileInfo.put("9,9",new CustomCell(1234.123, "Double-¥#,##0.0"));
+		// sheet1FileInfo.put("8,9",new CustomCell(11.6, "Double"));
+		// sheet1FileInfo.put("8,8",new CustomCell(new Date(), "Date"));
+		// sheet1FileInfo.put("8,7",new CustomCell("蓝背景", "String").setCellColor(IndexedColors.BLUE.index));
+		// sheet1FileInfo.put("8,6",new CustomCell("彩边框", "String").setBorderColors(IndexedColors.GREEN.index));
+		// sheet1FileInfo.put("8,5",new CustomCell("无边框", "String").setHasBorder(false));
+		// sheet1FileInfo.put("8,4",new CustomCell("红粗斜", "String").setFontBoldWeight(Font.BOLDWEIGHT_BOLD).setFontColor(IndexedColors.RED.index).setFontItalic(true));
+		// sheet1FileInfo.put("8,3",new CustomCell("楷体", "String").setFontName("楷体"));
+		// sheet1FileInfo.put("8,2",new CustomCell("粗体", "String").setFontBoldWeight(Font.BOLDWEIGHT_BOLD));
+		// sheet1FileInfo.put("8,1",new CustomCell("红色字体", "String").setFontColor(IndexedColors.RED.index));
+		// sheet1FileInfo.put("8,0",new CustomCell("蓝色字体", "String").setFontColor(IndexedColors.BLUE.index));
+		// sheet1FileInfo.put("7,9",new CustomCell("自定义字号", "String").setFontSize((short) 9));
+		// sheet1FileInfo.put("9,8,Double", 1111111.231D);
+		// sheet1FileInfo.put("7,8,Double", 11.231D);
+		// sheet1FileInfo.put("7,7,Boolean", false);//
+		// sheet1FileInfo.put("7,6,Calendar-yyyy/MM/dd hh", Calendar.getInstance());
+		// sheet1FileInfo.put("7,5,Calendar", Calendar.getInstance());//
+		// sheet1FileInfo.put("7,4,Date-yy-MM-dd", new Date());
+		// sheet1FileInfo.put("7,3,Date", new Date());
+		// sheet1FileInfo.put("7,2", new Date());//
+		// sheet1FileInfo.put("7,1", 111);//
+		// sheet1FileInfo.put("7,0", new CustomCell("自定义格式", "String"));
+		// Map<String,Object> sheet1DynaRow = new HashMap<String,Object>();
+		// //sheet1DynaRow.put("10", 1);
+		// //sheet1DynaRow.put("2", 1);
+		// Map<String,Object> sheet1MergeCell = new HashMap<String,Object>();
+		// sheet1MergeCell.put("4,4,0,4", true);
+
+		fillInfo.put("历史订单分析报表FileInfo", sheet1FileInfo);
+		fillInfo.put("订单进度跟踪报表-大货DynaRow", null);
+		fillInfo.put("订单进度跟踪报表-大货MergeCell", null);
+
+		// OutputStream os = null;
+		try {
+			// os = new FileOutputStream(outputFile);
+
+			OutputStream os = Struts2Utils.getResponse().getOutputStream();
+			Struts2Utils.getResponse().setContentType("application/msexcel");// x-msdownload
+			Struts2Utils.getResponse().setHeader("Content-Disposition", "attachment;filename=ERP-REPORT-" + (System.currentTimeMillis() + "").substring(6, 13) + ".xlsx");
+			POIUtilsEx.processExcel(os, fillInfo);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		// POIUtilsEx.processExcel(os, fillInfo);
+		return null;
+
+	}
 
 	/**
 	 * 导出在制订单分析报表
 	 */
 	public void outExcelZz() {
-        // 导出excel基本参数设置
-        Map<String, Object> fillInfo = new HashMap<String, Object>();
-        String baseExcelFile = Struts2Utils.getSession().getServletContext().getRealPath(ResourceUtil.getString("baseReportInSystemExcelFile"));
-        String sheetNames = "在制订单分析报表";
-        fillInfo.put("fileUrl", baseExcelFile);
-        fillInfo.put("sheetNames", sheetNames);
-        // 查询导出数据
-        fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_ORDER_LIST);
-        if (!WebUtil.ifAdmin() && !WebUtil.ifManager()) { // 如果不是管理员就要加上查询条件
-            fsp.set("his_opt", WebUtil.getCurrentLoginBx().getLoginName());
-        }
-        if (fsp.getMap().get("odel_wf_real_start") != null && !"".equals(fsp.getMap().get("odel_wf_real_start"))) {
-            fsp.set("odel_wf_step", "c_mr_improve_2");
-        }
-        if (fsp.getMap().get("odelqa_wf_real_start") != null && !"".equals(fsp.getMap().get("odelqa_wf_real_start"))) {
-            fsp.set("odelqa_wf_step", "c_ppc_confirm_7");
-        }
+		// 导出excel基本参数设置
+		Map<String, Object> fillInfo = new HashMap<String, Object>();
+		String baseExcelFile = Struts2Utils.getSession().getServletContext().getRealPath(ResourceUtil.getString("baseReportInSystemExcelFile"));
+		String sheetNames = "在制订单分析报表";
+		fillInfo.put("fileUrl", baseExcelFile);
+		fillInfo.put("sheetNames", sheetNames);
+		// 查询导出数据
+		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_ORDER_LIST);
+		if (!WebUtil.ifAdmin() && !WebUtil.ifManager()) { // 如果不是管理员就要加上查询条件
+			fsp.set("his_opt", WebUtil.getCurrentLoginBx().getLoginName());
+		}
+		if (fsp.getMap().get("odel_wf_real_start") != null && !"".equals(fsp.getMap().get("odel_wf_real_start"))) {
+			fsp.set("odel_wf_step", "c_mr_improve_2");
+		}
+		if (fsp.getMap().get("odelqa_wf_real_start") != null && !"".equals(fsp.getMap().get("odelqa_wf_real_start"))) {
+			fsp.set("odelqa_wf_step", "c_ppc_confirm_7");
+		}
 
-        beans = getObjectsBySql(fsp);
-        // 声明excel主体数据Map容器
-        Map<String, Object> sheet1FileInfo = new HashMap<String, Object>();
+		beans = getObjectsBySql(fsp);
+		// 声明excel主体数据Map容器
+		Map<String, Object> sheet1FileInfo = new HashMap<String, Object>();
 
-        long newTime = BizUtil.getWorkTime(new Timestamp(new Date().getTime())).getTime();
-        int cycle = 0;
+		long newTime = BizUtil.getWorkTime(new Timestamp(new Date().getTime())).getTime();
+		int cycle = 0;
 
-        List<LazyDynaMap> colorList = new ArrayList<LazyDynaMap>();
+		List<LazyDynaMap> colorList = new ArrayList<LazyDynaMap>();
 
-        for (int i = 0; i < beans.size(); i++) {
+		for (int i = 0; i < beans.size(); i++) {
 
-            // toc部分
-            // 订单周期
-            Long sellReadyTime = beans.get(i).get("sell_ready_time") == null ? 0 : (Long) beans.get(i).get("sell_ready_time");
-            Long standardTime = beans.get(i).get("standard_time") == null ? 0 : (Long) beans.get(i).get("standard_time");
-            Long craftTime = beans.get(i).get("craft_time") == null ? 0 : (Long) beans.get(i).get("craft_time");
-            // 交期
-            Timestamp goodsTime = (Timestamp) beans.get(i).get("goods_time");
+			// toc部分
+			// 订单周期
+			Long sellReadyTime = beans.get(i).get("sell_ready_time") == null ? 0 : (Long) beans.get(i).get("sell_ready_time");
+			Long standardTime = beans.get(i).get("standard_time") == null ? 0 : (Long) beans.get(i).get("standard_time");
+			Long craftTime = beans.get(i).get("craft_time") == null ? 0 : (Long) beans.get(i).get("craft_time");
+			// 交期
+			Timestamp goodsTime = (Timestamp) beans.get(i).get("goods_time");
 
-            OaOrder tocOaOrder = new OaOrder();
-            tocOaOrder.setSellReadyTime(sellReadyTime);
-            tocOaOrder.setStandardTime(standardTime);
-            tocOaOrder.setCraftTime(craftTime);
-            tocOaOrder.setGoodsTime(goodsTime);
+			OaOrder tocOaOrder = new OaOrder();
+			tocOaOrder.setSellReadyTime(sellReadyTime);
+			tocOaOrder.setStandardTime(standardTime);
+			tocOaOrder.setCraftTime(craftTime);
+			tocOaOrder.setGoodsTime(goodsTime);
 
+			// 当前工作时间
 
-            // 当前工作时间
+			Timestamp tocTime = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
+			if (beans.get(i).get("wf_step") != null && "finish_999".equals(beans.get(i).get("wf_step").toString())) {
+				tocTime = BizUtil.getOperatingTime((Timestamp) beans.get(i).get("end_time"));
+			}
+			Map tocMap = new HashMap();
+			tocMap.put("oaOrder", tocOaOrder);
+			tocMap.put("tocTime", tocTime);
+			Float cycle1 = BizUtil.computeToc(tocMap);
 
-            Timestamp tocTime = new Timestamp(System.currentTimeMillis()/1000*1000);
-            if(beans.get(i).get("wf_step") != null && "finish_999".equals(beans.get(i).get("wf_step").toString())){
-                tocTime = BizUtil.getOperatingTime((Timestamp)beans.get(i).get("end_time"));
-            }
-            Map tocMap = new HashMap();
-            tocMap.put("oaOrder", tocOaOrder);
-            tocMap.put("tocTime", tocTime);
-            Float cycle1 = BizUtil.computeToc(tocMap);
+			beans.get(i).set("data", cycle1);
+			if (orderColor != null && !"".equals(orderColor)) {
+				if ("-1".equals(orderColor)) {
+					if (cycle1 < 0) {
+						colorList.add(beans.get(i));
+					}
+					continue;
+				}
+				if ("0".equals(orderColor)) {
+					if (cycle1 > 0 && cycle1 <= 33) {
+						colorList.add(beans.get(i));
+					}
+					continue;
+				}
+				if ("33".equals(orderColor)) {
+					if (cycle1 > 33 && cycle1 <= 66) {
+						colorList.add(beans.get(i));
+					}
+					continue;
+				}
+				if ("66".equals(orderColor)) {
+					if (cycle1 > 66 && cycle1 <= 100) {
+						colorList.add(beans.get(i));
+					}
+					continue;
+				}
+				if ("100".equals(orderColor)) {
+					if (cycle1 > 100) {
+						colorList.add(beans.get(i));
+					}
+					continue;
+				}
+			}
 
-            beans.get(i).set("data", cycle1);
-            if (orderColor != null && !"".equals(orderColor)) {
-                if ("-1".equals(orderColor)) {
-                    if (cycle1 < 0) {
-                        colorList.add(beans.get(i));
-                    }
-                    continue;
-                }
-                if ("0".equals(orderColor)) {
-                    if (cycle1 > 0 && cycle1 <= 33) {
-                        colorList.add(beans.get(i));
-                    }
-                    continue;
-                }
-                if ("33".equals(orderColor)) {
-                    if (cycle1 > 33 && cycle1 <= 66) {
-                        colorList.add(beans.get(i));
-                    }
-                    continue;
-                }
-                if ("66".equals(orderColor)) {
-                    if (cycle1 > 66 && cycle1 <= 100) {
-                        colorList.add(beans.get(i));
-                    }
-                    continue;
-                }
-                if ("100".equals(orderColor)) {
-                    if (cycle1 > 100) {
-                        colorList.add(beans.get(i));
-                    }
-                    continue;
-                }
-            }
+		}
 
-        }
+		if (orderColor != null && !"".equals(orderColor)) {
+			beans = colorList;
+		}
 
-        if (orderColor != null && !"".equals(orderColor)) {
-            beans = colorList;
-        }
+		for (int i = 0; i < beans.size(); i++) {
+			for (int j = i; j < beans.size(); j++) {
+				if (Float.parseFloat(beans.get(i).get("data").toString()) < Float.parseFloat(beans.get(j).get("data").toString())) {
+					LazyDynaMap temp = beans.get(i);
+					beans.set(i, beans.get(j));
+					beans.set(j, temp);
+				}
+			}
+		}
 
-        for (int i = 0; i < beans.size(); i++) {
-            for (int j = i; j < beans.size(); j++) {
-                if (Float.parseFloat(beans.get(i).get("data").toString()) < Float.parseFloat(beans.get(j).get("data").toString())) {
-                    LazyDynaMap temp = beans.get(i);
-                    beans.set(i, beans.get(j));
-                    beans.set(j, temp);
-                }
-            }
-        }
+		superList = beans;
 
-        superList = beans;
+		int i = 0;
+		int j = 1;
+		for (LazyDynaMap lazyMap : superList) {
+			// bean = superList.get(i);
+			// Long nowDate = new Date().getTime();
+			// Long begin_time = ((Date) lazyMap.get("begin_time")).getTime();
+			// Long except_finish = ((Date) lazyMap.get("except_finish")).getTime();
+			Date beginTime = (Date) lazyMap.get("begin_time");
+			Date exceptFinish = (Date) lazyMap.get("except_finish");
 
-        int i = 0;
-        int j = 1;
-        for (LazyDynaMap lazyMap : superList) {
-            // bean = superList.get(i);
-            // Long nowDate = new Date().getTime();
-            // Long begin_time = ((Date) lazyMap.get("begin_time")).getTime();
-            // Long except_finish = ((Date) lazyMap.get("except_finish")).getTime();
-            Date beginTime = (Date) lazyMap.get("begin_time");
-            Date exceptFinish = (Date) lazyMap.get("except_finish");
+			Long sellReadyTime = lazyMap.get("sell_ready_time") == null ? 0 : (Long) lazyMap.get("sell_ready_time");
+			Long standardTime = lazyMap.get("standard_time") == null ? 0 : (Long) lazyMap.get("standard_time");
+			Long craftTime = lazyMap.get("craft_time") == null ? 0 : (Long) lazyMap.get("craft_time");
+			// 交期
+			Timestamp goodsTime = (Timestamp) lazyMap.get("goods_time");
 
-            Long sellReadyTime = lazyMap.get("sell_ready_time") == null ? 0 : (Long) lazyMap.get("sell_ready_time");
-            Long standardTime = lazyMap.get("standard_time") == null ? 0 : (Long) lazyMap.get("standard_time");
-            Long craftTime = lazyMap.get("craft_time") == null ? 0 : (Long) lazyMap.get("craft_time");
-            // 交期
-            Timestamp goodsTime = (Timestamp) lazyMap.get("goods_time");
+			OaOrder tocOaOrder = new OaOrder();
+			tocOaOrder.setSellReadyTime(sellReadyTime);
+			tocOaOrder.setStandardTime(standardTime);
+			tocOaOrder.setCraftTime(craftTime);
+			tocOaOrder.setGoodsTime(goodsTime);
 
-            OaOrder tocOaOrder = new OaOrder();
-            tocOaOrder.setSellReadyTime(sellReadyTime);
-            tocOaOrder.setStandardTime(standardTime);
-            tocOaOrder.setCraftTime(craftTime);
-            tocOaOrder.setGoodsTime(goodsTime);
+			// 优先级
+			float data = lazyMap.get("data") != null ? Float.parseFloat(lazyMap.get("data").toString()) : 0;
+			if (data > 0 && data <= 33) {
+				sheet1FileInfo.put(j + ",0", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
+			} else if (data > 33 && data <= 66) {
+				sheet1FileInfo.put(j + ",0", new CustomCell(data + "%", "String").setCellColor(IndexedColors.ORANGE.index).setFontColor(IndexedColors.WHITE.index));
+			} else if (data > 66 && data <= 100) {
+				sheet1FileInfo.put(j + ",0", new CustomCell(data + "%", "String").setCellColor(IndexedColors.RED.index).setFontColor(IndexedColors.WHITE.index));
+			} else if (data > 100) {
+				sheet1FileInfo.put(j + ",0", new CustomCell(data + "%", "String").setCellColor(IndexedColors.BLACK.index).setFontColor(IndexedColors.WHITE.index));
+			} else {
+				sheet1FileInfo.put(j + ",0", new CustomCell(data + "%", "String").setCellColor(IndexedColors.BLUE.index).setFontColor(IndexedColors.WHITE.index));
+			}
+			sheet1FileInfo.put(j + ",1", lazyMap.get("sell_order_code").toString());// 订单号
 
-            // 优先级
-            float data = lazyMap.get("data") != null ?  Float.parseFloat(lazyMap.get("data").toString()) : 0;
-            if (data > 0 && data <= 33) {
-                sheet1FileInfo.put(j + ",0", new CustomCell(data + "%", "String").setCellColor(IndexedColors.GREEN.index).setFontColor(IndexedColors.WHITE.index));
-            } else if (data > 33 && data <= 66) {
-                sheet1FileInfo.put(j + ",0", new CustomCell(data + "%", "String").setCellColor(IndexedColors.ORANGE.index).setFontColor(IndexedColors.WHITE.index));
-            } else if (data > 66 && data <= 100) {
-                sheet1FileInfo.put(j + ",0", new CustomCell(data + "%", "String").setCellColor(IndexedColors.RED.index).setFontColor(IndexedColors.WHITE.index));
-            } else if (data > 100) {
-                sheet1FileInfo.put(j + ",0", new CustomCell(data + "%", "String").setCellColor(IndexedColors.BLACK.index).setFontColor(IndexedColors.WHITE.index));
-            } else {
-                sheet1FileInfo.put(j + ",0", new CustomCell(data + "%", "String").setCellColor(IndexedColors.BLUE.index).setFontColor(IndexedColors.WHITE.index));
-            }
-            sheet1FileInfo.put(j + ",1", lazyMap.get("sell_order_code").toString());// 订单号
+			if (lazyMap.get("type") != null && "2".equals(lazyMap.get("type").toString())) {
+				sheet1FileInfo.put(j + ",2", "样衣打版");// 订单类型
+			} else if (lazyMap.get("type") != null && "3".equals(lazyMap.get("type").toString())) {
+				sheet1FileInfo.put(j + ",2", "大货生产");// 订单类型
+			}
+			sheet1FileInfo.put(j + ",3", lazyMap.get("style_code").toString());// 款号
+			sheet1FileInfo.put(j + ",4", lazyMap.get("style_desc").toString());// 款式描述
+			sheet1FileInfo.put(j + ",5", lazyMap.get("cus_name").toString());// 客户名称
+			sheet1FileInfo.put(j + ",6", lazyMap.get("want_cnt").toString());// 数量
+			sheet1FileInfo.put(j + ",7", lazyMap.get("begin_time") != null ? new CustomCell(lazyMap.get("begin_time"), "Date") : new CustomCell());// 下单日期
+			// sheet1FileInfo.put(j+",8", lazyMap.get("style_class") != null ? lazyMap.get("style_class") : "");//品类
+			sheet1FileInfo.put(j + ",8", lazyMap.get("feeding_time") != null ? lazyMap.get("feeding_time") : "");// 建议投料日
+			sheet1FileInfo.put(j + ",9", lazyMap.get("odel_operator") != null ? lazyMap.get("odel_operator") : "");// 负责MR
+			sheet1FileInfo.put(j + ",10", lazyMap.get("wf_step_name") != null ? lazyMap.get("wf_step_name") : "");// 当前节点
+			sheet1FileInfo.put(j + ",11", lazyMap.get("operator") != null ? lazyMap.get("operator") : "");// 当前负责人
+			sheet1FileInfo.put(j + ",12", lazyMap.get("sales") != null ? lazyMap.get("sales") : "");// 负责销售
+			sheet1FileInfo.put(j + ",13", lazyMap.get("sewing_factory") != null ? lazyMap.get("sewing_factory") : "");// 工厂
+			sheet1FileInfo.put(j + ",14", lazyMap.get("tpe_name") != null ? lazyMap.get("tpe_name") : "");// TPE
+			sheet1FileInfo.put(j + ",15", lazyMap.get("sewing_total") != null ? lazyMap.get("sewing_total") : "");// 车缝产出数量
+			sheet1FileInfo.put(j + ",16", lazyMap.get("qualified_total") != null ? lazyMap.get("qualified_total") : "");// 合格数量
+			sheet1FileInfo.put(j + ",17", lazyMap.get("unqualified_total") != null ? lazyMap.get("unqualified_total") : "");// 次品数量
+			if (lazyMap.get("sewing_total") != null && !"".equals(lazyMap.get("sewing_total")) && lazyMap.get("qualified_total") != null && !"".equals(lazyMap.get("qualified_total"))) {
+				sheet1FileInfo.put(j + ",18", (int) new BigDecimal((Float.parseFloat(lazyMap.get("qualified_total").toString()) / Float.parseFloat(lazyMap.get("sewing_total").toString())) * 100)
+						.setScale(0, BigDecimal.ROUND_HALF_UP).floatValue() + "%");// 合格率
+			} else {
+				sheet1FileInfo.put(j + ",18", "");// 合格率
+			}
 
-            if (lazyMap.get("type") != null && "2".equals(lazyMap.get("type").toString())) {
-                sheet1FileInfo.put(j + ",2", "样衣打版");// 订单类型
-            } else if (lazyMap.get("type") != null && "3".equals(lazyMap.get("type").toString())) {
-                sheet1FileInfo.put(j + ",2", "大货生产");// 订单类型
-            }
-            sheet1FileInfo.put(j + ",3", lazyMap.get("style_code").toString());// 款号
-            sheet1FileInfo.put(j + ",4", lazyMap.get("style_desc").toString());// 款式描述
-            sheet1FileInfo.put(j + ",5", lazyMap.get("cus_name").toString());// 客户名称
-            sheet1FileInfo.put(j + ",6", lazyMap.get("want_cnt").toString());// 数量
-            sheet1FileInfo.put(j + ",7", lazyMap.get("begin_time") != null ? new CustomCell(lazyMap.get("begin_time"), "Date") : new CustomCell());// 下单日期
-            // sheet1FileInfo.put(j+",8", lazyMap.get("style_class") != null ? lazyMap.get("style_class") : "");//品类
-            sheet1FileInfo.put(j + ",8", lazyMap.get("feeding_time") != null ? lazyMap.get("feeding_time") : "");// 建议投料日
-            sheet1FileInfo.put(j + ",9", lazyMap.get("odel_operator") != null ? lazyMap.get("odel_operator") : "");// 负责MR
-            sheet1FileInfo.put(j + ",10", lazyMap.get("wf_step_name") != null ? lazyMap.get("wf_step_name") : "");// 当前节点
-            sheet1FileInfo.put(j + ",11", lazyMap.get("operator") != null ? lazyMap.get("operator") : "");// 当前负责人
-            sheet1FileInfo.put(j + ",12", lazyMap.get("sales") != null ? lazyMap.get("sales") : "");// 负责销售
-            sheet1FileInfo.put(j + ",13", lazyMap.get("sewing_factory") != null ? lazyMap.get("sewing_factory") : "");// 工厂
-            sheet1FileInfo.put(j + ",14", lazyMap.get("tpe_name") != null ? lazyMap.get("tpe_name") : "");// TPE
-            sheet1FileInfo.put(j + ",15", lazyMap.get("sewing_total") != null ? lazyMap.get("sewing_total") : "");// 车缝产出数量
-            sheet1FileInfo.put(j + ",16", lazyMap.get("qualified_total") != null ? lazyMap.get("qualified_total") : "");// 合格数量
-            sheet1FileInfo.put(j + ",17", lazyMap.get("unqualified_total") != null ? lazyMap.get("unqualified_total") : "");// 次品数量
-            if (lazyMap.get("sewing_total") != null && !"".equals(lazyMap.get("sewing_total")) && lazyMap.get("qualified_total") != null && !"".equals(lazyMap.get("qualified_total"))) {
-                sheet1FileInfo.put(j + ",18", (int) new BigDecimal((Float.parseFloat(lazyMap.get("qualified_total").toString()) / Float.parseFloat(lazyMap.get("sewing_total").toString())) * 100)
-                        .setScale(0, BigDecimal.ROUND_HALF_UP).floatValue() + "%");// 合格率
-            } else {
-                sheet1FileInfo.put(j + ",18", "");// 合格率
-            }
+			// list_oa_order_detail_by_sql
 
-            // list_oa_order_detail_by_sql
-
-            Date qaTime = null;
-            Date mrTime = null;
+			Date qaTime = null;
+			Date mrTime = null;
 
 			/**
 			 * 从oa_dt表中查询二级分类数据
@@ -1213,117 +1193,116 @@ public class BxAction extends Action {
 					// QA完成时TOC百分比
 					Date now = (Date) beans.get(n).get("wf_real_finish");
 					if (now != null) {
-                        Timestamp tocTime = new Timestamp(now.getTime()/1000*1000);
-                        Map tocMap = new HashMap();
-                        tocMap.put("oaOrder", tocOaOrder);
-                        tocMap.put("tocTime", tocTime);
-                        Float time_consume = BizUtil.computeToc(tocMap);
+						Timestamp tocTime = new Timestamp(now.getTime() / 1000 * 1000);
+						Map tocMap = new HashMap();
+						tocMap.put("oaOrder", tocOaOrder);
+						tocMap.put("tocTime", tocTime);
+						Float time_consume = BizUtil.computeToc(tocMap);
 						sheet1FileInfo.put(j + ",20", time_consume + "%");
 					} else {
 						sheet1FileInfo.put(j + ",20", "");
 					}
-//					qaTime = now;
-                }
+					// qaTime = now;
+				}
 
-                if (beans.get(n).get("wf_step") != null && "b_mr_improve_2".equals(beans.get(n).get("wf_step").toString())) {
-                    sheet1FileInfo.put(j + ",21", beans.get(n).get("wf_real_start") != null ? new CustomCell(beans.get(n).get("wf_real_start"), "Date") : new CustomCell());// MR补录订单日期-打版
-//					sheet1FileInfo.put(j + ",22", beans.get(n).get("wf_real_finish") != null ? new CustomCell(beans.get(n).get("wf_real_finish"), "Date") : new CustomCell());// MR补录订单完成日期-打版
-                    mrTime = (Date) beans.get(n).get("wf_real_finish");
-                } else if (beans.get(n).get("wf_step") != null && "c_mr_improve_2".equals(beans.get(n).get("wf_step").toString())) {
-                    sheet1FileInfo.put(j + ",21", beans.get(n).get("wf_real_start") != null ? new CustomCell(beans.get(n).get("wf_real_start"), "Date") : new CustomCell());// MR补录订单日期-大货
-//					sheet1FileInfo.put(j + ",22", beans.get(n).get("wf_real_finish") != null ? new CustomCell(beans.get(n).get("wf_real_finish"), "Date") : new CustomCell());// MR补录订单完成日期-大货
-                    mrTime = (Date) beans.get(n).get("wf_real_finish");
-                }
+				if (beans.get(n).get("wf_step") != null && "b_mr_improve_2".equals(beans.get(n).get("wf_step").toString())) {
+					sheet1FileInfo.put(j + ",21", beans.get(n).get("wf_real_start") != null ? new CustomCell(beans.get(n).get("wf_real_start"), "Date") : new CustomCell());// MR补录订单日期-打版
+					// sheet1FileInfo.put(j + ",22", beans.get(n).get("wf_real_finish") != null ? new CustomCell(beans.get(n).get("wf_real_finish"), "Date") : new CustomCell());// MR补录订单完成日期-打版
+					mrTime = (Date) beans.get(n).get("wf_real_finish");
+				} else if (beans.get(n).get("wf_step") != null && "c_mr_improve_2".equals(beans.get(n).get("wf_step").toString())) {
+					sheet1FileInfo.put(j + ",21", beans.get(n).get("wf_real_start") != null ? new CustomCell(beans.get(n).get("wf_real_start"), "Date") : new CustomCell());// MR补录订单日期-大货
+					// sheet1FileInfo.put(j + ",22", beans.get(n).get("wf_real_finish") != null ? new CustomCell(beans.get(n).get("wf_real_finish"), "Date") : new CustomCell());// MR补录订单完成日期-大货
+					mrTime = (Date) beans.get(n).get("wf_real_finish");
+				}
 
-                if (beans.get(n).get("wf_step") != null && "c_fi_pay_4".equals(beans.get(n).get("wf_step").toString())) {
-                    sheet1FileInfo.put(j + ",27", beans.get(n).get("operator") != null ? beans.get(n).get("operator") : "");// 大货采购
-                } else if (beans.get(n).get("wf_step") != null && "b_ppc_confirm_3".equals(beans.get(n).get("wf_step").toString())) {
-                    sheet1FileInfo.put(j + ",27", beans.get(n).get("operator") != null ? beans.get(n).get("operator") : "");// 打版采购
-                }
+				if (beans.get(n).get("wf_step") != null && "c_fi_pay_4".equals(beans.get(n).get("wf_step").toString())) {
+					sheet1FileInfo.put(j + ",27", beans.get(n).get("operator") != null ? beans.get(n).get("operator") : "");// 大货采购
+				} else if (beans.get(n).get("wf_step") != null && "b_ppc_confirm_3".equals(beans.get(n).get("wf_step").toString())) {
+					sheet1FileInfo.put(j + ",27", beans.get(n).get("operator") != null ? beans.get(n).get("operator") : "");// 打版采购
+				}
 
-                if (beans.get(n).get("wf_step") != null && "c_ppc_assign_3".equals(beans.get(n).get("wf_step").toString())) {
-                    sheet1FileInfo.put(j + ",28", beans.get(n).get("operator") != null ? beans.get(n).get("operator") : "");// 大货技术
-//					sheet1FileInfo.put(j + ",23", beans.get(n).get("wf_real_finish") != null ? new CustomCell(beans.get(n).get("wf_real_finish"), "Date") : new CustomCell());// 大货技术完成时间
-                } else if (beans.get(n).get("wf_step") != null && "b_pur_confirm_4".equals(beans.get(n).get("wf_step").toString())) {
-                    sheet1FileInfo.put(j + ",28", beans.get(n).get("operator") != null ? beans.get(n).get("operator") : "");// 打版技术
-//					sheet1FileInfo.put(j + ",23", "");// 大货技术完成时间显示为null
-                }
+				if (beans.get(n).get("wf_step") != null && "c_ppc_assign_3".equals(beans.get(n).get("wf_step").toString())) {
+					sheet1FileInfo.put(j + ",28", beans.get(n).get("operator") != null ? beans.get(n).get("operator") : "");// 大货技术
+					// sheet1FileInfo.put(j + ",23", beans.get(n).get("wf_real_finish") != null ? new CustomCell(beans.get(n).get("wf_real_finish"), "Date") : new CustomCell());// 大货技术完成时间
+				} else if (beans.get(n).get("wf_step") != null && "b_pur_confirm_4".equals(beans.get(n).get("wf_step").toString())) {
+					sheet1FileInfo.put(j + ",28", beans.get(n).get("operator") != null ? beans.get(n).get("operator") : "");// 打版技术
+					// sheet1FileInfo.put(j + ",23", "");// 大货技术完成时间显示为null
+				}
 
-                if (beans.get(n).get("wf_step") != null && "b_ppc_confirm_5".equals(beans.get(n).get("wf_step").toString())) {
-                    sheet1FileInfo.put(j + ",29", beans.get(n).get("operator") != null ? beans.get(n).get("operator") : "");// 核价
-                    qaTime = (Date) beans.get(n).get("wf_real_finish");
-                }
+				if (beans.get(n).get("wf_step") != null && "b_ppc_confirm_5".equals(beans.get(n).get("wf_step").toString())) {
+					sheet1FileInfo.put(j + ",29", beans.get(n).get("operator") != null ? beans.get(n).get("operator") : "");// 核价
+					qaTime = (Date) beans.get(n).get("wf_real_finish");
+				}
 
-                if (beans.get(n).get("wf_step") != null && "c_ppc_factoryMsg_5".equals(beans.get(n).get("wf_step").toString())) {
-                    sheet1FileInfo.put(j + ",30", beans.get(n).get("operator") != null ? beans.get(n).get("operator") : "");// CQC
-                }
+				if (beans.get(n).get("wf_step") != null && "c_ppc_factoryMsg_5".equals(beans.get(n).get("wf_step").toString())) {
+					sheet1FileInfo.put(j + ",30", beans.get(n).get("operator") != null ? beans.get(n).get("operator") : "");// CQC
+				}
 
-                if (beans.get(n).get("wf_step") != null && "c_ppc_confirm_7".equals(beans.get(n).get("wf_step").toString())) {
-                    sheet1FileInfo.put(j + ",31", beans.get(n).get("operator") != null ? beans.get(n).get("operator") : "");// CQC
-                    qaTime = (Date) beans.get(n).get("wf_real_finish");
-                }
+				if (beans.get(n).get("wf_step") != null && "c_ppc_confirm_7".equals(beans.get(n).get("wf_step").toString())) {
+					sheet1FileInfo.put(j + ",31", beans.get(n).get("operator") != null ? beans.get(n).get("operator") : "");// CQC
+					qaTime = (Date) beans.get(n).get("wf_real_finish");
+				}
 
+				if (beans.get(n).get("wf_step") != null && lazyMap.get("wf_step").toString().equals(beans.get(n).get("wf_step").toString())) {
+					sheet1FileInfo.put(j + ",38", beans.get(n).get("wf_real_start") != null ? new CustomCell(beans.get(n).get("wf_real_start"), "Date") : new CustomCell());// 当前节点流入时间
+				}
 
-                if (beans.get(n).get("wf_step") != null && lazyMap.get("wf_step").toString().equals(beans.get(n).get("wf_step").toString())) {
-                    sheet1FileInfo.put(j + ",38", beans.get(n).get("wf_real_start") != null ? new CustomCell(beans.get(n).get("wf_real_start"), "Date") : new CustomCell());// 当前节点流入时间
-                }
+				// 实际生产周期
+				Long actualTime = null;
+				if (qaTime != null && mrTime != null) {
+					actualTime = qaTime.getTime() - mrTime.getTime();
+				}
+				sheet1FileInfo.put(j + ",25", actualTime != null ? WebUtil.getTimeDisPlayExcel(actualTime) : "");
+				// sheet1FileInfo.put(j+",19",new CustomCell(lazyMap.get("qadel_wf_real_finish") !=null ? lazyMap.get("qadel_wf_real_finish") : new Date(), "Date"));//QA完成日期
+			}
+			beans.clear();
 
-                // 实际生产周期
-                Long actualTime = null;
-                if (qaTime != null && mrTime != null) {
-                    actualTime = qaTime.getTime() - mrTime.getTime();
-                }
-                sheet1FileInfo.put(j + ",25", actualTime != null ? WebUtil.getTimeDisPlayExcel(actualTime) : "");
-                // sheet1FileInfo.put(j+",19",new CustomCell(lazyMap.get("qadel_wf_real_finish") !=null ? lazyMap.get("qadel_wf_real_finish") : new Date(), "Date"));//QA完成日期
-            }
-            beans.clear();
+			sheet1FileInfo.put(j + ",24", lazyMap.get("except_finish") != null ? new CustomCell(lazyMap.get("except_finish"), "Date") : new CustomCell());// 合同交期
 
-            sheet1FileInfo.put(j + ",24", lazyMap.get("except_finish") != null ? new CustomCell(lazyMap.get("except_finish"), "Date") : new CustomCell());// 合同交期
+			sheet1FileInfo.put(j + ",26", lazyMap.get("style_craft") != null ? lazyMap.get("style_craft") : "");// 特殊工艺
 
-            sheet1FileInfo.put(j + ",26", lazyMap.get("style_craft") != null ? lazyMap.get("style_craft") : "");// 特殊工艺
+			sheet1FileInfo.put(j + ",32", lazyMap.get("style_class") != null ? lazyMap.get("style_class") : "");// 一级分类
+			/**
+			 * 从oa_dt表中查询二级分类数据
+			 */
+			// FSPBean dtFsp = new FSPBean();
+			// dtFsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_DT_BY_CODE_SQL);
+			// dtFsp.set("code", lazyMap.get("cloth_class"));
+			// beans = manager.getObjectsBySql(dtFsp);
+			// for(int n = 0; n < beans.size(); n++){
+			// sheet1FileInfo.put(j+",31", beans.get(n).get("value") != null ? beans.get(n).get("value") : "");//二级分类
+			// }
+			// beans.clear();
+			sheet1FileInfo.put(j + ",33", lazyMap.get("value") != null ? lazyMap.get("value") : "");// 二级分类
 
-            sheet1FileInfo.put(j + ",32", lazyMap.get("style_class") != null ? lazyMap.get("style_class") : "");// 一级分类
-            /**
-             * 从oa_dt表中查询二级分类数据
-             */
-            // FSPBean dtFsp = new FSPBean();
-            // dtFsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_OA_DT_BY_CODE_SQL);
-            // dtFsp.set("code", lazyMap.get("cloth_class"));
-            // beans = manager.getObjectsBySql(dtFsp);
-            // for(int n = 0; n < beans.size(); n++){
-            // sheet1FileInfo.put(j+",31", beans.get(n).get("value") != null ? beans.get(n).get("value") : "");//二级分类
-            // }
-            // beans.clear();
-            sheet1FileInfo.put(j + ",33", lazyMap.get("value") != null ? lazyMap.get("value") : "");// 二级分类
+			sheet1FileInfo.put(j + ",34", lazyMap.get("style_type") != null ? lazyMap.get("style_type") : "");// 男女款
+			sheet1FileInfo.put(j + ",35", lazyMap.get("order_code") != null ? lazyMap.get("order_code") : "");// 合同号
+			sheet1FileInfo.put(j + ",36", lazyMap.get("pay_type") != null ? lazyMap.get("pay_type") : "");// 付款方式
+			sheet1FileInfo.put(j + ",37", superList.get(i).get("p_sam") != null ? superList.get(i).get("p_sam") : "");// 核价SAM
 
-            sheet1FileInfo.put(j + ",34", lazyMap.get("style_type") != null ? lazyMap.get("style_type") : "");// 男女款
-            sheet1FileInfo.put(j + ",35", lazyMap.get("order_code") != null ? lazyMap.get("order_code") : "");// 合同号
-            sheet1FileInfo.put(j + ",36", lazyMap.get("pay_type") != null ? lazyMap.get("pay_type") : "");// 付款方式
-            sheet1FileInfo.put(j + ",37", superList.get(i).get("p_sam") != null ? superList.get(i).get("p_sam") : "");// 核价SAM
+			sheet1FileInfo.put(j + ",22", lazyMap.get("odel_wf_real_finish") != null ? new CustomCell(lazyMap.get("odel_wf_real_finish"), "Date") : new CustomCell());// MR完成日期
+			sheet1FileInfo.put(j + ",23", lazyMap.get("ppc_wf_real_finish") != null ? new CustomCell(lazyMap.get("ppc_wf_real_finish"), "Date") : new CustomCell());// 技术完成日期
+			i++;
+			j++;
+		}
 
-            sheet1FileInfo.put(j + ",22", lazyMap.get("odel_wf_real_finish") != null ? new CustomCell(lazyMap.get("odel_wf_real_finish"), "Date") : new CustomCell());// MR完成日期
-            sheet1FileInfo.put(j + ",23", lazyMap.get("ppc_wf_real_finish") != null ? new CustomCell(lazyMap.get("ppc_wf_real_finish"), "Date") : new CustomCell());// 技术完成日期
-            i++;
-            j++;
-        }
+		fillInfo.put("在制订单分析报表FileInfo", sheet1FileInfo);
+		fillInfo.put("订单进度跟踪报表-大货DynaRow", null);
+		fillInfo.put("订单进度跟踪报表-大货MergeCell", null);
 
-        fillInfo.put("在制订单分析报表FileInfo", sheet1FileInfo);
-        fillInfo.put("订单进度跟踪报表-大货DynaRow", null);
-        fillInfo.put("订单进度跟踪报表-大货MergeCell", null);
+		// OutputStream os = null;
+		try {
+			// os = new FileOutputStream(outputFile);
 
-        // OutputStream os = null;
-        try {
-            // os = new FileOutputStream(outputFile);
-
-            OutputStream os = Struts2Utils.getResponse().getOutputStream();
-            Struts2Utils.getResponse().setContentType("Application/msexcel");
-            Struts2Utils.getResponse().setHeader("Content-Disposition", "attachment;filename=ERP-REPORT-" + (System.currentTimeMillis() + "").substring(6, 13) + ".xlsx");
-            POIUtilsEx.processExcel(os, fillInfo);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // POIUtilsEx.processExcel(os, fillInfo);
-    }
+			OutputStream os = Struts2Utils.getResponse().getOutputStream();
+			Struts2Utils.getResponse().setContentType("Application/msexcel");
+			Struts2Utils.getResponse().setHeader("Content-Disposition", "attachment;filename=ERP-REPORT-" + (System.currentTimeMillis() + "").substring(6, 13) + ".xlsx");
+			POIUtilsEx.processExcel(os, fillInfo);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		// POIUtilsEx.processExcel(os, fillInfo);
+	}
 
 	/**
 	 * 历史订单分析报表
@@ -1332,299 +1311,296 @@ public class BxAction extends Action {
 	 * @autuor 范蠡
 	 */
 	public String order_his() {
-        fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_ORDERWF_HIS_HTM_BY_SQL);
-        if (!WebUtil.ifAdmin() && !WebUtil.ifManager()) { // 如果不是管理员就要加上查询条件
-            fsp.set("his_opt", WebUtil.getCurrentLoginBx().getLoginName());
-        }
-        if (!"true".equals(Struts2Utils.getParameter("hidStatusFlag"))) {
-            fsp.set("status", "0"); // 默认为正常的订单
-            fsp.set("wf_step", "finish_999"); // 默认为已完成
-        } else {
-            if ("0".equals((String) fsp.get("status"))) { // 已完成
-                fsp.set("wf_step", "finish_999");
-            } else if ("1".equals((String) fsp.get("status"))) { // 作废
-                fsp.set("wf_step", null);
-            } else { // 全部
-                fsp.set("if_all", "finish_999");
-            }
-        }
-        // 判断查询数据类型，大货与打版流程不一样 by 范蠡
-        // if(fsp.getMap().get("type") == null || "".equals(fsp.getMap().get("type"))){
-        // if(fsp.getMap().get("del_operator") != null && !"".equals(fsp.getMap().get("del_operator"))){
-        // fsp.set("del_operator_all", "c_ppc_assign_3");
-        // }
-        // }else{
-        // if(fsp.getMap().get("type") != null && "2".equals(fsp.getMap().get("type"))){
-        // fsp.set("del_operator_b", "b_pur_confirm_4");
-        // }else if(fsp.getMap().get("type") != null && "3".equals(fsp.getMap().get("type"))){
-        // fsp.set("del_operator_c", "c_ppc_assign_3");
-        // }
-        // }
+		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_ORDERWF_HIS_HTM_BY_SQL);
+		if (!WebUtil.ifAdmin() && !WebUtil.ifManager()) { // 如果不是管理员就要加上查询条件
+			fsp.set("his_opt", WebUtil.getCurrentLoginBx().getLoginName());
+		}
+		if (!"true".equals(Struts2Utils.getParameter("hidStatusFlag"))) {
+			fsp.set("status", "0"); // 默认为正常的订单
+			fsp.set("wf_step", "finish_999"); // 默认为已完成
+		} else {
+			if ("0".equals((String) fsp.get("status"))) { // 已完成
+				fsp.set("wf_step", "finish_999");
+			} else if ("1".equals((String) fsp.get("status"))) { // 作废
+				fsp.set("wf_step", null);
+			} else { // 全部
+				fsp.set("if_all", "finish_999");
+			}
+		}
+		// 判断查询数据类型，大货与打版流程不一样 by 范蠡
+		// if(fsp.getMap().get("type") == null || "".equals(fsp.getMap().get("type"))){
+		// if(fsp.getMap().get("del_operator") != null && !"".equals(fsp.getMap().get("del_operator"))){
+		// fsp.set("del_operator_all", "c_ppc_assign_3");
+		// }
+		// }else{
+		// if(fsp.getMap().get("type") != null && "2".equals(fsp.getMap().get("type"))){
+		// fsp.set("del_operator_b", "b_pur_confirm_4");
+		// }else if(fsp.getMap().get("type") != null && "3".equals(fsp.getMap().get("type"))){
+		// fsp.set("del_operator_c", "c_ppc_assign_3");
+		// }
+		// }
 
-//        superList = getObjectsBySql(fsp);
-//        Map<String, String> statisticsMap = new HashMap<String, String>();
-//        int count = 0;
-//        int qualified_nums = 0;
-//        int beansNums = superList.size();
-//        int timeOut = 0;
-//        float toc = 0;
-//        long jishiTime = 0;
-//
-//        Date date = new Date();
-//        // SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS");
-//        // SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-//        // String time=sdf.format(date);
-//        LazyDynaMap bean = new LazyDynaMap();
-//        java.text.DecimalFormat df = new java.text.DecimalFormat("#");
-//
-//        for (int i = 0; i < superList.size(); i++) {
-//            count += Double.parseDouble(superList.get(i).get("sewing_total") != null ? superList.get(i).get("sewing_total").toString() : "0");
-//            if (superList.get(i).get("qualified_total") != null) {
-//                qualified_nums += Float.parseFloat(superList.get(i).get("qualified_total").toString());
-//            }
-//            if (superList.get(i).get("end_time") != null && !"".equals(superList.get(i).get("end_time"))) {
-//                long out = ((Date) superList.get(i).get("except_finish")).getTime() - ((Date) superList.get(i).get("end_time")).getTime();
-//
-//                if (out > 0) {
-//                    timeOut++;
-//                }
-//
-//                if (superList.get(i).get("type") != null && "2".equals(superList.get(i).get("type").toString())) { // 打版
-//                    if (superList.get(i).get("bqcdel_wf_real_finish") != null && superList.get(i).get("mrdb_wf_real_start") != null) {
-//                        jishiTime += BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("bqcdel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdb_wf_real_start"));
-//                    }
-//
-//                    if (superList.get(i).get("bqcdel_wf_real_finish") != null && !"".equals(superList.get(i).get("bqcdel_wf_real_finish"))) {
-//
-//						Date now = (Date) superList.get(i).get("bqcdel_wf_real_finish");
-//						Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
-//						Date beginTime = (Date) superList.get(i).get("begin_time");
-//						Date exceptFinish = (Date) superList.get(i).get("except_finish");
-//						double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
-//						// DecimalFormat dbtoc = new DecimalFormat("#");
-//						String time_consume = df.format(time);
-//						// 订单完成时TOC百分比
-//						int data = Integer.parseInt(time_consume);
-//						toc += data;
-//
-//                        // sheet1FileInfo.put(j+",34", time_consume+"%");
-//                    }
-//
-//                } else if (superList.get(i).get("type") != null && "3".equals(superList.get(i).get("type").toString())) { // 大货
-//                    if (superList.get(i).get("qadel_wf_real_finish") != null && superList.get(i).get("mrdel_wf_real_start") != null) {
-//                        jishiTime += BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("qadel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdel_wf_real_start"));
-//                    }
-//
-//                    if (superList.get(i).get("wldel_wf_real_finish") != null && !"".equals(superList.get(i).get("wldel_wf_real_finish"))) {
-//
-//						Date now = (Date) superList.get(i).get("wldel_wf_real_finish");
-//						Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
-//						Date beginTime = (Date) superList.get(i).get("begin_time");
-//						Date exceptFinish = (Date) superList.get(i).get("except_finish");
-//						double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
-//						String time_consume = df.format(time);
-//						// 订单完成时TOC百分比
-//						int data = Integer.parseInt(time_consume);
-//						toc += data;
-//					}
-//				}
-//			}
-//
-//            if (superList.get(i).get("wf_step") != null && "finish_999".equals(superList.get(i).get("wf_step"))) {
-//                bean = superList.get(i);
-//                Long nowDate = date.getTime()/1000*1000;
-//                Long begin_time = ((Date) superList.get(i).get("begin_time")).getTime();
-//                Long except_finish = ((Date) superList.get(i).get("except_finish")).getTime();
-//
-//                // if (0 != begin_time && 0 != except_finish) {
-//                // float baifenzhu = (nowDate - begin_time + 24 * 60 * 60 * 1000) / (except_finish - begin_time + 24 * 60 * 60 * 1000);
-//                // // float data = baifenzhu * 100;
-//                // toc += baifenzhu;
-//                // }
-//            }
-//
-//            long bzTime = (superList.get(i).get("standard_time") != null ? (long)superList.get(i).get("standard_time") : 0l)
-//                    + (superList.get(i).get("craft_time") != null ? (long)superList.get(i).get("craft_time") : 0l);
-//            superList.get(i).set("bzTime", WebUtil.getTimeDisPlayExcel(bzTime) + "");
-//        }
-//
-//        statisticsMap.put("want_count", count + "");
-//        statisticsMap.put("qualified_nums", qualified_nums + "");
-//        if (count > 0) {
-//            statisticsMap.put("qalu", (int) new BigDecimal((qualified_nums / (float) count) * 100).setScale(0, BigDecimal.ROUND_HALF_UP).floatValue() + "");
-//        } else {
-//            statisticsMap.put("qalu", "0");
-//        }
-//
-//        if (beansNums > 0) {
-//            statisticsMap.put("timeOutLv", (int) new BigDecimal((timeOut / (float) beansNums) * 100).setScale(0, BigDecimal.ROUND_HALF_UP).floatValue() + "");
-//            statisticsMap.put("actualDays", WebUtil.getTimeDisPlayExcel(jishiTime / beansNums) + "");
-//            statisticsMap.put("toclv", (int) new BigDecimal((toc / (float) beansNums)).setScale(0, BigDecimal.ROUND_HALF_UP).floatValue() + "");
-//        }
-//
-//        // statisticsMap.put("greenNum", greenNum+""); //new BigDecimal((greenNum/beansNums) * 10).setScale(5, BigDecimal.ROUND_HALF_UP).floatValue()
-//        // statisticsMap.put("orangeNum", orangeNum+"");//new BigDecimal((orangeNum/beansNums) * 10).setScale(5, BigDecimal.ROUND_HALF_UP).floatValue()
-//        // statisticsMap.put("redNum", redNum+"");
-//        // statisticsMap.put("blackNum", blackNum+"");
-//
-//        Struts2Utils.getRequest().setAttribute("statisticsMap", statisticsMap);
-//
-//        superList.clear();
-        fsp.setPageFlag(FSPBean.ACTIVE_PAGINATION);
-        superList = getObjectsBySql(fsp);
+		// superList = getObjectsBySql(fsp);
+		// Map<String, String> statisticsMap = new HashMap<String, String>();
+		// int count = 0;
+		// int qualified_nums = 0;
+		// int beansNums = superList.size();
+		// int timeOut = 0;
+		// float toc = 0;
+		// long jishiTime = 0;
+		//
+		// Date date = new Date();
+		// // SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SS");
+		// // SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		// // String time=sdf.format(date);
+		// LazyDynaMap bean = new LazyDynaMap();
+		// java.text.DecimalFormat df = new java.text.DecimalFormat("#");
+		//
+		// for (int i = 0; i < superList.size(); i++) {
+		// count += Double.parseDouble(superList.get(i).get("sewing_total") != null ? superList.get(i).get("sewing_total").toString() : "0");
+		// if (superList.get(i).get("qualified_total") != null) {
+		// qualified_nums += Float.parseFloat(superList.get(i).get("qualified_total").toString());
+		// }
+		// if (superList.get(i).get("end_time") != null && !"".equals(superList.get(i).get("end_time"))) {
+		// long out = ((Date) superList.get(i).get("except_finish")).getTime() - ((Date) superList.get(i).get("end_time")).getTime();
+		//
+		// if (out > 0) {
+		// timeOut++;
+		// }
+		//
+		// if (superList.get(i).get("type") != null && "2".equals(superList.get(i).get("type").toString())) { // 打版
+		// if (superList.get(i).get("bqcdel_wf_real_finish") != null && superList.get(i).get("mrdb_wf_real_start") != null) {
+		// jishiTime += BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("bqcdel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdb_wf_real_start"));
+		// }
+		//
+		// if (superList.get(i).get("bqcdel_wf_real_finish") != null && !"".equals(superList.get(i).get("bqcdel_wf_real_finish"))) {
+		//
+		// Date now = (Date) superList.get(i).get("bqcdel_wf_real_finish");
+		// Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
+		// Date beginTime = (Date) superList.get(i).get("begin_time");
+		// Date exceptFinish = (Date) superList.get(i).get("except_finish");
+		// double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
+		// // DecimalFormat dbtoc = new DecimalFormat("#");
+		// String time_consume = df.format(time);
+		// // 订单完成时TOC百分比
+		// int data = Integer.parseInt(time_consume);
+		// toc += data;
+		//
+		// // sheet1FileInfo.put(j+",34", time_consume+"%");
+		// }
+		//
+		// } else if (superList.get(i).get("type") != null && "3".equals(superList.get(i).get("type").toString())) { // 大货
+		// if (superList.get(i).get("qadel_wf_real_finish") != null && superList.get(i).get("mrdel_wf_real_start") != null) {
+		// jishiTime += BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("qadel_wf_real_finish"), (Timestamp) superList.get(i).get("mrdel_wf_real_start"));
+		// }
+		//
+		// if (superList.get(i).get("wldel_wf_real_finish") != null && !"".equals(superList.get(i).get("wldel_wf_real_finish"))) {
+		//
+		// Date now = (Date) superList.get(i).get("wldel_wf_real_finish");
+		// Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
+		// Date beginTime = (Date) superList.get(i).get("begin_time");
+		// Date exceptFinish = (Date) superList.get(i).get("except_finish");
+		// double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
+		// String time_consume = df.format(time);
+		// // 订单完成时TOC百分比
+		// int data = Integer.parseInt(time_consume);
+		// toc += data;
+		// }
+		// }
+		// }
+		//
+		// if (superList.get(i).get("wf_step") != null && "finish_999".equals(superList.get(i).get("wf_step"))) {
+		// bean = superList.get(i);
+		// Long nowDate = date.getTime()/1000*1000;
+		// Long begin_time = ((Date) superList.get(i).get("begin_time")).getTime();
+		// Long except_finish = ((Date) superList.get(i).get("except_finish")).getTime();
+		//
+		// // if (0 != begin_time && 0 != except_finish) {
+		// // float baifenzhu = (nowDate - begin_time + 24 * 60 * 60 * 1000) / (except_finish - begin_time + 24 * 60 * 60 * 1000);
+		// // // float data = baifenzhu * 100;
+		// // toc += baifenzhu;
+		// // }
+		// }
+		//
+		// long bzTime = (superList.get(i).get("standard_time") != null ? (long)superList.get(i).get("standard_time") : 0l)
+		// + (superList.get(i).get("craft_time") != null ? (long)superList.get(i).get("craft_time") : 0l);
+		// superList.get(i).set("bzTime", WebUtil.getTimeDisPlayExcel(bzTime) + "");
+		// }
+		//
+		// statisticsMap.put("want_count", count + "");
+		// statisticsMap.put("qualified_nums", qualified_nums + "");
+		// if (count > 0) {
+		// statisticsMap.put("qalu", (int) new BigDecimal((qualified_nums / (float) count) * 100).setScale(0, BigDecimal.ROUND_HALF_UP).floatValue() + "");
+		// } else {
+		// statisticsMap.put("qalu", "0");
+		// }
+		//
+		// if (beansNums > 0) {
+		// statisticsMap.put("timeOutLv", (int) new BigDecimal((timeOut / (float) beansNums) * 100).setScale(0, BigDecimal.ROUND_HALF_UP).floatValue() + "");
+		// statisticsMap.put("actualDays", WebUtil.getTimeDisPlayExcel(jishiTime / beansNums) + "");
+		// statisticsMap.put("toclv", (int) new BigDecimal((toc / (float) beansNums)).setScale(0, BigDecimal.ROUND_HALF_UP).floatValue() + "");
+		// }
+		//
+		// // statisticsMap.put("greenNum", greenNum+""); //new BigDecimal((greenNum/beansNums) * 10).setScale(5, BigDecimal.ROUND_HALF_UP).floatValue()
+		// // statisticsMap.put("orangeNum", orangeNum+"");//new BigDecimal((orangeNum/beansNums) * 10).setScale(5, BigDecimal.ROUND_HALF_UP).floatValue()
+		// // statisticsMap.put("redNum", redNum+"");
+		// // statisticsMap.put("blackNum", blackNum+"");
+		//
+		// Struts2Utils.getRequest().setAttribute("statisticsMap", statisticsMap);
+		//
+		// superList.clear();
+		fsp.setPageFlag(FSPBean.ACTIVE_PAGINATION);
+		superList = getObjectsBySql(fsp);
 
-        for (int i = 0; i < superList.size(); i++) {
-            if (superList.get(i).get("type") != null && "2".equals(superList.get(i).get("type").toString())) { // 打版
-                if (superList.get(i).get("bqcdel_wf_real_finish") != null && !"".equals(superList.get(i).get("bqcdel_wf_real_finish")) && superList.get(i).get("odel_wf_real_finish") != null
-                        && !"".equals(superList.get(i).get("odel_wf_real_finish"))) {
+		for (int i = 0; i < superList.size(); i++) {
+			if (superList.get(i).get("type") != null && "2".equals(superList.get(i).get("type").toString())) { // 打版
+				if (superList.get(i).get("bqcdel_wf_real_finish") != null && !"".equals(superList.get(i).get("bqcdel_wf_real_finish")) && superList.get(i).get("odel_wf_real_finish") != null
+						&& !"".equals(superList.get(i).get("odel_wf_real_finish"))) {
 
-                    Long actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("bqcdel_wf_real_finish"), (Timestamp) superList.get(i).get("odel_wf_real_finish"));
-                    superList.get(i).set("actualDay", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 实际生产周期
-                }
-            } else if (superList.get(i).get("type") != null && "3".equals(superList.get(i).get("type").toString())) { // 大货
-                if (superList.get(i).get("qadel_wf_real_finish") != null && !"".equals(superList.get(i).get("qadel_wf_real_finish")) && superList.get(i).get("odel_wf_real_finish") != null
-                        && !"".equals(superList.get(i).get("odel_wf_real_finish"))) {
-                    Long actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("qadel_wf_real_finish"), (Timestamp) superList.get(i).get("odel_wf_real_finish"));
-                    superList.get(i).set("actualDay", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 实际生产周期
-                }
-            }
-
-            long bzTime = (superList.get(i).get("standard_time") != null ? (long)superList.get(i).get("standard_time") : 0l)
-                    + (superList.get(i).get("craft_time") != null ? (long)superList.get(i).get("craft_time") : 0l);
-            superList.get(i).set("bzTime", WebUtil.getTimeDisPlayExcel(bzTime) + "");
-        }
-        processPageInfo(getObjectsCountSql(fsp));
-        return "bx/order_his";
-    }
-
-
-
-    public void order_his_Count() {
-        fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_ORDERWF_HIS_HTM_BY_SQL);
-        if (!WebUtil.ifAdmin() && !WebUtil.ifManager()) { // 如果不是管理员就要加上查询条件
-            fsp.set("his_opt", WebUtil.getCurrentLoginBx().getLoginName());
-        }
-        if (!"true".equals(Struts2Utils.getParameter("hidStatusFlag"))) {
-            fsp.set("status", "0"); // 默认为正常的订单
-            fsp.set("wf_step", "finish_999"); // 默认为已完成
-        } else {
-            if ("0".equals((String) fsp.get("status"))) { // 已完成
-                fsp.set("wf_step", "finish_999");
-            } else if ("1".equals((String) fsp.get("status"))) { // 作废
-                fsp.set("wf_step", null);
-            } else { // 全部
-                fsp.set("if_all", "finish_999");
-            }
-        }
-
-
-        superList = getObjectsBySql(fsp);
-        Map<String, String> statisticsMap = new HashMap<String, String>();
-        int count = 0;
-        int qualified_nums = 0;
-        int beansNums = superList.size();
-        int timeOut = 0;
-        float toc = 0;
-        long jishiTime = 0;
-
-        Date date = new Date();
-        LazyDynaMap bean = new LazyDynaMap();
-        java.text.DecimalFormat df = new java.text.DecimalFormat("#");
-
-        for (int i = 0; i < superList.size(); i++) {
-            count += Double.parseDouble(superList.get(i).get("sewing_total") != null ? superList.get(i).get("sewing_total").toString() : "0");
-            if (superList.get(i).get("qualified_total") != null) {
-                qualified_nums += Float.parseFloat(superList.get(i).get("qualified_total").toString());
-            }
-            if (superList.get(i).get("end_time") != null && !"".equals(superList.get(i).get("end_time"))) {
-                long out = ((Date) superList.get(i).get("except_finish")).getTime() - ((Date) superList.get(i).get("end_time")).getTime();
-
-                if (out > 0) {
-                    timeOut++;
-                }
-
-                if (superList.get(i).get("type") != null && "2".equals(superList.get(i).get("type").toString())) { // 打版
-                    if (superList.get(i).get("bqcdel_wf_real_finish") != null && superList.get(i).get("odel_wf_real_start") != null) {
-                        jishiTime += BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("bqcdel_wf_real_finish"), (Timestamp) superList.get(i).get("odel_wf_real_start"));
-                    }
-
-//                    if (superList.get(i).get("bqcdel_wf_real_finish") != null && !"".equals(superList.get(i).get("bqcdel_wf_real_finish"))) {
-//
-//						Date now = (Date) superList.get(i).get("bqcdel_wf_real_finish");
-//						Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
-//						Date beginTime = (Date) superList.get(i).get("begin_time");
-//						Date exceptFinish = (Date) superList.get(i).get("except_finish");
-//						double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
-//						// DecimalFormat dbtoc = new DecimalFormat("#");
-//						String time_consume = df.format(time);
-//						// 订单完成时TOC百分比
-//						int data = Integer.parseInt(time_consume);
-//						toc += data;
-//
-//                        // sheet1FileInfo.put(j+",34", time_consume+"%");
-//                    }
-
-                } else if (superList.get(i).get("type") != null && "3".equals(superList.get(i).get("type").toString())) { // 大货
-                    if (superList.get(i).get("qadel_wf_real_finish") != null && superList.get(i).get("odel_wf_real_start") != null) {
-                        jishiTime += BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("qadel_wf_real_finish"), (Timestamp) superList.get(i).get("odel_wf_real_start"));
-                    }
-
-//                    if (superList.get(i).get("wldel_wf_real_finish") != null && !"".equals(superList.get(i).get("wldel_wf_real_finish"))) {
-//
-//						Date now = (Date) superList.get(i).get("wldel_wf_real_finish");
-//						Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
-//						Date beginTime = (Date) superList.get(i).get("begin_time");
-//						Date exceptFinish = (Date) superList.get(i).get("except_finish");
-//						double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
-//						String time_consume = df.format(time);
-//						// 订单完成时TOC百分比
-//						int data = Integer.parseInt(time_consume);
-//						toc += data;
-//					}
+					Long actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("bqcdel_wf_real_finish"), (Timestamp) superList.get(i).get("odel_wf_real_finish"));
+					superList.get(i).set("actualDay", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 实际生产周期
+				}
+			} else if (superList.get(i).get("type") != null && "3".equals(superList.get(i).get("type").toString())) { // 大货
+				if (superList.get(i).get("qadel_wf_real_finish") != null && !"".equals(superList.get(i).get("qadel_wf_real_finish")) && superList.get(i).get("odel_wf_real_finish") != null
+						&& !"".equals(superList.get(i).get("odel_wf_real_finish"))) {
+					Long actualTime = BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("qadel_wf_real_finish"), (Timestamp) superList.get(i).get("odel_wf_real_finish"));
+					superList.get(i).set("actualDay", WebUtil.getTimeDisPlayExcel(Math.abs(actualTime)));// 实际生产周期
 				}
 			}
 
-            if (superList.get(i).get("wf_step") != null && "finish_999".equals(superList.get(i).get("wf_step"))) {
-                bean = superList.get(i);
-                Long nowDate = date.getTime()/1000*1000;
-                Long begin_time = ((Date) superList.get(i).get("begin_time")).getTime();
-                Long except_finish = ((Date) superList.get(i).get("except_finish")).getTime();
+			long bzTime = (superList.get(i).get("standard_time") != null ? (long) superList.get(i).get("standard_time") : 0l)
+					+ (superList.get(i).get("craft_time") != null ? (long) superList.get(i).get("craft_time") : 0l);
+			superList.get(i).set("bzTime", WebUtil.getTimeDisPlayExcel(bzTime) + "");
+		}
+		processPageInfo(getObjectsCountSql(fsp));
+		return "bx/order_his";
+	}
 
-                // if (0 != begin_time && 0 != except_finish) {
-                // float baifenzhu = (nowDate - begin_time + 24 * 60 * 60 * 1000) / (except_finish - begin_time + 24 * 60 * 60 * 1000);
-                // // float data = baifenzhu * 100;
-                // toc += baifenzhu;
-                // }
-            }
+	public void order_his_Count() {
+		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_ORDERWF_HIS_HTM_BY_SQL);
+		if (!WebUtil.ifAdmin() && !WebUtil.ifManager()) { // 如果不是管理员就要加上查询条件
+			fsp.set("his_opt", WebUtil.getCurrentLoginBx().getLoginName());
+		}
+		if (!"true".equals(Struts2Utils.getParameter("hidStatusFlag"))) {
+			fsp.set("status", "0"); // 默认为正常的订单
+			fsp.set("wf_step", "finish_999"); // 默认为已完成
+		} else {
+			if ("0".equals((String) fsp.get("status"))) { // 已完成
+				fsp.set("wf_step", "finish_999");
+			} else if ("1".equals((String) fsp.get("status"))) { // 作废
+				fsp.set("wf_step", null);
+			} else { // 全部
+				fsp.set("if_all", "finish_999");
+			}
+		}
 
-            long bzTime = (superList.get(i).get("standard_time") != null ? (long)superList.get(i).get("standard_time") : 0l)
-                    + (superList.get(i).get("craft_time") != null ? (long)superList.get(i).get("craft_time") : 0l);
-            superList.get(i).set("bzTime", WebUtil.getTimeDisPlayExcel(bzTime) + "");
-        }
+		superList = getObjectsBySql(fsp);
+		Map<String, String> statisticsMap = new HashMap<String, String>();
+		int count = 0;
+		int qualified_nums = 0;
+		int beansNums = superList.size();
+		int timeOut = 0;
+		float toc = 0;
+		long jishiTime = 0;
 
-        statisticsMap.put("want_count", count + "");
-        statisticsMap.put("qualified_nums", qualified_nums + "");
-        if (count > 0) {
-            statisticsMap.put("qalu", (int) new BigDecimal((qualified_nums / (float) count) * 100).setScale(0, BigDecimal.ROUND_HALF_UP).floatValue() + "");
-        } else {
-            statisticsMap.put("qalu", "0");
-        }
+		Date date = new Date();
+		LazyDynaMap bean = new LazyDynaMap();
+		java.text.DecimalFormat df = new java.text.DecimalFormat("#");
 
-        if (beansNums > 0) {
-            statisticsMap.put("timeOutLv", (int) new BigDecimal((timeOut / (float) beansNums) * 100).setScale(0, BigDecimal.ROUND_HALF_UP).floatValue() + "");
-            statisticsMap.put("actualDays", WebUtil.getTimeDisPlayExcel(jishiTime / beansNums) + "");
-            statisticsMap.put("toclv", (int) new BigDecimal((toc / (float) beansNums)).setScale(0, BigDecimal.ROUND_HALF_UP).floatValue() + "");
-        }
+		for (int i = 0; i < superList.size(); i++) {
+			count += Double.parseDouble(superList.get(i).get("sewing_total") != null ? superList.get(i).get("sewing_total").toString() : "0");
+			if (superList.get(i).get("qualified_total") != null) {
+				qualified_nums += Float.parseFloat(superList.get(i).get("qualified_total").toString());
+			}
+			if (superList.get(i).get("end_time") != null && !"".equals(superList.get(i).get("end_time"))) {
+				long out = ((Date) superList.get(i).get("except_finish")).getTime() - ((Date) superList.get(i).get("end_time")).getTime();
 
-        // statisticsMap.put("greenNum", greenNum+""); //new BigDecimal((greenNum/beansNums) * 10).setScale(5, BigDecimal.ROUND_HALF_UP).floatValue()
-        // statisticsMap.put("orangeNum", orangeNum+"");//new BigDecimal((orangeNum/beansNums) * 10).setScale(5, BigDecimal.ROUND_HALF_UP).floatValue()
-        // statisticsMap.put("redNum", redNum+"");
-        // statisticsMap.put("blackNum", blackNum+"");
+				if (out > 0) {
+					timeOut++;
+				}
 
-        Struts2Utils.getRequest().setAttribute("statisticsMap", statisticsMap);
-        String result = JSONArray.fromObject(statisticsMap).toString();
-        Struts2Utils.renderText(result);
-    }
+				if (superList.get(i).get("type") != null && "2".equals(superList.get(i).get("type").toString())) { // 打版
+					if (superList.get(i).get("bqcdel_wf_real_finish") != null && superList.get(i).get("odel_wf_real_start") != null) {
+						jishiTime += BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("bqcdel_wf_real_finish"), (Timestamp) superList.get(i).get("odel_wf_real_start"));
+					}
+
+					// if (superList.get(i).get("bqcdel_wf_real_finish") != null && !"".equals(superList.get(i).get("bqcdel_wf_real_finish"))) {
+					//
+					// Date now = (Date) superList.get(i).get("bqcdel_wf_real_finish");
+					// Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
+					// Date beginTime = (Date) superList.get(i).get("begin_time");
+					// Date exceptFinish = (Date) superList.get(i).get("except_finish");
+					// double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
+					// // DecimalFormat dbtoc = new DecimalFormat("#");
+					// String time_consume = df.format(time);
+					// // 订单完成时TOC百分比
+					// int data = Integer.parseInt(time_consume);
+					// toc += data;
+					//
+					// // sheet1FileInfo.put(j+",34", time_consume+"%");
+					// }
+
+				} else if (superList.get(i).get("type") != null && "3".equals(superList.get(i).get("type").toString())) { // 大货
+					if (superList.get(i).get("qadel_wf_real_finish") != null && superList.get(i).get("odel_wf_real_start") != null) {
+						jishiTime += BizUtil.getWorkTimeBetween((Timestamp) superList.get(i).get("qadel_wf_real_finish"), (Timestamp) superList.get(i).get("odel_wf_real_start"));
+					}
+
+					// if (superList.get(i).get("wldel_wf_real_finish") != null && !"".equals(superList.get(i).get("wldel_wf_real_finish"))) {
+					//
+					// Date now = (Date) superList.get(i).get("wldel_wf_real_finish");
+					// Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
+					// Date beginTime = (Date) superList.get(i).get("begin_time");
+					// Date exceptFinish = (Date) superList.get(i).get("except_finish");
+					// double time = ((double) (tamp.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000) / (double) (exceptFinish.getTime() - beginTime.getTime() + 24 * 60 * 60 * 1000)) * 100;
+					// String time_consume = df.format(time);
+					// // 订单完成时TOC百分比
+					// int data = Integer.parseInt(time_consume);
+					// toc += data;
+					// }
+				}
+			}
+
+			if (superList.get(i).get("wf_step") != null && "finish_999".equals(superList.get(i).get("wf_step"))) {
+				bean = superList.get(i);
+				Long nowDate = date.getTime() / 1000 * 1000;
+				Long begin_time = ((Date) superList.get(i).get("begin_time")).getTime();
+				Long except_finish = ((Date) superList.get(i).get("except_finish")).getTime();
+
+				// if (0 != begin_time && 0 != except_finish) {
+				// float baifenzhu = (nowDate - begin_time + 24 * 60 * 60 * 1000) / (except_finish - begin_time + 24 * 60 * 60 * 1000);
+				// // float data = baifenzhu * 100;
+				// toc += baifenzhu;
+				// }
+			}
+
+			long bzTime = (superList.get(i).get("standard_time") != null ? (long) superList.get(i).get("standard_time") : 0l)
+					+ (superList.get(i).get("craft_time") != null ? (long) superList.get(i).get("craft_time") : 0l);
+			superList.get(i).set("bzTime", WebUtil.getTimeDisPlayExcel(bzTime) + "");
+		}
+
+		statisticsMap.put("want_count", count + "");
+		statisticsMap.put("qualified_nums", qualified_nums + "");
+		if (count > 0) {
+			statisticsMap.put("qalu", (int) new BigDecimal((qualified_nums / (float) count) * 100).setScale(0, BigDecimal.ROUND_HALF_UP).floatValue() + "");
+		} else {
+			statisticsMap.put("qalu", "0");
+		}
+
+		if (beansNums > 0) {
+			statisticsMap.put("timeOutLv", (int) new BigDecimal((timeOut / (float) beansNums) * 100).setScale(0, BigDecimal.ROUND_HALF_UP).floatValue() + "");
+			statisticsMap.put("actualDays", WebUtil.getTimeDisPlayExcel(jishiTime / beansNums) + "");
+			statisticsMap.put("toclv", (int) new BigDecimal((toc / (float) beansNums)).setScale(0, BigDecimal.ROUND_HALF_UP).floatValue() + "");
+		}
+
+		// statisticsMap.put("greenNum", greenNum+""); //new BigDecimal((greenNum/beansNums) * 10).setScale(5, BigDecimal.ROUND_HALF_UP).floatValue()
+		// statisticsMap.put("orangeNum", orangeNum+"");//new BigDecimal((orangeNum/beansNums) * 10).setScale(5, BigDecimal.ROUND_HALF_UP).floatValue()
+		// statisticsMap.put("redNum", redNum+"");
+		// statisticsMap.put("blackNum", blackNum+"");
+
+		Struts2Utils.getRequest().setAttribute("statisticsMap", statisticsMap);
+		String result = JSONArray.fromObject(statisticsMap).toString();
+		Struts2Utils.renderText(result);
+	}
 
 	public String staff_add() {
 		if (oaStaff != null) {
@@ -1913,7 +1889,8 @@ public class BxAction extends Action {
 
 		if (null != oaOrderDetail && null != oaOrderDetail.getOaOrder()) {
 			oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, oaOrderDetail.getOaOrder());
-			if (!oaOrder.getWfStep().equals("c_ppc_factoryMsg_5") && !oaOrder.getWfStep().equals("c_qc_cutting_6") && !oaOrder.getWfStep().equals("c_ppc_confirm_7") && !oaOrder.getWfStep().equals("c_qc_printing_8") && !oaOrder.getWfStep().equals("c_ppc_confirm_9")) {
+			if (!oaOrder.getWfStep().equals("c_ppc_factoryMsg_5") && !oaOrder.getWfStep().equals("c_qc_cutting_6") && !oaOrder.getWfStep().equals("c_ppc_confirm_7")
+					&& !oaOrder.getWfStep().equals("c_qc_printing_8") && !oaOrder.getWfStep().equals("c_ppc_confirm_9")) {
 				flag = true;
 			} else {
 				int iFlag = DateUtil.compare_date("2015-01-14 00:00:01", DateUtil.formatDate(oaOrder.getBeginTime()));
@@ -2024,10 +2001,17 @@ public class BxAction extends Action {
 	 * @param orderId
 	 */
 	/*
-	 * public void notifyNextWorkflow(int orderId){ if( !AutoNotifyServlet_stop.ifRunTime() ){ return; } //TODO 客户发送短信提醒 1 每个流程只发送一次 2 有客户手机号则发送 //判断下一流程的操作时间是否大于3小时 小于3小时直接提醒操作人 try { fsp = new FSPBean(); fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_OA_ORDER_DETAIL_TIME_FOR_NOTIFY_STAFF_BY_SQL); fsp.set(FSPBean.FSP_ORDER, " order by id desc "); fsp.set("oaOrder", orderId); beans = manager.getObjectsBySql(fsp); if(beans != null && beans.size()>0 ){ LazyDynaMap map = beans.get(0); int detail_id = (int)map.get("id"); String style_code = map.get("style_code").toString();//款号 String inx = map.get("inx").toString();//第几步 String type = map.get("type").toString();//订单类型 String step_name = ifLastWrokflow(inx, type, map.get("wf_step_name").toString());//当前流程名称
+	 * public void notifyNextWorkflow(int orderId){ if( !AutoNotifyServlet_stop.ifRunTime() ){ return; } //TODO 客户发送短信提醒 1 每个流程只发送一次 2 有客户手机号则发送 //判断下一流程的操作时间是否大于3小时 小于3小时直接提醒操作人 try { fsp = new
+	 * FSPBean(); fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_OA_ORDER_DETAIL_TIME_FOR_NOTIFY_STAFF_BY_SQL); fsp.set(FSPBean.FSP_ORDER, " order by id desc "); fsp.set("oaOrder", orderId); beans =
+	 * manager.getObjectsBySql(fsp); if(beans != null && beans.size()>0 ){ LazyDynaMap map = beans.get(0); int detail_id = (int)map.get("id"); String style_code = map.get("style_code").toString();//款号
+	 * String inx = map.get("inx").toString();//第几步 String type = map.get("type").toString();//订单类型 String step_name = ifLastWrokflow(inx, type, map.get("wf_step_name").toString());//当前流程名称
 	 * 
-	 * long duration = (long) map.get("wf_step_duration");//流程所需时间 String params;//短信模板参数 if( duration < ConstantUtil.NOTIFYSTAFF_BEFORE3HOURS && map.get("linkphone") != null ){ //流程所需时间少于3小时 直接提醒 String linkphone = map.get("linkphone").toString();//员工联系电话 params = "{\"style_code\":\"" + style_code + "\"}"; System.out.println("流程不足3小时直接提醒===" + step_name+ "===流程时长:" + duration/60/1000); SMSUtils.sendTempletMessage(linkphone, ConstantUtil.TEMPLET_NOFIFY_OPERATOR, params); AutoNotifyServlet_stop.changeState(detail_id, ConstantUtil.NOTIFY_TYPE_REMIND); } if( "1".equals( map.get("times").toString() ) && map.get("tel") != null ){ //TODO 流程最后一步 修改提醒步骤为 订单完成 String customerphone = map.get("tel").toString(); params = "{\"style_code\":\"" + style_code + "\",\"step_name\":\"" + URLEncoder.encode(step_name,"UTF-8") + "\"}"; System.out.println("提醒客户流程流转"); SMSUtils.sendTempletMessage(customerphone, ConstantUtil.TEMPLET_NOTIFY_CUSTOMER, params); } } } catch (UnsupportedEncodingException e) { //
-	 * TODO Auto-generated catch block e.printStackTrace(); } }
+	 * long duration = (long) map.get("wf_step_duration");//流程所需时间 String params;//短信模板参数 if( duration < ConstantUtil.NOTIFYSTAFF_BEFORE3HOURS && map.get("linkphone") != null ){ //流程所需时间少于3小时 直接提醒
+	 * String linkphone = map.get("linkphone").toString();//员工联系电话 params = "{\"style_code\":\"" + style_code + "\"}"; System.out.println("流程不足3小时直接提醒===" + step_name+ "===流程时长:" + duration/60/1000);
+	 * SMSUtils.sendTempletMessage(linkphone, ConstantUtil.TEMPLET_NOFIFY_OPERATOR, params); AutoNotifyServlet_stop.changeState(detail_id, ConstantUtil.NOTIFY_TYPE_REMIND); } if( "1".equals(
+	 * map.get("times").toString() ) && map.get("tel") != null ){ //TODO 流程最后一步 修改提醒步骤为 订单完成 String customerphone = map.get("tel").toString(); params = "{\"style_code\":\"" + style_code +
+	 * "\",\"step_name\":\"" + URLEncoder.encode(step_name,"UTF-8") + "\"}"; System.out.println("提醒客户流程流转"); SMSUtils.sendTempletMessage(customerphone, ConstantUtil.TEMPLET_NOTIFY_CUSTOMER, params); }
+	 * } } catch (UnsupportedEncodingException e) { // TODO Auto-generated catch block e.printStackTrace(); } }
 	 */
 
 	/**
@@ -2125,7 +2109,8 @@ public class BxAction extends Action {
 			map.set("offset", offset.toString());// 计算出实际偏差存放到map中
 
 			/*
-			 * // 计算总剩余时间 between = BizUtil.getWorkTimeBetween(wf_real_finish, except_finish); offset = new StringBuffer(between < 0 ? "剩余" : "超期"); between = Math.abs(between); offset.append(WebUtil.getTimeDisPlay(between));
+			 * // 计算总剩余时间 between = BizUtil.getWorkTimeBetween(wf_real_finish, except_finish); offset = new StringBuffer(between < 0 ? "剩余" : "超期"); between = Math.abs(between);
+			 * offset.append(WebUtil.getTimeDisPlay(between));
 			 */
 
 			map.set("total", DateUtils.getYYYY_MM_DD(except_finish));// 计算出实际偏差存放到map中
@@ -2236,7 +2221,8 @@ public class BxAction extends Action {
 			map.set("offset", offset.toString());// 计算出实际偏差存放到map中
 
 			/*
-			 * // 计算总剩余时间 between = BizUtil.getWorkTimeBetween(wf_real_finish, except_finish); offset = new StringBuffer(between < 0 ? "剩余" : "超期"); between = Math.abs(between); offset.append(WebUtil.getTimeDisPlay(between));
+			 * // 计算总剩余时间 between = BizUtil.getWorkTimeBetween(wf_real_finish, except_finish); offset = new StringBuffer(between < 0 ? "剩余" : "超期"); between = Math.abs(between);
+			 * offset.append(WebUtil.getTimeDisPlay(between));
 			 */
 
 			map.set("total", DateUtils.getYYYY_MM_DD(except_finish));// 计算出实际偏差存放到map中
@@ -2645,7 +2631,10 @@ public class BxAction extends Action {
 		}
 		String wf_plan_finish = BizUtil.culPlanDate((Timestamp) body.get("wf_real_start"), (Long) body.get("wf_step_duration")).toString().substring(0, 16);
 		String subject = (String) body.get("style_code") + (String) body.get("wf_step_name") + "需要您在" + wf_plan_finish + "内完成";
-		String content = "尊敬的" + (String) body.get("operator") + ":</br>" + "您好，款号为【<span style='color:#5fa207;font-weight:bold';>" + (String) body.get("style_code") + "</span>】的订单已由【<span style='color:#5fa207;font-weight:bold';>" + WebUtil.getCurrentLoginBx().getLoginName() + "</span>】流转到您这边，请于【<span style='color:#5fa207;font-weight:bold';>" + wf_plan_finish + "</span>】内完成【<span style='color:#5fa207;font-weight:bold';>" + (String) body.get("wf_step_name") + "</span>】，<a style='color:blue;' href='http://oa.singbada.cn/bx/todo'>点击处理</a>。谢谢！</br>让世界因为传统供应链的改变而发生改变！" + to + "</br>&nbsp;&nbsp;&nbsp;&nbsp;顺颂</br>商祺</br>互联网研发中心致上！";
+		String content = "尊敬的" + (String) body.get("operator") + ":</br>" + "您好，款号为【<span style='color:#5fa207;font-weight:bold';>" + (String) body.get("style_code")
+				+ "</span>】的订单已由【<span style='color:#5fa207;font-weight:bold';>" + WebUtil.getCurrentLoginBx().getLoginName() + "</span>】流转到您这边，请于【<span style='color:#5fa207;font-weight:bold';>"
+				+ wf_plan_finish + "</span>】内完成【<span style='color:#5fa207;font-weight:bold';>" + (String) body.get("wf_step_name")
+				+ "</span>】，<a style='color:blue;' href='http://oa.singbada.cn/bx/todo'>点击处理</a>。谢谢！</br>让世界因为传统供应链的改变而发生改变！" + to + "</br>&nbsp;&nbsp;&nbsp;&nbsp;顺颂</br>商祺</br>互联网研发中心致上！";
 		MailUtil.sendBySmtp(to, "", "", WebUtil.getCurrentLoginBx().getLoginName(), subject, content, "changyuchun@singbada.cn", "smtp.qq.com", "lingdong");
 	}
 
@@ -3428,7 +3417,7 @@ public class BxAction extends Action {
 		fsp.set(FSPBean.FSP_ORDER, " order by id ");
 		Date date = new Date();
 		// Date date=sdf.parse("2014-09-22 17:06:16");
-		Timestamp tamp = new Timestamp(date.getTime()/1000*1000);
+		Timestamp tamp = new Timestamp(date.getTime() / 1000 * 1000);
 		// fsp.set("end_time",tamp);
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(tamp);
@@ -3437,7 +3426,7 @@ public class BxAction extends Action {
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.MILLISECOND, 0);
 		date = cal.getTime();
-		Timestamp tamp1 = new Timestamp(date.getTime()/1000*1000);
+		Timestamp tamp1 = new Timestamp(date.getTime() / 1000 * 1000);
 		// fsp.set("begin_time", tamp1);
 
 		List<LazyDynaMap> basic = baseDao.getObjectsBySql(fsp);
@@ -3792,7 +3781,7 @@ public class BxAction extends Action {
 		Date date = new Date();
 		// Test
 		// Date date=sdf.parse("2014-09-22 23:06:16");
-		Timestamp tamp = new Timestamp(date.getTime()/1000*1000);
+		Timestamp tamp = new Timestamp(date.getTime() / 1000 * 1000);
 		// fsp.set("end_time","2014-07-24 23:07:45");
 		// fsp.set("end_time",tamp);
 		Calendar cal = Calendar.getInstance();
@@ -3802,7 +3791,7 @@ public class BxAction extends Action {
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.MILLISECOND, 0);
 		date = cal.getTime();
-		Timestamp tamp1 = new Timestamp(date.getTime()/1000*1000);
+		Timestamp tamp1 = new Timestamp(date.getTime() / 1000 * 1000);
 		// Test
 		// fsp.set("begin_time", "2014-07-24");
 		// fsp.set("begin_time", tamp1);
@@ -4621,203 +4610,203 @@ public class BxAction extends Action {
 
 	// 订单管理-订单列表 update by 范蠡 2015-01-30
 	public String orderList() throws ParseException {
-        fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_ORDER_LIST);
-        if (!WebUtil.ifAdmin() && !WebUtil.ifManager()) { // 如果不是管理员就要加上查询条件
-            fsp.set("his_opt", WebUtil.getCurrentLoginBx().getLoginName());
-        }
-        if (fsp.getMap().get("odel_wf_real_start") != null && !"".equals(fsp.getMap().get("odel_wf_real_start"))) {
-            fsp.set("odel_wf_step", "c_mr_improve_2");
-        }
-        if (fsp.getMap().get("odelqa_wf_real_start") != null && !"".equals(fsp.getMap().get("odelqa_wf_real_start"))) {
-            fsp.set("odelqa_wf_step", "c_ppc_confirm_7");
-        }
+		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_ORDER_LIST);
+		if (!WebUtil.ifAdmin() && !WebUtil.ifManager()) { // 如果不是管理员就要加上查询条件
+			fsp.set("his_opt", WebUtil.getCurrentLoginBx().getLoginName());
+		}
+		if (fsp.getMap().get("odel_wf_real_start") != null && !"".equals(fsp.getMap().get("odel_wf_real_start"))) {
+			fsp.set("odel_wf_step", "c_mr_improve_2");
+		}
+		if (fsp.getMap().get("odelqa_wf_real_start") != null && !"".equals(fsp.getMap().get("odelqa_wf_real_start"))) {
+			fsp.set("odelqa_wf_step", "c_ppc_confirm_7");
+		}
 
-        Struts2Utils.getRequest().setAttribute("orderColor", orderColor);
-        if (fsp.getMap().get("yxjOrderHid") != null && "3".equals(fsp.getMap().get("yxjOrderHid"))) {
-            fsp.set(FSPBean.FSP_ORDER, " order by oder.begin_time desc");
-            fsp.getMap().put("yxjOrderHid", "3");
-        } else if (fsp.getMap().get("yxjOrderHid") != null && "4".equals(fsp.getMap().get("yxjOrderHid"))) {
-            fsp.set(FSPBean.FSP_ORDER, " order by oder.begin_time");
-            fsp.getMap().put("yxjOrderHid", "4");
-        }
+		Struts2Utils.getRequest().setAttribute("orderColor", orderColor);
+		if (fsp.getMap().get("yxjOrderHid") != null && "3".equals(fsp.getMap().get("yxjOrderHid"))) {
+			fsp.set(FSPBean.FSP_ORDER, " order by oder.begin_time desc");
+			fsp.getMap().put("yxjOrderHid", "3");
+		} else if (fsp.getMap().get("yxjOrderHid") != null && "4".equals(fsp.getMap().get("yxjOrderHid"))) {
+			fsp.set(FSPBean.FSP_ORDER, " order by oder.begin_time");
+			fsp.getMap().put("yxjOrderHid", "4");
+		}
 
-        beans = getObjectsBySql(fsp);
-        Map<String, String> statisticsMap = new HashMap<String, String>();
+		beans = getObjectsBySql(fsp);
+		Map<String, String> statisticsMap = new HashMap<String, String>();
 
-        // toc部分声明变量
-        long newTime = BizUtil.getWorkTime(new Timestamp(new Date().getTime())).getTime();
-        // 统计部分声明变量
-        int count = 0;
-        int beansNums = beans.size();
-        int greenNum = 0;
-        int orangeNum = 0;
-        int redNum = 0;
-        int blackNum = 0;
-        int blueNum = 0;
+		// toc部分声明变量
+		long newTime = BizUtil.getWorkTime(new Timestamp(new Date().getTime())).getTime();
+		// 统计部分声明变量
+		int count = 0;
+		int beansNums = beans.size();
+		int greenNum = 0;
+		int orangeNum = 0;
+		int redNum = 0;
+		int blackNum = 0;
+		int blueNum = 0;
 
-        List<LazyDynaMap> colorList = new ArrayList<LazyDynaMap>();
+		List<LazyDynaMap> colorList = new ArrayList<LazyDynaMap>();
 
-        // 当前工作时间
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Timestamp workTime = BizUtil.getOperatingTime(new Timestamp(new Date().getTime()));
-        Timestamp curTime = new Timestamp(sdf.parse(df.format(new Date())).getTime());
-        for (int i = 0; i < beans.size(); i++) {
-            // float data = 0;
-            // int data1 = 0;
-            // //toc部分
-            // float order_Cycle = 0;
-            // // (beans.get(i).get("sell_ready_time") != null ? (float)beans.get(i).get("sell_ready_time") : 0)
-            // // + (beans.get(i).get("standard_time") != null ? (float)beans.get(i).get("standard_time") : 0)
-            // // + (beans.get(i).get("craft_time") != null ? (float)beans.get(i).get("craft_time") : 0);
-            //
-            //
-            // if(order_Cycle > 0){
-            // long except_finish = beans.get(i).get("goods_time") != null ? BizUtil.getWorkTime((Timestamp)beans.get(i).get("goods_time")).getTime() : 0;
-            // data = newTime - (except_finish - order_Cycle + (9 * 60 * 60 * 1000)) / order_Cycle ;
-            //
-            // data = new BigDecimal(data).setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
-            // // data1 = (int)(data * 100);
-            // String d = data+"";
-            // data = Float.parseFloat(d.substring(0, d.indexOf(".")+3)) * 100;
-            //
-            // cycle = (int)data;
-            // }
+		// 当前工作时间
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Timestamp workTime = BizUtil.getOperatingTime(new Timestamp(new Date().getTime()));
+		Timestamp curTime = new Timestamp(sdf.parse(df.format(new Date())).getTime());
+		for (int i = 0; i < beans.size(); i++) {
+			// float data = 0;
+			// int data1 = 0;
+			// //toc部分
+			// float order_Cycle = 0;
+			// // (beans.get(i).get("sell_ready_time") != null ? (float)beans.get(i).get("sell_ready_time") : 0)
+			// // + (beans.get(i).get("standard_time") != null ? (float)beans.get(i).get("standard_time") : 0)
+			// // + (beans.get(i).get("craft_time") != null ? (float)beans.get(i).get("craft_time") : 0);
+			//
+			//
+			// if(order_Cycle > 0){
+			// long except_finish = beans.get(i).get("goods_time") != null ? BizUtil.getWorkTime((Timestamp)beans.get(i).get("goods_time")).getTime() : 0;
+			// data = newTime - (except_finish - order_Cycle + (9 * 60 * 60 * 1000)) / order_Cycle ;
+			//
+			// data = new BigDecimal(data).setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
+			// // data1 = (int)(data * 100);
+			// String d = data+"";
+			// data = Float.parseFloat(d.substring(0, d.indexOf(".")+3)) * 100;
+			//
+			// cycle = (int)data;
+			// }
 
-            // 订单周期
-            Long sellReadyTime = beans.get(i).get("sell_ready_time") == null ? 0 : (Long) beans.get(i).get("sell_ready_time");
-            Long standardTime = beans.get(i).get("standard_time") == null ? 0 : (Long) beans.get(i).get("standard_time");
-            Long craftTime = beans.get(i).get("craft_time") == null ? 0 : (Long) beans.get(i).get("craft_time");
-            Long orderTime = (sellReadyTime + standardTime + craftTime) / 9 * 24;
-            // 交期
-            // Timestamp goodsTime = (Timestamp) beans.get(i).get("goods_time");
-            // Integer cycle = (int) ((workTime.getTime() - goodsTime.getTime() + orderTime - 60 * 60 * 1000 * 24d) / orderTime * 100);
+			// 订单周期
+			Long sellReadyTime = beans.get(i).get("sell_ready_time") == null ? 0 : (Long) beans.get(i).get("sell_ready_time");
+			Long standardTime = beans.get(i).get("standard_time") == null ? 0 : (Long) beans.get(i).get("standard_time");
+			Long craftTime = beans.get(i).get("craft_time") == null ? 0 : (Long) beans.get(i).get("craft_time");
+			Long orderTime = (sellReadyTime + standardTime + craftTime) / 9 * 24;
+			// 交期
+			// Timestamp goodsTime = (Timestamp) beans.get(i).get("goods_time");
+			// Integer cycle = (int) ((workTime.getTime() - goodsTime.getTime() + orderTime - 60 * 60 * 1000 * 24d) / orderTime * 100);
 
-            // 交期、当前时间
-            Timestamp goodsTime = new Timestamp(sdf.parse(df.format((Timestamp) beans.get(i).get("goods_time"))).getTime());
-            // 计算进度信息
-            Float cycle = (float) ((curTime.getTime() - goodsTime.getTime() + orderTime - 60 * 60 * 1000 * 24d) / orderTime * 100);
-            Float persent2 = (float) ((curTime.getTime() - goodsTime.getTime() + orderTime.floatValue()) / orderTime.floatValue() * 100);
-            Float hourPersent = (persent2.floatValue() - cycle) / 9;
-            cycle = BizUtil.culCurToc(workTime, cycle, hourPersent);
+			// 交期、当前时间
+			Timestamp goodsTime = new Timestamp(sdf.parse(df.format((Timestamp) beans.get(i).get("goods_time"))).getTime());
+			// 计算进度信息
+			Float cycle = (float) ((curTime.getTime() - goodsTime.getTime() + orderTime - 60 * 60 * 1000 * 24d) / orderTime * 100);
+			Float persent2 = (float) ((curTime.getTime() - goodsTime.getTime() + orderTime.floatValue()) / orderTime.floatValue() * 100);
+			Float hourPersent = (persent2.floatValue() - cycle) / 9;
+			cycle = BizUtil.culCurToc(workTime, cycle, hourPersent);
 
-            beans.get(i).set("data", cycle);
+			beans.get(i).set("data", cycle);
 
-            // 计算统计部分
-            count += Double.parseDouble(beans.get(i).get("want_cnt") != null ? beans.get(i).get("want_cnt").toString() : "0");
+			// 计算统计部分
+			count += Double.parseDouble(beans.get(i).get("want_cnt") != null ? beans.get(i).get("want_cnt").toString() : "0");
 
-            if (orderColor != null && !"".equals(orderColor)) {
-                if ("-1".equals(orderColor)) {
-                    if (cycle < 0) {
-                        blueNum++;
-                        colorList.add(beans.get(i));
-                    }
-                    continue;
-                }
-                if ("0".equals(orderColor)) {
-                    if (cycle > 0 && cycle <= 33) {
-                        greenNum++;
-                        colorList.add(beans.get(i));
-                    }
-                    continue;
-                }
-                if ("33".equals(orderColor)) {
-                    if (cycle > 33 && cycle <= 66) {
-                        orangeNum++;
-                        colorList.add(beans.get(i));
-                    }
-                    continue;
-                }
-                if ("66".equals(orderColor)) {
-                    if (cycle > 66 && cycle <= 100) {
-                        redNum++;
-                        colorList.add(beans.get(i));
-                    }
-                    continue;
-                }
-                if ("100".equals(orderColor)) {
-                    if (cycle > 100) {
-                        blackNum++;
-                        colorList.add(beans.get(i));
-                    }
-                    continue;
-                }
-            } else {
-                if (cycle < 0) {
-                    blueNum++;
-                } else if (cycle > 0 && cycle <= 33) {
-                    greenNum++;
-                } else if (cycle > 33 && cycle <= 66) {
-                    orangeNum++;
-                } else if (cycle > 66 && cycle <= 100) {
-                    redNum++;
-                } else if (cycle > 100) {
-                    blackNum++;
-                }
-            }
+			if (orderColor != null && !"".equals(orderColor)) {
+				if ("-1".equals(orderColor)) {
+					if (cycle < 0) {
+						blueNum++;
+						colorList.add(beans.get(i));
+					}
+					continue;
+				}
+				if ("0".equals(orderColor)) {
+					if (cycle > 0 && cycle <= 33) {
+						greenNum++;
+						colorList.add(beans.get(i));
+					}
+					continue;
+				}
+				if ("33".equals(orderColor)) {
+					if (cycle > 33 && cycle <= 66) {
+						orangeNum++;
+						colorList.add(beans.get(i));
+					}
+					continue;
+				}
+				if ("66".equals(orderColor)) {
+					if (cycle > 66 && cycle <= 100) {
+						redNum++;
+						colorList.add(beans.get(i));
+					}
+					continue;
+				}
+				if ("100".equals(orderColor)) {
+					if (cycle > 100) {
+						blackNum++;
+						colorList.add(beans.get(i));
+					}
+					continue;
+				}
+			} else {
+				if (cycle < 0) {
+					blueNum++;
+				} else if (cycle > 0 && cycle <= 33) {
+					greenNum++;
+				} else if (cycle > 33 && cycle <= 66) {
+					orangeNum++;
+				} else if (cycle > 66 && cycle <= 100) {
+					redNum++;
+				} else if (cycle > 100) {
+					blackNum++;
+				}
+			}
 
-        }
+		}
 
-        if (orderColor != null && !"".equals(orderColor)) {
-            beans = colorList;
-        }
+		if (orderColor != null && !"".equals(orderColor)) {
+			beans = colorList;
+		}
 
-        if (fsp.getMap().get("yxjOrderHid") == null || "".equals(fsp.getMap().get("yxjOrderHid")) || "1".equals(fsp.getMap().get("yxjOrderHid"))) {
-            for (int i = 0; i < beans.size(); i++) {
-                for (int j = i; j < beans.size(); j++) {
-                    if ((float) beans.get(i).get("data") < (float) beans.get(j).get("data")) {
-                        LazyDynaMap temp = beans.get(i);
-                        beans.set(i, beans.get(j));
-                        beans.set(j, temp);
-                    }
-                }
-            }
-            fsp.getMap().put("yxjOrderHid", "1");
-        } else if (fsp.getMap().get("yxjOrderHid") == null || "".equals(fsp.getMap().get("yxjOrderHid")) || "2".equals(fsp.getMap().get("yxjOrderHid"))) {
-            for (int i = 0; i < beans.size(); i++) {
-                for (int j = i; j < beans.size(); j++) {
-                    if (Float.parseFloat(beans.get(i).get("data").toString()) > Float.parseFloat(beans.get(j).get("data").toString())) {
-                        LazyDynaMap temp = beans.get(i);
-                        beans.set(i, beans.get(j));
-                        beans.set(j, temp);
-                    }
-                }
-            }
-            fsp.getMap().put("yxjOrderHid", "2");
-        }
+		if (fsp.getMap().get("yxjOrderHid") == null || "".equals(fsp.getMap().get("yxjOrderHid")) || "1".equals(fsp.getMap().get("yxjOrderHid"))) {
+			for (int i = 0; i < beans.size(); i++) {
+				for (int j = i; j < beans.size(); j++) {
+					if ((float) beans.get(i).get("data") < (float) beans.get(j).get("data")) {
+						LazyDynaMap temp = beans.get(i);
+						beans.set(i, beans.get(j));
+						beans.set(j, temp);
+					}
+				}
+			}
+			fsp.getMap().put("yxjOrderHid", "1");
+		} else if (fsp.getMap().get("yxjOrderHid") == null || "".equals(fsp.getMap().get("yxjOrderHid")) || "2".equals(fsp.getMap().get("yxjOrderHid"))) {
+			for (int i = 0; i < beans.size(); i++) {
+				for (int j = i; j < beans.size(); j++) {
+					if (Float.parseFloat(beans.get(i).get("data").toString()) > Float.parseFloat(beans.get(j).get("data").toString())) {
+						LazyDynaMap temp = beans.get(i);
+						beans.set(i, beans.get(j));
+						beans.set(j, temp);
+					}
+				}
+			}
+			fsp.getMap().put("yxjOrderHid", "2");
+		}
 
-        statisticsMap.put("want_count", count + "");
-        statisticsMap.put("greenNum", greenNum + ""); // new BigDecimal((greenNum/beansNums) * 10).setScale(5, BigDecimal.ROUND_HALF_UP).floatValue()
-        statisticsMap.put("orangeNum", orangeNum + "");// new BigDecimal((orangeNum/beansNums) * 10).setScale(5, BigDecimal.ROUND_HALF_UP).floatValue()
-        statisticsMap.put("redNum", redNum + "");
-        statisticsMap.put("blueNum", blueNum + "");
-        statisticsMap.put("blackNum", blackNum + "");
+		statisticsMap.put("want_count", count + "");
+		statisticsMap.put("greenNum", greenNum + ""); // new BigDecimal((greenNum/beansNums) * 10).setScale(5, BigDecimal.ROUND_HALF_UP).floatValue()
+		statisticsMap.put("orangeNum", orangeNum + "");// new BigDecimal((orangeNum/beansNums) * 10).setScale(5, BigDecimal.ROUND_HALF_UP).floatValue()
+		statisticsMap.put("redNum", redNum + "");
+		statisticsMap.put("blueNum", blueNum + "");
+		statisticsMap.put("blackNum", blackNum + "");
 
-        if (beansNums > 0) {
-            statisticsMap.put("blue", new BigDecimal((blueNum / (float) beansNums) * 100).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue() + "");
-            statisticsMap.put("green", new BigDecimal((greenNum / (float) beansNums) * 100).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue() + ""); // new BigDecimal((greenNum/beansNums) *
-            // 10).setScale(5,
-            // BigDecimal.ROUND_HALF_UP).floatValue()
-            statisticsMap.put("orange", new BigDecimal((orangeNum / (float) beansNums) * 100).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue() + "");// new BigDecimal((orangeNum/beansNums) *
-            // 10).setScale(5,
-            // BigDecimal.ROUND_HALF_UP).floatValue()
-            statisticsMap.put("red", new BigDecimal((redNum / (float) beansNums) * 100).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue() + "");
-            statisticsMap.put("black", new BigDecimal((blackNum / (float) beansNums) * 100).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue() + "");
-        }
-        Struts2Utils.getRequest().setAttribute("statisticsMap", statisticsMap);
+		if (beansNums > 0) {
+			statisticsMap.put("blue", new BigDecimal((blueNum / (float) beansNums) * 100).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue() + "");
+			statisticsMap.put("green", new BigDecimal((greenNum / (float) beansNums) * 100).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue() + ""); // new BigDecimal((greenNum/beansNums) *
+			// 10).setScale(5,
+			// BigDecimal.ROUND_HALF_UP).floatValue()
+			statisticsMap.put("orange", new BigDecimal((orangeNum / (float) beansNums) * 100).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue() + "");// new BigDecimal((orangeNum/beansNums) *
+			// 10).setScale(5,
+			// BigDecimal.ROUND_HALF_UP).floatValue()
+			statisticsMap.put("red", new BigDecimal((redNum / (float) beansNums) * 100).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue() + "");
+			statisticsMap.put("black", new BigDecimal((blackNum / (float) beansNums) * 100).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue() + "");
+		}
+		Struts2Utils.getRequest().setAttribute("statisticsMap", statisticsMap);
 
-        fsp.setRecordCount(beans.size());
-        fsp.setPageSize(fsp.getPageSize());
-        fsp.setPageNo(fsp.getPageNo());
+		fsp.setRecordCount(beans.size());
+		fsp.setPageSize(fsp.getPageSize());
+		fsp.setPageNo(fsp.getPageNo());
 
-        if (beans.size() > (fsp.getPageNo() - 1) * fsp.getPageSize() + fsp.getPageSize()) {
-            beans = beans.subList((fsp.getPageNo() - 1) * fsp.getPageSize(), (fsp.getPageNo() - 1) * fsp.getPageSize() + fsp.getPageSize());
-        } else  if(beans.size() > 0){
-            beans = beans.subList((fsp.getPageNo() - 1) * fsp.getPageSize(), beans.size());
-        }
+		if (beans.size() > (fsp.getPageNo() - 1) * fsp.getPageSize() + fsp.getPageSize()) {
+			beans = beans.subList((fsp.getPageNo() - 1) * fsp.getPageSize(), (fsp.getPageNo() - 1) * fsp.getPageSize() + fsp.getPageSize());
+		} else if (beans.size() > 0) {
+			beans = beans.subList((fsp.getPageNo() - 1) * fsp.getPageSize(), beans.size());
+		}
 
-        return "bx/order/orderList";
-    }
+		return "bx/order/orderList";
+	}
 
 	/**
 	 * 用于订单进度报表计算耗时，与是否超时状态
@@ -4889,7 +4878,8 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and fidel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(fidel_worker) then fidel_operator = '" + fsp.getMap().get("operator").toString() + "' else fidel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(fidel_worker) then fidel_operator = '" + fsp.getMap().get("operator").toString() + "' else fidel_worker = '"
+							+ fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "fidel_wf_real_start", "fidel_wf_real_finish");
@@ -4899,7 +4889,8 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and cqcdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(cqcdel_worker) then cqcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cqcdel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(cqcdel_worker) then cqcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cqcdel_worker = '"
+							+ fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "cqc_wf_real_start", "cqc_wf_real_finish");
@@ -4909,7 +4900,8 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and tpedel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(tpedel_worker) then tpedel_operator = '" + fsp.getMap().get("operator").toString() + "' else tpedel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(tpedel_worker) then tpedel_operator = '" + fsp.getMap().get("operator").toString() + "' else tpedel_worker = '"
+							+ fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "tpedel_wf_real_start", "tpedel_wf_real_finish");
@@ -4919,7 +4911,8 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and qadel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(qadel_worker) then qadel_operator = '" + fsp.getMap().get("operator").toString() + "' else qadel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(qadel_worker) then qadel_operator = '" + fsp.getMap().get("operator").toString() + "' else qadel_worker = '"
+							+ fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "qadel_wf_real_start", "qadel_wf_real_finish");
@@ -4929,7 +4922,8 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and cwdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(cwdel_worker) then cwdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cwdel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(cwdel_worker) then cwdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cwdel_worker = '"
+							+ fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "cwdel_wf_real_start", "cwdel_wf_real_finish");
@@ -4939,7 +4933,8 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and wldel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(wldel_worker) then wldel_operator = '" + fsp.getMap().get("operator").toString() + "' else wldel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(wldel_worker) then wldel_operator = '" + fsp.getMap().get("operator").toString() + "' else wldel_worker = '"
+							+ fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "wldel_wf_real_start", "wldel_wf_real_finish");
@@ -4959,7 +4954,8 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and ppcdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(ppcdel_worker) then ppcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else ppcdel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(ppcdel_worker) then ppcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else ppcdel_worker = '"
+							+ fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "ppcdel_wf_real_start", "ppcdel_wf_real_finish");
@@ -4969,7 +4965,8 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and jsdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(jsdel_worker) then jsdel_operator = '" + fsp.getMap().get("operator").toString() + "' else jsdel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(jsdel_worker) then jsdel_operator = '" + fsp.getMap().get("operator").toString() + "' else jsdel_worker = '"
+							+ fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "jsdel_wf_real_start", "jsdel_wf_real_finish");
@@ -4979,7 +4976,8 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and cqdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(cqdel_worker) then cqdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cqdel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(cqdel_worker) then cqdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cqdel_worker = '"
+							+ fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "cqdel_wf_real_start", "cqdel_wf_real_finish");
@@ -4989,7 +4987,8 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and bqcdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(bqcdel_worker) then bqcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else bqcdel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(bqcdel_worker) then bqcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else bqcdel_worker = '"
+							+ fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "bqcdel_wf_real_start", "bqcdel_wf_real_finish");
@@ -5097,7 +5096,8 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and fidel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(fidel_worker) then fidel_operator = '" + fsp.getMap().get("operator").toString() + "' else fidel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(fidel_worker) then fidel_operator = '" + fsp.getMap().get("operator").toString() + "' else fidel_worker = '"
+							+ fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "fidel_wf_real_start", "fidel_wf_real_finish");
@@ -5107,7 +5107,8 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and cqcdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(cqcdel_worker) then cqcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cqcdel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(cqcdel_worker) then cqcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cqcdel_worker = '"
+							+ fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "cqc_wf_real_start", "cqc_wf_real_finish");
@@ -5117,7 +5118,8 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and tpedel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(tpedel_worker) then tpedel_operator = '" + fsp.getMap().get("operator").toString() + "' else tpedel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(tpedel_worker) then tpedel_operator = '" + fsp.getMap().get("operator").toString() + "' else tpedel_worker = '"
+							+ fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "tpedel_wf_real_start", "tpedel_wf_real_finish");
@@ -5127,7 +5129,8 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and qadel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(qadel_worker) then qadel_operator = '" + fsp.getMap().get("operator").toString() + "' else qadel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(qadel_worker) then qadel_operator = '" + fsp.getMap().get("operator").toString() + "' else qadel_worker = '"
+							+ fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "qadel_wf_real_start", "qadel_wf_real_finish");
@@ -5137,7 +5140,8 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and cwdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(cwdel_worker) then cwdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cwdel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(cwdel_worker) then cwdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cwdel_worker = '"
+							+ fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "cwdel_wf_real_start", "cwdel_wf_real_finish");
@@ -5147,7 +5151,8 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and wldel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(wldel_worker) then wldel_operator = '" + fsp.getMap().get("operator").toString() + "' else wldel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(wldel_worker) then wldel_operator = '" + fsp.getMap().get("operator").toString() + "' else wldel_worker = '"
+							+ fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "wldel_wf_real_start", "wldel_wf_real_finish");
@@ -5167,7 +5172,8 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and ppcdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(ppcdel_worker) then ppcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else ppcdel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(ppcdel_worker) then ppcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else ppcdel_worker = '"
+							+ fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "ppcdel_wf_real_start", "ppcdel_wf_real_finish");
@@ -5177,7 +5183,8 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and jsdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(jsdel_worker) then jsdel_operator = '" + fsp.getMap().get("operator").toString() + "' else jsdel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(jsdel_worker) then jsdel_operator = '" + fsp.getMap().get("operator").toString() + "' else jsdel_worker = '"
+							+ fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "jsdel_wf_real_start", "jsdel_wf_real_finish");
@@ -5187,7 +5194,8 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and cqdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(cqdel_worker) then cqdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cqdel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(cqdel_worker) then cqdel_operator = '" + fsp.getMap().get("operator").toString() + "' else cqdel_worker = '"
+							+ fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "cqdel_wf_real_start", "cqdel_wf_real_finish");
@@ -5197,7 +5205,8 @@ public class BxAction extends Action {
 				sb = new StringBuffer();
 				sb.append(" and bqcdel_wf_step = '" + fsp.getMap().get("wf_step").toString() + "' ");
 				if (fsp.getMap().get("operator") != null && !"all".equals(fsp.getMap().get("operator"))) {
-					sb.append(" AND case when ISNULL(bqcdel_worker) then bqcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else bqcdel_worker = '" + fsp.getMap().get("operator").toString() + "' end  ");
+					sb.append(" AND case when ISNULL(bqcdel_worker) then bqcdel_operator = '" + fsp.getMap().get("operator").toString() + "' else bqcdel_worker = '"
+							+ fsp.getMap().get("operator").toString() + "' end  ");
 				}
 
 				liuruTime(fsp, sb, "bqcdel_wf_real_start", "bqcdel_wf_real_finish");
@@ -5225,7 +5234,8 @@ public class BxAction extends Action {
 				isBack = false;
 				haoshi = 0;
 				if (beans.get(i).get("mrdel_wf_step_duration") != null && (long) beans.get(i).get("mrdel_wf_step_duration") > 0) { // 大货详情
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("mrdel_wf_real_finish"), (Date) beans.get(i).get("mrdel_wf_real_start"), (long) beans.get(i).get("mrdel_wf_step_duration"), 0, null);
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("mrdel_wf_real_finish"), (Date) beans.get(i).get("mrdel_wf_real_start"),
+							(long) beans.get(i).get("mrdel_wf_step_duration"), 0, null);
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5239,7 +5249,8 @@ public class BxAction extends Action {
 
 				if (beans.get(i).get("jshdel_wf_step_duration") != null && (long) beans.get(i).get("jshdel_wf_step_duration") > 0) { // 技术
 
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("jshdel_wf_real_finish"), (Date) beans.get(i).get("jshdel_wf_real_start"), (long) beans.get(i).get("jshdel_wf_step_duration"), 0, null);
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("jshdel_wf_real_finish"), (Date) beans.get(i).get("jshdel_wf_real_start"),
+							(long) beans.get(i).get("jshdel_wf_step_duration"), 0, null);
 
 					if (isBack) {
 						haoshi = 0;
@@ -5253,7 +5264,8 @@ public class BxAction extends Action {
 				}
 
 				if (beans.get(i).get("fidel_wf_step_duration") != null && (long) beans.get(i).get("fidel_wf_step_duration") > 0) { // 采购
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("fidel_wf_real_finish"), (Date) beans.get(i).get("fidel_wf_real_start"), (long) beans.get(i).get("fidel_wf_step_duration"), 0, null);
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("fidel_wf_real_finish"), (Date) beans.get(i).get("fidel_wf_real_start"),
+							(long) beans.get(i).get("fidel_wf_step_duration"), 0, null);
 
 					if (isBack) {
 						haoshi = 0;
@@ -5269,7 +5281,8 @@ public class BxAction extends Action {
 
 				if (beans.get(i).get("cqc_wf_step_duration") != null && (long) beans.get(i).get("cqc_wf_step_duration") > 0) { // CQC
 
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("cqc_wf_real_finish"), (Date) beans.get(i).get("cqc_wf_real_start"), (long) beans.get(i).get("cqc_wf_step_duration"), 0, null);
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("cqc_wf_real_finish"), (Date) beans.get(i).get("cqc_wf_real_start"),
+							(long) beans.get(i).get("cqc_wf_step_duration"), 0, null);
 
 					if (isBack) {
 						haoshi = 0;
@@ -5284,7 +5297,8 @@ public class BxAction extends Action {
 
 				if (beans.get(i).get("tpedel_wf_step_duration") != null && (long) beans.get(i).get("tpedel_wf_step_duration") > 0) { // tpe
 
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("tpedel_wf_real_finish"), (Date) beans.get(i).get("tpedel_wf_real_start"), (long) beans.get(i).get("tpedel_wf_step_duration"), 0, null);
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("tpedel_wf_real_finish"), (Date) beans.get(i).get("tpedel_wf_real_start"),
+							(long) beans.get(i).get("tpedel_wf_step_duration"), 0, null);
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5297,7 +5311,8 @@ public class BxAction extends Action {
 				}
 
 				if (beans.get(i).get("qadel_wf_step_duration") != null && (long) beans.get(i).get("qadel_wf_step_duration") > 0) { // QA
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("qadel_wf_real_finish"), (Date) beans.get(i).get("qadel_wf_real_start"), (long) beans.get(i).get("qadel_wf_step_duration"), 0, null);
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("qadel_wf_real_finish"), (Date) beans.get(i).get("qadel_wf_real_start"),
+							(long) beans.get(i).get("qadel_wf_step_duration"), 0, null);
 
 					if (isBack) {
 						haoshi = 0;
@@ -5312,7 +5327,8 @@ public class BxAction extends Action {
 
 				if (beans.get(i).get("cwdel_wf_step_duration") != null && (long) beans.get(i).get("cwdel_wf_step_duration") > 0) { // 采购
 
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("cwdel_wf_real_finish"), (Date) beans.get(i).get("cwdel_wf_real_start"), (long) beans.get(i).get("cwdel_wf_step_duration"), 0, null);
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("cwdel_wf_real_finish"), (Date) beans.get(i).get("cwdel_wf_real_start"),
+							(long) beans.get(i).get("cwdel_wf_step_duration"), 0, null);
 
 					if (isBack) {
 						haoshi = 0;
@@ -5328,7 +5344,8 @@ public class BxAction extends Action {
 
 				if (beans.get(i).get("wldel_wf_step_duration") != null && (long) beans.get(i).get("wldel_wf_step_duration") > 0) { // 发货
 
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("wldel_wf_real_finish"), (Date) beans.get(i).get("wldel_wf_real_start"), (long) beans.get(i).get("wldel_wf_step_duration"), 0, null);
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("wldel_wf_real_finish"), (Date) beans.get(i).get("wldel_wf_real_start"),
+							(long) beans.get(i).get("wldel_wf_step_duration"), 0, null);
 
 					if (isBack) {
 						haoshi = 0;
@@ -5346,7 +5363,8 @@ public class BxAction extends Action {
 				isBack = false;
 				if (beans.get(i).get("mrdb_wf_step_duration") != null && (long) beans.get(i).get("mrdb_wf_step_duration") > 0) { // MR用时
 
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("mrdb_wf_real_finish"), (Date) beans.get(i).get("mrdb_wf_real_start"), (long) beans.get(i).get("mrdb_wf_step_duration"), 0, null);
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("mrdb_wf_real_finish"), (Date) beans.get(i).get("mrdb_wf_real_start"),
+							(long) beans.get(i).get("mrdb_wf_step_duration"), 0, null);
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5360,7 +5378,8 @@ public class BxAction extends Action {
 
 				if (beans.get(i).get("ppcdel_wf_step_duration") != null && (long) beans.get(i).get("ppcdel_wf_step_duration") > 0) { // 采购用时
 
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("ppcdel_wf_real_finish"), (Date) beans.get(i).get("ppcdel_wf_real_start"), (long) beans.get(i).get("ppcdel_wf_step_duration"), 0, null);
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("ppcdel_wf_real_finish"), (Date) beans.get(i).get("ppcdel_wf_real_start"),
+							(long) beans.get(i).get("ppcdel_wf_step_duration"), 0, null);
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5374,7 +5393,8 @@ public class BxAction extends Action {
 
 				if (beans.get(i).get("jsdel_wf_step_duration") != null && (long) beans.get(i).get("jsdel_wf_step_duration") > 0) { // 技术用时
 
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("jsdel_wf_real_finish"), (Date) beans.get(i).get("jsdel_wf_real_start"), (long) beans.get(i).get("jsdel_wf_step_duration"), 0, null);
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("jsdel_wf_real_finish"), (Date) beans.get(i).get("jsdel_wf_real_start"),
+							(long) beans.get(i).get("jsdel_wf_step_duration"), 0, null);
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5388,7 +5408,8 @@ public class BxAction extends Action {
 
 				if (beans.get(i).get("cqdel_wf_step_duration") != null && (long) beans.get(i).get("cqdel_wf_step_duration") > 0) { // 核价用时
 
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("cqdel_wf_real_finish"), (Date) beans.get(i).get("cqdel_wf_real_start"), (long) beans.get(i).get("cqdel_wf_step_duration"), 0, null);
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("cqdel_wf_real_finish"), (Date) beans.get(i).get("cqdel_wf_real_start"),
+							(long) beans.get(i).get("cqdel_wf_step_duration"), 0, null);
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5401,7 +5422,8 @@ public class BxAction extends Action {
 				}
 				if (beans.get(i).get("bqcdel_wf_step_duration") != null && (long) beans.get(i).get("bqcdel_wf_step_duration") > 0) { // MR确认用时
 
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("bqcdel_wf_real_finish"), (Date) beans.get(i).get("bqcdel_wf_real_start"), (long) beans.get(i).get("bqcdel_wf_step_duration"), 0, null);
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("bqcdel_wf_real_finish"), (Date) beans.get(i).get("bqcdel_wf_real_start"),
+							(long) beans.get(i).get("bqcdel_wf_step_duration"), 0, null);
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5426,7 +5448,8 @@ public class BxAction extends Action {
 		mapCount.put("avgTechnologyDB", WebUtil.getTimeDisPlayExcel(avgTechnologyDB > 0 ? avgTechnologyDB / arrayDB[2] : 0));
 		mapCount.put("avgHeJiaDB", WebUtil.getTimeDisPlayExcel(avgHeJiaDB > 0 ? avgHeJiaDB / arrayDB[3] : 0));
 		mapCount.put("avgMrCheckDB", WebUtil.getTimeDisPlayExcel(avgMrCheckDB > 0 ? avgMrCheckDB / arrayDB[4] : 0));
-		long avgOrderSumDB = (avgMRDB > 0 ? avgMRDB / arrayDB[0] : 0) + (avgPurDB > 0 ? avgPurDB / arrayDB[1] : 0) + (avgTechnologyDB > 0 ? avgTechnologyDB / arrayDB[2] : 0) + (avgHeJiaDB > 0 ? avgHeJiaDB / arrayDB[3] : 0) + (avgMrCheckDB > 0 ? avgMrCheckDB / arrayDB[4] : 0);
+		long avgOrderSumDB = (avgMRDB > 0 ? avgMRDB / arrayDB[0] : 0) + (avgPurDB > 0 ? avgPurDB / arrayDB[1] : 0) + (avgTechnologyDB > 0 ? avgTechnologyDB / arrayDB[2] : 0)
+				+ (avgHeJiaDB > 0 ? avgHeJiaDB / arrayDB[3] : 0) + (avgMrCheckDB > 0 ? avgMrCheckDB / arrayDB[4] : 0);
 		mapCount.put("avgOrderSumDB", WebUtil.getTimeDisPlayExcel(avgOrderSumDB));
 		mapCount.put("orderNumSumDB", count > 0 ? count + "" : "");
 
@@ -5438,7 +5461,9 @@ public class BxAction extends Action {
 		mapCount.put("avgQADH", WebUtil.getTimeDisPlayExcel(avgQADH > 0 ? avgQADH / arrayDH[5] : 0));
 		mapCount.put("avgFinanceDH", WebUtil.getTimeDisPlayExcel(avgFinanceDH > 0 ? avgFinanceDH / arrayDH[6] : 0));
 		mapCount.put("avgLogisticsDH", WebUtil.getTimeDisPlayExcel(avgLogisticsDH > 0 ? avgLogisticsDH / arrayDH[7] : 0));
-		long avgOrderSumDH = (avgMRDH > 0 ? avgMRDH / arrayDH[0] : 0) + (avgTechnologyDH > 0 ? avgTechnologyDH / arrayDH[1] : 0) + (avgPurDH > 0 ? avgPurDH / arrayDH[2] : 0) + (avgCQCDH > 0 ? avgCQCDH / arrayDH[3] : 0) + (avgTPEDH > 0 ? avgTPEDH / arrayDH[4] : 0) + (avgQADH > 0 ? avgQADH / arrayDH[5] : 0) + (avgFinanceDH > 0 ? avgFinanceDH / arrayDH[6] : 0) + (avgLogisticsDH > 0 ? avgLogisticsDH / arrayDH[7] : 0);
+		long avgOrderSumDH = (avgMRDH > 0 ? avgMRDH / arrayDH[0] : 0) + (avgTechnologyDH > 0 ? avgTechnologyDH / arrayDH[1] : 0) + (avgPurDH > 0 ? avgPurDH / arrayDH[2] : 0)
+				+ (avgCQCDH > 0 ? avgCQCDH / arrayDH[3] : 0) + (avgTPEDH > 0 ? avgTPEDH / arrayDH[4] : 0) + (avgQADH > 0 ? avgQADH / arrayDH[5] : 0)
+				+ (avgFinanceDH > 0 ? avgFinanceDH / arrayDH[6] : 0) + (avgLogisticsDH > 0 ? avgLogisticsDH / arrayDH[7] : 0);
 		mapCount.put("avgOrderSumDH", WebUtil.getTimeDisPlayExcel(avgOrderSumDH));
 		mapCount.put("orderNumSumDH", count > 0 ? count + "" : "");
 		mapCount.put("sewingNumSumDH", tpeCount > 0 ? tpeCount + "" : "");
@@ -5458,7 +5483,8 @@ public class BxAction extends Action {
 				long huizong = 0;
 				long huizong_duration = 0;
 				if (beans.get(i).get("mrdel_wf_step_duration") != null && (long) beans.get(i).get("mrdel_wf_step_duration") > 0) { // 大货详情
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("mrdel_wf_real_finish"), (Date) beans.get(i).get("mrdel_wf_real_start"), (long) beans.get(i).get("mrdel_wf_step_duration"), 1, "c_mr_improve_2_color");
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("mrdel_wf_real_finish"), (Date) beans.get(i).get("mrdel_wf_real_start"),
+							(long) beans.get(i).get("mrdel_wf_step_duration"), 1, "c_mr_improve_2_color");
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5472,7 +5498,8 @@ public class BxAction extends Action {
 				}
 
 				if (beans.get(i).get("jshdel_wf_step_duration") != null && (long) beans.get(i).get("jshdel_wf_step_duration") > 0) { // 技术
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("jshdel_wf_real_finish"), (Date) beans.get(i).get("jshdel_wf_real_start"), (long) beans.get(i).get("jshdel_wf_step_duration"), 1, "c_ppc_assign_3_color");
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("jshdel_wf_real_finish"), (Date) beans.get(i).get("jshdel_wf_real_start"),
+							(long) beans.get(i).get("jshdel_wf_step_duration"), 1, "c_ppc_assign_3_color");
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5486,7 +5513,8 @@ public class BxAction extends Action {
 				}
 
 				if (beans.get(i).get("fidel_wf_step_duration") != null && (long) beans.get(i).get("fidel_wf_step_duration") > 0) { // 采购
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("fidel_wf_real_finish"), (Date) beans.get(i).get("fidel_wf_real_start"), (long) beans.get(i).get("fidel_wf_step_duration"), 1, "c_fi_pay_4_color");
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("fidel_wf_real_finish"), (Date) beans.get(i).get("fidel_wf_real_start"),
+							(long) beans.get(i).get("fidel_wf_step_duration"), 1, "c_fi_pay_4_color");
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5500,7 +5528,8 @@ public class BxAction extends Action {
 				}
 
 				if (beans.get(i).get("cqc_wf_step_duration") != null && (long) beans.get(i).get("cqc_wf_step_duration") > 0) { // CQC
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("cqc_wf_real_finish"), (Date) beans.get(i).get("cqc_wf_real_start"), (long) beans.get(i).get("cqc_wf_step_duration"), 1, "c_ppc_factoryMsg_5_color");
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("cqc_wf_real_finish"), (Date) beans.get(i).get("cqc_wf_real_start"),
+							(long) beans.get(i).get("cqc_wf_step_duration"), 1, "c_ppc_factoryMsg_5_color");
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5514,7 +5543,8 @@ public class BxAction extends Action {
 				}
 
 				if (beans.get(i).get("tpedel_wf_step_duration") != null && (long) beans.get(i).get("tpedel_wf_step_duration") > 0) { // tpe
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("tpedel_wf_real_finish"), (Date) beans.get(i).get("tpedel_wf_real_start"), (long) beans.get(i).get("tpedel_wf_step_duration"), 1, "c_qc_cutting_6_color");
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("tpedel_wf_real_finish"), (Date) beans.get(i).get("tpedel_wf_real_start"),
+							(long) beans.get(i).get("tpedel_wf_step_duration"), 1, "c_qc_cutting_6_color");
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5528,7 +5558,8 @@ public class BxAction extends Action {
 				}
 
 				if (beans.get(i).get("qadel_wf_step_duration") != null && (long) beans.get(i).get("qadel_wf_step_duration") > 0) { // QA
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("qadel_wf_real_finish"), (Date) beans.get(i).get("qadel_wf_real_start"), (long) beans.get(i).get("qadel_wf_step_duration"), 1, "c_ppc_confirm_7_color");
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("qadel_wf_real_finish"), (Date) beans.get(i).get("qadel_wf_real_start"),
+							(long) beans.get(i).get("qadel_wf_step_duration"), 1, "c_ppc_confirm_7_color");
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5542,7 +5573,8 @@ public class BxAction extends Action {
 				}
 
 				if (beans.get(i).get("cwdel_wf_step_duration") != null && (long) beans.get(i).get("cwdel_wf_step_duration") > 0) { // 财务
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("cwdel_wf_real_finish"), (Date) beans.get(i).get("cwdel_wf_real_start"), (long) beans.get(i).get("cwdel_wf_step_duration"), 1, "c_qc_printing_8_color");
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("cwdel_wf_real_finish"), (Date) beans.get(i).get("cwdel_wf_real_start"),
+							(long) beans.get(i).get("cwdel_wf_step_duration"), 1, "c_qc_printing_8_color");
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5556,7 +5588,8 @@ public class BxAction extends Action {
 				}
 
 				if (beans.get(i).get("wldel_wf_step_duration") != null && (long) beans.get(i).get("wldel_wf_step_duration") > 0) { // 发货
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("wldel_wf_real_finish"), (Date) beans.get(i).get("wldel_wf_real_start"), (long) beans.get(i).get("wldel_wf_step_duration"), 1, "c_ppc_confirm_9_color");
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("wldel_wf_real_finish"), (Date) beans.get(i).get("wldel_wf_real_start"),
+							(long) beans.get(i).get("wldel_wf_step_duration"), 1, "c_ppc_confirm_9_color");
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5583,7 +5616,8 @@ public class BxAction extends Action {
 				long huizong_duration = 0;
 				isBack = false;
 				if (beans.get(i).get("mrdb_wf_step_duration") != null && (long) beans.get(i).get("mrdb_wf_step_duration") > 0) { // MR用时
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("mrdb_wf_real_finish"), (Date) beans.get(i).get("mrdb_wf_real_start"), (long) beans.get(i).get("mrdb_wf_step_duration"), 1, "b_mr_improve_2_color");
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("mrdb_wf_real_finish"), (Date) beans.get(i).get("mrdb_wf_real_start"),
+							(long) beans.get(i).get("mrdb_wf_step_duration"), 1, "b_mr_improve_2_color");
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5597,7 +5631,8 @@ public class BxAction extends Action {
 				}
 
 				if (beans.get(i).get("ppcdel_wf_step_duration") != null && (long) beans.get(i).get("ppcdel_wf_step_duration") > 0) { // 采购用时
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("ppcdel_wf_real_finish"), (Date) beans.get(i).get("ppcdel_wf_real_start"), (long) beans.get(i).get("ppcdel_wf_step_duration"), 1, "b_ppc_confirm_3_color");
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("ppcdel_wf_real_finish"), (Date) beans.get(i).get("ppcdel_wf_real_start"),
+							(long) beans.get(i).get("ppcdel_wf_step_duration"), 1, "b_ppc_confirm_3_color");
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5611,7 +5646,8 @@ public class BxAction extends Action {
 				}
 
 				if (beans.get(i).get("jsdel_wf_step_duration") != null && (long) beans.get(i).get("jsdel_wf_step_duration") > 0) { // 技术用时
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("jsdel_wf_real_finish"), (Date) beans.get(i).get("jsdel_wf_real_start"), (long) beans.get(i).get("jsdel_wf_step_duration"), 1, "b_pur_confirm_4_color");
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("jsdel_wf_real_finish"), (Date) beans.get(i).get("jsdel_wf_real_start"),
+							(long) beans.get(i).get("jsdel_wf_step_duration"), 1, "b_pur_confirm_4_color");
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5625,7 +5661,8 @@ public class BxAction extends Action {
 				}
 
 				if (beans.get(i).get("cqdel_wf_step_duration") != null && (long) beans.get(i).get("cqdel_wf_step_duration") > 0) { // 核价用时
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("cqdel_wf_real_finish"), (Date) beans.get(i).get("cqdel_wf_real_start"), (long) beans.get(i).get("cqdel_wf_step_duration"), 1, "b_ppc_confirm_5_color");
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("cqdel_wf_real_finish"), (Date) beans.get(i).get("cqdel_wf_real_start"),
+							(long) beans.get(i).get("cqdel_wf_step_duration"), 1, "b_ppc_confirm_5_color");
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5638,7 +5675,8 @@ public class BxAction extends Action {
 					}
 				}
 				if (beans.get(i).get("bqcdel_wf_step_duration") != null && (long) beans.get(i).get("bqcdel_wf_step_duration") > 0) { // MR确认用时
-					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("bqcdel_wf_real_finish"), (Date) beans.get(i).get("bqcdel_wf_real_start"), (long) beans.get(i).get("bqcdel_wf_step_duration"), 1, "b_qc_confirm_6_color");
+					haoshi = computationProgress(beans.get(i), (Date) beans.get(i).get("bqcdel_wf_real_finish"), (Date) beans.get(i).get("bqcdel_wf_real_start"),
+							(long) beans.get(i).get("bqcdel_wf_step_duration"), 1, "b_qc_confirm_6_color");
 					if (isBack) {
 						haoshi = 0;
 					} else if (haoshi == 0) {
@@ -5780,6 +5818,7 @@ public class BxAction extends Action {
 		bean.set("orderType", orderTypeString); // 订单类型
 		bean.set("wantCnt", oaOrder.getWantCnt()); // 订单数量
 		bean.set("beginTime", oaOrder.getBeginTime()); // 创建时间
+		bean.set("isOldWorkflow", DateUtil.compare_date("2015-04-21 16:00:01", DateUtil.formatDate(oaOrder.getBeginTime())) <= 0 ? "new" : "old");
 		bean.set("customerCode", oaOrder.getCusCode()); // 客户编号
 		bean.set("customerName", oaOrder.getCusName()); // 客户名称
 		bean.set("sales", oaOrder.getSales()); // 销售
@@ -5835,8 +5874,8 @@ public class BxAction extends Action {
 		bean.set("standard_time", oaOrder.getStandardTime());
 		bean.set("goods_time", oaOrder.getGoodsTime());
 		bean.set("relatedOrderDetailId", "");
-		bean.set("isSpecialFabric", oaOrder.getIsSpecialFabric());//是否特殊面料采购 add by ZQ
-		bean.set("isOverOrder", oaOrder.getIsOverOrder());//是否翻单 add by ZQ
+		bean.set("isSpecialFabric", oaOrder.getIsSpecialFabric());// 是否特殊面料采购 add by ZQ
+		bean.set("isOverOrder", oaOrder.getIsOverOrder());// 是否翻单 add by ZQ
 		if (null != oaOrder.getRelatedOrderId() && oaOrder.getRelatedOrderId() > 0) { // 关联订单存在，则查询关联订单最新detail的Id
 			// FSPBean fspBean = new FSPBean();
 			// fspBean.set(FSPBean.FSP_QUERY_BY_XML,
@@ -6199,46 +6238,85 @@ public class BxAction extends Action {
 			// 获取订单基本信息
 			OaOrder dbOaOrder = (OaOrder) baseDao.getObject(OaOrder.class, orderId);
 			if (null != dbOaOrder && null != dbOaOrder.getId()) {
+				if (null == oaOrderDetail) {
+					oaOrderDetail = new OaOrderDetail();
+				}
+				oaOrderDetail.setId(dbOaOrder.getOaOrderDetail());
+
 				// 判断订单在哪一步，然后调用对应的方法
 				boolean res = false;
-				if ("b_mr_improve_2".equals(dbOaOrder.getWfStep()) || "c_mr_improve_2".equals(dbOaOrder.getWfStep())) {
-					res = XBDUtils.saveMR(oaOrder, dbOaOrder, oaOrderDetail, oaMaterialLists, materialDelIds, oaCusMaterialLists, cusMaterialDelIds);
-				} else if ("c_ppc_huanchong_3".equals(dbOaOrder.getWfStep())) {//缓冲节点
-                    res = XBDUtils.saveHuanChong(oaOrderDetail,dbOaOrder);
-                } else if ("b_pur_confirm_4".equals(dbOaOrder.getWfStep()) || "c_ppc_assign_3".equals(dbOaOrder.getWfStep())) {
-					res = XBDUtils.saveTech(dbOaOrder, oaOrderDetail, oaClothesSize, oaProcessExplain, oaDaHuoInfos, oaDaBanInfos, oaMaterialLists, oaClothesSizeDetails, processOrder, orderIdStr, processOrder);
-				} else if ("b_ppc_confirm_3".equals(dbOaOrder.getWfStep()) || "c_fi_pay_4".equals(dbOaOrder.getWfStep())) {
-					res = XBDUtils.savePur(dbOaOrder, oaOrderDetail, orderIdStr, processOrder, oaMaterialLists, oaDaHuoInfos, oaDaBanInfos);
-				} else if ("b_ppc_confirm_5".equals(dbOaOrder.getWfStep())) {
-					res = XBDUtils.saveCost(dbOaOrder, oaOrderDetail, oaCost, orderIdStr, processOrder, oaMaterialLists, oaDaBanInfos);
-				} else if ("b_qc_confirm_6".equals(dbOaOrder.getWfStep())) {
-					res = XBDUtils.saveMRSure(dbOaOrder, oaMrConfirm, oaOrderDetail);
-				} else if ("c_qc_cutting_6".equals(dbOaOrder.getWfStep())) {
-					res = XBDUtils.saveTPE(dbOaOrder, oaTpe, oaOrderDetail);
-					// 车缝节点发送微信消息
-					String userId = dbOaOrder.getCusCode();
-					String content = "亲，收到您「" + dbOaOrder.getStyleDesc() + "」的布片，已交由经验老练的工友们精心缝制，哒哒哒……哒哒哒……敬请期待！";
-					SendWeChatMsg.sendMsg(userId, content);
-				} else if ("c_ppc_factoryMsg_5".equals(dbOaOrder.getWfStep())) {
-					res = XBDUtils.saveCQC(orderIdStr, oaOrderDetail, oaCqcLists, processOrder, oaQiTao, oaDaHuoInfos, oaQiTaoDetails);
-					// 验布、裁减节点发送微信消息
-					String userId = dbOaOrder.getCusCode();
-					String content = "客官，您「" + dbOaOrder.getStyleDesc() + "」的面料已开始验布、裁片，全自动裁床保证精度、提升速度，duang的一下就完成了。";
-					SendWeChatMsg.sendMsg(userId, content);
-				} else if ("c_ppc_confirm_7".equals(dbOaOrder.getWfStep())) {
-					res = XBDUtils.saveQA(processOrder, dbOaOrder, oaQa, oaOrderDetail);
-				} else if ("c_ppc_confirm_9".equals(dbOaOrder.getWfStep())) {
-					res = XBDUtils.saveLogistics(orderIdStr, processOrder, oaOrderDetail);
-					// 发货节点发送微信消息
-					String userId = dbOaOrder.getCusCode();
-					String content = "期待是一种幸福，也是心痛的根源，您的宝贝儿「" + dbOaOrder.getStyleDesc() + "」已经交给靠谱的快递小哥，期待着带给您惊喜，如有惊吓请拨打010-57115491，怒吼：“找莫大！”";
-					SendWeChatMsg.sendMsg(userId, content);
-				} else if ("c_qc_printing_8".equals(dbOaOrder.getWfStep())) {
-					res = XBDUtils.saveFinance(oaOrderDetail, dbOaOrder);
+				if (ConstantUtil.OA_ORDER_TYPE_2.equals(dbOaOrder.getType())) { // 样衣打版
+					if ("b_mr_improve_2".equals(dbOaOrder.getWfStep())) {
+						// Mr补录订单
+						res = XBDUtils.saveMR(oaOrder, dbOaOrder, oaOrderDetail, oaMaterialLists, materialDelIds, oaCusMaterialLists, cusMaterialDelIds);
+					} else if ("b_ppc_confirm_3".equals(dbOaOrder.getWfStep())) {
+						// 采购
+						res = XBDUtils.savePur(dbOaOrder, oaOrderDetail, materialDelIds, materialDescDelIds, oaMaterialLists, oaDaHuoInfos, oaDaBanInfos);
+					} else if ("b_pur_confirm_4".equals(dbOaOrder.getWfStep())) {
+						// 技术
+						res = XBDUtils.saveTech(dbOaOrder, oaOrderDetail, oaClothesSize, oaProcessExplain, oaDaHuoInfos, oaDaBanInfos, oaMaterialLists, oaClothesSizeDetails, materialDelIds,
+								materialDescDelIds, clothesSizeDetailDelIds);
+					} else if ("b_ppc_confirm_5".equals(dbOaOrder.getWfStep())) {
+						// 核价
+						res = XBDUtils.saveCost(dbOaOrder, oaOrderDetail, oaCost, materialDelIds, materialDescDelIds, oaMaterialLists, oaDaBanInfos);
+					} else if ("b_qc_confirm_6".equals(dbOaOrder.getWfStep())) {
+						// Mr确认
+						res = XBDUtils.saveMRSure(dbOaOrder, oaMrConfirm, oaOrderDetail);
+					}
+				} else if (ConstantUtil.OA_ORDER_TYPE_3.equals(dbOaOrder.getType())) { // 大货生产
+					if ("c_mr_improve_2".equals(dbOaOrder.getWfStep()) || "c_dahuo_2".equals(dbOaOrder.getWfStep())) {
+						// Mr补录订单
+						res = XBDUtils.saveMR(oaOrder, dbOaOrder, oaOrderDetail, oaMaterialLists, materialDelIds, oaCusMaterialLists, cusMaterialDelIds);
+					} else if ("c_ppc_assign_3".equals(dbOaOrder.getWfStep()) || "c_dahuo_3".equals(dbOaOrder.getWfStep())) {
+						// 技术
+						res = XBDUtils.saveTech(dbOaOrder, oaOrderDetail, oaClothesSize, oaProcessExplain, oaDaHuoInfos, oaDaBanInfos, oaMaterialLists, oaClothesSizeDetails, materialDelIds,
+								materialDescDelIds, clothesSizeDetailDelIds);
+					} else if ("c_dahuo_4".equals(dbOaOrder.getWfStep())) {
+						// 缓冲节点
+						res = XBDUtils.saveHuanChong(oaOrderDetail, dbOaOrder);
+					} else if ("c_fi_pay_4".equals(dbOaOrder.getWfStep()) || "c_dahuo_5".equals(dbOaOrder.getWfStep())) {
+						// 采购
+						res = XBDUtils.savePur(dbOaOrder, oaOrderDetail, materialDelIds, materialDescDelIds, oaMaterialLists, oaDaHuoInfos, oaDaBanInfos);
+					} else if ("c_ppc_factoryMsg_5".equals(dbOaOrder.getWfStep()) || "c_dahuo_6".equals(dbOaOrder.getWfStep())) {
+						// CQC
+						res = XBDUtils.saveCQC(oaOrderDetail, oaCqcLists, delQiTaoDetails, oaQiTao, oaDaHuoInfos, oaQiTaoDetails);
+						// 验布、裁减节点发送微信消息
+						String userId = dbOaOrder.getCusCode();
+						String content = "客官，您「" + dbOaOrder.getStyleDesc() + "」的面料已开始验布、裁片，全自动裁床保证精度、提升速度，duang的一下就完成了。";
+						SendWeChatMsg.sendMsg(userId, content);
+					} else if ("c_dahuo_7".equals(dbOaOrder.getWfStep())) {
+						// 特殊工艺
+						// todo
+					} else if ("c_dahuo_8".equals(dbOaOrder.getWfStep())) {
+						// 齐套
+						// todo
+					} else if ("c_qc_cutting_6".equals(dbOaOrder.getWfStep()) || "c_dahuo_9".equals(dbOaOrder.getWfStep())) {
+						// TPE
+						res = XBDUtils.saveTPE(dbOaOrder, oaTpe, oaOrderDetail);
+						// 车缝节点发送微信消息
+						String userId = dbOaOrder.getCusCode();
+						String content = "亲，收到您「" + dbOaOrder.getStyleDesc() + "」的布片，已交由经验老练的工友们精心缝制，哒哒哒……哒哒哒……敬请期待！";
+						SendWeChatMsg.sendMsg(userId, content);
+					} else if ("c_ppc_confirm_7".equals(dbOaOrder.getWfStep()) || "c_dahuo_10".equals(dbOaOrder.getWfStep())) {
+						// QA
+						res = XBDUtils.saveQA(dbOaOrder, oaQa, oaOrderDetail);
+					} else if ("c_qc_printing_8".equals(dbOaOrder.getWfStep()) || "c_dahuo_11".equals(dbOaOrder.getWfStep())) {
+						// 财务
+						res = XBDUtils.saveFinance(oaOrderDetail, dbOaOrder);
+					} else if ("c_ppc_confirm_9".equals(dbOaOrder.getWfStep()) || "c_dahuo_12".equals(dbOaOrder.getWfStep())) {
+						// 物流
+						res = XBDUtils.saveLogistics(logCheckBoxVal, oaOrderDetail);
+						// 发货节点发送微信消息
+						String userId = dbOaOrder.getCusCode();
+						String content = "期待是一种幸福，也是心痛的根源，您的宝贝儿「" + dbOaOrder.getStyleDesc() + "」已经交给靠谱的快递小哥，期待着带给您惊喜，如有惊吓请拨打010-57115491，怒吼：“找莫大！”";
+						SendWeChatMsg.sendMsg(userId, content);
+					}
 				}
 
 				// 处理流程，流转到下一步
-				XBDUtils.processOrder(dbOaOrder);
+				if ("true".equals(processOrder)) {
+					XBDUtils.processOrder(dbOaOrder);
+				}
 
 				if (res) {
 					resMap.put("code", 0);
@@ -6263,7 +6341,7 @@ public class BxAction extends Action {
 		Map resMap = new HashMap();
 		try {
 			Date now = new Date();
-			Timestamp tamp = new Timestamp(now.getTime()/1000*1000);
+			Timestamp tamp = new Timestamp(now.getTime() / 1000 * 1000);
 			oaTracke.setTime(tamp);
 			oaTracke.setUser(WebUtil.getCurrentLoginBx().getLoginName());
 			baseDao.saveObject(oaTracke);
@@ -6276,8 +6354,6 @@ public class BxAction extends Action {
 		}
 		Struts2Utils.renderJson(resMap);
 	}
-
-
 
 	/**
 	 * 
@@ -6551,7 +6627,6 @@ public class BxAction extends Action {
 		resMap.put("oaClothesSizeDetails", oaClothesSizeDetails);
 	}
 
-
 	/**
 	 * 
 	 * @Title: getOaOrderNum
@@ -6647,10 +6722,6 @@ public class BxAction extends Action {
 
 	}
 
-
-
-
-
 	/**
 	 * 通过模板导出订单列表的excel by fangwei 2014-12-17
 	 */
@@ -6669,9 +6740,9 @@ public class BxAction extends Action {
 		String baseExcelFile = null;
 		oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, oaOrder.getId());
 		String erp209 = "2015-4-13 13:30:00";
-		if(oaOrder.getBeginTime().compareTo(DateUtil.parseDate(erp209))>0){
+		if (oaOrder.getBeginTime().compareTo(DateUtil.parseDate(erp209)) > 0) {
 			baseExcelFile = Struts2Utils.getSession().getServletContext().getRealPath(ResourceUtil.getString("baseExcelFile"));
-		}else{
+		} else {
 			baseExcelFile = Struts2Utils.getSession().getServletContext().getRealPath(ResourceUtil.getString("oldBaseExcelFile"));
 		}
 		// order当前所在节点
@@ -6680,7 +6751,8 @@ public class BxAction extends Action {
 		if (nowNode.equals("2")) {
 			// 通过模板生成excel
 			fillInfo = XBDUtils.createOrderInfo(oaOrder);
-			Struts2Utils.getResponse().setHeader("Content-Disposition", "attachment;filename=ERP-ORDER-" + oaOrder.getSellOrderCode() + "-" + (System.currentTimeMillis() / 1000 * 1000 + "").substring(6, 13) + ".xlsx");
+			Struts2Utils.getResponse().setHeader("Content-Disposition",
+					"attachment;filename=ERP-ORDER-" + oaOrder.getSellOrderCode() + "-" + (System.currentTimeMillis() / 1000 * 1000 + "").substring(6, 13) + ".xlsx");
 			POIUtilsEx.processExcel(os, fillInfo);
 		} else if (node.compareTo(nowNode) < 0) {
 			// 下载之前节点excel
@@ -6718,8 +6790,9 @@ public class BxAction extends Action {
 			baseExcelFile = PathUtil.url2Path(file);
 			fillInfo = XBDUtils.getOrderExcelInfo(oaOrder);
 			fillInfo.put("fileUrl", baseExcelFile);
-			
-			Struts2Utils.getResponse().setHeader("Content-Disposition", "attachment;filename=ERP-ORDER-" + oaOrder.getSellOrderCode() + "-" + (System.currentTimeMillis() / 1000 * 1000 + "").substring(6, 13) + ".xlsx");
+
+			Struts2Utils.getResponse().setHeader("Content-Disposition",
+					"attachment;filename=ERP-ORDER-" + oaOrder.getSellOrderCode() + "-" + (System.currentTimeMillis() / 1000 * 1000 + "").substring(6, 13) + ".xlsx");
 			// 根据上一个节点来填充excel
 			POIUtilsEx.processExcel(os, fillInfo);
 		}
@@ -6829,7 +6902,8 @@ public class BxAction extends Action {
 				tamp.put("order_num", (null == map.get("order_num") ? "" : map.get("order_num")));
 				if (StringUtils.isBlank(map.get("need_num").toString()) || (Float) map.get("need_num") == 0) {
 					// 如果需求数量为空时，重新计算need_num的值//需求数量=单件用量*订单数量
-					if (StringUtils.isNotBlank(map.get("order_num").toString()) && StringUtils.isNotBlank(map.get("unit_num").toString()) && null != map.get("unit_num") && null != map.get("order_num")) {
+					if (StringUtils.isNotBlank(map.get("order_num").toString()) && StringUtils.isNotBlank(map.get("unit_num").toString()) && null != map.get("unit_num")
+							&& null != map.get("order_num")) {
 						tamp.put("need_num", Float.parseFloat(map.get("unit_num").toString()) * Float.parseFloat(map.get("order_num").toString()));
 					} else {
 						tamp.put("need_num", "");
@@ -6859,7 +6933,10 @@ public class BxAction extends Action {
 					// 如果总金额为空时，进行重新计算
 					// 合计=总金额+验布费用+运费
 					if (null != map.get("num") && null != map.get("price") && null != map.get("test_price") && null != map.get("freight")) {
-						tamp.put("total", Float.parseFloat(map.get("price").toString()) * Float.parseFloat(map.get("num").toString()) + Float.parseFloat(map.get("test_price").toString()) + Float.parseFloat(map.get("freight").toString()));
+						tamp.put(
+								"total",
+								Float.parseFloat(map.get("price").toString()) * Float.parseFloat(map.get("num").toString()) + Float.parseFloat(map.get("test_price").toString())
+										+ Float.parseFloat(map.get("freight").toString()));
 					} else if (null != map.get("num") && null != map.get("price") && null != map.get("test_price")) {
 						tamp.put("total", Float.parseFloat(map.get("num").toString()) * Float.parseFloat(map.get("price").toString()) + Float.parseFloat(map.get("test_price").toString()));
 					} else if (null != map.get("num") && null != map.get("price") && null != map.get("freight") && StringUtils.isBlank(map.get("total").toString())) {
@@ -7043,7 +7120,6 @@ public class BxAction extends Action {
 		resMap.put("materialCost", rList);
 	}
 
-
 	/**
 	 *
 	 * @Title: jsonGetDaBanSixNode
@@ -7091,7 +7167,6 @@ public class BxAction extends Action {
 		OaMrConfirm oaMrConfirm = (OaMrConfirm) baseDao.getOnlyObjectByEql(fsp);
 		resMap.put("oaMrConfirm", oaMrConfirm);
 	}
-
 
 	/**
 	 * 查询关联订单的列表数据
@@ -7279,53 +7354,53 @@ public class BxAction extends Action {
 				} else {
 					bean.set("unqualified_num_info", colors);
 				}
-                float unQualifiedSum = 0l;
-                if(bean.get("gy_qualified") != null){
-                    bean.set("gyQualified", bean.get("gy_qualified"));
-                    unQualifiedSum += (float)bean.get("gy_qualified");
-                }else{
-                    bean.set("gyQualified", "");
-                }
+				float unQualifiedSum = 0l;
+				if (bean.get("gy_qualified") != null) {
+					bean.set("gyQualified", bean.get("gy_qualified"));
+					unQualifiedSum += (float) bean.get("gy_qualified");
+				} else {
+					bean.set("gyQualified", "");
+				}
 
-                if(bean.get("bl_qualified") != null){
-                    bean.set("blQualified", bean.get("bl_qualified"));
-                    unQualifiedSum += (float)bean.get("bl_qualified");
-                }else{
-                    bean.set("blQualified", "");
-                }
+				if (bean.get("bl_qualified") != null) {
+					bean.set("blQualified", bean.get("bl_qualified"));
+					unQualifiedSum += (float) bean.get("bl_qualified");
+				} else {
+					bean.set("blQualified", "");
+				}
 
-                if(bean.get("hd_qualified") != null){
-                    bean.set("hdQualified", bean.get("hd_qualified"));
-                    unQualifiedSum += (float)bean.get("hd_qualified");
-                }else{
-                    bean.set("hdQualified", "");
-                }
+				if (bean.get("hd_qualified") != null) {
+					bean.set("hdQualified", bean.get("hd_qualified"));
+					unQualifiedSum += (float) bean.get("hd_qualified");
+				} else {
+					bean.set("hdQualified", "");
+				}
 
-                if(bean.get("cp_qualified") != null){
-                    bean.set("cpQualified", bean.get("cp_qualified"));
-                    unQualifiedSum += (float)bean.get("cp_qualified");
-                }else{
-                    bean.set("cpQualified", "");
-                }
+				if (bean.get("cp_qualified") != null) {
+					bean.set("cpQualified", bean.get("cp_qualified"));
+					unQualifiedSum += (float) bean.get("cp_qualified");
+				} else {
+					bean.set("cpQualified", "");
+				}
 
-                if(bean.get("hd_lost") != null){
-                    bean.set("hdLost", bean.get("hd_lost"));
-                    unQualifiedSum += (float)bean.get("hd_lost");
-                }else{
-                    bean.set("hdLost", "");
-                }
+				if (bean.get("hd_lost") != null) {
+					bean.set("hdLost", bean.get("hd_lost"));
+					unQualifiedSum += (float) bean.get("hd_lost");
+				} else {
+					bean.set("hdLost", "");
+				}
 
-                if(bean.get("other_qualified") != null){
-                    bean.set("otherQualified", bean.get("other_qualified"));
-                    unQualifiedSum += (float)bean.get("other_qualified");
-                }else{
-                    bean.set("otherQualified", "");
-                }
+				if (bean.get("other_qualified") != null) {
+					bean.set("otherQualified", bean.get("other_qualified"));
+					unQualifiedSum += (float) bean.get("other_qualified");
+				} else {
+					bean.set("otherQualified", "");
+				}
 
-                bean.set("unQualifiedSum", unQualifiedSum);
+				bean.set("unQualifiedSum", unQualifiedSum);
 
 				resMap.put("qaInfo", bean.getMap());
-            }
+			}
 			FSPBean fspBean = new FSPBean();
 			fspBean.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_SEWING_NUM_INFO_BY_EQL);
 			fspBean.set("oaOrderId", orderId);
@@ -7395,7 +7470,10 @@ public class BxAction extends Action {
 				tamp.put("freight", (null == map.get("freight") ? "" : map.get("freight")));// 运费
 				// 合计=总金额+验布费用+运费
 				if (null != map.get("num") && null != map.get("price") && null != map.get("test_price") && null != map.get("freight")) {
-					tamp.put("total", Float.parseFloat(map.get("price").toString()) * Float.parseFloat(map.get("num").toString()) + Float.parseFloat(map.get("test_price").toString()) + Float.parseFloat(map.get("freight").toString()));
+					tamp.put(
+							"total",
+							Float.parseFloat(map.get("price").toString()) * Float.parseFloat(map.get("num").toString()) + Float.parseFloat(map.get("test_price").toString())
+									+ Float.parseFloat(map.get("freight").toString()));
 				} else if (null != map.get("num") && null != map.get("price") && null != map.get("test_price")) {
 					tamp.put("total", Float.parseFloat(map.get("num").toString()) * Float.parseFloat(map.get("price").toString()) + Float.parseFloat(map.get("test_price").toString()));
 				} else if (null != map.get("num") && null != map.get("price") && null != map.get("freight")) {
@@ -7508,26 +7586,26 @@ public class BxAction extends Action {
 		resMap.put("code", 0);
 	}
 
-    /**
-     * 缓冲节点查询
-     */
-    public void jsonGetDaHuoHuanchongNode(){
-        Map resMap = new HashMap();
-        String orderIds = Struts2Utils.getParameter("oaOrderId");
-        String wfStepIndex = Struts2Utils.getParameter("wfStepIndex");// 获取正在处理的订单节点index
-        String node = "3"; // 当前节点的index，后面查询需要
-        int orderId = Integer.valueOf(orderIds);
+	/**
+	 * 缓冲节点查询
+	 */
+	public void jsonGetDaHuoHuanchongNode() {
+		Map resMap = new HashMap();
+		String orderIds = Struts2Utils.getParameter("oaOrderId");
+		String wfStepIndex = Struts2Utils.getParameter("wfStepIndex");// 获取正在处理的订单节点index
+		String node = "3"; // 当前节点的index，后面查询需要
+		int orderId = Integer.valueOf(orderIds);
 
-        try {
-            getManagerInfo(orderId,node,wfStepIndex, resMap);
-            resMap.put("code", 0);
-            resMap.put("msg", "缓冲节点-信息查询成功");
-        } catch (Exception e) {
-            e.printStackTrace();
-            resMap.put("msg", "缓冲节点-信息查询失败");
-        }
-        Struts2Utils.renderJson(resMap);
-    }
+		try {
+			getManagerInfo(orderId, node, wfStepIndex, resMap);
+			resMap.put("code", 0);
+			resMap.put("msg", "缓冲节点-信息查询成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			resMap.put("msg", "缓冲节点-信息查询失败");
+		}
+		Struts2Utils.renderJson(resMap);
+	}
 
 	/**
 	 * 
@@ -7794,7 +7872,6 @@ public class BxAction extends Action {
 		}
 		Struts2Utils.renderJson(resMap);
 	}
-
 
 	/**
 	 * 
@@ -8535,7 +8612,8 @@ public class BxAction extends Action {
 		sheetFileInfo.put(t + ",13", new CustomCell("IF(AND(INDEX(AV:AZ,ROW(),3)<>\"\",INDEX(AV:AZ,ROW(),3)<>0),TEXT(INDEX(AV:AZ,ROW(),3)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
 		sheetFileInfo.put(t + ",14", new CustomCell("IF(AND(INDEX(AV:AZ,ROW(),4)<>\"\",INDEX(AV:AZ,ROW(),4)<>0),TEXT(INDEX(AV:AZ,ROW(),4)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
 		sheetFileInfo.put(t + ",15", new CustomCell("IF(AND(INDEX(AV:AZ,ROW(),5)<>\"\",INDEX(AV:AZ,ROW(),5)<>0),TEXT(INDEX(AV:AZ,ROW(),5)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
-		sheetFileInfo.put(t + ",16", new CustomCell("IF(AND(SUM(AV" + (t + 1) + ":AZ" + (t + 1) + ")<>\"\",SUM(AV" + (t + 1) + ":AZ" + (t + 1) + ")<>0),TEXT(SUM(AV" + (t + 1) + ":AZ" + (t + 1) + ")/86400,\"[h]小时mm分\"),\"\")", "Expression"));
+		sheetFileInfo.put(t + ",16", new CustomCell("IF(AND(SUM(AV" + (t + 1) + ":AZ" + (t + 1) + ")<>\"\",SUM(AV" + (t + 1) + ":AZ" + (t + 1) + ")<>0),TEXT(SUM(AV" + (t + 1) + ":AZ" + (t + 1)
+				+ ")/86400,\"[h]小时mm分\"),\"\")", "Expression"));
 
 		sheetFileInfo.put(t + ",17", new CustomCell("IF(ISERR(AVERAGE(R2:R" + t + ")),\"\",AVERAGE(R2:R" + t + "))", "Expression", "0.#%"));
 		sheetFileInfo.put(t + ",18", new CustomCell("IF(ISERR(AVERAGE(S2:S" + t + ")),\"\",AVERAGE(S2:S" + t + "))", "Expression", "0.#%"));
@@ -8679,7 +8757,8 @@ public class BxAction extends Action {
 		sheetFileInfo.put(t + ",19", new CustomCell("IF(AND(INDEX(AY:BG,ROW(),6)<>\"\",INDEX(AY:BG,ROW(),6)<>0),TEXT(INDEX(AY:BG,ROW(),6)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
 		sheetFileInfo.put(t + ",20", new CustomCell("IF(AND(INDEX(AY:BG,ROW(),7)<>\"\",INDEX(AY:BG,ROW(),7)<>0),TEXT(INDEX(AY:BG,ROW(),7)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
 		sheetFileInfo.put(t + ",21", new CustomCell("IF(AND(INDEX(AY:BG,ROW(),8)<>\"\",INDEX(AY:BG,ROW(),8)<>0),TEXT(INDEX(AY:BG,ROW(),8)/86400,\"[h]小时mm分\"),\"\")", "Expression"));
-		sheetFileInfo.put(t + ",22", new CustomCell("IF(AND(SUM(AY" + (t + 1) + ":BG" + (t + 1) + ")<>\"\",SUM(AY" + (t + 1) + ":BG" + (t + 1) + ")<>0),TEXT(SUM(AY" + (t + 1) + ":BG" + (t + 1) + ")/86400,\"[h]小时mm分\"),\"\")", "Expression"));
+		sheetFileInfo.put(t + ",22", new CustomCell("IF(AND(SUM(AY" + (t + 1) + ":BG" + (t + 1) + ")<>\"\",SUM(AY" + (t + 1) + ":BG" + (t + 1) + ")<>0),TEXT(SUM(AY" + (t + 1) + ":BG" + (t + 1)
+				+ ")/86400,\"[h]小时mm分\"),\"\")", "Expression"));
 
 		sheetFileInfo.put(t + ",23", new CustomCell("IF(ISERR(AVERAGE(X2:X" + t + ")),\"\",AVERAGE(X2:X" + t + "))", "Expression", "0.#%"));
 		sheetFileInfo.put(t + ",24", new CustomCell("IF(ISERR(AVERAGE(Y2:Y" + t + ")),\"\",AVERAGE(Y2:Y" + t + "))", "Expression", "0.#%"));
@@ -8694,7 +8773,8 @@ public class BxAction extends Action {
 		fillInfo.put(sheetNames + "MergeCell", sheetMergeCell);
 	}
 
-	private static Short getColorIndex2(Long real_time, Long plan_time, Map<String, Object> sheetFileInfo, LazyDynaMap map, Integer index, String operator, Integer opratorIndex, Integer dataIndex, Integer timeIndex) {
+	private static Short getColorIndex2(Long real_time, Long plan_time, Map<String, Object> sheetFileInfo, LazyDynaMap map, Integer index, String operator, Integer opratorIndex, Integer dataIndex,
+			Integer timeIndex) {
 		String op = "";
 		if (map.get(operator) != null) {
 			op = (String) map.get(operator);
@@ -8710,7 +8790,8 @@ public class BxAction extends Action {
 			}
 		}
 		sheetFileInfo.put(index + "," + opratorIndex, "".equals(op) ? new CustomCell() : op);
-		sheetFileInfo.put(index + "," + dataIndex, new CustomCell("IF(AND(INDIRECT(\"AZ\"&ROW())<>\"\",INDIRECT(\"AZ\"&ROW())<>0),ROUND(INDEX(AV:AZ,ROW()," + (dataIndex - 16) + ")/BA" + (index + 1) + ",3),\"\")", "Expression", "0.#%"));
+		sheetFileInfo.put(index + "," + dataIndex, new CustomCell("IF(AND(INDIRECT(\"AZ\"&ROW())<>\"\",INDIRECT(\"AZ\"&ROW())<>0),ROUND(INDEX(AV:AZ,ROW()," + (dataIndex - 16) + ")/BA" + (index + 1)
+				+ ",3),\"\")", "Expression", "0.#%"));
 
 		Short color;
 		if (plan_time > real_time) {
@@ -8722,18 +8803,21 @@ public class BxAction extends Action {
 		}
 		if (real_time > 0) {
 			if (timeIndex > 11) {
-				sheetFileInfo.put(index + "," + (timeIndex + 36), new CustomCell("IF(AND(INDIRECT(ADDRESS(ROW(),COLUMN()-1))<>\"\",INDIRECT(ADDRESS(ROW(),COLUMN()-1))<>0)," + real_time / 1000 + ",\"\")", "Expression", "0"));
+				sheetFileInfo.put(index + "," + (timeIndex + 36), new CustomCell("IF(AND(INDIRECT(ADDRESS(ROW(),COLUMN()-1))<>\"\",INDIRECT(ADDRESS(ROW(),COLUMN()-1))<>0)," + real_time / 1000
+						+ ",\"\")", "Expression", "0"));
 			} else {
 				sheetFileInfo.put(index + "," + (timeIndex + 36) + ",Integer", real_time / 1000);
 			}
 		} else if (real_time == 0) {
 			sheetFileInfo.put(index + "," + (timeIndex + 36), "");
 		}
-		sheetFileInfo.put(index + "," + timeIndex, new CustomCell("IF(AND(INDEX(AV:AZ,ROW()," + (timeIndex - 10) + ")<>\"\",INDEX(AV:AZ,ROW()," + (timeIndex - 10) + ")<>0),TEXT(INDEX(AV:AZ,ROW()," + (timeIndex - 10) + ")/86400,\"[h]小时mm分\"),\"\")", "Expression").setCellColor(color));
+		sheetFileInfo.put(index + "," + timeIndex, new CustomCell("IF(AND(INDEX(AV:AZ,ROW()," + (timeIndex - 10) + ")<>\"\",INDEX(AV:AZ,ROW()," + (timeIndex - 10) + ")<>0),TEXT(INDEX(AV:AZ,ROW(),"
+				+ (timeIndex - 10) + ")/86400,\"[h]小时mm分\"),\"\")", "Expression").setCellColor(color));
 		return color;
 	}
 
-	private static Short getColorIndex(Long real_time, Long plan_time, Map<String, Object> sheetFileInfo, LazyDynaMap map, Integer index, String operator, Integer opratorIndex, Integer dataIndex, Integer timeIndex) {
+	private static Short getColorIndex(Long real_time, Long plan_time, Map<String, Object> sheetFileInfo, LazyDynaMap map, Integer index, String operator, Integer opratorIndex, Integer dataIndex,
+			Integer timeIndex) {
 		String op = "";
 		if (map.get(operator) != null) {
 			op = (String) map.get(operator);
@@ -8749,7 +8833,8 @@ public class BxAction extends Action {
 			}
 		}
 		sheetFileInfo.put(index + "," + opratorIndex, "".equals(op) ? new CustomCell() : op);
-		sheetFileInfo.put(index + "," + dataIndex, new CustomCell("IF(AND(INDIRECT(\"BF\"&ROW())<>\"\",INDIRECT(\"BF\"&ROW())<>0),ROUND(INDEX(AY:BG,ROW()," + (dataIndex - 22) + ")/BG" + (index + 1) + ",3),\"\")", "Expression", "0.#%"));
+		sheetFileInfo.put(index + "," + dataIndex, new CustomCell("IF(AND(INDIRECT(\"BF\"&ROW())<>\"\",INDIRECT(\"BF\"&ROW())<>0),ROUND(INDEX(AY:BG,ROW()," + (dataIndex - 22) + ")/BG" + (index + 1)
+				+ ",3),\"\")", "Expression", "0.#%"));
 		Short color;
 		if (plan_time > real_time) {
 			color = IndexedColors.GREEN.index;
@@ -8761,14 +8846,16 @@ public class BxAction extends Action {
 
 		if (real_time > 0) {
 			if (timeIndex > 14) {
-				sheetFileInfo.put(index + "," + (timeIndex + 36), new CustomCell("IF(AND(INDIRECT(ADDRESS(ROW(),COLUMN()-1))<>\"\",INDIRECT(ADDRESS(ROW(),COLUMN()-1))<>0)," + real_time / 1000 + ",\"\")", "Expression", "0"));
+				sheetFileInfo.put(index + "," + (timeIndex + 36), new CustomCell("IF(AND(INDIRECT(ADDRESS(ROW(),COLUMN()-1))<>\"\",INDIRECT(ADDRESS(ROW(),COLUMN()-1))<>0)," + real_time / 1000
+						+ ",\"\")", "Expression", "0"));
 			} else {
 				sheetFileInfo.put(index + "," + (timeIndex + 36) + ",Integer", real_time / 1000);
 			}
 		} else if (real_time == 0) {
 			sheetFileInfo.put(index + "," + (timeIndex + 36), "");
 		}
-		sheetFileInfo.put(index + "," + timeIndex, new CustomCell("IF(AND(INDEX(AY:BF,ROW()," + (timeIndex - 13) + ")<>\"\",INDEX(AY:BF,ROW()," + (timeIndex - 13) + ")<>0),TEXT(INDEX(AY:BF,ROW()," + (timeIndex - 13) + ")/86400,\"[h]小时mm分\"),\"\")", "Expression", "0").setCellColor(color));
+		sheetFileInfo.put(index + "," + timeIndex, new CustomCell("IF(AND(INDEX(AY:BF,ROW()," + (timeIndex - 13) + ")<>\"\",INDEX(AY:BF,ROW()," + (timeIndex - 13) + ")<>0),TEXT(INDEX(AY:BF,ROW(),"
+				+ (timeIndex - 13) + ")/86400,\"[h]小时mm分\"),\"\")", "Expression", "0").setCellColor(color));
 		return color;
 	}
 
