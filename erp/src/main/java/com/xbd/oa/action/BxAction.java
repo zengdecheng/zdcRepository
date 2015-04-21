@@ -452,6 +452,14 @@ public class BxAction extends Action {
 				counts[5] += 1;
 			}
 			bean.set("data", persent);
+
+
+
+            //提取退回数据
+            if(bean.get("back_flag") != null && "1".equals(bean.get("back_flag").toString())){
+                superList.add(bean);
+                beans.remove(bean);
+            }
 		}
 		bean.set("counts", counts);
 
@@ -471,13 +479,21 @@ public class BxAction extends Action {
 			orderType = false;
 			orderField = "data";
 		}
+
+        if(superList != null && superList.size() > 0){
+            cs.ListPropertySort(superList, orderField, orderType);
+        }
+
 		cs.ListPropertySort(beans, orderField, orderType);
 		bean.set("orderType", orderType);
 		bean.set("orderField", orderField);
-		fsp.setRecordCount(beans.size());
+
+        superList.addAll(beans);
+
+		fsp.setRecordCount(superList.size());
 		int fromIndex = (fsp.getPageNo() - 1) * fsp.getPageSize();
-		int toIndex = (fromIndex + fsp.getPageSize()) <= beans.size() ? fromIndex + fsp.getPageSize() : fromIndex + beans.size() % fsp.getPageSize();
-		beans = beans.subList(fromIndex, toIndex);
+		int toIndex = (fromIndex + fsp.getPageSize()) <= superList.size() ? fromIndex + fsp.getPageSize() : fromIndex + superList.size() % fsp.getPageSize();
+		beans = superList.subList(fromIndex, toIndex);
 		processPageInfo(getObjectsCountSql(fsp));
 		return "bx/todo";
 	}
@@ -6217,7 +6233,7 @@ public class BxAction extends Action {
 				} else if ("c_qc_printing_8".equals(dbOaOrder.getWfStep())) {
 					res = XBDUtils.saveFinance(oaOrderDetail, dbOaOrder);
 				}
-				
+
 				// 处理流程，流转到下一步
 				XBDUtils.processOrder(dbOaOrder);
 
@@ -6236,7 +6252,7 @@ public class BxAction extends Action {
 		}
 		Struts2Utils.renderJson(resMap);
 	}
-	
+
 	/**
 	 * json方式保存异动跟踪信息
 	 */
@@ -6630,7 +6646,7 @@ public class BxAction extends Action {
 
 
 
-	
+
 
 	/**
 	 * 通过模板导出订单列表的excel by fangwei 2014-12-17
@@ -7026,7 +7042,7 @@ public class BxAction extends Action {
 
 
 	/**
-	 * 
+	 *
 	 * @Title: jsonGetDaBanSixNode
 	 * @Description: TODO流程改造样衣打版第六节点，获取第六个节点页面信息（MR确认）
 	 * 
