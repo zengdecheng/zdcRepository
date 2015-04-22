@@ -333,6 +333,23 @@ public class BxAction extends Action {
 		return super.getObjectsCountSql(fsp);
 	}
 
+    /**
+     * 大货节点顺序
+     */
+    private static final String C_DAHUO_1 = "1";//新增订单
+    private static final String C_DAHUO_2 = "2";//MR补录订单
+    private static final String C_DAHUO_3 = "3";//技术节点
+    private static final String C_DAHUO_4 = "4";//缓冲节点
+    private static final String C_DAHUO_5 = "5";//采购
+    private static final String C_DAHUO_6 = "6";//CQC
+    private static final String C_DAHUO_7 = "7";//特殊工艺
+    private static final String C_DAHUO_8 = "8";//齐套
+    private static final String C_DAHUO_9 = "9";//TPE
+    private static final String C_DAHUO_10 = "10";//QA
+    private static final String C_DAHUO_11 = "11";//财务
+    private static final String C_DAHUO_12 = "12";//物流
+    private static final String C_DAHUO_13 = "13";//异动管理
+
 	/**
 	 * 
 	 * <B>辛巴达员工登录</B><br>
@@ -6369,7 +6386,7 @@ public class BxAction extends Action {
 			String orderNumId = Struts2Utils.getParameter("oaOrder.oaOrderNumId");
 			String type = Struts2Utils.getParameter("oaOrder.type");// 订单的类型
 			String wfStepIndex = Struts2Utils.getParameter("wfStepIndex");// 获取正在处理的订单节点index
-			String node = "3";// 查询管理信息时节点，默认为大货
+			String node = C_DAHUO_3;//技术 查询管理信息时节点，默认为大货
 			if ("2".equals(type)) { // 为样衣时，技术节点为4
 				node = "4";
 			}
@@ -6808,7 +6825,7 @@ public class BxAction extends Action {
 			String orderIds = Struts2Utils.getParameter("orderId");
 			String type = Struts2Utils.getParameter("type");
 			String wfStepIndex = Struts2Utils.getParameter("wfStepIndex");// 获取正在处理的订单节点index
-			String node = "4";// 用于查询订单详情是那个节点 是节点的尾数 默认为大货
+			String node = C_DAHUO_5;//采购 用于查询订单详情是那个节点 是节点的尾数 默认为大货
 			if (StringUtils.isNotEmpty(type) && "2".equals(type)) {
 				node = "3";
 			}
@@ -7239,7 +7256,7 @@ public class BxAction extends Action {
 		try {
 			String orderIdStr = Struts2Utils.getParameter("orderId");// 获取订单Id
 			String wfStepIndex = Struts2Utils.getParameter("wfStepIndex");
-			String node = "5";
+			String node = C_DAHUO_6;//CQC
 			int orderId = 0;
 			try { // 判断订单Id是否填写正确
 				orderId = Integer.parseInt(orderIdStr);
@@ -7275,8 +7292,8 @@ public class BxAction extends Action {
 		Map resMap = new HashMap();
 		try {
 			String orderIdStr = Struts2Utils.getParameter("orderId");// 获取订单Id
-			String wfStepIndex = "7";
-			String node = "7";
+			String wfStepIndex = Struts2Utils.getParameter("wfStepIndex");
+			String node = C_DAHUO_10;//QA
 			int orderId = 0;
 			try { // 判断订单Id是否填写正确
 				orderId = Integer.parseInt(orderIdStr);
@@ -7593,11 +7610,12 @@ public class BxAction extends Action {
 		Map resMap = new HashMap();
 		String orderIds = Struts2Utils.getParameter("oaOrderId");
 		String wfStepIndex = Struts2Utils.getParameter("wfStepIndex");// 获取正在处理的订单节点index
-		String node = "3"; // 当前节点的index，后面查询需要
+		String node = C_DAHUO_4; //缓冲 当前节点的index，后面查询需要
 		int orderId = Integer.valueOf(orderIds);
 
 		try {
 			getManagerInfo(orderId, node, wfStepIndex, resMap);
+            getTracke(orderId,node,resMap);
 			resMap.put("code", 0);
 			resMap.put("msg", "缓冲节点-信息查询成功");
 		} catch (Exception e) {
@@ -7620,7 +7638,7 @@ public class BxAction extends Action {
 			String orderIds = Struts2Utils.getParameter("oaOrderId");
 			String orderNumId = Struts2Utils.getParameter("oaOrderNumId");
 			String wfStepIndex = Struts2Utils.getParameter("wfStepIndex");// 获取正在处理的订单节点index
-			String node = "6"; // 当前节点的index，后面查询需要
+			String node = C_DAHUO_9; //TPE 当前节点的index，后面查询需要
 			int orderId = Integer.valueOf(orderIds);
 			int orderNum = Integer.valueOf(orderNumId);
 
@@ -7666,7 +7684,7 @@ public class BxAction extends Action {
 		try {
 			String orderIds = Struts2Utils.getParameter("oaOrderId");
 			String wfStepIndex = Struts2Utils.getParameter("wfStepIndex");// 获取正在处理的订单节点index
-			String node = "8"; // 当前节点的index，后面查询需要
+			String node = C_DAHUO_11; //财务节点 当前节点的index，后面查询需要
 			int orderId = Integer.valueOf(orderIds);
 
 			// 查询管理信息
@@ -7772,7 +7790,7 @@ public class BxAction extends Action {
 		try {
 			String orderIds = Struts2Utils.getParameter("oaOrderId");
 			String wfStepIndex = Struts2Utils.getParameter("wfStepIndex");// 获取正在处理的订单节点index
-			String node = "9"; // 当前节点的index，后面查询需要
+			String node = C_DAHUO_12; //物流 当前节点的index，后面查询需要
 			int orderId = Integer.valueOf(orderIds);
 			OaOrder oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, orderId);
 
