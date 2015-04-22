@@ -11,7 +11,7 @@ var orderId;	//订单ID
 var opt;		//autoFill配置
 var index;		//当前所在index
 var jsonData;	//后台传的数据
-var activeIndex = "4"; //默认为大货节点
+var activeIndex = "5"; //默认为大货节点
 var isShowDetail=false;
 define([ "v","vl" ], function(v,vl) {
 	var fn = {

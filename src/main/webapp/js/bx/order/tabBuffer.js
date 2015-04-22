@@ -23,8 +23,8 @@ define([ "v","vl" ], function(u,up) {
 		init : function() {
 			biz.event.initOrderData();
 			biz.event.jsonGetDaHuoHuanchongNode();
-			biz.event.initValidation();
-			biz.event.initTrackes();
+			//biz.event.initValidation();
+			//biz.event.initTrackes();
 		},
 		bind : function() {
 			$("#yidongBtn").on("click", biz.event.jsonSaveTracke);
@@ -37,8 +37,9 @@ define([ "v","vl" ], function(u,up) {
 				$("#orderId").val(orderId);
 				var orderDetail = $(window.parent.document).find("#orderDetail").val(); //是否是查看订单详情
 				$("#ppc").attr("fillName","oaOrderDetail.worker");
-				if("true" != orderDetail && "3" == wfStepIndex) { //判断是否可编辑
+				if("true" != orderDetail && "4" == wfStepIndex) { //判断是否可编辑
                     //if (true) {
+                    alert("true")
                         isShowDetail = true;//可编辑
                         $("#orderDetailDive").remove();
                     } else {
@@ -69,15 +70,6 @@ define([ "v","vl" ], function(u,up) {
                 			alert("登录超时，请重新登录");
                 		} else if("0" ==  data.code){
                 			jsonData=data;
-                			console.log(jsonData)
-                			$("#oaTpe_id").val(data.sewingId);//将oaTpe的ID设置到隐藏域中
-                			$("#sewing_total").val(data.sewingTotal);//车缝总数量
-                			$("#sewing_factory").val(data.sewingFactory);//车缝工厂
-                			biz.event.setCutNum(data.sizeTitle.split("-"),data.shearNum);//显示裁剪数量表格
-                			if(undefined!=data.sizeTitle && null!=data.sizeTitle && undefined!=data.shearNum && null!=data.shearNum ){
-                				biz.event.setSewingNum(data.sizeTitle.split("-"),data.sewingNum);//显示车缝数量表格
-                			}
-                			
                 			if(undefined != data.oaOrderDetail && null != data.oaOrderDetail && undefined != data.oaOrderDetail.other_file && null != data.oaOrderDetail.other_file && "" != data.oaOrderDetail.other_file && "null" != data.oaOrderDetail.other_file) {
                 				var downFile = "<a downloadurl='" +data.oaOrderDetail.other_file + "' class='z_title_sty1 mar_l10 download_a download' href='javascript:void(0)'>" + data.oaOrderDetail.other_file_name + "</a>";
         						$("#otherFile").html(downFile);
@@ -131,10 +123,10 @@ define([ "v","vl" ], function(u,up) {
         						$("#detailRealFinishColor").text(data.oaOrderDetail.step_finish_time_consume + "%");
         					}
                 			$("#tabBuffer").autoFill(data, opt);
-                			if(!isShowDetail){
-                				$("#ppc").attr("disabled","disabled");//人员选择
-                				$(".table_input").attr("disabled",true);
-                			}
+                			//if(!isShowDetail){
+                			//	$("#ppc").attr("disabled","disabled");//人员选择
+                			//	$(".table_input").attr("disabled",true);
+                			//}
                 			parent.iFrameHeight("iframeBuffer");
                 		} else {
                 			alert(data.msg);
@@ -195,13 +187,14 @@ define([ "v","vl" ], function(u,up) {
 			},
 			saveOrder : function() { //保存草稿
 				$("#processOrder").val("false"); //false标识流程不流转，只保存数据
-				biz.event.saveCutNum();//将车缝数据进行拼接
 				biz.event.jsonProcessOrder();
 			},
 			jsonProcessOrder:function(){//ajax提交表单
 				//先要对所填写的数据进行验证合法后才进行提交
 				var successFlag=$("#tabBuffer").validationEngine("validate");
-				if(successFlag){
+				//if(successFlag){
+                alert("123213")
+				if(true){
 					$("#processBtn").attr("disabled", "true");
 					$("#saveBtn").attr("disabled", "true");
 					$("#backBtn").attr("disabled", "true");
