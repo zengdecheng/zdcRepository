@@ -308,6 +308,7 @@ public class XBDUtils {
 		// TODO: 根据业务需要编写
 		try {
 			saveManegeInfo(oaOrderDetail, oaOrder.getOaOrderDetail());
+            return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
