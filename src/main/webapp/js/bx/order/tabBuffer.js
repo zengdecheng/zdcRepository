@@ -23,8 +23,8 @@ define([ "v","vl" ], function(u,up) {
 		init : function() {
 			biz.event.initOrderData();
 			biz.event.jsonGetDaHuoHuanchongNode();
-			//biz.event.initValidation();
-			//biz.event.initTrackes();
+			biz.event.initValidation();
+			biz.event.initTrackes();
 		},
 		bind : function() {
 			$("#yidongBtn").on("click", biz.event.jsonSaveTracke);
@@ -192,7 +192,6 @@ define([ "v","vl" ], function(u,up) {
 				//先要对所填写的数据进行验证合法后才进行提交
 				var successFlag=$("#tabBuffer").validationEngine("validate");
 				//if(successFlag){
-                alert("123213")
 				if(true){
 					$("#processBtn").attr("disabled", "true");
 					$("#saveBtn").attr("disabled", "true");
