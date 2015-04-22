@@ -122,7 +122,7 @@ public class XBDUtils {
 		}
 
 		Map<String, Object> variables = new HashMap<String, Object>();
-		if ("c_ppc_factoryMsg_6".equals(dbOaOrder.getWfStep()) || "b_pur_confirm_4".equals(dbOaOrder.getWfStep())) {
+		if ("c_ppc_factoryMsg_6".equals(dbOaOrder.getWfStep()) || "b_pur_confirm_4".equals(dbOaOrder.getWfStep()) || "c_dahuo_6".equals(dbOaOrder.getWfStep()) ) {
 			// variables.put("oa_order_detail", oaOrderDetail.getId());
 			if (StringUtils.isNotBlank(dbOaOrder.getStyleCraft())) {
 				variables.put("art", "true");
@@ -235,6 +235,10 @@ public class XBDUtils {
 			dbOaOrder.setFeedingTime(oaOrder.getFeedingTime());// 建议投料日期
 			dbOaOrder.setStandardTime(oaOrder.getStandardTime());
 			dbOaOrder.setSellReadyTime(oaOrder.getSellReadyTime());
+            dbOaOrder.setIsSpecialFabric(oaOrder.getIsSpecialFabric());//是否特殊布料采购 Add by ZQ 2015-4-14
+            if(StringUtils.isNotEmpty(oaOrder.getIsOverOrder())){
+                dbOaOrder.setIsOverOrder(oaOrder.getIsOverOrder());//大货是否翻单 Add by ZQ 2015-4-14
+            }
 			// 判断产前版日期，获得新的货期
 			if (null != oaOrder.getPreVersionDate()) {
 				if (null == oaOrder.getPreproductDays() || 0 >= oaOrder.getPreproductDays().intValue()) {
