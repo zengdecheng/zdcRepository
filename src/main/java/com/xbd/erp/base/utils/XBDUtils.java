@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.xbd.oa.vo.*;
 import org.activiti.engine.task.Task;
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.LazyDynaMap;
@@ -37,24 +38,6 @@ import com.xbd.oa.utils.ResourceUtil;
 import com.xbd.oa.utils.Struts2Utils;
 import com.xbd.oa.utils.WebUtil;
 import com.xbd.oa.utils.WorkFlowUtil;
-import com.xbd.oa.vo.OaClothesSize;
-import com.xbd.oa.vo.OaClothesSizeDetail;
-import com.xbd.oa.vo.OaCost;
-import com.xbd.oa.vo.OaCqc;
-import com.xbd.oa.vo.OaCusMaterialList;
-import com.xbd.oa.vo.OaDaBanInfo;
-import com.xbd.oa.vo.OaDaHuoInfo;
-import com.xbd.oa.vo.OaLogistics;
-import com.xbd.oa.vo.OaMaterialList;
-import com.xbd.oa.vo.OaMrConfirm;
-import com.xbd.oa.vo.OaOrder;
-import com.xbd.oa.vo.OaOrderDetail;
-import com.xbd.oa.vo.OaOrderNum;
-import com.xbd.oa.vo.OaProcessExplain;
-import com.xbd.oa.vo.OaQa;
-import com.xbd.oa.vo.OaQiTao;
-import com.xbd.oa.vo.OaQiTaoDetail;
-import com.xbd.oa.vo.OaTpe;
 import com.xbd.oa.vo.base.CustomCell;
 
 @SuppressWarnings("deprecation")
@@ -2147,5 +2130,34 @@ public class XBDUtils {
 		}
 		return oaClothesSizeDetails;
 	}
+
+
+
+    /**
+     * @Descriotion 获取异动信息
+     * @param orderId
+     * @param node
+     * @param resMap
+     * @throws Exception
+     */
+    public static void getTracke(int orderId, String node, Map resMap) throws Exception {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("oaOrder", orderId);
+        List<OaTracke> trackeList = (List<OaTracke>) baseDao.findLikeByProperty(OaTracke.class, params);
+        List<Map> oaTrackeList = new ArrayList<Map>();
+        for (OaTracke tracke : trackeList) {
+//            OaTracke tracke = (OaTracke)object;
+            Map mapOaTrackes = new HashMap();
+            mapOaTrackes.put("id", tracke.getId());
+            mapOaTrackes.put("memo", tracke.getMemo());
+            mapOaTrackes.put("node", tracke.getNode());
+            mapOaTrackes.put("user", tracke.getUser());
+            mapOaTrackes.put("oaOrder", tracke.getOaOrder());
+            String tempTime = DateUtil.formatDate(tracke.getTime());
+            mapOaTrackes.put("time", tempTime);
+            oaTrackeList.add(mapOaTrackes);
+        }
+        resMap.put("oaTrackes", oaTrackeList);
+    }
 
 }
