@@ -273,8 +273,8 @@ public class BizUtil {
 		// + calculateDuration);
 		Timestamp planStart = culPlanDate(oaOrder.getBeginTime(), calculateDuration); // 本节点计划开始时间 。 = 订单开始时间+ 累计计划持续时间
 
-		// update by 张华 2015-03-31，如果是第二个节点，那么不直接分配到主管，直接分配到订单中负责MR
-		if (2 == WebUtil.getWfStepIndex(delegateTask.getTaskDefinitionKey())) {
+		// update by 张华 2015-03-31，如果是第二个节点，且不属于退回订单，那么不直接分配到主管，直接分配到订单中负责MR
+		if (2 == WebUtil.getWfStepIndex(delegateTask.getTaskDefinitionKey()) && 1 == WebUtil.getWfStepIndex(lastOaOrderDetail.getWfStep())) {
 			assignment = oaOrder.getMrName();
 		}
 		// 2.加入新的流程详细节点
