@@ -39,7 +39,6 @@ define([ "v","vl" ], function(u,up) {
 				$("#ppc").attr("fillName","oaOrderDetail.worker");
 				if("true" != orderDetail && "4" == wfStepIndex) { //判断是否可编辑
                     //if (true) {
-                    alert("true")
                         isShowDetail = true;//可编辑
                         $("#orderDetailDive").remove();
                     } else {
