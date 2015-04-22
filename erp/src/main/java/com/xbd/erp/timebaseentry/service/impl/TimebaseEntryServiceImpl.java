@@ -1,6 +1,5 @@
 package com.xbd.erp.timebaseentry.service.impl;
 
-import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -24,14 +23,34 @@ public class TimebaseEntryServiceImpl extends BaseServiceImpl<OaTimebaseEntry> i
 	@Resource(name = "timebaseEntryDao")
 	public void setTimebaseEntryDao(TimebaseEntryDao timebaseEntryDao) {
 		super.setBaseHibernateDao(timebaseEntryDao);
+		this.timebaseEntryDao = timebaseEntryDao;
 	}
 
 	@Override
-	public void saveOaTimebaseEntries(List<OaTimebaseEntry> oaTimebaseEntries) throws Exception {
+	public void saveOaTimebaseEntries(List<OaTimebaseEntry> oaTimebaseEntries, Integer timebaseId) {
 		// TODO Auto-generated method stub
-		for (OaTimebaseEntry oaTimebaseEntry : oaTimebaseEntries) {
-			this.timebaseEntryDao.saveOrUpdate(oaTimebaseEntry);
+		try {
+			// 保存基准时间设置细节
+			for (OaTimebaseEntry oaTimebaseEntry : oaTimebaseEntries) {
+				oaTimebaseEntry.setOaTimebase(timebaseId); // 基准时间设置Id
+				this.timebaseEntryDao.saveOrUpdate(oaTimebaseEntry); // 保存基准时间设置细节
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public List<OaTimebaseEntry> listTimebaseEntries(Integer timebaseId) {
+		// TODO Auto-generated method stub
+		try {
+			return this.timebaseEntryDao.findListByProperty("oaTimebase", timebaseId);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }
