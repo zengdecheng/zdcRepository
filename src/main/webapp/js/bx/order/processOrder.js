@@ -31,8 +31,8 @@ define([ "u" ], function(u) {
 	                dahuoIframeUrl[2] = "/jsp/tabpage/tabBuffer.jsp";//缓冲节点
 					dahuoIframeUrl[3] = "/jsp/tabpage/tabPurchase.jsp";
 					dahuoIframeUrl[4] = "/jsp/tabpage/tabCQC.jsp";
-					dahuoIframeUrl[5] = "/jsp/qitao/tabQiTao.jsp";
-					dahuoIframeUrl[6] = "/jsp/tabpage/tabST.jsp";//特殊工艺
+					dahuoIframeUrl[5] = "/jsp/tabpage/tabST.jsp";//特殊工艺
+					dahuoIframeUrl[6] = "/jsp/qitao/tabQiTao.jsp";
 					dahuoIframeUrl[7] = "/jsp/tabpage/tabTPE.jsp";
 					dahuoIframeUrl[8] = "/jsp/tabpage/tabQA.jsp";
 					dahuoIframeUrl[9] = "/jsp/tabpage/tabFinance.jsp";
