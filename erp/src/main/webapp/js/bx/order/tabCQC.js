@@ -168,7 +168,7 @@ define([ "v", "vl" ], function(v, vl) {
 			initOrderData : function() {
 				$("#orderId").val(orderId);
 				var isEdit = $(window.parent.document).find("#orderDetail").val(); // 是否是查看订单详情
-				if ("true" != isEdit && "5" == wfStepIndex) { // 判断是否可编辑
+				if ("true" != isEdit && "6" == wfStepIndex) { // 判断是否可编辑
 					// if(true){
 					isEdit = true;// 可编辑
 					$("#orderDetailDive").remove();

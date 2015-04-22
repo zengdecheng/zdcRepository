@@ -763,6 +763,7 @@ define([ "u","layer","v","vl" ], function(u,layer) {
 					$("#saveBtn").attr("disabled", "true");
 					$("#terminateBtn").attr("disabled", "true");
 					var params = $("#tabOrderDetail").serializeArray();
+                    console.log(params.toString());
 					$.ajax({
 	                    url: "/bx/jsonProcessOrder",
 	                    type: "post",
