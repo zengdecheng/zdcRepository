@@ -14,7 +14,20 @@ public interface TimebaseEntryService extends BaseService<OaTimebaseEntry> {
 	 *
 	 * @author 张华
 	 * @param oaTimebaseEntries
-	 * @throws Exception
+	 *            要保存的基准时间设置细节数据集合
+	 * @param timebaseId
+	 *            关联基准时间设置id
 	 */
-	public void saveOaTimebaseEntries(List<OaTimebaseEntry> oaTimebaseEntries) throws Exception;
+	public void saveOaTimebaseEntries(List<OaTimebaseEntry> oaTimebaseEntries, Integer timebaseId);
+
+	/**
+	 * 
+	 * @Title: listTimebaseEntries
+	 * @Description: TODO根据基准时间设置id获取基准时间设置细节数据
+	 *
+	 * @author 张华
+	 * @param timebaseId
+	 * @return
+	 */
+	public List<OaTimebaseEntry> listTimebaseEntries(Integer timebaseId);
 }

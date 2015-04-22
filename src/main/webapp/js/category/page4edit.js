@@ -17,6 +17,9 @@ define([ "v", "vl" ], function(v, vl) {
 			biz.event.initValidation(); // 初始化验证框架
 			$(".time_hid").each(function(i, n) {
 				var temp = parseInt($(n).val()) * 100;
+				if(isNaN(temp)) {
+					temp = 0;
+				}
 				temp = (temp / 1000 / 60 / 60);
 				if (temp > 0) {
 					temp = "" + temp;

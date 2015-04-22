@@ -1,29 +1,30 @@
 package com.xbd.erp.category.service;
 
-import java.util.List;
-import java.util.Map;
-
 import com.xbd.erp.base.service.BaseService;
 import com.xbd.oa.vo.OaCategory;
-import com.xbd.oa.vo.OaTimebase;
-import com.xbd.oa.vo.OaTimebaseEntry;
 
 public interface CategoryService extends BaseService<OaCategory> {
-
+	
 	/**
 	 * 
-	 * @Title: edit
-	 * @Description: TODO编辑品类信息，且包括基准时间设置信息
+	 * @Title: save保存品类信息
+	 * @Description: TODO
 	 *
 	 * @author 张华
 	 * @param oaCategory
-	 *            品类对象
-	 * @param dhTimebase
-	 *            大货基准时间数据对象
-	 * @param dhTimebaseEntries
-	 *            大货基准时间细节数据对象
+	 */
+	public void save(OaCategory oaCategory);
+
+	/**
+	 * 
+	 * @Title: findOaCategory
+	 * @Description: TODO根据id获取品类数据
+	 *
+	 * @author 张华
+	 * @param id
+	 *            品类id
 	 * @return
 	 */
-	public boolean edit(OaCategory oaCategory, OaTimebase dhTimebase, List<OaTimebaseEntry> dhTimebaseEntries);
+	public OaCategory findOaCategory(Integer id);
 
 }

@@ -20,6 +20,8 @@ import com.xbd.erp.base.action.Action;
 import com.xbd.erp.base.dao.BaseDao;
 import com.xbd.erp.base.pojo.sys.FSPBean;
 import com.xbd.erp.category.service.CategoryService;
+import com.xbd.erp.timebase.service.TimebaseService;
+import com.xbd.erp.timebaseentry.service.TimebaseEntryService;
 import com.xbd.oa.dao.impl.BxDaoImpl;
 import com.xbd.oa.vo.OaCategory;
 import com.xbd.oa.vo.OaOrder;
@@ -38,6 +40,8 @@ public class CategoryAction extends Action {
 	private List<OaTimebaseEntry> dhTimebaseEntries; // 基准时间设置具体节点时长定义
 	private BaseDao<?> baseDao;
 	private CategoryService categoryService; // cagetory的service
+	private TimebaseService timebaseService; // Timebase的Service
+	private TimebaseEntryService timebaseEntryService; // TimebaseEntry的Service
 
 	public CategoryService getCategoryService() {
 		return categoryService;
@@ -46,6 +50,16 @@ public class CategoryAction extends Action {
 	@Resource(name = "categoryService")
 	public void setCategoryService(CategoryService categoryService) {
 		this.categoryService = categoryService;
+	}
+
+	@Resource(name = "timebaseService")
+	public void setTimebaseService(TimebaseService timebaseService) {
+		this.timebaseService = timebaseService;
+	}
+
+	@Resource(name = "timebaseEntryService")
+	public void setTimebaseEntryService(TimebaseEntryService timebaseEntryService) {
+		this.timebaseEntryService = timebaseEntryService;
 	}
 
 	public BaseDao<?> getBaseDao() {
@@ -62,14 +76,14 @@ public class CategoryAction extends Action {
 	 * @Title: list
 	 * @Description: TODO查询品类列表
 	 *
-	 * @author lanyu
+	 * @author 张华
 	 * @return
 	 */
 	// page4list
 	public String list() {
 		fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.LIST_CATEGORY_BY_SQL);
 		fsp.setPageFlag(FSPBean.ACTIVE_PAGINATION);
-		beans = baseDao.getObjectsBySql(fsp);
+		this.beans = baseDao.getObjectsBySql(fsp);
 		fsp.setRecordCount(getObjectsCountSql(fsp));
 		return "category/page4list";
 	}
@@ -92,13 +106,11 @@ public class CategoryAction extends Action {
 	 * @Title: add
 	 * @Description: TODO添加品类
 	 *
-	 * @author lanyu
+	 * @author 张华
 	 * @return
 	 */
 	public String add() {
-		if (null != oaCategory) {
-			baseDao.saveObject(oaCategory);
-		}
+		this.saveCategoryDetail();
 		return "page4list";
 	}
 
@@ -111,7 +123,7 @@ public class CategoryAction extends Action {
 	 * @return
 	 */
 	public String page4detail() {
-		oaCategory = findOaCategory(oaCategory);
+		this.getCategoryDetail();
 		return "category/page4detail";
 	}
 
@@ -124,7 +136,7 @@ public class CategoryAction extends Action {
 	 * @return
 	 */
 	public String page4edit() {
-		oaCategory = findOaCategory(oaCategory);
+		this.getCategoryDetail();
 		return "category/page4edit";
 	}
 
@@ -137,22 +149,46 @@ public class CategoryAction extends Action {
 	 * @return
 	 */
 	public String edit() {
-		categoryService.edit(oaCategory, dhTimebase, dhTimebaseEntries);
+		this.saveCategoryDetail();
 		return "page4list";
 	}
 
 	/**
 	 * 
-	 * @Title: getOaCategory
-	 * @Description: TODO获取品类数据
+	 * @Title: getCategoryDetail
+	 * @Description: TODO获取品类详情数据，包括品类、基准时间设置、基准时间设置细节
 	 *
 	 * @author 张华
 	 */
-	private OaCategory findOaCategory(OaCategory oaCategory) {
-		if (null != oaCategory && null != oaCategory.getId()) {
-			oaCategory = (OaCategory) baseDao.getObject(OaCategory.class, oaCategory.getId());
+	private void getCategoryDetail() {
+		// 查询品类数据
+		this.oaCategory = this.categoryService.findOaCategory(this.oaCategory.getId());
+
+		// 查询基准时间设置
+		if (null != this.oaCategory) {
+			this.dhTimebase = this.timebaseService.findTimebase(this.oaCategory.getId());
 		}
-		return oaCategory;
+
+		// 查询基准时间设置细节
+		if (null != this.dhTimebase) {
+			this.dhTimebaseEntries = this.timebaseEntryService.listTimebaseEntries(dhTimebase.getId());
+		}
+	}
+
+	/**
+	 * 
+	 * @Title: saveCategoryDetail
+	 * @Description: TODO保存品类详情数据，包括品类、基准时间设置、基准时间设置细节
+	 *
+	 * @author 张华
+	 */
+	private void saveCategoryDetail() {
+		// 保存品类数据
+		this.categoryService.save(this.oaCategory);
+		// 保存基准时间设置
+		this.timebaseService.saveOaTimebase(dhTimebase, this.oaCategory);
+		// 保存基准时间设置细节
+		this.timebaseEntryService.saveOaTimebaseEntries(this.dhTimebaseEntries, dhTimebase.getId());
 	}
 
 	/**

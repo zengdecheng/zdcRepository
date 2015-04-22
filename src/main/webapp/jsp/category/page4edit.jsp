@@ -24,7 +24,7 @@ input {
 		style="background: #4b8df8; font-size: 14px; margin: 5px 5px 5px 0; color: #ffffff; width: 100%;">
 		<p style="padding: 5px 5px">品类信息</p>
 	</div>
-	<form action="/category/add" method="post" id="categoryForm">
+	<form action="/category/edit" method="post" id="categoryForm">
 		<div style="padding-left: 8px;">
 			<table style="width: 1000px;">
 				<tr>
@@ -239,12 +239,15 @@ input {
 			<p style="padding: 5px 5px">&nbsp;大货-节点时间设置</p>
 		</div>
 		<div style="padding-left: 8px;">
-			<input type="hidden" name="dhTimebase.id" value=""> <input
-				type="hidden" name="dhTimebaseEntries[0].stepDuration" value="0">
-			<input type="hidden" name="dhTimebaseEntries[0].id" value=""> <input
-				type="hidden" name="dhTimebaseEntries[0].step"
-				value="c_create_dahuo_1"> <input type="hidden"
-				name="dhTimebaseEntries[0].stepName" value="新建大货生产订单">
+			<input type="hidden" name="dhTimebase.id" value="${dhTimebase.id }">
+			<input type="hidden" name="dhTimebaseEntries[0].stepDuration"
+				value="0"> <input type="hidden"
+				name="dhTimebaseEntries[0].id" value="${dhTimebaseEntries[0].id }">
+			<input type="hidden" name="dhTimebaseEntries[0].step"
+				value="c_dahuo_1"> <input type="hidden"
+				name="dhTimebaseEntries[0].stepName" value="新建大货订单"> <input
+				type="hidden" name="dhTimebaseEntries[0].calculateDuration"
+				value="0">
 			<table style="width: 1000px;">
 				<tr>
 					<td width="130" height="30">MR补录订单：</td>
@@ -253,31 +256,39 @@ input {
 						id="dhStep1" tname="dhStep1"><input type="hidden"
 						name="dhTimebaseEntries[1].stepDuration" tname="dhStep1_hid"
 						id="dhStep1_hid" class="time_hid"
-						value="${dhTimebaseEntries.stepDuration }"> <input
-						type="hidden" name="dhTimebaseEntries[1].id" value=""> <input
-						type="hidden" name="dhTimebaseEntries[1].step"
-						value="c_mr_improve_2"> <input type="hidden"
-						name="dhTimebaseEntries[1].stepName" value="MR补录订单"></td>
+						value="${dhTimebaseEntries[1].stepDuration }"> <input
+						type="hidden" name="dhTimebaseEntries[1].id"
+						value="${dhTimebaseEntries[1].id }"> <input type="hidden"
+						name="dhTimebaseEntries[1].step" value="c_dahuo_2"> <input
+						type="hidden" name="dhTimebaseEntries[1].stepName" value="MR补录订单">
+						<input type="hidden" name="dhTimebaseEntries[1].calculateDuration"
+						value="1"></td>
 					<td width="120">技术：</td>
 					<td width="200"><input type="text"
 						class="validate[custom[number2],maxSize[5]] time_text"
 						id="dhStep2" tname="dhStep2"><input type="hidden"
 						name="dhTimebaseEntries[2].stepDuration" tname="dhStep2_hid"
 						id="dhStep2_hid" class="time_hid"
-						value="${dhTimebaseEntries.stepDuration }"> <input
-						type="hidden" name="dhTimebaseEntries[2].id" value=""> <input
-						type="hidden" name="dhTimebaseEntries[2].step" value="c_ppc_assign_3"> <input
-						type="hidden" name="dhTimebaseEntries[2].stepName" value="技术"></td>
+						value="${dhTimebaseEntries[2].stepDuration }"> <input
+						type="hidden" name="dhTimebaseEntries[2].id"
+						value="${dhTimebaseEntries[2].id }"> <input type="hidden"
+						name="dhTimebaseEntries[2].step" value="c_dahuo_3"> <input
+						type="hidden" name="dhTimebaseEntries[2].stepName" value="技术">
+						<input type="hidden" name="dhTimebaseEntries[2].calculateDuration"
+						value="2"></td>
 					<td width="116">缓冲：</td>
 					<td width="200"><input type="text"
 						class="validate[custom[number2],maxSize[5]] time_text"
 						id="dhStep3" tname="dhStep3"><input type="hidden"
 						name="dhTimebaseEntries[3].stepDuration" tname="dhStep3_hid"
 						id="dhStep3_hid" class="time_hid"
-						value="${dhTimebaseEntries.stepDuration }"> <input
-						type="hidden" name="dhTimebaseEntries[3].id" value=""> <input
-						type="hidden" name="dhTimebaseEntries[3].step" value="c_ppc_huanchong_4"> <input
-						type="hidden" name="dhTimebaseEntries[3].stepName" value="缓冲"></td>
+						value="${dhTimebaseEntries[3].stepDuration }"> <input
+						type="hidden" name="dhTimebaseEntries[3].id"
+						value="${dhTimebaseEntries[3].id }"> <input type="hidden"
+						name="dhTimebaseEntries[3].step" value="c_dahuo_4"> <input
+						type="hidden" name="dhTimebaseEntries[3].stepName" value="缓冲">
+						<input type="hidden" name="dhTimebaseEntries[3].calculateDuration"
+						value="3"></td>
 				</tr>
 				<tr>
 					<td height="30">采购（常规）：</td>
@@ -286,31 +297,39 @@ input {
 						id="dhStep4" tname="dhStep4"><input type="hidden"
 						name="dhTimebaseEntries[4].stepDuration" tname="dhStep4_hid"
 						id="dhStep4_hid" class="time_hid"
-						value="${dhTimebaseEntries.stepDuration }"> <input
-						type="hidden" name="dhTimebaseEntries[4].id" value=""> <input
-						type="hidden" name="dhTimebaseEntries[4].step" value="c_fi_pay_5">
-						<input type="hidden" name="dhTimebaseEntries[4].stepName" value="采购"></td>
+						value="${dhTimebaseEntries[4].stepDuration }"> <input
+						type="hidden" name="dhTimebaseEntries[4].id"
+						value="${dhTimebaseEntries[4].id }"> <input type="hidden"
+						name="dhTimebaseEntries[4].step" value="c_dahuo_5"> <input
+						type="hidden" name="dhTimebaseEntries[4].stepName" value="采购">
+						<input type="hidden" name="dhTimebaseEntries[4].calculateDuration"
+						value="4"></td>
 					<td>采购（特殊）：</td>
 					<td><input type="text"
 						class="validate[custom[number2],maxSize[5]] time_text"
 						id="dhStep5" tname="dhStep5"><input type="hidden"
 						name="dhTimebaseEntries[5].stepDuration" tname="dhStep5_hid"
 						id="dhStep5_hid" class="time_hid"
-						value="${dhTimebaseEntries.stepDuration }"> <input
-						type="hidden" name="dhTimebaseEntries[5].id" value=""> <input
-						type="hidden" name="dhTimebaseEntries[5].step" value="c_fi_pay_5_a">
-						<input type="hidden" name="dhTimebaseEntries[5].stepName" value="采购"></td>
+						value="${dhTimebaseEntries[5].stepDuration }"> <input
+						type="hidden" name="dhTimebaseEntries[5].id"
+						value="${dhTimebaseEntries[5].id }"> <input type="hidden"
+						name="dhTimebaseEntries[5].step" value="c_dahuo_5_a"> <input
+						type="hidden" name="dhTimebaseEntries[5].stepName" value="采购">
+						<input type="hidden" name="dhTimebaseEntries[5].calculateDuration"
+						value="5"></td>
 					<td>CQC：</td>
 					<td><input type="text"
 						class="validate[custom[number2],maxSize[5]] time_text"
 						id="dhStep6" tname="dhStep6"><input type="hidden"
 						name="dhTimebaseEntries[6].stepDuration" tname="dhStep6_hid"
 						id="dhStep6_hid" class="time_hid"
-						value="${dhTimebaseEntries.stepDuration }"> <input
-						type="hidden" name="dhTimebaseEntries[6].id" value=""> <input
-						type="hidden" name="dhTimebaseEntries[6].step"
-						value="c_ppc_factoryMsg_6"> <input type="hidden"
-						name="dhTimebaseEntries[6].stepName" value="CQC"></td>
+						value="${dhTimebaseEntries[6].stepDuration }"> <input
+						type="hidden" name="dhTimebaseEntries[6].id"
+						value="${dhTimebaseEntries[6].id }"> <input type="hidden"
+						name="dhTimebaseEntries[6].step" value="c_dahuo_6"> <input
+						type="hidden" name="dhTimebaseEntries[6].stepName" value="CQC">
+						<input type="hidden" name="dhTimebaseEntries[6].calculateDuration"
+						value="6"></td>
 				</tr>
 				<tr>
 					<td>特殊工艺：</td>
@@ -319,32 +338,39 @@ input {
 						id="dhStep7" tname="dhStep7"><input type="hidden"
 						name="dhTimebaseEntries[7].stepDuration" tname="dhStep7_hid"
 						id="dhStep7_hid" class="time_hid"
-						value="${dhTimebaseEntries.stepDuration }"> <input
-						type="hidden" name="dhTimebaseEntries[7].id" value=""> <input
-						type="hidden" name="dhTimebaseEntries[7].step" value="c_art_7">
-						<input type="hidden" name="dhTimebaseEntries[7].stepName"
-						value="特殊工艺"></td>
+						value="${dhTimebaseEntries[7].stepDuration }"> <input
+						type="hidden" name="dhTimebaseEntries[7].id"
+						value="${dhTimebaseEntries[7].id }"> <input type="hidden"
+						name="dhTimebaseEntries[7].step" value="c_dahuo_7"> <input
+						type="hidden" name="dhTimebaseEntries[7].stepName" value="特殊工艺">
+						<input type="hidden" name="dhTimebaseEntries[7].calculateDuration"
+						value="7"></td>
 					<td>齐套：</td>
 					<td><input type="text"
 						class="validate[custom[number2],maxSize[5]] time_text"
 						id="dhStep8" tname="dhStep8"><input type="hidden"
 						name="dhTimebaseEntries[8].stepDuration" tname="dhStep8_hid"
 						id="dhStep8_hid" class="time_hid"
-						value="${dhTimebaseEntries.stepDuration }"> <input
-						type="hidden" name="dhTimebaseEntries[8].id" value=""> <input
-						type="hidden" name="dhTimebaseEntries[8].step" value="c_qitao_8">
-						<input type="hidden" name="dhTimebaseEntries[8].stepName" value="齐套"></td>
+						value="${dhTimebaseEntries[8].stepDuration }"> <input
+						type="hidden" name="dhTimebaseEntries[8].id"
+						value="${dhTimebaseEntries[8].id }"> <input type="hidden"
+						name="dhTimebaseEntries[8].step" value="c_dahuo_8"> <input
+						type="hidden" name="dhTimebaseEntries[8].stepName" value="齐套">
+						<input type="hidden" name="dhTimebaseEntries[8].calculateDuration"
+						value="8"></td>
 					<td>车缝：</td>
 					<td><input type="text"
 						class="validate[custom[number2],maxSize[5]] time_text"
 						id="dhStep9" tname="dhStep9"><input type="hidden"
 						name="dhTimebaseEntries[9].stepDuration" tname="dhStep9_hid"
 						id="dhStep9_hid" class="time_hid"
-						value="${dhTimebaseEntries.stepDuration }"> <input
-						type="hidden" name="dhTimebaseEntries[9].id" value=""> <input
-						type="hidden" name="dhTimebaseEntries[9].step"
-						value="c_qc_cutting_9"> <input type="hidden"
-						name="dhTimebaseEntries[9].stepName" value="车缝"></td>
+						value="${dhTimebaseEntries[9].stepDuration }"> <input
+						type="hidden" name="dhTimebaseEntries[9].id"
+						value="${dhTimebaseEntries[9].id }"> <input type="hidden"
+						name="dhTimebaseEntries[9].step" value="c_dahuo_9"> <input
+						type="hidden" name="dhTimebaseEntries[9].stepName" value="车缝">
+						<input type="hidden" name="dhTimebaseEntries[9].calculateDuration"
+						value="9"></td>
 				</tr>
 				<tr>
 					<td>QA：</td>
@@ -353,33 +379,39 @@ input {
 						id="dhStep10" tname="dhStep10"><input type="hidden"
 						name="dhTimebaseEntries[10].stepDuration" tname="dhStep10_hid"
 						id="dhStep10_hid" class="time_hid"
-						value="${dhTimebaseEntries.stepDuration }"> <input
-						type="hidden" name="dhTimebaseEntries[10].id" value=""> <input
-						type="hidden" name="dhTimebaseEntries[10].step"
-						value="c_ppc_confirm_10"> <input type="hidden"
-						name="dhTimebaseEntries[10].stepName" value="QA"></td>
+						value="${dhTimebaseEntries[10].stepDuration }"> <input
+						type="hidden" name="dhTimebaseEntries[10].id"
+						value="${dhTimebaseEntries[10].id }"> <input type="hidden"
+						name="dhTimebaseEntries[10].step" value="c_dahuo_10"> <input
+						type="hidden" name="dhTimebaseEntries[10].stepName" value="QA">
+						<input type="hidden"
+						name="dhTimebaseEntries[10].calculateDuration" value="10"></td>
 					<td>财务：</td>
 					<td><input type="text"
 						class="validate[custom[number2],maxSize[5]] time_text"
 						id="dhStep11" tname="dhStep11"><input type="hidden"
 						name="dhTimebaseEntries[11].stepDuration" tname="dhStep11_hid"
 						id="dhStep11_hid" class="time_hid"
-						value="${dhTimebaseEntries.stepDuration }"> <input
-						type="hidden" name="dhTimebaseEntries[11].id" value=""> <input
-						type="hidden" name="dhTimebaseEntries[11].step"
-						value="c_qc_printing_11"> <input type="hidden"
-						name="dhTimebaseEntries[11].stepName" value="财务"></td>
+						value="${dhTimebaseEntries[11].stepDuration }"> <input
+						type="hidden" name="dhTimebaseEntries[11].id"
+						value="${dhTimebaseEntries[11].id }"> <input type="hidden"
+						name="dhTimebaseEntries[11].step" value="c_dahuo_11"> <input
+						type="hidden" name="dhTimebaseEntries[11].stepName" value="财务">
+						<input type="hidden"
+						name="dhTimebaseEntries[11].calculateDuration" value="11"></td>
 					<td>物流：</td>
 					<td><input type="text"
 						class="validate[custom[number2],maxSize[5]] time_text"
 						id="dhStep12" tname="dhStep12"><input type="hidden"
 						name="dhTimebaseEntries[12].stepDuration" tname="dhStep12_hid"
 						id="dhStep12_hid" class="time_hid"
-						value="${dhTimebaseEntries.stepDuration }"> <input
-						type="hidden" name="dhTimebaseEntries[12].id" value=""> <input
-						type="hidden" name="dhTimebaseEntries[12].step"
-						value="c_ppc_confirm_12"> <input type="hidden"
-						name="dhTimebaseEntries[12].stepName" value="物流"></td>
+						value="${dhTimebaseEntries[12].stepDuration }"> <input
+						type="hidden" name="dhTimebaseEntries[12].id"
+						value="${dhTimebaseEntries[12].id }"> <input type="hidden"
+						name="dhTimebaseEntries[12].step" value="c_dahuo_12"> <input
+						type="hidden" name="dhTimebaseEntries[12].stepName" value="物流">
+						<input type="hidden"
+						name="dhTimebaseEntries[12].calculateDuration" value="12"></td>
 				</tr>
 			</table>
 			<div style="height: 40px; line-height: 50px; text-align: center;">
