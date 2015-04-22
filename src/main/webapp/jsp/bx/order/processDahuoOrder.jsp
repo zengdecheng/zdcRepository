@@ -196,13 +196,13 @@
 				scrolling="no" border="0" src=""> </iframe>
 		</div>
 		<div id="tabPage7" class="tab_page tabpageone">
-			<iframe id="iframeQiTao" width="100%" height="1150" frameborder="no"
-				border="0" src=""> </iframe>
-		</div>
-		<div id="tabPage8" class="tab_page tabpageone">
-			<iframe id="iframeST" width="100%" height="1150" frameborder="no"
-				scrolling="no" border="0" src=""> </iframe>
-		</div>
+            <iframe id="iframeST" width="100%" height="1150" frameborder="no"
+            scrolling="no" border="0" src=""> </iframe>
+        </div>
+        <div id="tabPage8" class="tab_page tabpageone">
+            <iframe id="iframeQiTao" width="100%" height="1150" frameborder="no"
+                    border="0" src=""> </iframe>
+        </div>
         <div id="tabPage9" class="tab_page tabpageone">
 			<iframe id="iframeTPE" width="100%" height="1150" frameborder="no"
 				scrolling="no" border="0" src=""> </iframe>
