@@ -59,7 +59,7 @@ public class TestActiviti extends ActivitiTestCase {
 
 	// 部署流程
 	public void testDeployment() {
-		Deployment dp = repositoryService.createDeployment().addClasspathResource("diagrams/oawf3.bpmn").name("CustomName").deploy();
+		Deployment dp = repositoryService.createDeployment().addClasspathResource("diagrams/oawf3.bpmn").name("oawf3.bpmn").deploy();
 		logger.error("DeploymentId:" + dp.getId());
 	}
 
