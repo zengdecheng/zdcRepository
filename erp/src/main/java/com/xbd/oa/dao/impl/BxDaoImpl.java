@@ -263,5 +263,6 @@ public class BxDaoImpl extends BaseDaoImpl {
 	 */
 	public static final String GET_TODAY_REPORT_BY_SQL = "get_today_report_by_sql";
 	public static final String GET_TODAY_REPORT_ORDERDETAIL_BY_SQL = "get_today_report_orderDetail_by_sql";
+	public static final Object GET_ORDER_LIST_JINDU_INFO2 = "get_order_list_jindu_info2";
 
 }
