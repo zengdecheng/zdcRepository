@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -16,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.alibaba.fastjson.JSON;
+import com.xbd.oa.utils.*;
 import com.xbd.oa.vo.*;
 import org.activiti.engine.task.Task;
 import org.apache.commons.beanutils.DynaBean;
@@ -29,15 +32,6 @@ import com.xbd.erp.base.activiti.WorkFlow;
 import com.xbd.erp.base.dao.BaseDao;
 import com.xbd.erp.base.pojo.sys.FSPBean;
 import com.xbd.oa.dao.impl.BxDaoImpl;
-import com.xbd.oa.utils.ConstantUtil;
-import com.xbd.oa.utils.DateUtil;
-import com.xbd.oa.utils.JdbcHelper;
-import com.xbd.oa.utils.POIUtilsEx;
-import com.xbd.oa.utils.PathUtil;
-import com.xbd.oa.utils.ResourceUtil;
-import com.xbd.oa.utils.Struts2Utils;
-import com.xbd.oa.utils.WebUtil;
-import com.xbd.oa.utils.WorkFlowUtil;
 import com.xbd.oa.vo.base.CustomCell;
 
 @SuppressWarnings("deprecation")
@@ -105,7 +99,9 @@ public class XBDUtils {
 		}
 
 		Map<String, Object> variables = new HashMap<String, Object>();
-		if ("c_ppc_factoryMsg_6".equals(dbOaOrder.getWfStep()) || "b_pur_confirm_4".equals(dbOaOrder.getWfStep()) || "c_dahuo_6".equals(dbOaOrder.getWfStep()) ) {
+//        variables.put("art", "false");
+		if ("c_ppc_factoryMsg_6".equals(dbOaOrder.getWfStep()) || "b_pur_confirm_4".equals(dbOaOrder.getWfStep())
+                || "c_dahuo_6".equals(dbOaOrder.getWfStep())) {
 			// variables.put("oa_order_detail", oaOrderDetail.getId());
 			if (StringUtils.isNotBlank(dbOaOrder.getStyleCraft())) {
 				variables.put("art", "true");
@@ -2132,15 +2128,37 @@ public class XBDUtils {
 	}
 
 
+    /**
+     * @Descriotion 保存齐套节点信息
+     * @param oaOrderDetail
+     * @param oaQiTaoStep
+     * @return
+     */
+    public static boolean saveQiTao(OaOrderDetail oaOrderDetail, OaQiTaoStep oaQiTaoStep){
+        boolean flag = true;
+        try {
+            OaOrderDetail qiTaoDetail = (OaOrderDetail) baseDao.get(OaOrderDetail.class, oaOrderDetail.getId());
+            if(oaQiTaoStep != null){
+                qiTaoDetail.setOaQiTao(JSON.toJSONString(oaQiTaoStep));
+                baseDao.update(qiTaoDetail);
+            }
+            saveManegeInfo(oaOrderDetail, oaOrderDetail.getId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            flag = false;
+        }
+        return flag;
+    }
+
+
 
     /**
      * @Descriotion 获取异动信息
      * @param orderId
-     * @param node
      * @param resMap
      * @throws Exception
      */
-    public static void getTracke(int orderId, String node, Map resMap) throws Exception {
+    public static void getTracke(int orderId, Map resMap) throws Exception {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("oaOrder", orderId);
         List<OaTracke> trackeList = (List<OaTracke>) baseDao.findLikeByProperty(OaTracke.class, params);
@@ -2158,6 +2176,145 @@ public class XBDUtils {
             oaTrackeList.add(mapOaTrackes);
         }
         resMap.put("oaTrackes", oaTrackeList);
+    }
+
+
+    /**
+     *
+     * @Title: getManagerInfo
+     * @Description: TODO查询管理信息 update 2015-1-8
+     *
+     * @author 张华
+     * @param orderId
+     * @param nodeStr
+     * @param wfStepIndex
+     * @param resMap
+     */
+    public static void getManagerInfo(int orderId, String nodeStr, String wfStepIndex, Map resMap) throws Exception {
+        LazyDynaMap tampMap = null;
+        int stepIndex = Integer.parseInt(wfStepIndex); // 当前正在处理的订单节点index
+        int node = Integer.parseInt(nodeStr);
+
+        // 如果要获取信息的节点已经处理过或者正在处理才进行查询管理信息
+        if (stepIndex >= node) {
+            FSPBean fsp = new FSPBean();
+            fsp.set(FSPBean.FSP_QUERY_BY_XML, BxDaoImpl.GET_MANAGER_INFO_BY_SQL);
+            fsp.set("orderId", orderId);
+            fsp.set("node", nodeStr);
+            fsp.set(FSPBean.FSP_ORDER, " order by id desc");
+            tampMap = baseDao.getOnlyObjectBySql(fsp);
+        }
+
+        Map oaOrderDetail = new HashMap();
+        if (null != tampMap) {
+            oaOrderDetail.put("id", (null == tampMap.get("id")) ? "" : tampMap.get("id"));
+            oaOrderDetail.put("operator", (null == tampMap.get("operator")) ? "" : tampMap.get("operator"));
+            oaOrderDetail.put("worker", (null == tampMap.get("worker")) ? tampMap.get("operator") : tampMap.get("worker"));
+            if (null != tampMap.get("wf_real_start")) {
+                String tampDate = DateUtil.formatDate((Date) tampMap.get("wf_real_start"));
+                oaOrderDetail.put("wf_real_start", tampDate);// 实际开始时间
+            } else {
+                oaOrderDetail.put("wf_real_start", "");// 实际开始时间
+            }
+            if (null != tampMap.get("work_time")) {
+                String tampDate = DateUtil.formatDate((Date) tampMap.get("work_time"));
+                oaOrderDetail.put("processTime", tampDate);// 处理日期
+            } else {
+                Date now = new Date();
+                String processTime = DateUtil.formatDate(now);
+                oaOrderDetail.put("processTime", processTime);// 处理日期
+            }
+            oaOrderDetail.put("content", (null == tampMap.get("content")) ? "" : tampMap.get("content"));// 技术备注
+            oaOrderDetail.put("other_file", (null == tampMap.get("other_file")) ? "" : tampMap.get("other_file"));// 附件
+            oaOrderDetail.put("other_file_name", PathUtil.url2FileName(oaOrderDetail.get("other_file").toString())); // 附件名称
+            oaOrderDetail.put("wf_step", tampMap.get("wf_step"));// 节点ID
+
+            Timestamp wf_real_start = (Timestamp) tampMap.get("wf_real_start");// 实际开始时间
+            Timestamp wf_real_finish = (Timestamp) tampMap.get("wf_real_finish"); // 实际结束时间
+            long wf_step_duration = (long) tampMap.get("wf_step_duration"); // 标准时长
+
+            if (null != wf_real_finish) {
+                String tampDate = DateUtil.formatDate((Date) wf_real_finish);
+                oaOrderDetail.put("wf_real_finish", tampDate);// 实际完成时间
+            } else {
+                wf_real_finish = new Timestamp(System.currentTimeMillis() / 1000 * 1000);
+                oaOrderDetail.put("wf_real_finish", "");// 实际完成时间
+            }
+            String standardTime = DateUtil.longTohhmm(wf_step_duration);
+            oaOrderDetail.put("wf_step_duration", standardTime);// 标准工时
+
+            // 得到进度信息
+            long between = wf_step_duration - BizUtil.getWorkTimeBetween(wf_real_finish, wf_real_start);
+            StringBuffer schedule = new StringBuffer(between >= 0 ? "提前" : "超时");
+            between = Math.abs(between);
+            schedule.append(WebUtil.getTimeDisPlay(between));
+            oaOrderDetail.put("schedule", schedule);// 进度信息
+
+            // 计算实际耗时
+            if (null != tampMap.get("wf_real_start") && null != tampMap.get("wf_real_finish")) {
+                long real_time = BizUtil.getWorkTimeBetween((Timestamp) tampMap.get("wf_real_finish"), (Timestamp) tampMap.get("wf_real_start"));
+                String realTime = DateUtil.longTohhmm(real_time);
+                oaOrderDetail.put("real_time", realTime);// 实际耗时
+            } else {
+                oaOrderDetail.put("real_time", "");// 实际耗时
+            }
+            // 计算当前订单流入该节点的耗时= （订单流入日期-下单日期+1）÷（交货日期-下单日期+1）*100%
+            OaOrder oaOrder = (OaOrder) baseDao.getObject(OaOrder.class, orderId);
+            Date begin_time = oaOrder.getBeginTime();
+            Date except_finish = oaOrder.getExceptFinish();
+            // 查询出最早的订单流入该节点的日期
+            if (null != tampMap.get("wf_real_start")) {
+                // 订单周期
+                Long sellReadyTime = oaOrder.getSellReadyTime() == null ? 0L : oaOrder.getSellReadyTime();
+                Long standardTimes = oaOrder.getStandardTime() == null ? 0L : oaOrder.getStandardTime();
+                Long craftTime = oaOrder.getCraftTime() == null ? 0L : oaOrder.getCraftTime();
+                Long orderTime = (sellReadyTime + standardTimes + craftTime) / 9 * 24;
+                Timestamp workTime = BizUtil.getOperatingTime((Timestamp) tampMap.get("wf_real_start"));
+
+                // 交期、当前时间
+                SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Timestamp goodsTime = new Timestamp(sdf.parse(df1.format(oaOrder.getGoodsTime())).getTime());
+                Timestamp curTime = new Timestamp(sdf.parse(df1.format(workTime)).getTime());
+                ;
+                // 计算进度信息
+                Float persent = (float) ((curTime.getTime() - goodsTime.getTime() + orderTime - 60 * 60 * 1000 * 24d) / orderTime * 100);
+                Float persent2 = (float) ((curTime.getTime() - goodsTime.getTime() + orderTime.floatValue()) / orderTime.floatValue() * 100);
+                Float hourPersent = (persent2.floatValue() - persent) / 9;
+                persent = BizUtil.culCurToc(workTime, persent, hourPersent);
+
+                oaOrderDetail.put("step_start_time_consume", persent);// 设置当前节点流入的耗时
+            } else {
+                oaOrderDetail.put("step_start_time_consume", "");
+            }
+            // 计算当前订单流出该节点的耗时= （订单流出日期-下单日期+1）÷（交货日期-下单日期+1）*100%
+            if (null != tampMap.get("wf_real_finish")) {
+                // 订单周期
+                Long sellReadyTime = oaOrder.getSellReadyTime() == null ? 0L : oaOrder.getSellReadyTime();
+                Long standardTimes = oaOrder.getStandardTime() == null ? 0L : oaOrder.getStandardTime();
+                Long craftTime = oaOrder.getCraftTime() == null ? 0L : oaOrder.getCraftTime();
+                Long orderTime = (sellReadyTime + standardTimes + craftTime) / 9 * 24;
+                Timestamp workTime = BizUtil.getOperatingTime((Timestamp) tampMap.get("wf_real_finish"));
+
+                // 交期、当前时间
+                SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Timestamp goodsTime = new Timestamp(sdf.parse(df1.format(oaOrder.getGoodsTime())).getTime());
+                Timestamp curTime = new Timestamp(sdf.parse(df1.format(workTime)).getTime());
+                ;
+                // 计算进度信息
+                Float persent = (float) ((curTime.getTime() - goodsTime.getTime() + orderTime - 60 * 60 * 1000 * 24d) / orderTime * 100);
+                Float persent2 = (float) ((curTime.getTime() - goodsTime.getTime() + orderTime.floatValue()) / orderTime.floatValue() * 100);
+                Float hourPersent = (persent2.floatValue() - persent) / 9;
+                persent = BizUtil.culCurToc(workTime, persent, hourPersent);
+
+                oaOrderDetail.put("step_finish_time_consume", persent);// 设置当前节点流入的耗时
+            } else {
+                oaOrderDetail.put("step_finish_time_consume", "");
+            }
+        }
+
+        resMap.put("oaOrderDetail", oaOrderDetail);
     }
 
 }

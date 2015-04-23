@@ -39,9 +39,11 @@ public class OaOrderDetail extends CommonBean {
 	private String worker;					//采购员
 	private Timestamp workTime;				//工作时间
 	private String backFlag;				//
+    private String oaQiTao;                 //齐套节点信息JSON串
 
 
-	@Column(name = "attachment",columnDefinition="varchar(250)")
+
+    @Column(name = "attachment",columnDefinition="varchar(250)")
 	public String getAttachment() {
 		return attachment;
 	}
@@ -145,6 +147,15 @@ public class OaOrderDetail extends CommonBean {
 	public Timestamp getWorkTime() {
 		return workTime;
 	}
+
+    @Column(name = "oa_qi_tao",columnDefinition="varchar(500)")
+    public String getOaQiTao() {
+        return oaQiTao;
+    }
+
+    public void setOaQiTao(String oaQiTao) {
+        this.oaQiTao = oaQiTao;
+    }
 
 	public void setAttachment(String attachment) {
 		this.attachment = attachment;
