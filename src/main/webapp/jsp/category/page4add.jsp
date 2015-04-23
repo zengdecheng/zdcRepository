@@ -48,91 +48,6 @@ input {
 				</tr>
 			</table>
 		</div>
-		<!-- <div
-			style="background: #4b8df8; font-size: 14px; margin: 15px 5px 5px 0; color: #ffffff; width: 100%;">
-			<p style="padding: 5px 5px">&nbsp;品类缓冲时间设置</p>
-		</div>
-		<div style="padding-left: 8px;">
-			<table style="width: 1000px;">
-				<tr>
-					<td width="140" height="30"><span style="color: red">*</span>大货标准缓冲（小时）：</td>
-					<td width="200"><input type="text"
-						class="validate[custom[number2],required,maxSize[5]] time_text"
-						tName="dahuoCyc"><input type="hidden" id="dahuoCyc_hid"
-						name="oaCategory.dahuoCyc"></td>
-					<td width="140"><span style="color: red">*</span>打版标准缓冲（小时）：</td>
-					<td width="200"><input type="text"
-						class="validate[custom[number2],required,maxSize[5]] time_text"
-						tName="dabanCyc"><input type="hidden" id="dabanCyc_hid"
-						name="oaCategory.dabanCyc"></td>
-					<td width="86">&nbsp;</td>
-					<td width="200">&nbsp;</td>
-				</tr>
-				<tr>
-					<td height="30">绣花（小时）：</td>
-					<td><input type="text"
-						class="validate[custom[number2],maxSize[5]] time_text"
-						tName="embroidery"><input type="hidden"
-						name="oaCategory.embroidery" id="embroidery_hid"></td>
-					<td>洗水（小时）：</td>
-					<td><input type="text"
-						class="validate[custom[number2],maxSize[5]] time_text"
-						tName="washwaterTime"><input type="hidden"
-						name="oaCategory.washwaterTime" id="washwaterTime_hid"></td>
-					<td>印花（小时）：</td>
-					<td><input type="text"
-						class="validate[custom[number2],maxSize[5]] time_text"
-						tName="printingTime"><input type="hidden"
-						name="oaCategory.printingTime" id="printingTime_hid"></td>
-				</tr>
-				<tr>
-					<td height="30">缩折/打条（小时）：</td>
-					<td><input type="text"
-						class="validate[custom[number2],maxSize[5]] time_text"
-						tName="foldingTime"><input type="hidden"
-						name="oaCategory.foldingTime" id="foldingTime_hid"></td>
-					<td>打揽（小时）：</td>
-					<td><input type="text"
-						class="validate[custom[number2],maxSize[5]] time_text"
-						tName="dalanTime"><input type="hidden"
-						name="oaCategory.dalanTime" id="dalanTime_hid"></td>
-					<td>订珠（小时）：</td>
-					<td><input type="text"
-						class="validate[custom[number2],maxSize[5]] time_text"
-						tName="beadsTime"><input type="hidden"
-						name="oaCategory.beadsTime" id="beadsTime_hid"></td>
-				</tr>
-				<tr>
-					<td height="30">销售等待（小时）：</td>
-					<td><input type="text"
-						class="validate[custom[number2],maxSize[5]] time_text"
-						tName="sellWait"><input type="hidden"
-						name="oaCategory.sellWait" id="sellWait_hid"></td>
-					<td>货款等待（小时）：</td>
-					<td><input type="text"
-						class="validate[custom[number2],maxSize[5]] time_text"
-						tName="paymentWait"><input type="hidden"
-						name="oaCategory.paymentWait" id="paymentWait_hid"></td>
-					<td>其他（小时）：</td>
-					<td><input type="text"
-						class="validate[custom[number2],maxSize[5]] time_text"
-						tName="otherTime"><input type="hidden"
-						name="oaCategory.otherTime" id="otherTime_hid"></td>
-				</tr>
-				<tr>
-					<td>备注：</td>
-					<td colspan="5"><textarea name="oaCategory.remark"
-							class="validate[maxSize[200]]"
-							style="width: 505px; height: 80px;"></textarea></td>
-				</tr>
-			</table>
-			<div style="height: 40px; line-height: 50px; text-align: center;">
-				<input type="button" id="saveBtn" value="保存"
-					style="width: 115px; height: 25px;"> <input type="button"
-					value="取消" onclick="javascript:window.history.go(-1);"
-					style="width: 115px; height: 25px;">
-			</div>
-		</div> -->
 		<div
 			style="background: #4b8df8; font-size: 14px; margin: 15px 5px 5px 0; color: #ffffff; width: 100%;">
 			<p style="padding: 5px 5px">&nbsp;整体时间设置</p>
@@ -226,7 +141,7 @@ input {
 						id="beadsTime_hid" class="time_hid"></td>
 				</tr>
 				<tr>
-					<td>其他（小时）：</td>
+					<td height="30">其他（小时）：</td>
 					<td><input type="text"
 						class="validate[custom[number2],maxSize[5]] time_text"
 						id="otherTime" tname="otherTime"><input type="hidden"
@@ -292,7 +207,7 @@ input {
 						class="time_hid"></td>
 				</tr>
 				<tr>
-					<td>其他（小时）：</td>
+					<td height="30">其他（小时）：</td>
 					<td><input type="text"
 						class="validate[custom[number2],maxSize[5]] time_text"
 						id="dabanOtherTime" tname="dabanOtherTime"><input
@@ -390,7 +305,7 @@ input {
 						value="6"></td>
 				</tr>
 				<tr>
-					<td>特殊工艺：</td>
+					<td height="30">特殊工艺：</td>
 					<td><input type="text"
 						class="validate[custom[number2],maxSize[5]] time_text"
 						id="dhStep7" tname="dhStep7"><input type="hidden"
@@ -425,7 +340,7 @@ input {
 						value="9"></td>
 				</tr>
 				<tr>
-					<td>QA：</td>
+					<td height="30">QA：</td>
 					<td><input type="text"
 						class="validate[custom[number2],maxSize[5]] time_text"
 						id="dhStep10" tname="dhStep10"><input type="hidden"

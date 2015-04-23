@@ -153,7 +153,7 @@ input {
 						value="${oaCategory.beadsTime }"></td>
 				</tr>
 				<tr>
-					<td>其他（小时）：</td>
+					<td height="30">其他（小时）：</td>
 					<td><input type="text"
 						class="validate[custom[number2],maxSize[5]] time_text"
 						id="otherTime" tname="otherTime"><input type="hidden"
@@ -220,7 +220,7 @@ input {
 						class="time_hid" value="${oaCategory.dabanBeadsTime }"></td>
 				</tr>
 				<tr>
-					<td>其他（小时）：</td>
+					<td height="30">其他（小时）：</td>
 					<td><input type="text"
 						class="validate[custom[number2],maxSize[5]] time_text"
 						id="dabanOtherTime" tname="dabanOtherTime"><input
@@ -332,7 +332,7 @@ input {
 						value="6"></td>
 				</tr>
 				<tr>
-					<td>特殊工艺：</td>
+					<td height="30">特殊工艺：</td>
 					<td><input type="text"
 						class="validate[custom[number2],maxSize[5]] time_text"
 						id="dhStep7" tname="dhStep7"><input type="hidden"
@@ -373,7 +373,7 @@ input {
 						value="9"></td>
 				</tr>
 				<tr>
-					<td>QA：</td>
+					<td height="30">QA：</td>
 					<td><input type="text"
 						class="validate[custom[number2],maxSize[5]] time_text"
 						id="dhStep10" tname="dhStep10"><input type="hidden"
