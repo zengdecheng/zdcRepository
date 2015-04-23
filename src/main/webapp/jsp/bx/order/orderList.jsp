@@ -151,7 +151,12 @@
                     </s:else>
                 </td>
                 <td></td>
-                <td><a class="z_title_sty5" href="/bx/orderDetail?oaOrderDetail.id=${map.oa_order_detail}" style="word-wrap: break-word;">${map.sell_order_code}</a></td>
+                <td>
+                    <a class="z_title_sty5" href="/bx/orderDetail?oaOrderDetail.id=${map.oa_order_detail}" style="word-wrap: break-word;">${map.sell_order_code}</a>
+                    <s:if test="map.back_flag ==1">
+                        <span style="color: #ff0000;">退</span>
+                    </s:if>
+                </td>
                 <td><s:if test="map.type==1">模拟报价</s:if> <s:if test="map.type==2">样衣打版</s:if> <s:if test="map.type==3">大货生产</s:if></td>
                 <td><a class="z_title_sty5" target="_blank" href="${pageContext.request.contextPath}/jsp/outside/styleDetail.jsp?styleId=${map.style_id}">${map.style_code}</a></td>
                 <td>${map.style_desc}</td>

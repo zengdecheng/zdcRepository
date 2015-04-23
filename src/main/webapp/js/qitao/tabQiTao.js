@@ -21,8 +21,8 @@ define([ "v","vl" ], function(v,vl) {
 	};
 	var biz = {
 		init : function() {
-			biz.event.initOrderData();
 			biz.event.jsonGetDaHuoNineNode();
+			biz.event.initOrderData();
 			biz.event.initTrackes();
 			biz.event.initValidation();
 		},
@@ -41,7 +41,7 @@ define([ "v","vl" ], function(v,vl) {
 				$("#common").attr("disabled","disabled");
 				$("#yidongMemo").remove();
 				$("#otherFileUploadTd").remove();
-				parent.iFrameHeight("iframeLogistics");
+				parent.iFrameHeight("iframeQiTao");
 			}
 		},
 		event : {
@@ -81,22 +81,22 @@ define([ "v","vl" ], function(v,vl) {
 								}
 								$("#detailSchedule").text(data.oaOrderDetail.schedule);
 							}
-							//计算流入颜色和流出颜色
-							if(undefined != data.oaOrderDetail && undefined != data.oaOrderDetail.step_start_time_consume && null != data.oaOrderDetail.step_start_time_consume && "" != data.oaOrderDetail.step_start_time_consume) {
-								var rate=parseFloat(data.oaOrderDetail.step_start_time_consume);
-								if( rate < 0 ) {
-									$("#detailRealStartColor").css("background-color","#0000FF");
-								}else if(0 <= rate <= 33){
-									$("#detailRealStartColor").css("background-color","#33cc00");//绿色
-								}else if(rate <= 66){
-									$("#detailRealStartColor").css("background-color","#ff9900");//黄色
-								}else if(rate <= 100){
-									$("#detailRealStartColor").css("background-color","#ff3300");//红色
-								}else {
-									$("#detailRealStartColor").css("background-color","#000000");//黑色
-								}
-								$("#detailRealStartColor").text(data.oaOrderDetail.step_start_time_consume + "%");
-							}
+							////计算流入颜色和流出颜色
+							//if(undefined != data.oaOrderDetail && undefined != data.oaOrderDetail.step_start_time_consume && null != data.oaOrderDetail.step_start_time_consume && "" != data.oaOrderDetail.step_start_time_consume) {
+							//	var rate=parseFloat(data.oaOrderDetail.step_start_time_consume);
+							//	if( rate < 0 ) {
+							//		$("#detailRealStartColor").css("background-color","#0000FF");
+							//	}else if(0 <= rate <= 33){
+							//		$("#detailRealStartColor").css("background-color","#33cc00");//绿色
+							//	}else if(rate <= 66){
+							//		$("#detailRealStartColor").css("background-color","#ff9900");//黄色
+							//	}else if(rate <= 100){
+							//		$("#detailRealStartColor").css("background-color","#ff3300");//红色
+							//	}else {
+							//		$("#detailRealStartColor").css("background-color","#000000");//黑色
+							//	}
+							//	$("#detailRealStartColor").text(data.oaOrderDetail.step_start_time_consume + "%");
+							//}
 							if(undefined != data.oaOrderDetail && undefined != data.oaOrderDetail.step_finish_time_consume && null != data.oaOrderDetail.step_finish_time_consume && "" != data.oaOrderDetail.step_finish_time_consume) {
 								var rate=parseFloat(data.oaOrderDetail.step_finish_time_consume);
 								if( rate < 0 ) {
@@ -112,7 +112,7 @@ define([ "v","vl" ], function(v,vl) {
 								}
 								$("#detailRealFinishColor").text(data.oaOrderDetail.step_finish_time_consume + "%");
 							}
-							//$("#tabLogistics").autoFill(data, opt);
+
 							$("#oaOrderId").val(data.oaOrder.id);
 							//biz.event.showQaTable(data);
 							//biz.event.showLogistics(data);
@@ -125,15 +125,33 @@ define([ "v","vl" ], function(v,vl) {
 			initOrderData : function() {
 				$("#orderId").val(orderId);
 				var isEdit = $(window.parent.document).find("#orderDetail").val(); //是否是查看订单详情
-				if ("true" != isEdit) { //判断是否可编辑
-					//if(true){
+                var qitaoReceiveTime = "";
+                var qitaoTiHuoTime = "";
+                var qitaoSendTime ="";
+                var qitaoIsBackTime = "";
+                if(typeof(jsonData.oaQiTaoStep) != 'undefined'){
+                    qitaoReceiveTime = jsonData.oaQiTaoStep.qitaoReceiveTime;
+                    qitaoTiHuoTime = jsonData.oaQiTaoStep.qitaoTiHuoTime;
+                    qitaoSendTime = jsonData.oaQiTaoStep.qitaoSendTime;
+                    qitaoIsBackTime = jsonData.oaQiTaoStep.qitaoIsBackTime;
+                }
+                if ("true" != isEdit && wfStepIndex == 8) { //判断是否可编辑
 					isEdit = true;//可编辑
-					$("#orderDetailDive").remove();
-				} else {
+                    $("#qiTaoTime").empty().append("<span class='qi_tao_span'>接收时间：<input type='text' class='validate[required] z_inp2' style='width:150px;' name='oaQiTaoStep.qitaoReceiveTime' value='"+ qitaoReceiveTime + "'  onFocus=\"WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})\" /></span>" +
+                                                    "<span class='qi_tao_span'>可提货时间：<input type='text' class='validate[required] z_inp2' style='width:150px;' name='oaQiTaoStep.qitaoTiHuoTime' value='"+ qitaoTiHuoTime + "' onFocus=\"WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})\" /></span>" +
+                                                    "<span class='qi_tao_span'>实际外发时间：<input type='text' class='z_inp2' style='width:150px;' name='oaQiTaoStep.qitaoSendTime'  value='"+ qitaoSendTime + "' onFocus=\"WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})\" /></span>" +
+                                                    "<span class='qi_tao_span'>退单总计时：<input type='text' class='z_inp2' style='width:150px;' name='oaQiTaoStep.qitaoIsBackTime' value='"+ qitaoIsBackTime + "' onFocus=\"WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})\" /></span>");
+
+                } else {
 					isEdit = false;//不可编辑
-					$("#processOrderDive").remove();
-					$("#addLogistics").remove();
-					$("#logisticsRemove,#yidongMemo,#otherFileUploadTd").remove();
+
+                    $("#qiTaoTime").empty().append("<span class='qi_tao_span'>接收时间："+ qitaoReceiveTime + "</span>" +
+                                                    "<span class='qi_tao_span'>可提货时间："+ qitaoTiHuoTime + "</span>" +
+                                                    "<span class='qi_tao_span'>实际外发时间："+ qitaoSendTime + "</span>" +
+                                                    "<span class='qi_tao_span'>退单总计时："+ qitaoIsBackTime + "</span>");
+
+
+                    $("#logisticsRemove,#yidongMemo,#otherFileUploadTd").remove();
 					$("form input[type='text'],textarea,select").prop("disabled", true);
 				}
 				if (parseInt(wfStepIndex) < 9) {
@@ -146,34 +164,14 @@ define([ "v","vl" ], function(v,vl) {
 					elementFillName:'elementfillname',
 					debug : false
 				};
-
+                $("#tabQiTao").autoFill(jsonData, opt);
 				$("#worker").attr("fillName","oaOrderDetail.worker");
 			},
-			showLogistics : function(data){
-				if(data.oaLogisticsList.length > 0){
-					for(var i = 0; i < data.oaLogisticsList.length; i++){
-						$("#logisticsDetile").append("<tr>" +
-						"<td><input type='checkbox' name='logCheckBox' value='"+data.oaLogisticsList[i].id+"' /></td>" +
-						"<td><a href='http://www.kuaidi100.com/' target='_blank'>"+data.oaLogisticsList[i].logisticsNum+"</a></td>" +
-						"<td>"+data.oaLogisticsList[i].logisticsCompany+"</td>" +
-						"<td>"+data.oaLogisticsList[i].deliveryPle+"</td>" +
-						"<td>"+data.oaLogisticsList[i].deliveryNum+"</td>" +
-						"<td>"+data.oaLogisticsList[i].deliveryTime+"</td>" +
-						"<td><a href='"+data.oaLogisticsList[i].fileUrl+"' target='_blank'>查看集装箱单</a></td>" +
-						"<td>"+data.oaLogisticsList[i].remarks+"</td>" +
-						"</tr>");
-					}
-				}
-			},
 			jsonSaveLogistics : function() {
-				var successFlag=$("#tabLogistics").validationEngine("validate");
-				var filename = $("#hid_attachment_url_zhuang_xiang").val();
-				if(filename == null || "" == filename){
-					alert("装箱单必须存在.");
-					return false;
-				}
+				var successFlag=$("#tabQiTao").validationEngine("validate");
+
 				if(successFlag){
-					var params = $("#tabLogistics").serializeArray();
+					var params = $("#tabQiTao").serializeArray();
 					$.ajax({
 						url: "/bx/saveOaLogistics",
 						type: "post",
@@ -209,12 +207,12 @@ define([ "v","vl" ], function(v,vl) {
 						biz.event.putOaTrackesTrData(v.memo, v.user, v.time);
 					})
 				}
-				parent.iFrameHeight("iframeLogistics");
+				parent.iFrameHeight("iframeQiTao");
 			},
 			putOaTrackesTrData : function(td1, td2, td3) { //添加一行异动信息到列表
 				var tr = "<tr><td width='53px' height='22px'></td><td width='573px'>" + td1 + "</td><td>" + td2 + "/" + td3 + "</td></tr>";
 				$("#oaTrackesTable").append(tr);
-				parent.iFrameHeight("iframeLogistics");
+				parent.iFrameHeight("iframeQiTao");
 			},
 			jsonSaveTracke : function() { //保存异动信息
 				if($.trim($("#yidongContent").val()) != "") {
@@ -229,7 +227,7 @@ define([ "v","vl" ], function(v,vl) {
 	                		} else if("0" ==  data.code){
 	                			biz.event.putOaTrackesTrData($("#yidongContent").val(), data.oaTrackeUser, data.oaTrackeTime);
 	                			$("#yidongContent").val("");
-	                			parent.iFrameHeight("iframeLogistics");
+	                			parent.iFrameHeight("iframeQiTao");
 	                		} else {
 	                			alert(data.msg);
 	                		}
@@ -251,47 +249,22 @@ define([ "v","vl" ], function(v,vl) {
 			download : function() { //下载文件
 				window.location.href = "/oaOrderFileDownload?fileUrl=" + encodeURI($(this).attr("downloadUrl"));
 			},
-			processOrder : function() { //保存并提交订单
-				$("#processOrder").val("true"); //true标识流程流转
-				var logisticsnums = biz.event.getLogisticsNums();
-				if(logisticsnums){
-					if(window.confirm("节点中没有添加任何物流信息，是否继续执行操作？")){
-						if(window.confirm("本节点是流程最后一个节点，提交后到历史数据，无法退回，是否确认")){
-							biz.event.jsonProcessOrder();
-						}
-					}
-				}else{
-					if(window.confirm("本节点是流程最后一个节点，提交后到历史数据，无法退回，是否确认")){
-						biz.event.jsonProcessOrder();
-					}
-				}
-			},
-			getLogisticsNums : function(){
-				if($("#logisticsDetile tr").length < 2){
-					return true;
-				}else{
-					return false;
-				}
-			},
 			saveOrder : function() { //保存草稿
 				$("#processOrder").val("false"); //false标识流程不流转，只保存数据
-				var logisticsnums = biz.event.getLogisticsNums();
-				if(logisticsnums){
-					if(window.confirm("节点中没有添加任何物流信息，是否继续执行操作？")){
-						biz.event.jsonProcessOrder();
-					}
-				}else{
-					biz.event.jsonProcessOrder();
-				}
+				biz.event.jsonProcessOrder();
 			},
+            processOrder : function() { // 保存并提交订单
+                $("#processOrder").val("true"); // true标识流程流转
+                biz.event.jsonProcessOrder();
+            },
 			jsonProcessOrder:function(){//ajax提交表单
 				//先要对所填写的数据进行验证合法后才进行提交
-				var successFlag= true;//$("#tabLogistics").validationEngine("validate");
+				var successFlag= $("#tabQiTao").validationEngine("validate");
 				if(successFlag){
 					$("#processBtn").attr("disabled", "true");
 					$("#saveBtn").attr("disabled", "true");
 					$("#backBtn").attr("disabled", "true");
-					var params = $("#tabLogistics").serializeArray();
+					var params = $("#tabQiTao").serializeArray();
 					$.ajax({
 	                    url: "/bx/jsonProcessOrder",
 	                    type: "post",
@@ -300,8 +273,8 @@ define([ "v","vl" ], function(v,vl) {
 	                    	if("ajaxLogin" == data){
 	                			alert("登录超时，请重新登录");
 	                		} else if("0" ==  data.code){
-	                			//top.location.href = "/bx/todo";
-                                top.location.reload(true);
+	                			top.location.href = "/bx/todo";
+                                //top.location.reload(true);
 	                		} else {
 	                			alert(data.msg);
 		        				$("#processBtn").removeAttr("disabled");
@@ -336,7 +309,7 @@ define([ "v","vl" ], function(v,vl) {
 						});
 					}
 				}
-				parent.iFrameHeight("iframeLogistics");
+				parent.iFrameHeight("iframeQiTao");
 			}
 		}
 	}

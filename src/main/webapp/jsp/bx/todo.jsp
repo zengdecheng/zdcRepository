@@ -45,11 +45,11 @@
 </div>
 
 <table border="0" cellspacing="0" cellpadding="0" class="z_table_style2"
-	width="1008">
+	width="1058">
 	<tr>
 		<th width="60" height="40" class="orderBy" name="data"
 			style="cursor: pointer;">优先级</th>
-		<th width="65">订单编号</th>
+		<th width="95">订单编号</th>
 		<th width="60">订单类型</th>
 		<th width="65">款号</th>
 		<th width="115">款式描述</th>
@@ -58,7 +58,7 @@
 		<th width="70" class="orderBy" name="begin_time"
 			style="cursor: pointer;">创建日期</th>
 		<!-- <th width="90">剩余时间</th> -->
-		<th width="90">当前节点剩余时间</th>
+		<th width="90">当前节点进度</th> <!--原：当前节点剩余时间 -->
 		<th width="50">负责MR</th>
 		<th width="100">当前节点</th>
 		<th width="50">负责人</th>
@@ -89,7 +89,11 @@
 				</s:else></td>
 			<td><a class="z_title_sty5"
 				href="/bx/orderDetail?oaOrderDetail.id=${map.oa_order_detail}"
-				style="word-wrap: break-word;">${map.sell_order_code}</a></td>
+				style="word-wrap: break-word;">${map.sell_order_code}</a>
+                <s:if test="map.back_flag =='1'">
+                    <span style="color: #ff0000;">退</span>
+                </s:if>
+            </td>
 			<td><s:property
 					value="%{@com.xbd.oa.utils.WebUtil@getOrderTypeStr(map.type)}" /></td>
 			<td><a class="z_title_sty5" target="_blank"

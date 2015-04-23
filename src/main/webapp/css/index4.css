@@ -195,7 +195,13 @@ _height: 1%;}
 /*查看进度页备注弹出层*/
 .z_order_content{padding:10px;position:absolute; display:none; width:150px; height:auto; index:999; word-wrap: break-word; background-color:#DEF0FB; border-width:1px; border-color:#DBDBDA; border-style:solid;}
 
-
+.qi_tao_span{
+    margin-left:2.5%;
+    line-height: 35px;
+    display: block;
+    float: left;
+    width: 300px;
+}
 
 
 

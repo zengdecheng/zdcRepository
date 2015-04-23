@@ -28,6 +28,8 @@ import javax.servlet.http.Cookie;
 
 import com.alibaba.fastjson.JSON;
 
+import com.xbd.erp.qitao.service.QiTaoService;
+import com.xbd.oa.vo.*;
 import jxl.write.WriteException;
 import net.sf.json.JSONArray;
 
@@ -63,30 +65,6 @@ import com.xbd.oa.utils.Struts2Utils;
 import com.xbd.oa.utils.WebUtil;
 import com.xbd.oa.utils.WorkFlowUtil;
 import com.xbd.oa.utils.XbdBuffer;
-import com.xbd.oa.vo.OaClothesSize;
-import com.xbd.oa.vo.OaClothesSizeDetail;
-import com.xbd.oa.vo.OaCost;
-import com.xbd.oa.vo.OaCqc;
-import com.xbd.oa.vo.OaCusMaterialList;
-import com.xbd.oa.vo.OaDaBanInfo;
-import com.xbd.oa.vo.OaDaHuoInfo;
-import com.xbd.oa.vo.OaDt;
-import com.xbd.oa.vo.OaLogistics;
-import com.xbd.oa.vo.OaMaterialList;
-import com.xbd.oa.vo.OaMrConfirm;
-import com.xbd.oa.vo.OaOrder;
-import com.xbd.oa.vo.OaOrderDetail;
-import com.xbd.oa.vo.OaOrderNum;
-import com.xbd.oa.vo.OaOrg;
-import com.xbd.oa.vo.OaProcessExplain;
-import com.xbd.oa.vo.OaQa;
-import com.xbd.oa.vo.OaQiTao;
-import com.xbd.oa.vo.OaQiTaoDetail;
-import com.xbd.oa.vo.OaStaff;
-import com.xbd.oa.vo.OaTimebase;
-import com.xbd.oa.vo.OaTimebaseEntry;
-import com.xbd.oa.vo.OaTpe;
-import com.xbd.oa.vo.OaTracke;
 import com.xbd.oa.vo.base.CustomCell;
 
 @Results({ @Result(name = "authError", type = "redirect", location = "/authError.jsp"), @Result(name = "logout", type = "redirect", location = "/admin.jsp"),
@@ -105,7 +83,27 @@ public class BxAction extends Action {
 		this.baseDao = baseDao;
 	}
 
-	public String getWhb() {
+//    public QiTaoService qiTaoService;
+//
+//    public QiTaoService getQiTaoService() {
+//        return qiTaoService;
+//    }
+//    @Resource(name="qiTaoService")
+//    public void setQiTaoService(QiTaoService qiTaoService) {
+//        this.qiTaoService = qiTaoService;
+//    }
+
+    private OaQiTaoStep oaQiTaoStep;
+
+    public OaQiTaoStep getOaQiTaoStep() {
+        return oaQiTaoStep;
+    }
+
+    public void setOaQiTaoStep(OaQiTaoStep oaQiTaoStep) {
+        this.oaQiTaoStep = oaQiTaoStep;
+    }
+
+    public String getWhb() {
 		return whb;
 	}
 
@@ -6306,7 +6304,8 @@ public class BxAction extends Action {
 						// todo
 					} else if ("c_dahuo_8".equals(dbOaOrder.getWfStep())) {
 						// 齐套
-						// todo
+                        res = XBDUtils.saveQiTao(oaOrderDetail, oaQiTaoStep);
+
 					} else if ("c_qc_cutting_6".equals(dbOaOrder.getWfStep()) || "c_dahuo_9".equals(dbOaOrder.getWfStep())) {
 						// TPE
 						res = XBDUtils.saveTPE(dbOaOrder, oaTpe, oaOrderDetail);

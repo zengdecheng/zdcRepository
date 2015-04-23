@@ -20,15 +20,12 @@
 		</div>
 		<div style="border-bottom: 1px solid rgb(205, 205, 205); font-size: 14px;">
 			<p style="padding: 5px 5px 5px 10px; margin: 0;">时间记录</p>
+            <input type='hidden' name='oaQiTao.oaOrderId' fillName='oaOrder.id' />
+            <input type='hidden' name='oaQiTao.id' fillName='oaQiTao.id' />
 		</div>
-		<div style="margin-top: 5px; height: 80px;">
-			<input type='hidden' name='oaQiTao.oaOrderId' fillName='oaOrder.id' />
-			<input type='hidden' name='oaQiTao.id' fillName='oaQiTao.id' />
-			<span style="margin-left:2.5%; line-height: 35px; display: block; float: left; width: 300px;">接收时间：<input type="text" class="z_inp2" style="width:150px;" name="oaQiTao.qitaoReceiveTime" onFocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss',maxDate:'#F{$dp.$D(\'date2\')||\'2020-10-01\'}'})" id="date1"/></span>
-			<span style="margin-left:2.5%; line-height: 35px;  display: block; float: left; width: 300px;">可提货时间：<input type="text" class="z_inp2" style="width:150px;" name="oaQiTao.qitaoReceiveTime" onFocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss',maxDate:'#F{$dp.$D(\'date2\')||\'2020-10-01\'}'})" id="date1"/></span>
-			<span style="margin-left:2.5%; line-height: 35px;  display: block; float: left; width: 300px;">实际外发时间：<input type="text" class="z_inp2" style="width:150px;" name="oaQiTao.qitaoSendTime" onFocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss',minDate:'#F{$dp.$D(\'date1\')}'})" id="date2"/></span>
-			<span style="margin-left:2.5%; line-height: 35px;  display: block; float: left; width: 300px;">退单总计时：<input type="text" class="z_inp2" style="width:150px;" name="oaQiTao.qitaoSendTime" onFocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss',minDate:'#F{$dp.$D(\'date1\')}'})" id="date2"/></span>
-		</div>
+		<div style="margin-top: 5px; height: 80px;" id="qiTaoTime">
+
+        </div>
 
 		
 		<div style="border-bottom: 1px solid rgb(205, 205, 205); font-size: 14px;">
@@ -44,19 +41,19 @@
 					<td></td>
 				</tr>
 				<tr height="28px;">
-					<td colspan="2">CQC备注:&nbsp;&nbsp;	<input type="hidden" name="oaOrderDetail_id" fillName="oaOrderDetail.id"/><textarea id="detailContent" fillName="oaOrderDetail.content" name="oaOrderDetail.content" style="width: 560px; height: 100px;" maxlength="1000"></textarea></td>
+					<td colspan="2">齐套备注:&nbsp;&nbsp;	<input type="hidden" name="oaOrderDetail_id" fillName="oaOrderDetail.id"/><textarea id="detailContent" fillName="oaOrderDetail.content" name="oaOrderDetail.content" style="width: 560px; height: 100px;" maxlength="1000"></textarea></td>
 					<td>
 						<div style="height: 105px;">
 							<span style="line-height: 22px;">进度信息:<span>
 							<div style="height: 100px; width: 80%; float: right; border: 1px solid rgb(205, 205, 205);">
 								<p style="padding: 0 0 0 10px; margin: 0; background-color: yellow; line-height: 22px; display:none;" id="detailSchedule">还未流入</p>
 								<ul style="margin: 0; padding: 0 0 0 10px; line-height: 19px;">
-									<li id="detailRealStart">流入时间:<span elementFillName="oaOrderDetail.wf_real_start" /></li>
-									<li id="detailRealFinish">实际完成:<span elementFillName="oaOrderDetail.wf_real_finish" /></li>
-									<li>流入颜色:<div id="detailRealStartColor" style="color:#fff;margin: 1px 0 4px; width:45px; text-align: center; display: inline-block;"></div></li>
-									<li>流出颜色:<div id="detailRealFinishColor" style="color:#fff;margin-bottom: 1px; width:45px; text-align: center; display: inline-block;"></div></li>
-									<li style="display:none;" id="detailDuration">标准工时:<span elementFillName="oaOrderDetail.wf_step_duration" /></li>
-									<li id="detailRealTime">实际耗时:<span elementFillName="oaOrderDetail.real_time" /></li>
+									<li id="detailRealStart">接单时间:<span elementFillName="oaOrderDetail.wf_real_start" /></li>
+									<li id="detailRealFinish">发单时间:<span elementFillName="oaOrderDetail.wf_real_finish" /></li>
+									<%--<li>流入颜色:<div id="detailRealStartColor" style="color:#fff;margin: 1px 0 4px; width:45px; text-align: center; display: inline-block;"></div></li>--%>
+									<%--<li>流出颜色:<div id="detailRealFinishColor" style="color:#fff;margin-bottom: 1px; width:45px; text-align: center; display: inline-block;"></div></li>--%>
+									<%--<li style="display:none;" id="detailDuration">标准工时:<span elementFillName="oaOrderDetail.wf_step_duration" /></li>--%>
+									<li id="detailRealTime">退回节点:<span elementFillName="oaOrderDetail.real_time" /></li>
 								</ul>
 							</div>
 						</div>
