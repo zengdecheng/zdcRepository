@@ -10,6 +10,9 @@ define(function() {
 		init : function() {
 			$(".time_text").each(function(i, n) {
 				var temp = parseInt($(n).text()) * 100;
+				if(isNaN(temp)) {
+					temp = 0;
+				}
 				temp = (temp / 1000 / 60 / 60);
 				if (temp > 0) {
 					temp = "" + temp;

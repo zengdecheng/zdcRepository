@@ -29,7 +29,7 @@
         <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
       </extensionElements>
     </userTask>
-    <userTask id="c_dahuo_9" name="TPE" activiti:candidateGroups="tpe">
+    <userTask id="c_dahuo_9" name="TPE" activiti:candidateGroups="qc">
       <documentation>面辅料流转表（成品交后道数量信息填写）</documentation>
       <extensionElements>
         <activiti:taskListener event="create" class="com.xbd.oa.workflow.OaStepHandler"></activiti:taskListener>
